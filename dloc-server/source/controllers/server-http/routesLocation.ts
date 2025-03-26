@@ -13,7 +13,7 @@ const handlePacket = (req: express.Request, res: express.Response, next: express
   const speedValue: string = req.query?.speed?.toString() ?? '0';
   const bearing: string = req.query?.bearing?.toString() ?? '';
   const batt: string = req.query?.batt?.toString() ?? '';
-  const dateTimeUtc: Date | null = timestamp ? new Date(parseInt(timestamp) * 1000) : null;
+  const dateTimeUtc: Date | null = timestamp ? new Date(parseInt(timestamp) * 1000) : new Date();
   const remoteAddress: string = req.ip?.toString() ?? '';
   const gsmSignal: number = 100;
   const valid: boolean = true;
@@ -26,7 +26,7 @@ const handlePacket = (req: express.Request, res: express.Response, next: express
   else if (lat === null || lng === null || Number.isNaN(lat) || Number.isNaN(lng)) error = 'invalid lat or lng';
   
   /** Return error */
-  if (error !== '') return res.status(400).json({ error: 'invalid lat or lng' });
+  if (error !== '') return res.status(400).json({ error });
 
   let speed: number = Number.isNaN(speedValue) ? parseFloat(speedValue) : 0;
 
