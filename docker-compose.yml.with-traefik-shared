@@ -1,0 +1,169 @@
+version: '3.8'
+
+x-common: 
+# -------------------------------------------- #
+# -- SERVER                                 -- #
+# -------------------------------------------- #
+  server-http: &server-http
+    labels:
+      - traefik.http.services.dlocserver.loadbalancer.server.port=${SERVER_INTERNAL_HTTP_PORT}
+      - traefik.http.routers.dlocserver.tls=true
+      - traefik.http.routers.dlocserver.tls.certresolver=${TRAEFIK_CERT_RESOLVER}
+      - traefik.http.routers.dlocserver.rule=Host(`${TRAEFIK_SERVER_HTTP_HOST}.${TRAEFIK_DOMAIN}`)
+
+  server-socket: &server-socket
+    ports: 
+      - ${SERVER_SOCKET_PORT}:${SERVER_INTERNAL_SOCKET_PORT}
+
+
+# -------------------------------------------- #
+# -- API                                    -- #
+# -------------------------------------------- #
+  api-ws: &api-ws
+    labels:
+      - traefik.http.services.dlocwss.loadbalancer.server.port=${API_INTERNAL_WS_PORT}
+      - traefik.http.routers.dlocwss.rule=Host(`${TRAEFIK_API_WS_HOST}.${TRAEFIK_DOMAIN}`)
+      - traefik.http.routers.dlocwss.tls=true
+      - traefik.http.routers.dlocwss.tls.certresolver=${TRAEFIK_CERT_RESOLVER}
+
+  api-http: &api-http
+    labels:
+      - traefik.http.services.dlocapi.loadbalancer.server.port=${API_INTERNAL_HTTP_PORT}
+      - traefik.http.routers.dlocapi.rule=Host(`${TRAEFIK_API_HTTP_HOST}.${TRAEFIK_DOMAIN}`)
+      - traefik.http.routers.dlocapi.tls=true
+      - traefik.http.routers.dlocapi.tls.certresolver=${TRAEFIK_CERT_RESOLVER}
+
+
+# -------------------------------------------- #
+# -- FRONTEND                               -- #
+# -------------------------------------------- #
+  frontend:  &frontend
+    labels:
+      - traefik.http.routers.dlocfrontend.rule=Host(`${TRAEFIK_DOMAIN}`)
+      - traefik.http.routers.dlocfrontend.tls=true
+      - traefik.http.routers.dlocfrontend.tls.certresolver=${TRAEFIK_CERT_RESOLVER}
+
+
+# -------------------------------------------- #
+# -- COMMONS & HEALTH                       -- #
+# -------------------------------------------- #
+  common: &common
+    restart: always
+    networks:
+      - custom_network
+
+  health: &health
+    healthcheck:
+      interval: 1s
+      timeout: 3s
+      retries: 3
+
+
+
+# -------------------------------------------- #
+# -- SERVICES                               -- #
+# -------------------------------------------- #
+services:
+  dloc-database:
+    image: mariadb:10.4
+    container_name: dloc-database
+    <<: [*common, *health]
+    environment:
+      TZ: Europe/Madrid
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    command: ['mysqld', '--character-set-server=utf8', '--collation-server=utf8_general_ci']
+    ports: 
+      - ${MYSQL_PORT}:3306
+    volumes:
+      - ./dloc-database/volume:/var/lib/mysql
+      - ./dloc-database/setup.sql:/docker-entrypoint-initdb.d/setup.sql
+      - ./dloc-database/app-database-backup.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "mysql -u${MYSQL_USER} -p${MYSQL_PASSWORD} -e 'SELECT 1'"]
+
+  dloc-server-http:
+    image: dloc-server-http
+    container_name: dloc-server-http
+    <<: [*common, *health, *server-http]
+    build:
+      context: ./dloc-server
+      dockerfile: Dockerfile
+      args:
+        SERVER_TYPE: http
+    healthcheck:
+      test: "wget --no-verbose --tries=1 --spider http://localhost:${SERVER_INTERNAL_HTTP_PORT}/health || exit 1" 
+    depends_on:
+      dloc-database:
+        condition: service_healthy
+
+  dloc-server-socket:
+    image: dloc-server-socket
+    container_name: dloc-server-socket
+    <<: [*common, *health, *server-socket]
+    build:
+      context: ./dloc-server
+      dockerfile: Dockerfile
+      args:
+        SERVER_TYPE: socket
+    healthcheck:
+      test: "wget --no-verbose --tries=1 --spider http://localhost:${SERVER_INTERNAL_SOCKET_PORT}/health || exit 1" 
+    depends_on:
+      dloc-database:
+        condition: service_healthy
+
+  dloc-api-http:
+    image: dloc-api-http
+    container_name: dloc-api-http
+    <<: [*common, *health, *api-http]
+    build:
+      context: ./dloc-api
+      dockerfile: Dockerfile
+      args:
+        SERVER_TYPE: http
+    volumes:
+      - ./dloc-api/device-images:/usr/src/app/device-images
+    healthcheck:
+      test: "wget --no-verbose --tries=1 --spider http://localhost:${API_INTERNAL_HTTP_PORT}/health || exit 1" 
+    depends_on:
+      dloc-database:
+        condition: service_healthy
+
+  dloc-api-ws:
+    image: dloc-api-ws
+    container_name: dloc-api-ws
+    <<: [*common, *health, *api-ws]
+    build:
+      context: ./dloc-api
+      dockerfile: Dockerfile
+      args:
+        SERVER_TYPE: ws
+    healthcheck:
+      test: "wscat -c ws://localhost:${API_INTERNAL_WS_PORT}/health || exit 1" 
+    depends_on:
+      dloc-database:
+        condition: service_healthy
+
+  dloc-frontend:
+    image: dloc-frontend
+    container_name: dloc-frontend
+    <<: [*common, *frontend]
+    build:
+      context: ./dloc-frontend
+    depends_on:
+      dloc-database:
+        condition: service_healthy
+      dloc-api-http:
+        condition: service_healthy
+      dloc-api-ws:
+        condition: service_healthy
+# -------------------------------------------- #
+
+# -------------------------------------------- #
+networks:
+  custom_network:
+    name: ${NETWORK}
+    external: ${TRAEFIK_EXT_NETWORK}
+# -------------------------------------------- #

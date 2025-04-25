@@ -1,0 +1,9 @@
+todo.txt
+
+**/node_modules
+**/.env
+**/build
+**/dist
+**/todo.txt
+
+

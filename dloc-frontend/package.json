@@ -1,0 +1,60 @@
+{
+  "name": "dloc-frontend",
+  "version": "0.2.0",
+  "private": true,
+  "dependencies": {
+    "@azure/msal-browser": "3.14.0",
+    "@azure/msal-react": "2.0.16",
+    "@emotion/react": "11.11.1",
+    "@emotion/styled": "11.11.0",
+    "@greatsumini/react-facebook-login": "3.3.3",
+    "@mui/icons-material": "5.14.1",
+    "@mui/material": "^5.14.2",
+    "@react-oauth/google": "0.12.1",
+    "@vitejs/plugin-react-swc": "^3.9.0",
+    "axios": "^1.8.4",
+    "crypto-js": "4.2.0",
+    "csstype": "3.0.10",
+    "i18next": "23.11.4",
+    "i18next-browser-languagedetector": "7.2.1",
+    "leaflet": "1.9.4",
+    "notistack": "3.0.1",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "react-i18next": "14.1.1",
+    "react-leaflet": "4.2.1",
+    "react-leaflet-drift-marker": "4.0.0",
+    "react-router-dom": "6.23.1",
+    "typescript": "5.4.5",
+    "vite": "^6.3.2",
+    "vite-plugin-svgr": "^4.3.0"
+  },
+  "scripts": {
+    "start": "vite",
+    "build": "tsc && vite build",
+    "serve": "vite preview"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@types/crypto-js": "4.2.2",
+    "@types/leaflet": "1.9.12",
+    "@types/react": "18.3.1",
+    "@types/react-dom": "18.3.0"
+  }
+}
