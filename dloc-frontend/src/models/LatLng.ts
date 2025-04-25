@@ -2,5 +2,6 @@ export type LatLng = {
   lat: number,
   lng: number,
   dateTimeUTC?: string,
-  bearing?: number,
+  bearing: number,
+  speed: number,
 }

@@ -45,6 +45,8 @@ const processMapPaths = (
           lat: lat ?? 0,
           lng: lng ?? 0,
           dateTimeUTC: lastPositionUTC ?? "",
+          speed: 0,
+          bearing: 0,
         },
         color,
         strokeWeight: 1,
@@ -67,6 +69,8 @@ const processMapPaths = (
         lat: position.lat,
         lng: position.lng,
         dateTimeUTC,
+        speed: position.speed,
+        bearing: position.directionAngle,
       };
       paths.set(dateTimeUTC, {
         start: { ...locTemp },

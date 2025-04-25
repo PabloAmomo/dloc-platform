@@ -33,8 +33,8 @@ const LeafletMapHook = (): UseLeafletMapHook => {
 
       if (paths.length === 0) return;
 
-      newPolyline.path.push({ lat: paths[0].start.lat, lng: paths[0].start.lng, dateTimeUTC: paths[0].start.dateTimeUTC });
-      paths.forEach((path: Path) => newPolyline.path.push({ lat: path.end.lat, lng: path.end.lng, dateTimeUTC: path.end.dateTimeUTC, bearing: path.bearing }));
+      newPolyline.path.push({ lat: paths[0].start.lat, lng: paths[0].start.lng, dateTimeUTC: paths[0].start.dateTimeUTC, speed: paths[0].start.speed, bearing: paths[0].bearing });
+      paths.forEach((path: Path) => newPolyline.path.push({  lat: path.end.lat, lng: path.end.lng, dateTimeUTC: path.end.dateTimeUTC, bearing: path.bearing, speed: path.speed }));
 
       if (newPolyline.path.length > 0) newPolylines.push(newPolyline);
     });
@@ -96,7 +96,7 @@ const LeafletMapHook = (): UseLeafletMapHook => {
       else setMapMoved(true);
     });
     map.on('locationerror', (e) => setMyPosition(null));
-    map.on('locationfound', (e) => setMyPosition({ lat: e.latlng.lat, lng: e.latlng.lng }));
+    map.on('locationfound', (e) => setMyPosition({ lat: e.latlng.lat, lng: e.latlng.lng, speed:0, bearing: 0 }));
     /** Start the user location */
     map.locate({ watch: true, timeout: 2500, enableHighAccuracy: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps

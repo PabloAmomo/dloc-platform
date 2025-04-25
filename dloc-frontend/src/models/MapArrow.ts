@@ -15,4 +15,5 @@ export  interface MapArrowMarker {
   position: LatLng;
   bearing: number;
   icon: any | IconType;
+  speed: number;
 }

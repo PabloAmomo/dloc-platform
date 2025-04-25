@@ -91,7 +91,7 @@ const LeafletMap = () => {
             key={`${device.imei}`}
             topMost={centerOnImei === device.imei}
             opacity={!centerOnImei || centerOnImei === device.imei ? 1 : configApp.deviceUnselectedOpacity}
-            position={{ lat: device.lat ?? 0, lng: device.lng ?? 0 }}
+            position={{ lat: device.lat ?? 0, lng: device.lng ?? 0, speed: device.speed ?? 0, dateTimeUTC: device.lastPositionUTC ?? '', bearing: 0 }}
             setIconOn="tooltip"
             zIndexOffset={1000}
             hideTooltip={hideTooltip}
@@ -143,7 +143,7 @@ const LeafletMap = () => {
                     setIconOn="marker"
                     zIndexOffset={1100}
                     opacity={getOpacity(arrow.imei, arrow.opacity)}
-                    customPopupMessage={marker?.position?.dateTimeUTC ? getCustomPopup(arrow, marker.position.dateTimeUTC) : null}
+                    customPopupMessage={marker?.position?.dateTimeUTC ? getCustomPopup({ ...arrow, speed: marker.speed }, marker.position.dateTimeUTC) : null}
                   />
                 ) : marker.type === 'point' ? (
                   // ------------------------------------------------
@@ -156,7 +156,7 @@ const LeafletMap = () => {
                     center={{ ...marker.position }}
                     radius={1}
                   >
-                    {marker?.position?.dateTimeUTC && getPopUp(arrow, marker.position.dateTimeUTC)}
+                    {marker?.position?.dateTimeUTC && getPopUp({ ...arrow, speed: marker.speed }, marker.position.dateTimeUTC)}
                   </CircleMarker>
                 ) : (
                   // ------------------------------------------------
@@ -169,7 +169,7 @@ const LeafletMap = () => {
                     position={marker.position}
                     zIndexOffset={100}
                   >
-                    {marker?.position?.dateTimeUTC && getPopUp(arrow, marker.position.dateTimeUTC)}
+                    {marker?.position?.dateTimeUTC && getPopUp({ ...arrow, speed: marker.speed }, marker.position.dateTimeUTC)}
                   </Marker>
                 )
               )
