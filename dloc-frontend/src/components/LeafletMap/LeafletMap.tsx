@@ -40,7 +40,7 @@ const LeafletMap = () => {
   const getOpacity = useCallback((imei: string, opacity: number): number => (!centerOnImei || centerOnImei === imei ? 1 : opacity / 2), [centerOnImei]);
 
   const getCustomPopup = (arrow: MapArrow, dateTimeUTC: string): React.ReactNode => {
-    const speedKm = arrow.speed * 3.6;
+    const speedKm = arrow.speed;
     const dateFormated: string = formatDate(convertUTCDateToLocalDate(dateTimeUTC), t('dateString')) ?? '';
     return (
       <>

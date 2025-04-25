@@ -44,7 +44,7 @@ const MapMarkerPopup = (props: MapMarkerPopupProps) => {
   const distance: string =
     distanceInMeters < 10000 ? `${distanceInMeters.toFixed(0)} ${t('meters')}` : `${(distanceInMeters / 1000).toFixed(2) ?? '0'} ${t('kilometers')}`;
 
-  const speedInKmH = (visiblePaths.find((path: MapPath) => path.imei === device.imei)?.speed ?? 0) * 3.6;
+  const speedInKmH = (visiblePaths.find((path: MapPath) => path.imei === device.imei)?.speed ?? 0);
 
   const handleOpenConfig = (event: React.MouseEvent<HTMLDivElement>) => openFormDevice(device);
 
