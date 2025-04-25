@@ -35,7 +35,7 @@ const leaFletArrows = (leafletPolyline: LeafletPolyline[]) => {
       if (distance < 5) continue;
 
       /** Calculate the middle point */
-      const position: LatLng = { ...calculateMiddlePoint(polyline.path[i], polyline.path[i + 1]), dateTimeUTC: polyline.path[i + 1].dateTimeUTC };
+      const position: LatLng = { ...calculateMiddlePoint(polyline.path[i], polyline.path[i + 1], pathSpeed, bearing), dateTimeUTC: polyline.path[i + 1].dateTimeUTC };
 
       /** Create the arrow */
       const icon = createLeafletArrowIcon(color, opacity + 0.4, bearing);

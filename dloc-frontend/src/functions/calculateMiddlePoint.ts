@@ -1,9 +1,11 @@
 import { LatLng } from "models/LatLng";
 
-const calculateMiddlePoint = (start: LatLng, end: LatLng): LatLng => {
+const calculateMiddlePoint = (start: LatLng, end: LatLng, speed: number, bearing: number): LatLng => {
   const position: LatLng = {
     lat: Math.abs((start.lat - end.lat) / 2) * (start.lat > end.lat ? -1 : 1),
     lng: Math.abs((start.lng - end.lng) / 2) * (start.lng > end.lng ? -1 : 1),
+    speed,
+    bearing,
   };
   position.lat += start.lat;
   position.lng += start.lng;
