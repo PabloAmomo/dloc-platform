@@ -12,19 +12,18 @@ function createGoogleGeolocationRequest(packet: string, packetType: "TRVYP14" | 
     .split(",");
   if (lbsData.length < 4) {
     return {
-      error: "LBS data not found",
+      error: `LBS data not found on ${lbsData}`,
     };
   }
 
-  const startIndex = packetType === "TRVAP14" ? 0 : 1;
-  const mcc: string = lbsData[startIndex];
-  const mnc: string = lbsData[startIndex + 1];
-  const lac: string = lbsData[startIndex + 2];
-  const cid: string = lbsData[startIndex + 3];
+  const mcc: string = lbsData[1];
+  const mnc: string = lbsData[2];
+  const lac: string = lbsData[3];
+  const cid: string = lbsData[4];
 
   if (!mcc || !mnc || !lac || !cid) {
     return {
-      error: "LBS data not found",
+      error: `LBS data not found -> mcc: ${mcc}, mnc: ${mnc}, lac: ${lac}, cid: ${cid}`,
     };
   }
 

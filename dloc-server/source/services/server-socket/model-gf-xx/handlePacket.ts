@@ -30,7 +30,7 @@ const handlePacket: HandlePacket = async (
     /** Discarted packet */
     printMessage(
       `[${imeiTemp}] (${remoteAdd}) discarted data (${message}) [${
-        data.length > 20 ? data.substring(0, 20) + "..." : data
+        data.length > 20 ? data.substring(0, 40) + "..." : data
       }]`
     );
     /** Persist discarted packet */
