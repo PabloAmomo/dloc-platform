@@ -9,4 +9,5 @@ export interface Position {
   gsmSignal: number;
   batteryLevel: number;
   locationAccuracy: GpsAccuracy
+  activity: string;
 }

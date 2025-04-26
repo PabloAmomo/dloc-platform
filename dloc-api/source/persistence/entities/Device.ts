@@ -15,4 +15,5 @@ export interface Device {
   positions?: Position[];
   clonedImei?: string;
   locationAccuracy: GpsAccuracy
+  activity: string;
 }
