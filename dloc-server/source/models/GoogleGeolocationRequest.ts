@@ -1,4 +1,4 @@
-type GoogleGeolocationLBS =  {
+type GoogleGeolocationRequest =  {
   homeMobileCountryCode: string;
   homeMobileNetworkCode: string;
   cellTowers: {

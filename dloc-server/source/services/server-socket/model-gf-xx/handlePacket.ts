@@ -9,7 +9,8 @@ import { PositionPacket } from "../../../models/PositionPacket";
 import { printMessage } from "../../../functions/printMessage";
 import { REGEX_PACKETS } from "../../../functions/packetParseREGEX";
 import { GpsAccuracy } from "../../../models/GpsAccuracy";
-import getLbsQuery from "../../../functions/getLbsQuery";
+import createGoogleGeolocationRequest from "../../../functions/createGoogleGeolocationRequest";
+import getGoogleGeolocation from "../../../functions/getGoogleGeolocation";
 
 const handlePacket: HandlePacket = async (
   props: HandlePacketProps
@@ -64,6 +65,7 @@ const handlePacket: HandlePacket = async (
   // GPS DATA (14 or REPLY 15)
   // ---------------------------------------
   else if (data.startsWith("TRVYP14") || data.startsWith("TRVYP15")) {
+    const packetType = data.startsWith("TRVYP14") ? "TRVYP14" : "TRVYP15";
     let values: string[] = [];
 
     for (let i = 0; i < REGEX_PACKETS.length; i++) {
@@ -143,6 +145,27 @@ const handlePacket: HandlePacket = async (
       printMessage(
         `[${imeiTemp}] (${remoteAdd}) invalid position (NOT 'A') [${data}]`
       );
+
+      /** Get Google Geolocation LBS Packet */
+      const lbsQuery = createGoogleGeolocationRequest(data, packetType);
+      if ("error" in lbsQuery && lbsQuery.error) {
+        discardData(lbsQuery.error, true);
+        return response;
+      }
+
+      printMessage(
+        `[${imeiTemp}] LBS (${packetType}) query Google Geolocation [${JSON.stringify(
+          lbsQuery
+        )}]`
+      );
+
+      const lbsResponse = await getGoogleGeolocation(lbsQuery);
+    
+      printMessage(
+        `[${imeiTemp}] LBS (${packetType}) query Google response [${JSON.stringify(
+          lbsResponse
+        )}]`
+      );
     }
 
     response.response = `TRVZP${data.substring(5, 7)}#`;
@@ -191,25 +214,38 @@ const handlePacket: HandlePacket = async (
   // ---------------------------------------------
   // UNKNOW but need response (TRVAP Packets)
   // ---------------------------------------------
-  // MESSAGE:  TRVAP14,214,03,6103,4445# 214 MMC Country code, 03 MNC, 6103 LAC, 4445 CID
-  // RESPONSE: TRVBP14,23.113,113.123# lat, y lng (Solo con 5 decimales )
   else if (data.startsWith("TRVAP14")) {
+    const packetType = "TRVAP14";
+
     if (response.imei == "") {
       discardData(noImei, true);
       return response;
     }
 
     /** Get Google Geolocation LBS Packet */
-    const lbsQuery = getLbsQuery(data);
-    if ('error' in lbsQuery && lbsQuery.error) {
+    const lbsQuery = createGoogleGeolocationRequest(data, packetType);
+    if ("error" in lbsQuery && lbsQuery.error) {
       discardData(lbsQuery.error, true);
       return response;
     }
 
     printMessage(
-      `[${imeiTemp}] LBS query Google Geolocation [${JSON.stringify(lbsQuery)}]`
+      `[${imeiTemp}] LBS (${packetType}) query Google Geolocation [${JSON.stringify(
+        lbsQuery
+      )}]`
     );
 
+    const lbsResponse = await getGoogleGeolocation(lbsQuery);
+    
+    printMessage(
+      `[${imeiTemp}] LBS (${packetType}) query Google response [${JSON.stringify(
+        lbsResponse
+      )}]`
+    );
+
+    // TODO: Response with de Lat and Lng
+    // TRVBP14,23.113,113.123# lat, y lng (Solo con 5 decimales )
+    
     response.response = `TRVBP${data.substring(5, 7)}#`;
   }
 
