@@ -242,8 +242,6 @@ const handlePacket: HandlePacket = async (
       )}]`
     );
 
-    console.log("------> " + lbsResponse.location, lbsResponse.location?.lat, lbsResponse.location?.lng);
-    // const location = lbsResponse?.location;
     if (lbsResponse?.location) {
       const { lat, lng } = lbsResponse.location;
       response.response = `TRVBP14,${lat.toFixed(5)},${lng.toFixed(5)}#`;
