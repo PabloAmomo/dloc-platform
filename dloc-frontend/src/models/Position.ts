@@ -1,3 +1,5 @@
+import { GpsAccuracy } from "enums/GpsAccuracy";
+
 export type Position = {
   batteryLevel: number,
   dateTimeUTC: string,
@@ -6,4 +8,5 @@ export type Position = {
   lat: number,
   lng: number,
   speed: number,
+  locationAccuracy: GpsAccuracy
 };

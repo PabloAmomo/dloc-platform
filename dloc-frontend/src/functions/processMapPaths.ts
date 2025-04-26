@@ -7,6 +7,7 @@ import { Position } from "models/Position";
 import convertUTCDateToLocalDate from "./convertUTCDateToLocalDate";
 import distanceFromLatLngInMeters from "./distanceFromLatLngInMeters";
 import calculateBearing from "./calculateBearing";
+import { GpsAccuracy } from "enums/GpsAccuracy";
 
 const PATH_OPACITY = configApp.map.pathOpacity;
 
@@ -28,7 +29,7 @@ const processMapPaths = (
   for (let i = 0; i < devices.length; i++) {
     const device: Device = devices[i];
     const positions: Position[] = device?.positions?.reverse() ?? [];
-    const { imei, lastPositionUTC, lat, lng, params } = device;
+    const { imei, lastPositionUTC, lat, lng, params, locationAccuracy } = device;
     const { startTrack: iconTrackStart, endTrack: iconTrackEnd } = params;
     const { pathColor: color } = params;
 
@@ -47,6 +48,7 @@ const processMapPaths = (
           dateTimeUTC: lastPositionUTC ?? "",
           speed: 0,
           bearing: 0,
+          locationAccuracy: locationAccuracy ?? GpsAccuracy.unknown,
         },
         color,
         strokeWeight: 1,
@@ -71,6 +73,7 @@ const processMapPaths = (
         dateTimeUTC,
         speed: position.speed,
         bearing: position.directionAngle,
+        locationAccuracy: position.locationAccuracy,
       };
       paths.set(dateTimeUTC, {
         start: { ...locTemp },

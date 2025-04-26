@@ -20,6 +20,7 @@ import LeafletMapMarker from 'components/LeafletMapMarker/LeafletMapMarker';
 import React, { useCallback, useEffect } from 'react';
 import SpeedIcon from '@mui/icons-material/SpeedTwoTone';
 import style from './LeafletMap.style';
+import { GpsAccuracy } from 'enums/GpsAccuracy';
 
 const ENABLE_HIDE_TOOLTIP = false;
 
@@ -91,7 +92,7 @@ const LeafletMap = () => {
             key={`${device.imei}`}
             topMost={centerOnImei === device.imei}
             opacity={!centerOnImei || centerOnImei === device.imei ? 1 : configApp.deviceUnselectedOpacity}
-            position={{ lat: device.lat ?? 0, lng: device.lng ?? 0, speed: device.speed ?? 0, dateTimeUTC: device.lastPositionUTC ?? '', bearing: 0 }}
+            position={{ lat: device.lat ?? 0, lng: device.lng ?? 0, speed: device.speed ?? 0, dateTimeUTC: device.lastPositionUTC ?? '', bearing: 0, locationAccuracy: device.locationAccuracy ?? GpsAccuracy.unknown}}
             setIconOn="tooltip"
             zIndexOffset={1000}
             hideTooltip={hideTooltip}

@@ -26,6 +26,7 @@ const processDevices = (response: GetPositionsResult, devices: Device[]): Device
         lastVisibilityUTC: position.lastVisibilityUTC,
         positions: position.positions,
         isShared: position.isShared,
+        locationAccuracy: position.locationAccuracy,
         params: JSON.parse((position as any)?.params ?? DeviceParamsEmpty()),
       });
     }

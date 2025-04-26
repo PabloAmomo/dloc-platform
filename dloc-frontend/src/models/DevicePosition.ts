@@ -1,3 +1,4 @@
+import { GpsAccuracy } from "enums/GpsAccuracy";
 import { Position } from "./Position";
 
 export type DevicePosition = {
@@ -12,6 +13,7 @@ export type DevicePosition = {
   speed: number,
   positions: Position[],
   isShared: boolean,
+  locationAccuracy: GpsAccuracy
 };
 
 const DevicePositionEmpty = (props?: Partial<DevicePosition>) : DevicePosition => ({
@@ -26,6 +28,7 @@ const DevicePositionEmpty = (props?: Partial<DevicePosition>) : DevicePosition =
   speed: 0,
   positions: [],
   isShared: false,
+  locationAccuracy: GpsAccuracy.unknown,
   ...props
 });
 export default DevicePositionEmpty;

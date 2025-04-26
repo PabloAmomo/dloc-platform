@@ -1,3 +1,4 @@
+import { GpsAccuracy } from "enums/GpsAccuracy";
 import { LatLng } from "models/LatLng";
 
 const calculateMiddlePoint = (start: LatLng, end: LatLng, speed: number, bearing: number): LatLng => {
@@ -6,6 +7,7 @@ const calculateMiddlePoint = (start: LatLng, end: LatLng, speed: number, bearing
     lng: Math.abs((start.lng - end.lng) / 2) * (start.lng > end.lng ? -1 : 1),
     speed,
     bearing,
+    locationAccuracy: start.locationAccuracy,
   };
   position.lat += start.lat;
   position.lng += start.lng;
