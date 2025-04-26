@@ -13,6 +13,8 @@ import { processMapPaths } from "functions/processMapPaths";
 import { useDevicesContext } from "./DevicesProvider";
 import { userSettingsGet, userSettingsSet } from "functions/userSettings";
 import { useUserContext } from "./UserProvider";
+import getBoundsToCenterMapOn from "functions/getBoundsToCenterMapOn";
+import copyJSON from "functions/copyJSON";
 
 export function MapProvider({ children }: { children: any }) {
   const [bounds, setBounds] = useState<LatLngArray[]>();
@@ -31,13 +33,9 @@ export function MapProvider({ children }: { children: any }) {
   const { devices } = useDevicesContext();
   const { user, isLoggedIn } = useUserContext();
 
-  /** Load settings */
-  useEffect(() => {
-    if (!isLoggedIn) return;
-    const setting = userSettingsGet(user?.profile?.id);
-    setSelectedMinutes(setting.geoMap.interval);
-    setSelectedDevices(setting.geoMap.showDevices);
-  }, [isLoggedIn]);
+  /** Get device by IMEI */
+  const getDeviceByImei = (imei: string): Device | undefined =>
+    devices?.find((device: Device) => device.imei === imei);
 
   /** Set and Save selected minutes */
   const setMinutes = (minutes: number) => {
@@ -55,131 +53,80 @@ export function MapProvider({ children }: { children: any }) {
     userSettingsSet(setting, user.profile.id);
   };
 
-  /** Check if the map was moved */
+  /** Load settings and user is logged in */
   useEffect(() => {
-    if (mapMoved && centerMapOn.type !== CenterMapOnType.none)
-      setCenterMapOn({ type: CenterMapOnType.none });
+    if (!isLoggedIn) return;
+    const setting = userSettingsGet(user?.profile?.id);
+    setSelectedMinutes(setting.geoMap.interval);
+    setSelectedDevices(setting.geoMap.showDevices);
+
+    /** Center map on all devices first time */
+    isUserAction.current = true;
+    if (centerMapOn.type !== CenterMapOnType.all)
+      setCenterMapOn({ type: CenterMapOnType.all });
+  }, [isLoggedIn]);
+
+  /** Map was moved */
+  useEffect(() => {
+    if (!mapMoved || centerMapOn.type === CenterMapOnType.none) return;
+    setCenterMapOn({ type: CenterMapOnType.none });
   }, [mapMoved]);
+
+  /** Set the bounds */
+  useEffect(() => {
+    if (!centerMapOn) return;
+    isUserAction.current = true;
+    setBounds(
+      getBoundsToCenterMapOn(devices, selectedDevices, centerMapOn, myPosition)
+    );
+  }, [centerMapOn, selectedDevices, devices]);
 
   /** Calculate the MapPaths to show */
   useEffect(() => {
-    /** If there are no devices or the paths are not visible, return */
-    if (!devices) return;
+    if (!showPath || !devices) {
+      if (visiblePaths.length) setVisiblePaths([]);
+      return;
+    }
 
     /** If devices to show have device that does not exist, in devices, remove it */
     if (!selectedDevices.includes("0")) {
-      let resetShowDevices: boolean = false;
-      selectedDevices.forEach((imei: string) => {
-        if (
-          !resetShowDevices &&
-          imei !== "0" &&
-          !devices.find((d: Device) => d.imei === imei)
-        )
-          resetShowDevices = true;
-      });
+      const resetShowDevices = selectedDevices.some(
+        (imei) => imei !== "0" && !getDeviceByImei(imei)
+      );
       if (resetShowDevices) {
         setShowDevices(["0"]);
         return;
       }
     }
 
-    /** If showPath is false, clear the visible paths and exist */
-    if (!showPath) {
-      if (visiblePaths.length > 0) setVisiblePaths([]);
-      return;
-    }
-
-    const showingDevices = [...filterDevices(devices, selectedDevices)];
-
-    /** Create the visible paths */
-    let workVisiblePaths: MapPath[] = JSON.parse(JSON.stringify(visiblePaths));
-
     /** Reaplaced data with data in device params (To detect and refresh configuration changes) */
-    workVisiblePaths = workVisiblePaths.map((path: MapPath): MapPath => {
-      const device = devices.find(
-        (device: Device) => device.imei === path.imei
-      );
-      if (!device) return path;
-      const { params } = device;
-      const { pathColor, startTrack, endTrack } = params;
-      return {
-        ...path,
-        color: pathColor,
-        iconTrackStart: startTrack,
-        iconTrackEnd: endTrack,
-      };
-    });
+    let workVisiblePaths: MapPath[] = copyJSON(visiblePaths).map(
+      (path: MapPath): MapPath => {
+        const device = getDeviceByImei(path.imei);
+        return !device
+          ? path
+          : {
+              ...path,
+              color: device.params.pathColor,
+              iconTrackStart: device.params.startTrack,
+              iconTrackEnd: device.params.endTrack,
+            };
+      }
+    );
 
     /** Process the paths */
     const newVisiblePaths: MapPath[] = processMapPaths(
-      showingDevices ?? [],
+      [...filterDevices(devices, selectedDevices)],
       workVisiblePaths,
       selectedMinutes
     );
 
-    /** If the paths are the same, return */
-    if (JSON.stringify(visiblePaths) === JSON.stringify(newVisiblePaths))
-      return;
-
     /** Set the new paths */
-    setVisiblePaths(newVisiblePaths);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (JSON.stringify(visiblePaths) !== JSON.stringify(newVisiblePaths))
+      setVisiblePaths(newVisiblePaths);
   }, [devices, selectedDevices, showPath, selectedMinutes]);
 
-  /** Set the bounds */
-  useEffect(() => {
-    if (!centerMapOn) return;
 
-    const newBounds: LatLngArray[] = [];
-    const showingDevices = filterDevices(devices, selectedDevices);
-    switch (centerMapOn.type) {
-      case CenterMapOnType.all:
-        showingDevices.forEach((device: Device) =>
-          newBounds.push([device.lat, device.lng])
-        );
-        myPosition && newBounds.push([myPosition.lat, myPosition.lng]);
-        break;
-
-      case CenterMapOnType.device:
-        centerMapOn?.device &&
-          showingDevices
-            .filter(
-              (device: Device) => device.imei === centerMapOn.device?.imei
-            )
-            .forEach((device: Device) =>
-              newBounds.push([device.lat, device.lng])
-            );
-        break;
-
-      case CenterMapOnType.myPosition:
-        myPosition && newBounds.push([myPosition.lat, myPosition.lng]);
-        break;
-
-      case CenterMapOnType.devices:
-        showingDevices.forEach((device: Device) =>
-          newBounds.push([device.lat, device.lng])
-        );
-        break;
-
-      case CenterMapOnType.none:
-        /** Nothing to bound - Exit */
-        return;
-    }
-
-    /** Move according to the devices movement */
-    isUserAction.current = true;
-    setBounds(newBounds);
-  }, [centerMapOn, selectedDevices, devices]);
-
-  /** Center map first time */
-  useEffect(() => {
-    if (!map || !devices || !myPosition) return;
-
-    isUserAction.current = true;
-    if (centerMapOn.type !== CenterMapOnType.all)
-      setCenterMapOn({ type: CenterMapOnType.all });
-    
-  }, [map, devices, selectedDevices, myPosition]);
 
   /** Provider */
   return (
