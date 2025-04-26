@@ -16,7 +16,7 @@ const getDevices: GetDevicesProps = async (userId, interval, encription) => {
   /** Create query */
   const params: any[] = [userId];
   const sql = `SELECT imei, lat, lng, speed, directionAngle, gsmSignal, batteryLevel, 
-                      lastPositionUTC, lastVisibilityUTC, params, clonedImei
+                      lastPositionUTC, lastVisibilityUTC, params, clonedImei, locationAccuracy
                 FROM device 
                 WHERE userId = ?
                 ORDER BY imei;`;
