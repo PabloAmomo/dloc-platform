@@ -64,7 +64,7 @@ const handlePacket: HandlePacket = async (props: HandlePacketProps): Promise<Han
     }
 
     /** Create location packet and persist */
-    const locationPacket: PositionPacket | undefined = createLocationPacket(response.imei, remoteAdd, values, GpsAccuracy.unknown);
+    const locationPacket: PositionPacket | undefined = createLocationPacket(response.imei, remoteAdd, values, GpsAccuracy.unknown, '{}');
     if (!locationPacket) {
       discardData('error creating location packet', false);
       return response;

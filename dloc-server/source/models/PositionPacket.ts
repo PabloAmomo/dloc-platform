@@ -18,6 +18,7 @@ export interface PositionPacket {
   // numberOfSatelites: number
   batteryLevel: number;
   accuracy: GpsAccuracy;
+  activity: string;
   // // OTHERS
   // ACCStatus: any;
   // defenseStatus: any;

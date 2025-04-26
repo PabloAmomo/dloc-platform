@@ -37,6 +37,7 @@ const handleUpdateDevice = async (positionPacket: PositionPacket): Promise<Persi
     positionPacket.batteryLevel,
     mySqlFormatDateTime(positionPacket.dateTimeUtc),
     positionPacket.accuracy,
+    positionPacket.activity,
   ];
   const params = [
     positionPacket.imei,
@@ -45,10 +46,10 @@ const handleUpdateDevice = async (positionPacket: PositionPacket): Promise<Persi
     /** update */
     ...data,
   ];
-  const sql = `INSERT INTO device (imei, lastPositionUTC, lat, lng, speed, directionAngle, gsmSignal, batteryLevel, lastVisibilityUTC, locationAccuracy)
-                          VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  const sql = `INSERT INTO device (imei, lastPositionUTC, lat, lng, speed, directionAngle, gsmSignal, batteryLevel, lastVisibilityUTC, locationAccuracy, activity)
+                          VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ON DUPLICATE KEY 
-                UPDATE  lastPositionUTC = ?, lat = ?, lng = ?, speed = ?, directionAngle = ?, gsmSignal = ?, batteryLevel = ?, lastVisibilityUTC = ?, locationAccuracy = ?;`;
+                UPDATE  lastPositionUTC = ?, lat = ?, lng = ?, speed = ?, directionAngle = ?, gsmSignal = ?, batteryLevel = ?, lastVisibilityUTC = ?, locationAccuracy = ?, activity = ?;`;
   const response: PersistenceResult = await mySqlQueryAsync(connectionConfig, sql, params);
   if (!response?.error) await mySqlClonedImeiUpdate(connectionConfig, positionPacket.imei);
   return response;
