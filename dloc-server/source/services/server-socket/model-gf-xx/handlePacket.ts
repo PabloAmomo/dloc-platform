@@ -141,7 +141,6 @@ const handlePacket: HandlePacket = async (
             discardData("old packet - update device", false);
         });
     } else {
-
       /** Invalid position */
       printMessage(
         `[${imeiTemp}] (${remoteAdd}) invalid position (NOT 'A') [${data}]`
@@ -161,7 +160,7 @@ const handlePacket: HandlePacket = async (
 
       // TODO: By the moment, we are not using the LBS google geolocation here
       // const lbsResponse = await getGoogleGeolocation(lbsQuery);
-    
+
       // printMessage(
       //   `[${imeiTemp}] LBS (${packetType}) query Google response [${JSON.stringify(
       //     lbsResponse
@@ -236,17 +235,20 @@ const handlePacket: HandlePacket = async (
     );
 
     const lbsResponse = await getGoogleGeolocation(lbsQuery);
-    
+
     printMessage(
       `[${imeiTemp}] LBS (${packetType}) query Google response [${JSON.stringify(
         lbsResponse
       )}]`
     );
 
-    // TODO: Response with de Lat and Lng
-    // TRVBP14,23.113,113.123# lat, y lng (Solo con 5 decimales )
-    
-    response.response = `TRVBP${data.substring(5, 7)}#`;
+    const location = lbsResponse?.location;
+    if (location?.lat && location?.lng) {
+      const { lat, lng } = location;
+      response.response = `TRVBP14,${lat.toFixed(5)},${lng.toFixed(5)}#`;
+    } else {
+      response.response = `TRVBP${data.substring(5, 7)}#`;
+    }
   }
 
   // ---------------------------------------------

@@ -1,4 +1,4 @@
-async function getGoogleGeolocation(lbsQuery: GoogleGeolocationRequest): Promise<any> {
+async function getGoogleGeolocation(lbsQuery: GoogleGeolocationRequest): Promise<GoogleGeolocationResponse> {
   const apiKey = process.env.GOOGLE_GEOCODING_API_KEY;
 
   if (!apiKey) {
