@@ -1,10 +1,11 @@
 import { Direction } from '../models/Direction';
+import { GpsAccuracy } from '../models/GpsAccuracy';
 import { PositionPacket } from '../models/PositionPacket';
 import { parseLatOrLng } from './parseLatOrLng';
 import { parseUtcDateTime } from './parseUtcDateTime';
 import { printMessage } from './printMessage';
 
-const createLocationPacket = (imei: string, remoteAdd: string, values: string[]): PositionPacket | undefined => {
+const createLocationPacket = (imei: string, remoteAdd: string, values: string[], accuracy: GpsAccuracy): PositionPacket | undefined => {
   try {
     return {
       imei,
@@ -22,6 +23,7 @@ const createLocationPacket = (imei: string, remoteAdd: string, values: string[])
       gsmSignal: parseInt(values[11] ?? '0'),
       // numberOfSatelites: parseInt(values[12] ?? '0'),
       batteryLevel: parseInt(values[13] ?? '0'),
+      accuracy: accuracy,
       // ACCStatus: values[14],
       // defenseStatus: values[15],
       // workingStatus: values[16],

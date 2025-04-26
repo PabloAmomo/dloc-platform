@@ -8,6 +8,7 @@ import { PersistenceResult } from '../../../infraestucture/models/PersistenceRes
 import { PositionPacket } from '../../../models/PositionPacket';
 import { printMessage } from '../../../functions/printMessage';
 import { REGEX_PACKETS } from '../../../functions/packetParseREGEX';
+import { GpsAccuracy } from '../../../models/GpsAccuracy';
 
 const handlePacket: HandlePacket = async (props: HandlePacketProps): Promise<HandlePacketResult> => {
   const { imei, remoteAdd, data, persistence } = props;
@@ -63,7 +64,7 @@ const handlePacket: HandlePacket = async (props: HandlePacketProps): Promise<Han
     }
 
     /** Create location packet and persist */
-    const locationPacket: PositionPacket | undefined = createLocationPacket(response.imei, remoteAdd, values);
+    const locationPacket: PositionPacket | undefined = createLocationPacket(response.imei, remoteAdd, values, GpsAccuracy.unknown);
     if (!locationPacket) {
       discardData('error creating location packet', false);
       return response;

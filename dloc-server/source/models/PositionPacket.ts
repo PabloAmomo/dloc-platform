@@ -1,4 +1,5 @@
-import { Direction } from "./Direction";
+import { GpsAccuracy } from "./GpsAccuracy";
+
 
 export interface PositionPacket {
   imei: string;
@@ -12,10 +13,11 @@ export interface PositionPacket {
   // lngRaw: string,
   // lngRawDirection: Direction,
   speed: number;
-  directionAngle: number
-  gsmSignal: number
+  directionAngle: number;
+  gsmSignal: number;
   // numberOfSatelites: number
-  batteryLevel: number
+  batteryLevel: number;
+  accuracy: GpsAccuracy;
   // // OTHERS
   // ACCStatus: any;
   // defenseStatus: any;

@@ -12,6 +12,7 @@ const handlePacket = (req: express.Request, res: express.Response, next: express
   const timestamp: string = req.query?.timestamp?.toString() ?? '';
   const speedValue: string = req.query?.speed?.toString() ?? '0';
   const bearing: string = req.query?.bearing?.toString() ?? '';
+  const accuracy: number = parseInt(req.query?.accuracy?.toString() ?? '0') ?? 0;
   const batt: string = req.query?.batt?.toString() ?? '';
   const dateTimeUtc: Date | null = timestamp ? new Date(parseInt(timestamp) * 1000) : new Date();
   const remoteAddress: string = req.ip?.toString() ?? '';
@@ -37,7 +38,7 @@ const handlePacket = (req: express.Request, res: express.Response, next: express
 
   let speed: number = Number.isNaN(speedValue) ? parseFloat(speedValue) : 0;
 
-  const positionPacket: PositionPacket = { imei, remoteAddress, dateTimeUtc, valid, lat, lng, gsmSignal, speed, directionAngle, batteryLevel };
+  const positionPacket: PositionPacket = { imei, remoteAddress, dateTimeUtc, valid, lat, lng, gsmSignal, speed, directionAngle, batteryLevel, accuracy };
 
   location(getPersistence(), positionPacket).then((response) => res.status(response.code).json(response.result));
 };
