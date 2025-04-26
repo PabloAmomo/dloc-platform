@@ -141,12 +141,12 @@ const handlePacket: HandlePacket = async (
             discardData("old packet - update device", false);
         });
     } else {
+
       /** Invalid position */
       printMessage(
         `[${imeiTemp}] (${remoteAdd}) invalid position (NOT 'A') [${data}]`
       );
 
-      /** Get Google Geolocation LBS Packet */
       const lbsQuery = createGoogleGeolocationRequest(data, packetType);
       if ("error" in lbsQuery && lbsQuery.error) {
         discardData(lbsQuery.error, true);
@@ -159,13 +159,14 @@ const handlePacket: HandlePacket = async (
         )}]`
       );
 
-      const lbsResponse = await getGoogleGeolocation(lbsQuery);
+      // TODO: By the moment, we are not using the LBS google geolocation here
+      // const lbsResponse = await getGoogleGeolocation(lbsQuery);
     
-      printMessage(
-        `[${imeiTemp}] LBS (${packetType}) query Google response [${JSON.stringify(
-          lbsResponse
-        )}]`
-      );
+      // printMessage(
+      //   `[${imeiTemp}] LBS (${packetType}) query Google response [${JSON.stringify(
+      //     lbsResponse
+      //   )}]`
+      // );
     }
 
     response.response = `TRVZP${data.substring(5, 7)}#`;
@@ -222,7 +223,6 @@ const handlePacket: HandlePacket = async (
       return response;
     }
 
-    /** Get Google Geolocation LBS Packet */
     const lbsQuery = createGoogleGeolocationRequest(data, packetType);
     if ("error" in lbsQuery && lbsQuery.error) {
       discardData(lbsQuery.error, true);
