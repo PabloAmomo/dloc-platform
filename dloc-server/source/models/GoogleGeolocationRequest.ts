@@ -7,4 +7,9 @@ type GoogleGeolocationRequest =  {
     mobileCountryCode: string;
     mobileNetworkCode: string;
   }[];
+  wifiAccessPoints: 
+    {
+      macAddress: string;
+      signalStrength: number;
+    }[]
 } | { error: string };

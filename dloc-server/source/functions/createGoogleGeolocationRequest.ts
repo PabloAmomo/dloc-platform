@@ -1,15 +1,14 @@
-
-function createGoogleGeolocationRequest(packet: string, packetType: "TRVYP14" | "TRVYP15" | "TRVAP14"): GoogleGeolocationRequest {
+function createGoogleGeolocationRequest(
+  packet: string,
+  packetType: "TRVYP14" | "TRVYP15" | "TRVAP14"
+): GoogleGeolocationRequest {
   if (!packet.startsWith(packetType)) {
     return {
       error: `Invalid ${packetType} packet format`,
     };
   }
 
-  const lbsData = packet
-    .replace(packetType, "")
-    .replace("#", "")
-    .split(",");
+  const lbsData = packet.replace(packetType, "").replace("#", "").split(",");
   if (lbsData.length < 4) {
     return {
       error: `LBS data not found on ${lbsData}`,
@@ -27,7 +26,16 @@ function createGoogleGeolocationRequest(packet: string, packetType: "TRVYP14" | 
     };
   }
 
-  const lbsQuery = {
+  const wifi: string = lbsData.length > 4 ? lbsData[5] : "";
+  const wifiAccessPoints = wifi
+    .split("&")
+    .map((wifi) => {
+      const [ssid, macAddress, signalStrength] = wifi.split("|");
+      return { macAddress, signalStrength: parseInt(signalStrength) };
+    })
+    .filter((wifi) => wifi.macAddress);
+
+  const lbsQuery: GoogleGeolocationRequest = {
     homeMobileCountryCode: mcc,
     homeMobileNetworkCode: mnc,
     cellTowers: [
@@ -38,10 +46,10 @@ function createGoogleGeolocationRequest(packet: string, packetType: "TRVYP14" | 
         mobileNetworkCode: mnc,
       },
     ],
+    wifiAccessPoints,
   };
 
   return lbsQuery;
 }
-
 
 export default createGoogleGeolocationRequest;
