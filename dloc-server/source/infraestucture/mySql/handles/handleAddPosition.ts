@@ -28,9 +28,10 @@ const handleAddPosition = async (positionPacket: PositionPacket): Promise<Persis
     positionPacket.directionAngle,
     positionPacket.gsmSignal,
     positionPacket.batteryLevel,
+    positionPacket.accuracy,
   ];
-  const sql = `INSERT INTO \`position\` (imei, remoteAddress, dateTimeUTC, lat, lng, speed, directionAngle, gsmSignal, batteryLevel) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);`;
+  const sql = `INSERT INTO \`position\` (imei, remoteAddress, dateTimeUTC, lat, lng, speed, directionAngle, gsmSignal, batteryLevel, locationAccuracy) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
   return mySqlQueryAsync(connectionConfig, sql, params);
 };
 
