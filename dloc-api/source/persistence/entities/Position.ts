@@ -1,3 +1,5 @@
+import { GpsAccuracy } from "../../enums/GpsAccuracy";
+
 export interface Position {
   dateTimeUTC: string;
   lat: number;
@@ -6,4 +8,5 @@ export interface Position {
   directionAngle: number;
   gsmSignal: number;
   batteryLevel: number;
+  locationAccuracy: GpsAccuracy
 }

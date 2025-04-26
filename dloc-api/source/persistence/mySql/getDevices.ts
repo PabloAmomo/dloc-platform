@@ -48,7 +48,7 @@ const getDevices: GetDevicesProps = async (userId, interval, encription) => {
 
     /** Get positions */
     const paramsPositions: any[] = [positionImei, interval];
-    const sqlPositions = `SELECT dateTimeUTC, lat, lng, speed, directionAngle, gsmSignal, batteryLevel 
+    const sqlPositions = `SELECT dateTimeUTC, lat, lng, speed, directionAngle, gsmSignal, batteryLevel, locationAccuracy 
                           FROM \`position\` WHERE imei = ? 
                           ${interval > 1 ? 'AND dateTimeUTC >= DATE_ADD(UTC_TIMESTAMP(), INTERVAL -? MINUTE)' : ''}
                           ORDER BY dateTimeUTC DESC

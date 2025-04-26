@@ -14,7 +14,7 @@ const connectionConfig: ConnectionConfig = mySqlConnectionConfig;
 const getDevice: GetDeviceProps = async (imei, userId, encription) => {
   const params: any[] = [imei, userId];
 
-  const sql = `SELECT imei, lat, lng, speed, directionAngle, gsmSignal, batteryLevel, lastPositionUTC, lastVisibilityUTC, params, clonedImei
+  const sql = `SELECT imei, lat, lng, speed, directionAngle, gsmSignal, batteryLevel, lastPositionUTC, lastVisibilityUTC, params, clonedImei, locationAccuracy
                FROM device 
                WHERE imei = ? and userId = ? 
                LIMIT 1;`;

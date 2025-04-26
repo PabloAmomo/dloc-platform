@@ -1,3 +1,4 @@
+import { GpsAccuracy } from "../../enums/GpsAccuracy";
 import { Position } from "./Position";
 
 export interface Device {
@@ -13,4 +14,5 @@ export interface Device {
   params: string;
   positions?: Position[];
   clonedImei?: string;
+  locationAccuracy: GpsAccuracy
 }
