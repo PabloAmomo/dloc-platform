@@ -1,26 +1,33 @@
-import 'leaflet/dist/leaflet.css';
-import 'styles/leafletMap.style.css';
-import { AccessAlarmTwoTone } from '@mui/icons-material';
-import { Box, Typography } from '@mui/material';
-import { CircleMarker, FeatureGroup, MapContainer, Polyline, Popup, TileLayer } from 'react-leaflet';
-import { configApp } from 'config/configApp';
-import { Device } from 'models/Device';
-import { filterDevices } from 'functions/filterDevices';
-import { MapArrow, MapArrowMarker } from 'models/MapArrow';
-import { Marker } from 'react-leaflet';
-import { useDevicesContext } from 'providers/DevicesProvider';
-import { useMapContext } from 'providers/MapProvider';
-import { useTranslation } from 'react-i18next';
-import { useUserContext } from 'providers/UserProvider';
-import convertUTCDateToLocalDate from 'functions/convertUTCDateToLocalDate';
-import formatDate from 'functions/formatDate';
-import isTouchScreenDevice from 'functions/isTouchScreenDevice';
-import LeafletMapHook from 'hooks/LeafletMapHook';
-import LeafletMapMarker from 'components/LeafletMapMarker/LeafletMapMarker';
-import React, { useCallback, useEffect } from 'react';
-import SpeedIcon from '@mui/icons-material/SpeedTwoTone';
-import style from './LeafletMap.style';
-import { GpsAccuracy } from 'enums/GpsAccuracy';
+import "leaflet/dist/leaflet.css";
+import "styles/leafletMap.style.css";
+import { AccessAlarmTwoTone } from "@mui/icons-material";
+import { Box, Typography } from "@mui/material";
+import {
+  CircleMarker,
+  FeatureGroup,
+  MapContainer,
+  Polyline,
+  Popup,
+  TileLayer,
+} from "react-leaflet";
+import { configApp } from "config/configApp";
+import { Device } from "models/Device";
+import { filterDevices } from "functions/filterDevices";
+import { MapArrow, MapArrowMarker } from "models/MapArrow";
+import { Marker } from "react-leaflet";
+import { useDevicesContext } from "providers/DevicesProvider";
+import { useMapContext } from "providers/MapProvider";
+import { useTranslation } from "react-i18next";
+import { useUserContext } from "providers/UserProvider";
+import convertUTCDateToLocalDate from "functions/convertUTCDateToLocalDate";
+import formatDate from "functions/formatDate";
+import isTouchScreenDevice from "functions/isTouchScreenDevice";
+import LeafletMapHook from "hooks/LeafletMapHook";
+import LeafletMapMarker from "components/LeafletMapMarker/LeafletMapMarker";
+import React, { useCallback, useEffect } from "react";
+import SpeedIcon from "@mui/icons-material/SpeedTwoTone";
+import style from "./LeafletMap.style";
+import { GpsAccuracy } from "enums/GpsAccuracy";
 
 const ENABLE_HIDE_TOOLTIP = false;
 
@@ -34,25 +41,39 @@ const LeafletMap = () => {
   const centerOnImei: string | undefined = centerMapOn?.device?.imei;
 
   useEffect(() => {
-    const devicesCount = (showDevices ?? []).includes('0') ? devices?.length ?? 0 : showDevices.length;
+    const devicesCount = (showDevices ?? []).includes("0")
+      ? devices?.length ?? 0
+      : showDevices.length;
     setHideTooltip(devicesCount <= 1 && ENABLE_HIDE_TOOLTIP);
   }, [devices, showDevices]);
 
-  const getOpacity = useCallback((imei: string, opacity: number): number => (!centerOnImei || centerOnImei === imei ? 1 : opacity / 2), [centerOnImei]);
+  const getOpacity = useCallback(
+    (imei: string, opacity: number): number =>
+      !centerOnImei || centerOnImei === imei ? 1 : opacity / 2,
+    [centerOnImei]
+  );
 
-  const getCustomPopup = (arrow: MapArrow, dateTimeUTC: string): React.ReactNode => {
+  const getCustomPopup = (
+    arrow: MapArrow,
+    dateTimeUTC: string
+  ): React.ReactNode => {
     const speedKm = arrow.speed;
-    const dateFormated: string = formatDate(convertUTCDateToLocalDate(dateTimeUTC), t('dateString')) ?? '';
+    const dateFormated: string =
+      formatDate(convertUTCDateToLocalDate(dateTimeUTC), t("dateString")) ?? "";
     return (
       <>
         <Box {...style.ArrowIconPopup.Container}>
           <AccessAlarmTwoTone {...style.ArrowIconPopup.Icon} />
-          <Typography {...style.ArrowIconPopup.Typography}>{dateFormated}</Typography>
+          <Typography {...style.ArrowIconPopup.Typography}>
+            {dateFormated}
+          </Typography>
         </Box>
         {speedKm > 0 && (
           <Box {...style.ArrowIconPopup.Container}>
             <SpeedIcon {...style.ArrowIconPopup.Icon} />
-            <Typography {...style.ArrowIconPopup.Typography}>{`${speedKm.toFixed(2)} ${t('averagekm/h')}`}</Typography>
+            <Typography
+              {...style.ArrowIconPopup.Typography}
+            >{`${speedKm.toFixed(2)} ${t("averagekm/h")}`}</Typography>
           </Box>
         )}
       </>
@@ -67,7 +88,7 @@ const LeafletMap = () => {
 
   /** Render */
   return (
-    <Box sx={{ ...style.ContainerSx  }}>
+    <Box sx={{ ...style.ContainerSx }}>
       <MapContainer
         {...style.MapContainerProps}
         center={configApp.map.initCenter}
@@ -80,24 +101,36 @@ const LeafletMap = () => {
 
         {/* Device Markers */}
         {filterDevices(devices, showDevices)
-        .filter(
-          (device: Device) => device.lat && device.lng
-        ).map((device: Device) => (
-          <LeafletMapMarker
-            driftTime={configApp.map.driftMarkerTime}
-            clickOnPopup={() => map && map.closePopup()}
-            device={device}
-            iconColor={device.params.markerColor}
-            iconType={device.params.endTrack}
-            key={`${device.imei}`}
-            topMost={centerOnImei === device.imei}
-            opacity={!centerOnImei || centerOnImei === device.imei ? 1 : configApp.deviceUnselectedOpacity}
-            position={{ lat: device.lat ?? 0, lng: device.lng ?? 0, speed: device.speed ?? 0, dateTimeUTC: device.lastPositionUTC ?? '', bearing: 0, locationAccuracy: device.locationAccuracy ?? GpsAccuracy.unknown}}
-            setIconOn="tooltip"
-            zIndexOffset={1000}
-            hideTooltip={hideTooltip}
-          />
-        ))}
+          .filter((device: Device) => device.lat && device.lng)
+          .map((device: Device) => (
+            <LeafletMapMarker
+              driftTime={configApp.map.driftMarkerTime}
+              clickOnPopup={() => map && map.closePopup()}
+              device={device}
+              iconColor={device.params.markerColor}
+              iconType={device.params.endTrack}
+              key={`${device.imei}`}
+              topMost={centerOnImei === device.imei}
+              opacity={
+                !centerOnImei || centerOnImei === device.imei
+                  ? 1
+                  : configApp.deviceUnselectedOpacity
+              }
+              position={{
+                lat: device.lat ?? 0,
+                lng: device.lng ?? 0,
+                speed: device.speed ?? 0,
+                dateTimeUTC: device.lastPositionUTC ?? "",
+                bearing: 0,
+                locationAccuracy:
+                  device.locationAccuracy ?? GpsAccuracy.unknown,
+                activity: device.activity ?? "{}",
+              }}
+              setIconOn="tooltip"
+              zIndexOffset={1000}
+              hideTooltip={hideTooltip}
+            />
+          ))}
 
         {/* My Position Marker */}
         {myPosition && user && (
@@ -121,7 +154,10 @@ const LeafletMap = () => {
                 pathOptions={{
                   ...style.PolilyneStyle,
                   color: polyline.color,
-                  opacity: !centerOnImei || centerOnImei === polyline.imei ? polyline.opacity : polyline.opacity / 2,
+                  opacity:
+                    !centerOnImei || centerOnImei === polyline.imei
+                      ? polyline.opacity
+                      : polyline.opacity / 2,
                 }}
                 positions={polyline.path}
               />
@@ -131,7 +167,7 @@ const LeafletMap = () => {
           {mapArrows &&
             mapArrows.map((arrow: MapArrow) =>
               arrow.markers.map((marker: MapArrowMarker) =>
-                marker.type === 'start' ? (
+                marker.type === "start" ? (
                   // ------------------------------------------------
                   // Start Icon
                   // ------------------------------------------------
@@ -144,20 +180,34 @@ const LeafletMap = () => {
                     setIconOn="marker"
                     zIndexOffset={1100}
                     opacity={getOpacity(arrow.imei, arrow.opacity)}
-                    customPopupMessage={marker?.position?.dateTimeUTC ? getCustomPopup({ ...arrow, speed: marker.speed }, marker.position.dateTimeUTC) : null}
+                    customPopupMessage={
+                      marker?.position?.dateTimeUTC
+                        ? getCustomPopup(
+                            { ...arrow, speed: marker.speed },
+                            marker.position.dateTimeUTC
+                          )
+                        : null
+                    }
                   />
-                ) : marker.type === 'point' ? (
+                ) : marker.type === "point" ? (
                   // ------------------------------------------------
                   // Point Icon
                   // ------------------------------------------------
                   <CircleMarker
                     interactive
-                    pathOptions={{ color: arrow.color, opacity: getOpacity(arrow.imei, arrow.opacity) }}
+                    pathOptions={{
+                      color: arrow.color,
+                      opacity: getOpacity(arrow.imei, arrow.opacity),
+                    }}
                     key={`${arrow.imei}-${marker.type}-${marker.position.dateTimeUTC}`}
                     center={{ ...marker.position }}
                     radius={1}
                   >
-                    {marker?.position?.dateTimeUTC && getPopUp({ ...arrow, speed: marker.speed }, marker.position.dateTimeUTC)}
+                    {marker?.position?.dateTimeUTC &&
+                      getPopUp(
+                        { ...arrow, speed: marker.speed },
+                        marker.position.dateTimeUTC
+                      )}
                   </CircleMarker>
                 ) : (
                   // ------------------------------------------------
@@ -170,7 +220,11 @@ const LeafletMap = () => {
                     position={marker.position}
                     zIndexOffset={100}
                   >
-                    {marker?.position?.dateTimeUTC && getPopUp({ ...arrow, speed: marker.speed }, marker.position.dateTimeUTC)}
+                    {marker?.position?.dateTimeUTC &&
+                      getPopUp(
+                        { ...arrow, speed: marker.speed },
+                        marker.position.dateTimeUTC
+                      )}
                   </Marker>
                 )
               )

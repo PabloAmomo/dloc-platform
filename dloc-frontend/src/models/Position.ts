@@ -9,4 +9,5 @@ export type Position = {
   lng: number,
   speed: number,
   locationAccuracy: GpsAccuracy
+  activity: string
 };

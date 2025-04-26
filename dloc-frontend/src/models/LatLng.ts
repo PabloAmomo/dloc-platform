@@ -6,5 +6,6 @@ export type LatLng = {
   dateTimeUTC?: string,
   bearing: number,
   speed: number,
-  locationAccuracy: GpsAccuracy
+  locationAccuracy: GpsAccuracy,
+  activity: string
 }

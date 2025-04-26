@@ -29,7 +29,7 @@ const processMapPaths = (
   for (let i = 0; i < devices.length; i++) {
     const device: Device = devices[i];
     const positions: Position[] = device?.positions?.reverse() ?? [];
-    const { imei, lastPositionUTC, lat, lng, params, locationAccuracy } = device;
+    const { imei, lastPositionUTC, lat, lng, params, locationAccuracy, activity } = device;
     const { startTrack: iconTrackStart, endTrack: iconTrackEnd } = params;
     const { pathColor: color } = params;
 
@@ -49,6 +49,7 @@ const processMapPaths = (
           speed: 0,
           bearing: 0,
           locationAccuracy: locationAccuracy ?? GpsAccuracy.unknown,
+          activity: activity ?? "{}",
         },
         color,
         strokeWeight: 1,
@@ -74,6 +75,7 @@ const processMapPaths = (
         speed: position.speed,
         bearing: position.directionAngle,
         locationAccuracy: position.locationAccuracy,
+        activity: position.activity,
       };
       paths.set(dateTimeUTC, {
         start: { ...locTemp },

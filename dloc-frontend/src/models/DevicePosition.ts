@@ -13,7 +13,8 @@ export type DevicePosition = {
   speed: number,
   positions: Position[],
   isShared: boolean,
-  locationAccuracy: GpsAccuracy
+  locationAccuracy: GpsAccuracy,
+  activity: string
 };
 
 const DevicePositionEmpty = (props?: Partial<DevicePosition>) : DevicePosition => ({
@@ -29,6 +30,7 @@ const DevicePositionEmpty = (props?: Partial<DevicePosition>) : DevicePosition =
   positions: [],
   isShared: false,
   locationAccuracy: GpsAccuracy.unknown,
+  activity: '{}',
   ...props
 });
 export default DevicePositionEmpty;

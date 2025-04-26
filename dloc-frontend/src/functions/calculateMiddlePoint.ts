@@ -8,6 +8,7 @@ const calculateMiddlePoint = (start: LatLng, end: LatLng, speed: number, bearing
     speed,
     bearing,
     locationAccuracy: start.locationAccuracy,
+    activity: start.activity,
   };
   position.lat += start.lat;
   position.lng += start.lng;

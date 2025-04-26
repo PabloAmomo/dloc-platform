@@ -6,7 +6,7 @@ const calculateMidpoint = {
     const dLon = (end.lng - start.lng) / 2;
     const midLat = start.lat + dLat;
     const midLon = start.lng + dLon;
-    return { lat: midLat, lng: midLon, speed: 0, bearing: 0, locationAccuracy: start.locationAccuracy };
+    return { lat: midLat, lng: midLon, speed: 0, bearing: 0, locationAccuracy: start.locationAccuracy, activity: start.activity };
   },
   spherical: (start: LatLng, end: LatLng): LatLng => {
     /** Convert to radians */
@@ -24,7 +24,7 @@ const calculateMidpoint = {
     const midLat = (Math.atan2(z, Math.sqrt(x * x + y * y)) * 180) / Math.PI;
     const midLon = (Math.atan2(y, x) * 180) / Math.PI;
 
-    return { lat: midLat, lng: midLon, speed: 0, bearing: 0, locationAccuracy: start.locationAccuracy };
+    return { lat: midLat, lng: midLon, speed: 0, bearing: 0, locationAccuracy: start.locationAccuracy, activity: start.activity };
   },
 };
 
