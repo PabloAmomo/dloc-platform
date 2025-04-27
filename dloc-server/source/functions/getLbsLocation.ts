@@ -28,14 +28,14 @@ async function getLbsLocation(
     );
 
   printMessage(
-    `[${imeiTemp}] LBS (${packetType}) request Google Geolocation`
+    `[${imeiTemp}] (${remoteAdd}) LBS (${packetType}) request Google Geolocation`
   );
 
   /** LBS query Google */
   const lbsResponse = await getGoogleGeolocation(lbsQuery);
 
   printMessage(
-    `[${imeiTemp}] LBS (${packetType}) Google Geolocation response [${JSON.stringify(
+    `[${imeiTemp}] (${remoteAdd}) LBS (${packetType}) Google Geolocation response [${JSON.stringify(
       lbsResponse
     )}]`
   );
