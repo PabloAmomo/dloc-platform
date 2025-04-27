@@ -1,10 +1,8 @@
 import { createLocationPacket } from "../../../functions/createLocationPacket";
 import { getUtcDateTime } from "../../../functions/getUtcDateTime";
 import { HandlePacket } from "../../../models/HandlePacket";
-import { handlePacketOnError } from "../../../functions/handlePacketOnError";
 import { HandlePacketProps } from "../../../models/HandlePacketProps";
 import { HandlePacketResult } from "../../../models/HandlePacketResult";
-import { PersistenceResult } from "../../../infraestucture/models/PersistenceResult";
 import { PositionPacket } from "../../../models/PositionPacket";
 import { printMessage } from "../../../functions/printMessage";
 import { REGEX_PACKETS } from "../../../functions/packetParseREGEX";
@@ -14,6 +12,7 @@ import discardData from "../../../functions/discardData";
 import updateDeviceAndAddPosition from "../../../functions/updateDeviceAndAddPosition";
 import getLbsLocation from "../../../functions/getLbsLocation";
 import updateBattery from "../../../functions/updateBattery";
+import updateActivityAndAddHistory from "../../../functions/updateActivityAndAddHistory";
 
 const noImei: string = "no imei received";
 
@@ -140,7 +139,7 @@ const handlePacket: HandlePacket = async (
   }
 
   // ---------------------------------------------
-  // UNKNOW but need response (TRVAP Packets)
+  // Response to TRVAP14 packet (LBS)
   // ---------------------------------------------
   else if (data.startsWith("TRVAP14")) {
     const packetType = "TRVAP14";
@@ -231,7 +230,7 @@ const handlePacket: HandlePacket = async (
   // ------------------------------------------------
   else if (data.startsWith("TRVAP20") || data.startsWith("TRVAP61")) {
     printMessage(
-      `[${imeiTemp}] (${remoteAdd}) received no response needed -> ${data}`
+      `[${imeiTemp}] (${remoteAdd}) received no response needed [${data}]`
     );
   }
 
@@ -267,37 +266,15 @@ const handlePacket: HandlePacket = async (
     );
   }
 
-  /** Update last activity */
-  if (updateLastActivity) {
-    await persistence
-      .updateLastActivity(response.imei)
-      .then((result: PersistenceResult) => {
-        result.error &&
-          handlePacketOnError({
-            imei: imeiTemp,
-            remoteAdd,
-            data,
-            persistence,
-            name: "lastActivity",
-            error: result.error,
-          });
-      });
-  }
-
-  /** Add history */
-  await persistence
-    .addHistory(response.imei, remoteAdd, data, response.response)
-    .then((result: PersistenceResult) => {
-      result.error &&
-        handlePacketOnError({
-          imei: imeiTemp,
-          remoteAdd,
-          data,
-          persistence,
-          name: "history",
-          error: result.error,
-        });
-    });
+  /** Update last activity and add history */
+  await updateActivityAndAddHistory(
+    updateLastActivity,
+    persistence,
+    imeiTemp,
+    remoteAdd,
+    data,
+    response
+  );
 
   /** */
   const message =
