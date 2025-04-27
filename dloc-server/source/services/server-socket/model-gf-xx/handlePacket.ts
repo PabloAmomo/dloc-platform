@@ -13,6 +13,7 @@ import getValuesFromStringByRegexs from "../../../functions/getValuesFromStringB
 import discardData from "../../../functions/discardData";
 import updateDeviceAndAddPosition from "../../../functions/updateDeviceAndAddPosition";
 import getLbsLocation from "../../../functions/getLbsLocation";
+import updateBattery from "../../../functions/updateBattery";
 
 const noImei: string = "no imei received";
 
@@ -54,7 +55,9 @@ const handlePacket: HandlePacket = async (
     );
     if (regexIndex != -1)
       printMessage(
-        `[${imeiTemp}] (${remoteAdd}) process data (REGEX ${regexIndex}) [${data.split(",")?.[0] ?? data}]`
+        `[${imeiTemp}] (${remoteAdd}) process data (REGEX ${regexIndex}) [${
+          data.split(",")[0]
+        }]`
       );
 
     /** imei not received */
@@ -96,7 +99,9 @@ const handlePacket: HandlePacket = async (
     if (!locationPacket.valid) {
       /** Invalid position, try to get location from LBS */
       printMessage(
-        `[${imeiTemp}] (${remoteAdd}) invalid position (NOT 'A') [${data.split(",")?.[0] ?? data}]`
+        `[${imeiTemp}] (${remoteAdd}) invalid position (NOT 'A') [${
+          data.split(",")[0]
+        }]`
       );
 
       /** LBS query */
@@ -139,7 +144,7 @@ const handlePacket: HandlePacket = async (
   // ---------------------------------------
   else if (data.startsWith("TRVYP16")) {
     if (response.imei == "")
-      return discardData(
+      return await discardData(
         noImei,
         true,
         persistence,
@@ -151,23 +156,7 @@ const handlePacket: HandlePacket = async (
 
     /** Process Battery level */
     if (data.length < 18) updateLastActivity = true;
-    else {
-      const batteryLevel: number = parseInt(data.substring(14, 17) ?? "0");
-
-      await persistence
-        .addBatteryLevel(response.imei, batteryLevel)
-        .then((result: PersistenceResult) => {
-          result.error &&
-            handlePacketOnError({
-              imei: imeiTemp,
-              remoteAdd,
-              data,
-              persistence,
-              name: "batteryLevel",
-              error: result.error,
-            });
-        });
-    }
+    else await updateBattery(data, persistence, response, imeiTemp, remoteAdd);
 
     response.response = "TRVZP16#";
   }
