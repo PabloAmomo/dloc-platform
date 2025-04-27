@@ -169,11 +169,11 @@ const handlePacket: HandlePacket = async (
   
       if (lbsResponse?.location) {
         const { lat, lng } = lbsResponse.location;
-        responseLBS = `TRVBP14,${lat.toFixed(5)},${lng.toFixed(5)}#`;
+        responseLBS = `,${lat.toFixed(5)},${lng.toFixed(5)}`;
       } 
     }
 
-    response.response = `TRVZP${data.substring(5, 7)}#${responseLBS}`;
+    response.response = `TRVZP${data.substring(5, 7)}${responseLBS}#`;
   }
 
   // ---------------------------------------
