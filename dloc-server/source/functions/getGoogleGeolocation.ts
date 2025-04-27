@@ -5,6 +5,17 @@ async function getGoogleGeolocation(lbsQuery: GoogleGeolocationRequest): Promise
     throw new Error("Google geolocate API key is not set");
   }
 
+  // For testing purposes, return a dummy response
+  if (apiKey == "your_google_geocoding_api_key") {
+    return {
+      location: {
+        lat: 0,
+        lng: 0,
+      },
+      accuracy: 0,
+    };
+  }
+
   const url = `https://www.googleapis.com/geolocation/v1/geolocate?key=${apiKey}`;
   const response = await fetch(url, {
     method: "POST",
