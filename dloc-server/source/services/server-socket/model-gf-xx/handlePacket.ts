@@ -139,28 +139,6 @@ const handlePacket: HandlePacket = async (
     response.response = `TRVZP${data.substring(5, 7)}#`;
   }
 
-  // ---------------------------------------
-  // Device heartbeat packet
-  // ---------------------------------------
-  else if (data.startsWith("TRVYP16")) {
-    if (response.imei == "")
-      return await discardData(
-        noImei,
-        true,
-        persistence,
-        imeiTemp,
-        remoteAdd,
-        data,
-        response
-      );
-
-    /** Process Battery level */
-    if (data.length < 18) updateLastActivity = true;
-    else await updateBattery(data, persistence, response, imeiTemp, remoteAdd);
-
-    response.response = "TRVZP16#";
-  }
-
   // ---------------------------------------------
   // UNKNOW but need response (TRVAP Packets)
   // ---------------------------------------------
@@ -200,9 +178,15 @@ const handlePacket: HandlePacket = async (
   }
 
   // ---------------------------------------------
-  // IMSI number and ICCID number of the device
+  // TRVYP1:  UNKNOW but need response
+  // TRVYP02: IMSI and ICCID number of the device
+  // TRVYP16: Device heartbeat packet
   // ---------------------------------------------
-  else if (data.startsWith("TRVYP02")) {
+  else if (
+    data.startsWith("TRVYP02") ||
+    data.startsWith("TRVYP1") ||
+    data.startsWith("TRVYP16")
+  ) {
     if (response.imei == "")
       return await discardData(
         noImei,
@@ -214,7 +198,14 @@ const handlePacket: HandlePacket = async (
         response
       );
 
-    response.response = "TRVZP02#";
+    /** Process Battery level on packet heartbeat */
+    if (data.startsWith("TRVYP16")) {
+      if (data.length < 18) updateLastActivity = true;
+      else
+        await updateBattery(data, persistence, response, imeiTemp, remoteAdd);
+    }
+
+    response.response = `TRVZP${data.substring(5, 7)}#`;
   }
 
   // ---------------------------------------------
@@ -233,24 +224,6 @@ const handlePacket: HandlePacket = async (
       );
 
     response.response = `TRVBP${data.substring(5, 7)}#`;
-  }
-
-  // ---------------------------------------------
-  // UNKNOW but need response (TRVYP Packets)
-  // ---------------------------------------------
-  else if (data.startsWith("TRVYP1")) {
-    if (response.imei == "")
-      return await discardData(
-        noImei,
-        true,
-        persistence,
-        imeiTemp,
-        remoteAdd,
-        data,
-        response
-      );
-
-    response.response = `TRVZP${data.substring(5, 7)}#`;
   }
 
   // ------------------------------------------------
