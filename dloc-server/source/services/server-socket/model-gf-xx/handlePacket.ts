@@ -159,21 +159,21 @@ const handlePacket: HandlePacket = async (
         )}]`
       );
 
-      const lbsResponse = await getGoogleGeolocation(lbsQuery);
+      // const lbsResponse = await getGoogleGeolocation(lbsQuery);
 
-      printMessage(
-        `[${imeiTemp}] LBS (${packetType}) query Google response [${JSON.stringify(
-          lbsResponse
-        )}]`
-      );
+      // printMessage(
+      //   `[${imeiTemp}] LBS (${packetType}) query Google response [${JSON.stringify(
+      //     lbsResponse
+      //   )}]`
+      // );
   
-      if (lbsResponse?.location) {
-        const { lat, lng } = lbsResponse.location;
-        responseLBS = `TRVBP14,${lat.toFixed(5)},${lng.toFixed(5)}#`;
-      } 
+      // if (lbsResponse?.location) {
+      //   const { lat, lng } = lbsResponse.location;
+      //   responseLBS = `TRVBP14,${lat.toFixed(5)},${lng.toFixed(5)}#`;
+      // } 
     }
 
-    response.response = `TRVZP${data.substring(5, 7)}#\n${responseLBS}`;
+    response.response = `TRVZP${data.substring(5, 7)}#`;
   }
 
   // ---------------------------------------
