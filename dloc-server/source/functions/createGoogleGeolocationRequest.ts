@@ -28,14 +28,14 @@ function createGoogleGeolocationRequest(
     };
   }
 
-  const wifi: string = lbsData.length > 4 ? lbsData[5] : "";
+  const wifi: string = lbsData.length > 4 ? lbsData?.[5] ?? '' : '';
   const wifiAccessPoints = wifi
-    .split("&")
-    .map((wifi) => {
+    ?.split("&")
+    ?.map((wifi) => {
       const [ssid, macAddress, signalStrength] = wifi.split("|");
       return { macAddress, signalStrength: parseInt(signalStrength) };
     })
-    .filter((wifi) => wifi.macAddress);
+    ?.filter((wifi) => wifi.macAddress) ?? [];
 
   const lbsQuery: GoogleGeolocationRequest = {
     homeMobileCountryCode: mcc,
