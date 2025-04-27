@@ -54,7 +54,7 @@ const handlePacket: HandlePacket = async (
     );
     if (regexIndex != -1)
       printMessage(
-        `[${imeiTemp}] (${remoteAdd}) process data (REGEX ${regexIndex}) [${data}]`
+        `[${imeiTemp}] (${remoteAdd}) process data (REGEX ${regexIndex}) [${data.split(",")?.[0] ?? data}]`
       );
 
     /** imei not received */
@@ -96,7 +96,7 @@ const handlePacket: HandlePacket = async (
     if (!locationPacket.valid) {
       /** Invalid position, try to get location from LBS */
       printMessage(
-        `[${imeiTemp}] (${remoteAdd}) invalid position (NOT 'A') [${data}]`
+        `[${imeiTemp}] (${remoteAdd}) invalid position (NOT 'A') [${data.split(",")?.[0] ?? data}]`
       );
 
       /** LBS query */
