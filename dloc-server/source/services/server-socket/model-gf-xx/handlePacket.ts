@@ -66,7 +66,6 @@ const handlePacket: HandlePacket = async (
   // ---------------------------------------
   else if (data.startsWith("TRVYP14") || data.startsWith("TRVYP15")) {
     const packetType = data.startsWith("TRVYP14") ? "TRVYP14" : "TRVYP15";
-    let responseLBS = "";
     let values: string[] = [];
 
     for (let i = 0; i < REGEX_PACKETS.length; i++) {
@@ -159,21 +158,21 @@ const handlePacket: HandlePacket = async (
         )}]`
       );
 
-      const lbsResponse = await getGoogleGeolocation(lbsQuery);
+      // const lbsResponse = await getGoogleGeolocation(lbsQuery);
 
-      printMessage(
-        `[${imeiTemp}] LBS (${packetType}) query Google response [${JSON.stringify(
-          lbsResponse
-        )}]`
-      );
+      // printMessage(
+      //   `[${imeiTemp}] LBS (${packetType}) query Google response [${JSON.stringify(
+      //     lbsResponse
+      //   )}]`
+      // );
   
-      if (lbsResponse?.location) {
-        const { lat, lng } = lbsResponse.location;
-        responseLBS = `,${lat.toFixed(5)},${lng.toFixed(5)}`;
-      } 
+      // if (lbsResponse?.location) {
+      //   const { lat, lng } = lbsResponse.location;
+      //   // responseLBS = `,${lat.toFixed(5)},${lng.toFixed(5)}`;
+      // } 
     }
 
-    response.response = `TRVZP${data.substring(5, 7)}${responseLBS}#`;
+    response.response = `TRVZP${data.substring(5, 7)}#`;
   }
 
   // ---------------------------------------
