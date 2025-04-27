@@ -9,45 +9,23 @@ import { PositionPacket } from "../../../models/PositionPacket";
 import { printMessage } from "../../../functions/printMessage";
 import { REGEX_PACKETS } from "../../../functions/packetParseREGEX";
 import { GpsAccuracy } from "../../../models/GpsAccuracy";
-import createGoogleGeolocationRequest from "../../../functions/createGoogleGeolocationRequest";
-import getGoogleGeolocation from "../../../functions/getGoogleGeolocation";
+import getValuesFromStringByRegexs from "../../../functions/getValuesFromStringByRegex";
+import discardData from "../../../functions/discardData";
+import updateDeviceAndAddPosition from "../../../functions/updateDeviceAndAddPosition";
+import getLbsLocation from "../../../functions/getLbsLocation";
+
+const noImei: string = "no imei received";
 
 const handlePacket: HandlePacket = async (
   props: HandlePacketProps
 ): Promise<HandlePacketResult> => {
   const { imei, remoteAdd, data, persistence } = props;
-  const noImei: string = "no imei received";
+
   let updateLastActivity: boolean = false;
   let response: HandlePacketResult = { imei, error: "", response: "" };
 
   /** Temporal imei (Used only for print messages for user) */
   var imeiTemp: string = imei == "" ? "---------------" : imei;
-
-  /** Common function to discart packet */
-  const discardData = async (message: string, reportError: boolean) => {
-    /** Report error (or not) */
-    response.error = reportError ? message : "";
-    /** Discarted packet */
-    printMessage(
-      `[${imeiTemp}] (${remoteAdd}) discarted data (${message}) [${
-        data.length > 20 ? data.substring(0, 40) + "..." : data
-      }]`
-    );
-    /** Persist discarted packet */
-    await persistence
-      .addDiscarted(response.imei, remoteAdd, message, data)
-      .then((result: PersistenceResult) => {
-        result.error &&
-          handlePacketOnError({
-            imei: imeiTemp,
-            remoteAdd,
-            data,
-            persistence,
-            name: "discarted",
-            error: result.error,
-          });
-      });
-  };
 
   // ---------------------------------------
   // Login Package TRVAP00xxxxIMEIxxxxxxx#
@@ -55,10 +33,12 @@ const handlePacket: HandlePacket = async (
   if (data.startsWith("TRVAP00")) {
     response.imei = data.replace("TRVAP00", "").replace("#", "");
     imeiTemp = response.imei == "" ? "---------------" : response.imei;
-    response.response = "TRVBP00" + getUtcDateTime(false) + "#";
+
     /** Update last activity */
     if (response.imei !== "") updateLastActivity = true;
     printMessage(`[${imeiTemp}] (${remoteAdd}) imei [${response.imei}]`);
+
+    response.response = "TRVBP00" + getUtcDateTime(false) + "#";
   }
 
   // ---------------------------------------
@@ -66,24 +46,28 @@ const handlePacket: HandlePacket = async (
   // ---------------------------------------
   else if (data.startsWith("TRVYP14") || data.startsWith("TRVYP15")) {
     const packetType = data.startsWith("TRVYP14") ? "TRVYP14" : "TRVYP15";
-    let responseLBS = "";
-    let values: string[] = [];
 
-    for (let i = 0; i < REGEX_PACKETS.length; i++) {
-      values = data.match(REGEX_PACKETS[i]) ?? [];
-      if (values.length > 0) {
-        printMessage(
-          `[${imeiTemp}] (${remoteAdd}) process data (REGEX ${i}) [${data}]`
-        );
-        break;
-      }
-    }
+    /** Process GPS data */
+    let { values, regexIndex } = getValuesFromStringByRegexs(
+      data,
+      REGEX_PACKETS
+    );
+    if (regexIndex != -1)
+      printMessage(
+        `[${imeiTemp}] (${remoteAdd}) process data (REGEX ${regexIndex}) [${data}]`
+      );
 
     /** imei not received */
-    if (response.imei == "") {
-      discardData(noImei, true);
-      return response;
-    }
+    if (response.imei == "")
+      return await discardData(
+        noImei,
+        true,
+        persistence,
+        imeiTemp,
+        remoteAdd,
+        data,
+        response
+      );
 
     /** Create location packet and persist */
     const locationPacket: PositionPacket | undefined = createLocationPacket(
@@ -93,85 +77,59 @@ const handlePacket: HandlePacket = async (
       GpsAccuracy.unknown,
       "{}"
     );
-    if (!locationPacket) {
-      discardData("error creating location packet", false);
-      return response;
-    }
+
+    /** Check if location packet was created */
+    if (!locationPacket)
+      return await discardData(
+        "error creating location packet",
+        false,
+        persistence,
+        imeiTemp,
+        remoteAdd,
+        data,
+        response
+      );
 
     /** Update last activity */
     updateLastActivity = true;
 
-    if (locationPacket.valid) {
-      /** Valid position */
-      await persistence
-        .addPosition(locationPacket)
-        .then((result: PersistenceResult) => {
-          result.error &&
-            handlePacketOnError({
-              imei: imeiTemp,
-              remoteAdd,
-              data,
-              persistence,
-              name: "position",
-              error: result.error,
-            });
-        });
-
-      /** Update device */
-      await persistence
-        .updateDevice(locationPacket)
-        .then((result: PersistenceResult) => {
-          if (result.error)
-            printMessage(
-              `[${imeiTemp}] (${remoteAdd}) error updating device [${
-                result.error?.message || result.error
-              }]`
-            );
-          result.error &&
-            handlePacketOnError({
-              imei: imeiTemp,
-              remoteAdd,
-              data,
-              persistence,
-              name: "update",
-              error: result.error,
-            });
-
-          /** Discard old packet */
-          if (result.error?.message === "old packet")
-            discardData("old packet - update device", false);
-        });
-    } else {
-      /** Invalid position */
+    if (!locationPacket.valid) {
+      /** Invalid position, try to get location from LBS */
       printMessage(
         `[${imeiTemp}] (${remoteAdd}) invalid position (NOT 'A') [${data}]`
       );
 
-      const lbsQuery = createGoogleGeolocationRequest(data, packetType);
-      if ("error" in lbsQuery && lbsQuery.error) {
-        discardData(lbsQuery.error, true);
-        return response;
-      }
-
-      printMessage(
-        `[${imeiTemp}] LBS (${packetType}) query Google Geolocation [${JSON.stringify(
-          lbsQuery
-        )}]`
+      /** LBS query */
+      const lbsGetResponse = await getLbsLocation(
+        data,
+        packetType,
+        persistence,
+        imeiTemp,
+        remoteAdd,
+        response
       );
+      if ("error" in lbsGetResponse && lbsGetResponse.error)
+        return lbsGetResponse;
 
-      // const lbsResponse = await getGoogleGeolocation(lbsQuery);
-
-      // printMessage(
-      //   `[${imeiTemp}] LBS (${packetType}) query Google response [${JSON.stringify(
-      //     lbsResponse
-      //   )}]`
-      // );
-  
-      // if (lbsResponse?.location) {
-      //   const { lat, lng } = lbsResponse.location;
-      //   responseLBS = `TRVBP14,${lat.toFixed(5)},${lng.toFixed(5)}#`;
-      // } 
+      /** Process LBS data */
+      if ("location" in lbsGetResponse) {
+        locationPacket.lat = lbsGetResponse.location.lat;
+        locationPacket.lng = lbsGetResponse.location.lng;
+        locationPacket.valid = true;
+        locationPacket.accuracy = GpsAccuracy.lbs;
+      }
     }
+
+    /** Add position and update device */
+    if (locationPacket.valid)
+      await updateDeviceAndAddPosition(
+        locationPacket,
+        persistence,
+        imeiTemp,
+        remoteAdd,
+        data,
+        response
+      );
 
     response.response = `TRVZP${data.substring(5, 7)}#`;
   }
@@ -180,14 +138,22 @@ const handlePacket: HandlePacket = async (
   // Device heartbeat packet
   // ---------------------------------------
   else if (data.startsWith("TRVYP16")) {
-    if (response.imei == "") {
-      discardData(noImei, true);
-      return response;
-    }
+    if (response.imei == "")
+      return discardData(
+        noImei,
+        true,
+        persistence,
+        imeiTemp,
+        remoteAdd,
+        data,
+        response
+      );
+
     /** Process Battery level */
     if (data.length < 18) updateLastActivity = true;
     else {
       const batteryLevel: number = parseInt(data.substring(14, 17) ?? "0");
+
       await persistence
         .addBatteryLevel(response.imei, batteryLevel)
         .then((result: PersistenceResult) => {
@@ -202,18 +168,8 @@ const handlePacket: HandlePacket = async (
             });
         });
     }
-    response.response = "TRVZP16#";
-  }
 
-  // ---------------------------------------------
-  // IMSI number and ICCID number of the device
-  // ---------------------------------------------
-  else if (data.startsWith("TRVYP02")) {
-    if (response.imei == "") {
-      discardData(noImei, true);
-      return response;
-    }
-    response.response = "TRVZP02#";
+    response.response = "TRVZP16#";
   }
 
   // ---------------------------------------------
@@ -222,33 +178,32 @@ const handlePacket: HandlePacket = async (
   else if (data.startsWith("TRVAP14")) {
     const packetType = "TRVAP14";
 
-    if (response.imei == "") {
-      discardData(noImei, true);
-      return response;
-    }
+    if (response.imei == "")
+      return await discardData(
+        noImei,
+        true,
+        persistence,
+        imeiTemp,
+        remoteAdd,
+        data,
+        response
+      );
 
-    const lbsQuery = createGoogleGeolocationRequest(data, packetType);
-    if ("error" in lbsQuery && lbsQuery.error) {
-      discardData(lbsQuery.error, true);
-      return response;
-    }
-
-    printMessage(
-      `[${imeiTemp}] LBS (${packetType}) query Google Geolocation [${JSON.stringify(
-        lbsQuery
-      )}]`
+    /** LBS query */
+    const lbsGetResponse = await getLbsLocation(
+      data,
+      packetType,
+      persistence,
+      imeiTemp,
+      remoteAdd,
+      response
     );
+    if ("error" in lbsGetResponse && lbsGetResponse.error)
+      return lbsGetResponse;
 
-    const lbsResponse = await getGoogleGeolocation(lbsQuery);
-
-    printMessage(
-      `[${imeiTemp}] LBS (${packetType}) query Google response [${JSON.stringify(
-        lbsResponse
-      )}]`
-    );
-
-    if (lbsResponse?.location) {
-      const { lat, lng } = lbsResponse.location;
+    /** Process LBS data */
+    if ("location" in lbsGetResponse) {
+      const { lat, lng } = lbsGetResponse.location;
       response.response = `TRVBP14,${lat.toFixed(5)},${lng.toFixed(5)}#`;
     } else {
       response.response = `TRVBP${data.substring(5, 7)}#`;
@@ -256,13 +211,38 @@ const handlePacket: HandlePacket = async (
   }
 
   // ---------------------------------------------
+  // IMSI number and ICCID number of the device
+  // ---------------------------------------------
+  else if (data.startsWith("TRVYP02")) {
+    if (response.imei == "")
+      return await discardData(
+        noImei,
+        true,
+        persistence,
+        imeiTemp,
+        remoteAdd,
+        data,
+        response
+      );
+
+    response.response = "TRVZP02#";
+  }
+
+  // ---------------------------------------------
   // UNKNOW but need response (TRVAP Packets)
   // ---------------------------------------------
   else if (data.startsWith("TRVAP89")) {
-    if (response.imei == "") {
-      discardData(noImei, true);
-      return response;
-    }
+    if (response.imei == "")
+      return await discardData(
+        noImei,
+        true,
+        persistence,
+        imeiTemp,
+        remoteAdd,
+        data,
+        response
+      );
+
     response.response = `TRVBP${data.substring(5, 7)}#`;
   }
 
@@ -270,10 +250,17 @@ const handlePacket: HandlePacket = async (
   // UNKNOW but need response (TRVYP Packets)
   // ---------------------------------------------
   else if (data.startsWith("TRVYP1")) {
-    if (response.imei == "") {
-      discardData(noImei, true);
-      return response;
-    }
+    if (response.imei == "")
+      return await discardData(
+        noImei,
+        true,
+        persistence,
+        imeiTemp,
+        remoteAdd,
+        data,
+        response
+      );
+
     response.response = `TRVZP${data.substring(5, 7)}#`;
   }
 
@@ -307,8 +294,15 @@ const handlePacket: HandlePacket = async (
         data.length > 20 ? data.substring(0, 20) + "..." : data
       }...]`
     );
-    discardData("commad unknown", false);
-    return response;
+    return await discardData(
+      "commad unknown",
+      false,
+      persistence,
+      imeiTemp,
+      remoteAdd,
+      data,
+      response
+    );
   }
 
   /** Update last activity */

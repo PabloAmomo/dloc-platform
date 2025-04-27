@@ -1,6 +1,8 @@
+export type PacketType = "TRVYP14" | "TRVYP15" | "TRVAP14";
+
 function createGoogleGeolocationRequest(
   packet: string,
-  packetType: "TRVYP14" | "TRVYP15" | "TRVAP14"
+  packetType: PacketType
 ): GoogleGeolocationRequest {
   if (!packet.startsWith(packetType)) {
     return {

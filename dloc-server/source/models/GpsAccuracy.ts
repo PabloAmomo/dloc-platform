@@ -3,5 +3,5 @@ export enum GpsAccuracy {
   gpsHighRes = 40,
   gpsLowRes = 30,
   gps = 20,
-  modelLbs = 10,
+  lbs = 10,
 }
