@@ -40,6 +40,7 @@ const location = async (persistence: Persistence, positionPacket: PositionPacket
   });
 
   await persistence.updateDevice(positionPacket).then((result: PersistenceResult) => {
+    printMessage(`[${imei}] (${remoteAddress}) updating device [${JSON.stringify(positionPacket)}]`);
     if (result.error) {
       message = result.error.message;
       printMessage(`[${imei}] (${remoteAddress}) error persisting position (updateDevice) [${result.error?.message || result.error}]`);
