@@ -35,7 +35,7 @@ docker-compose up -d
 ## DLOC Server
 
 Server to receive information from GPS Devices.
-Ready for use with traccar client. (For configure use http://url/connector/location)
+Ready for use with traccar client. (For configure use http://location.*yourdomain*)
 
 ### Configure GPS Device to send data to server
 
