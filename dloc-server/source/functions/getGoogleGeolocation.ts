@@ -1,5 +1,14 @@
-async function getGoogleGeolocation(lbsQuery: GoogleGeolocationRequest): Promise<GoogleGeolocationResponse> {
+import { printMessage } from "./printMessage";
+
+async function getGoogleGeolocation(
+  lbsQuery: GoogleGeolocationRequest
+): Promise<GoogleGeolocationResponse> {
   const apiKey = process.env.GOOGLE_GEOCODING_API_KEY;
+
+  if (process.env.ENABLE_LBS !== "true") {
+    printMessage(`Google Geolocation disabled`);
+    return {} as GoogleGeolocationResponse;
+  }
 
   if (!apiKey) {
     throw new Error("Google geolocate API key is not set");
