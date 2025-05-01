@@ -14,7 +14,7 @@ async function getLbsLocation(
   response: HandlePacketResult
 ): Promise<HandlePacketResult | GoogleGeolocationResponse> {
 
-  if (!!process.env.ENABLE_LBS !== true) {
+  if (process.env.ENABLE_LBS !== 'true') {
     printMessage(
       `[${imeiTemp}] (${remoteAdd}) LBS (${packetType}) Google Geolocation disabled`
     );
