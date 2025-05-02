@@ -73,7 +73,7 @@ async function getGoogleGeoPosition(
 
   /** No cache hit, make request */
   printMessage(
-    `[${imei}] (${remoteAddress}) [LBS] Cache miss for ${cacheKey} using Google Geolocation`
+    `[${imei}] (${remoteAddress}) [LBS] Cache miss for ${cacheKey} using Google GeoPosition`
   );
 
   const url = `https://www.googleapis.com/geolocation/v1/geolocate?key=${apiKey}`;

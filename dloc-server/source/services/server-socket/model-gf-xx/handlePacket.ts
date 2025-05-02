@@ -71,7 +71,7 @@ const handlePacket: HandlePacket = async (
         response
       );
 
-    /** Create location packet and persist */
+    /** Create position packet and persist */
     const positionPacket: PositionPacket | undefined = createPositionPacket(
       response.imei,
       remoteAddress,

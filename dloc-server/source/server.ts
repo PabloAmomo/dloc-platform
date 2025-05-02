@@ -39,9 +39,9 @@ if (!PORT_HTTP && !PORT_SOCKET) {
 
 /** No LBS */
 printMessage(
-  `Google Geolocation: ${
+  `Google GeoPosition: ${
     ENABLE_LBS
-      ? "enabled (Watch the Google Geolocation API quota)"
+      ? "enabled (Watch the Google GeoPosition API quota)"
       : "disabled"
   }`
 );
@@ -49,7 +49,7 @@ printMessage(
 /** Start LBS Cache */
 if (ENABLE_LBS) initCacheLBS();
 
-/** Start Location Cache */
+/** Start position Cache */
 initCachePosition();
 
 /** Start Persistence */

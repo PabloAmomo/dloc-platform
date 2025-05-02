@@ -14,7 +14,7 @@ async function positionAddPositionAndUpdateDevice(
 ): Promise<string> {
   var message: string = "ok";
 
-  /** Add location packet to cache */
+  /** Add position packet to cache */
   printMessage(
     `[${imei}] (${remoteAddress}) updating cache [${JSON.stringify(
       positionPacket

@@ -10,10 +10,10 @@ const location = async (
 ) => {
   const { imei, remoteAddress } = positionPacket;
   var message: string = "ok";
-  var noHasLocation: boolean =
+  var noHasPosition: boolean =
     positionPacket.lat === -999 || positionPacket.lng === -999;
 
-  if (noHasLocation) {
+  if (noHasPosition) {
     message = await positionUpdateBattertAndLastActivity(
       imei,
       remoteAddress,
