@@ -12,7 +12,8 @@ import discardData from "../../../functions/discardData";
 import updateDeviceAndAddPosition from "../../../functions/updateDeviceAndAddPosition";
 import getLbsLocation from "../../../functions/getLbsLocation";
 import updateBattery from "../../../functions/updateBattery";
-import updateActivityAndAddHistory from "../../../functions/updateActivityAndAddHistory";
+import locationUpdateLastActivityAndAddHistory from "../../../functions/locationUpdateLastActivityAndAddHistory";
+import { handlePacketOnError } from "../../../functions/handlePacketOnError";
 
 const noImei: string = "no imei received";
 
@@ -267,13 +268,32 @@ const handlePacket: HandlePacket = async (
   }
 
   /** Update last activity and add history */
-  await updateActivityAndAddHistory(
-    updateLastActivity,
-    persistence,
+  locationUpdateLastActivityAndAddHistory(
     imeiTemp,
     remoteAdd,
     data,
-    response
+    persistence,
+    updateLastActivity,
+    (error) => {
+      handlePacketOnError({
+        imei: imeiTemp,
+        remoteAdd,
+        data,
+        persistence,
+        name: "lastActivity",
+        error,
+      });
+    },
+    (error) => {
+      handlePacketOnError({
+        imei: imeiTemp,
+        remoteAdd,
+        data,
+        persistence,
+        name: "history",
+        error,
+      });
+    }
   );
 
   /** */

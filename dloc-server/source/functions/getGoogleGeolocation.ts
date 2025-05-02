@@ -93,7 +93,7 @@ async function getGoogleGeolocation(
       CACHE_LBS.set(cacheKey, { request: lbsQuery, response: returnValue });
 
       printMessage(
-        `[${imei}] (${remoteAdd}) [LBS] Cache set for ${cacheKey} - ${JSON.stringify(
+        `[${imei}] (${remoteAdd}) [LBS] Cache set for ${cacheKey} ${JSON.stringify(
           returnValue
         )}`
       );

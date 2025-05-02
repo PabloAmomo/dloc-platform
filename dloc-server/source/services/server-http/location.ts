@@ -1,9 +1,6 @@
 import locationAddPositionAndUpdateDevice from "../../functions/locationAddPositionAndUpdateDevice";
 import locationUpdateLastActivityAndAddHistory from "../../functions/locationUpdateLastActivityAndAddHistory";
 import { printMessage } from "../../functions/printMessage";
-import updateActivityAndAddHistory from "../../functions/updateActivityAndAddHistory";
-import updateDeviceAndAddPosition from "../../functions/updateDeviceAndAddPosition";
-import { CACHE_LOCATION } from "../../infraestucture/caches/cacheLocation";
 import { PersistenceResult } from "../../infraestucture/models/PersistenceResult";
 import { Persistence } from "../../models/Persistence";
 import { PositionPacket } from "../../models/PositionPacket";
@@ -63,8 +60,9 @@ const location = async (
     message = await locationUpdateLastActivityAndAddHistory(
       imei,
       remoteAddress,
-      positionPacket,
-      persistence
+      JSON.stringify(positionPacket),
+      persistence,
+      true
     );
 
   /** */

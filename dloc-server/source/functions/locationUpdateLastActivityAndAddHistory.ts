@@ -1,34 +1,39 @@
 import { PersistenceResult } from "../infraestucture/models/PersistenceResult";
 import { Persistence } from "../models/Persistence";
-import { PositionPacket } from "../models/PositionPacket";
 import { printMessage } from "./printMessage";
 
 async function locationUpdateLastActivityAndAddHistory(
   imei: string,
   remoteAddress: string,
-  positionPacket: PositionPacket,
-  persistence: Persistence
+  packetRawData: string,
+  persistence: Persistence,
+  updateLastActivity: boolean,
+  onErrorUpdateLastActivity?: (error : Error) => void,
+  onErrorAddHistory?: (error : Error) => void
 ): Promise<string> {
   var message: string = "ok";
 
   /** Update last activity */
-  await persistence
-    .updateLastActivity(imei)
-    .then((result: PersistenceResult) => {
-      if (result.error) {
-        message = result.error.message;
-        printMessage(
-          `[${imei}] (${remoteAddress}) error updating last activity (updateLastActivity) [${
-            result.error?.message || result.error
-          }]`
-        );
-      }
-    });
-  if (message !== "ok") return message;
+  if (updateLastActivity) {
+    await persistence
+      .updateLastActivity(imei)
+      .then((result: PersistenceResult) => {
+        if (result.error) {
+          message = result.error.message;
+          printMessage(
+            `[${imei}] (${remoteAddress}) error updating last activity (updateLastActivity) [${
+              result.error?.message || result.error
+            }]`
+          );
+          onErrorUpdateLastActivity && onErrorUpdateLastActivity(result.error);
+        }
+      });
+    if (message !== "ok") return message;
+  }
 
   /** Add history */
   await persistence
-    .addHistory(imei, remoteAddress, JSON.stringify(positionPacket), "")
+    .addHistory(imei, remoteAddress, packetRawData, "")
     .then((result: PersistenceResult) => {
       if (result.error) {
         message = result.error.message;
@@ -37,9 +42,10 @@ async function locationUpdateLastActivityAndAddHistory(
             result.error?.message || result.error
           }]`
         );
+        onErrorAddHistory && onErrorAddHistory(result.error);
       }
     });
-    
+
   return message;
 }
 
