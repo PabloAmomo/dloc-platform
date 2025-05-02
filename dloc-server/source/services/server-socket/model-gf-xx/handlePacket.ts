@@ -10,9 +10,9 @@ import { GpsAccuracy } from "../../../models/GpsAccuracy";
 import getValuesFromStringByRegexs from "../../../functions/getValuesFromStringByRegex";
 import discardData from "../../../functions/discardData";
 import getLbsLocation from "../../../functions/getLbsLocation";
-import locationUpdateLastActivityAndAddHistory from "../../../functions/locationUpdateLastActivityAndAddHistory";
-import locationAddPositionAndUpdateDevice from "../../../functions/locationAddPositionAndUpdateDevice";
-import locationUpdateBattertAndLastActivity from "../../../functions/locationUpdateBatteryAndLastActivity";
+import positionUpdateLastActivityAndAddHistory from "../../../functions/positionUpdateLastActivityAndAddHistory";
+import positionAddPositionAndUpdateDevice from "../../../functions/positionAddPositionAndUpdateDevice";
+import positionUpdateBattertAndLastActivity from "../../../functions/positionUpdateBatteryAndLastActivity";
 
 const noImei: string = "no imei received";
 
@@ -129,7 +129,7 @@ const handlePacket: HandlePacket = async (
       let oldPacket: boolean = false;
       const oldPacketMessage = "old packet";
 
-      await locationAddPositionAndUpdateDevice(
+      await positionAddPositionAndUpdateDevice(
         imeiTemp,
         remoteAddress,
         positionPacket,
@@ -219,7 +219,7 @@ const handlePacket: HandlePacket = async (
       if (data.length < 18) updateLastActivity = true;
       else {
         const batteryLevel: number = parseInt(data.substring(14, 17) ?? "-1");
-        await locationUpdateBattertAndLastActivity(
+        await positionUpdateBattertAndLastActivity(
           imeiTemp,
           remoteAddress,
           persistence,
@@ -291,7 +291,7 @@ const handlePacket: HandlePacket = async (
   }
 
   /** Update last activity and add history */
-  await locationUpdateLastActivityAndAddHistory(
+  await positionUpdateLastActivityAndAddHistory(
     imeiTemp,
     remoteAddress,
     data,

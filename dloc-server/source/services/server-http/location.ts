@@ -1,6 +1,6 @@
-import locationAddPositionAndUpdateDevice from "../../functions/locationAddPositionAndUpdateDevice";
-import locationUpdateBattertAndLastActivity from "../../functions/locationUpdateBatteryAndLastActivity";
-import locationUpdateLastActivityAndAddHistory from "../../functions/locationUpdateLastActivityAndAddHistory";
+import positionAddPositionAndUpdateDevice from "../../functions/positionAddPositionAndUpdateDevice";
+import positionUpdateBattertAndLastActivity from "../../functions/positionUpdateBatteryAndLastActivity";
+import positionUpdateLastActivityAndAddHistory from "../../functions/positionUpdateLastActivityAndAddHistory";
 import { Persistence } from "../../models/Persistence";
 import { PositionPacket } from "../../models/PositionPacket";
 
@@ -14,7 +14,7 @@ const location = async (
     positionPacket.lat === -999 || positionPacket.lng === -999;
 
   if (noHasLocation) {
-    message = await locationUpdateBattertAndLastActivity(
+    message = await positionUpdateBattertAndLastActivity(
       imei,
       remoteAddress,
       persistence,
@@ -24,7 +24,7 @@ const location = async (
     return { code: message === "ok" ? 200 : 500, result: { message } };
   }
 
-  message = await locationAddPositionAndUpdateDevice(
+  message = await positionAddPositionAndUpdateDevice(
     imei,
     remoteAddress,
     positionPacket,
@@ -32,7 +32,7 @@ const location = async (
   );
 
   if (message === "ok")
-    message = await locationUpdateLastActivityAndAddHistory(
+    message = await positionUpdateLastActivityAndAddHistory(
       imei,
       remoteAddress,
       JSON.stringify(positionPacket),

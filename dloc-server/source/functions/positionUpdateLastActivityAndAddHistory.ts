@@ -2,7 +2,7 @@ import { PersistenceResult } from "../infraestucture/models/PersistenceResult";
 import { Persistence } from "../models/Persistence";
 import { printMessage } from "./printMessage";
 
-async function locationUpdateLastActivityAndAddHistory(
+async function positionUpdateLastActivityAndAddHistory(
   imei: string,
   remoteAddress: string,
   packetRawData: string,
@@ -49,4 +49,4 @@ async function locationUpdateLastActivityAndAddHistory(
   return message;
 }
 
-export default locationUpdateLastActivityAndAddHistory;
+export default positionUpdateLastActivityAndAddHistory;

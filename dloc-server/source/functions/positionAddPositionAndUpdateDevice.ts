@@ -4,7 +4,7 @@ import { Persistence } from "../models/Persistence";
 import { PositionPacket } from "../models/PositionPacket";
 import { printMessage } from "./printMessage";
 
-async function locationAddPositionAndUpdateDevice(
+async function positionAddPositionAndUpdateDevice(
   imei: string,
   remoteAddress: string,
   positionPacket: PositionPacket,
@@ -63,4 +63,4 @@ async function locationAddPositionAndUpdateDevice(
   return message;
 }
 
-export default locationAddPositionAndUpdateDevice;
+export default positionAddPositionAndUpdateDevice;
