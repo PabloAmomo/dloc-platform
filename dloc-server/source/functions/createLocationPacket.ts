@@ -5,7 +5,7 @@ import { parseLatOrLng } from './parseLatOrLng';
 import { parseUtcDateTime } from './parseUtcDateTime';
 import { printMessage } from './printMessage';
 
-const createLocationPacket = (imei: string, remoteAdd: string, values: string[], accuracy: GpsAccuracy, activity: string): PositionPacket | undefined => {
+const createPositionPacket = (imei: string, remoteAdd: string, values: string[], accuracy: GpsAccuracy, activity: string): PositionPacket | undefined => {
   try {
     return {
       imei,
@@ -47,4 +47,4 @@ const createLocationPacket = (imei: string, remoteAdd: string, values: string[],
   }
 };
 
-export { createLocationPacket };
+export { createPositionPacket };

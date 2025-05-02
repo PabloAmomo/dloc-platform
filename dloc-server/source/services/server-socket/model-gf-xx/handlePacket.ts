@@ -1,4 +1,4 @@
-import { createLocationPacket } from "../../../functions/createLocationPacket";
+import { createPositionPacket } from "../../../functions/createLocationPacket";
 import { getUtcDateTime } from "../../../functions/getUtcDateTime";
 import { HandlePacket } from "../../../models/HandlePacket";
 import { HandlePacketProps } from "../../../models/HandlePacketProps";
@@ -72,7 +72,7 @@ const handlePacket: HandlePacket = async (
       );
 
     /** Create location packet and persist */
-    const locationPacket: PositionPacket | undefined = createLocationPacket(
+    const locationPacket: PositionPacket | undefined = createPositionPacket(
       response.imei,
       remoteAddress,
       values,
