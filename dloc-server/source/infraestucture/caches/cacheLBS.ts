@@ -7,17 +7,11 @@ import { GoogleGeolocationResponse } from "../../models/GoogleGeolocationRespons
 export var CACHE_LBS: Cache<{
   request: GoogleGeolocationRequest;
   response: GoogleGeolocationResponse;
-}>; // 1 hour in seconds
+}>;
 
 /** LBS Status */
 function initCacheLBS() {
-  printMessage(
-    `Google Geolocation: ${
-      process.env.ENABLE_LBS === "true"
-        ? "enabled (Watch the Google Geolocation API quota)"
-        : "disabled"
-    }`
-  );
+  printMessage(`LBS cache initialized`);
 
   CACHE_LBS = new Cache<{
     request: GoogleGeolocationRequest;

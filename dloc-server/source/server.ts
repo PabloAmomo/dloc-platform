@@ -37,11 +37,20 @@ if (!PORT_HTTP && !PORT_SOCKET) {
   process.exit(1);
 }
 
-/** Start Location Cache */
-initCacheLocation();
+/** No LBS */
+printMessage(
+  `Google Geolocation: ${
+    ENABLE_LBS
+      ? "enabled (Watch the Google Geolocation API quota)"
+      : "disabled"
+  }`
+);
 
 /** Start LBS Cache */
-initCacheLBS();
+if (ENABLE_LBS) initCacheLBS();
+
+/** Start Location Cache */
+initCacheLocation();
 
 /** Start Persistence */
 startPersistence(new mySqlPersistence());
