@@ -2,20 +2,19 @@ import { ENABLE_LBS, LBS_CACHE } from "../server";
 import { printMessage } from "./printMessage";
 
 async function getGoogleGeolocation(
-  lbsQuery: GoogleGeolocationRequest
+  lbsQuery: GoogleGeolocationRequest,
+  debugText: string
+
 ): Promise<GoogleGeolocationResponse | {}> {
   const apiKey = process.env.GOOGLE_GEOCODING_API_KEY;
 
   if (!ENABLE_LBS) {
-    printMessage(`Google Geolocation disabled`);
+    printMessage(`${debugText} Google Geolocation disabled`);
     return {};
   }
-  printMessage(
-    `[LBS] Google Geolocation API is enabled (Watch the Google Geolocation API quota)`
-  );
 
   if (!apiKey) {
-    throw new Error("Google geolocate API key is not set");
+    throw new Error(`${debugText} Google geolocate API key is not set`);
   }
 
   // For testing purposes, return a dummy response
@@ -47,11 +46,11 @@ async function getGoogleGeolocation(
   if (cacheKey) {
     const cacheValue = LBS_CACHE.get(cacheKey);
     if (cacheValue) {
-      printMessage(`[LBS] Cache hit for ${cacheKey} - ${cacheValue}`);
+      printMessage(`${debugText} [LBS] Cache hit for ${cacheKey} - ${cacheValue}`);
       return JSON.parse(cacheValue);
     }
   }
-  printMessage(`[LBS] Cache miss for ${cacheKey} using Google Geolocation`);
+  printMessage(`${debugText} [LBS] Cache miss for ${cacheKey} using Google Geolocation`);
 
   const url = `https://www.googleapis.com/geolocation/v1/geolocate?key=${apiKey}`;
   const response = await fetch(url, {
@@ -67,7 +66,7 @@ async function getGoogleGeolocation(
     if (cacheKey) {
       LBS_CACHE.set(cacheKey, JSON.stringify(returnValue));
       printMessage(
-        `[LBS] Cache set for ${cacheKey} - ${JSON.stringify(returnValue)}`
+        `${debugText} [LBS] Cache set for ${cacheKey} - ${JSON.stringify(returnValue)}`
       );
     }
   }
