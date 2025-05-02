@@ -1,7 +1,7 @@
 import { handlePacket } from '../../../services/server-socket/model-gf-xx/handlePacket';
 import { Persistence } from '../../../models/Persistence';
 import { printMessage } from '../../../functions/printMessage';
-import { remoteAddress } from '../../../functions/remoteAddress';
+import { getRemoteAddress } from '../../../functions/remoteAddress';
 import handleClose from '../../../services/server-socket/model-gf-xx/connection/handleClose';
 import handleData from '../../../services/server-socket/model-gf-xx/connection/handleData';
 import handleEnd from '../../../services/server-socket/model-gf-xx/connection/handleEnd';
@@ -17,15 +17,15 @@ const HTTP_200 = `${[
 ].join('\n')}\n\n`;
 
 const gfxxHandler = (conn: net.Socket, persistence: Persistence) => {
-  const remoteAdd: string = remoteAddress(conn);
+  const remoteAddress: string = getRemoteAddress(conn);
   var imei: string = '';
   var lastTime: number = Date.now();
   var newConnection: boolean = true;
 
   /** Create event listeners for socket connection */
-  conn.once('close', () => handleClose(remoteAdd));
-  conn.on('end', () => handleEnd(remoteAdd));
-  conn.on('error', (err: Error) => handleError(remoteAdd, err));
+  conn.once('close', () => handleClose(remoteAddress));
+  conn.on('end', () => handleEnd(remoteAddress));
+  conn.on('error', (err: Error) => handleError(remoteAddress, err));
 
   /** Handle data */
   conn.on('data', (data: any) => {
@@ -36,17 +36,17 @@ const gfxxHandler = (conn: net.Socket, persistence: Persistence) => {
 
       /** Check if health packet */
       if (dataString.indexOf('HEAD /health') !== -1) {
-        if (!remoteAdd.includes('127.0.0.1')) printMessage(`[${tempImei}] (${remoteAdd}) health packet received.`);
+        if (!remoteAddress.includes('127.0.0.1')) printMessage(`[${tempImei}] (${remoteAddress}) health packet received.`);
         conn.write(HTTP_200);
         conn.destroy();
         return;
       }
 
       /** New socket connection */
-      if (newConnection) printMessage(`[---------------] (${remoteAdd}) new connection.`);
+      if (newConnection) printMessage(`[---------------] (${remoteAddress}) new connection.`);
 
       /** Handle data */
-      handleData({ imei, remoteAdd, data: dataString, handlePacket, persistence, conn })
+      handleData({ imei, remoteAddress, data: dataString, handlePacket, persistence, conn })
         .then((results) => {
           imei = results[0].imei;
 
@@ -67,7 +67,7 @@ const gfxxHandler = (conn: net.Socket, persistence: Persistence) => {
           if (Date.now() - lastTime > 60000) {
             lastTime = Date.now();
             toSend += 'TRVBP20#';
-            printMessage(`[${tempImei}] (${remoteAdd}) send command TRVBP20.`);
+            printMessage(`[${tempImei}] (${remoteAddress}) send command TRVBP20.`);
           }
 
           /** Send */
@@ -78,7 +78,7 @@ const gfxxHandler = (conn: net.Socket, persistence: Persistence) => {
         });
     } catch (err: Error | any) {
       conn.destroy();
-      printMessage(`[${tempImei}] (${remoteAdd}) error handling data (${err?.message ?? 'unknown error'}) data [${data}].`);
+      printMessage(`[${tempImei}] (${remoteAddress}) error handling data (${err?.message ?? 'unknown error'}) data [${data}].`);
     }
   });
 };

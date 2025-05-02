@@ -9,7 +9,7 @@ async function discardData(
   reportError: boolean,
   persistence: Persistence,
   imeiTemp: string,
-  remoteAdd: string,
+  remoteAddress: string,
   data: string,
   response: HandlePacketResult
 ): Promise<HandlePacketResult> {
@@ -18,19 +18,19 @@ async function discardData(
 
   /** Discarted packet */
   printMessage(
-    `[${imeiTemp}] (${remoteAdd}) discarted data (${message}) [${
+    `[${imeiTemp}] (${remoteAddress}) discarted data (${message}) [${
       data.length > 20 ? data.substring(0, 40) + "..." : data
     }]`
   );
 
   /** Persist discarted packet */
   await persistence
-    .addDiscarted(response.imei, remoteAdd, message, data)
+    .addDiscarted(response.imei, remoteAddress, message, data)
     .then((result: PersistenceResult) => {
       result.error &&
         handlePacketOnError({
           imei: imeiTemp,
-          remoteAdd,
+          remoteAddress,
           data,
           persistence,
           name: "discarted",

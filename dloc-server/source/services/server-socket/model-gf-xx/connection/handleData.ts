@@ -2,7 +2,7 @@ import { HandleDataProps } from '../../../../models/HandleDataProps';
 import { HandlePacketResult } from '../../../../models/HandlePacketResult';
 import { printMessage } from '../../../../functions/printMessage';
 
-const handleData = async ({ imei, remoteAdd, data, handlePacket, persistence }: HandleDataProps): Promise<HandlePacketResult[]> => {
+const handleData = async ({ imei, remoteAddress, data, handlePacket, persistence }: HandleDataProps): Promise<HandlePacketResult[]> => {
   /** Save results */
   const results: HandlePacketResult[] = [];
 
@@ -16,7 +16,7 @@ const handleData = async ({ imei, remoteAdd, data, handlePacket, persistence }: 
 
     /** Handle packet */
     try {
-      await handlePacket({ imei, remoteAdd, data: inPackets[i] + '#', persistence }).then((result: HandlePacketResult) => {
+      await handlePacket({ imei, remoteAddress, data: inPackets[i] + '#', persistence }).then((result: HandlePacketResult) => {
         /** Save result */
         results.push(result);
         /** Error handling packet */
@@ -26,7 +26,7 @@ const handleData = async ({ imei, remoteAdd, data, handlePacket, persistence }: 
       });
     } catch (err: Error | any) {
       const printImei = imei !== '' ? imei : '---------------';
-      printMessage(`[${printImei}] (${remoteAdd}) error handling packet (1) (${err?.message ?? 'unknown error'}) packet [${inPackets[i]?.split(',')?.[0] ?? inPackets[i]}]`);
+      printMessage(`[${printImei}] (${remoteAddress}) error handling packet (1) (${err?.message ?? 'unknown error'}) packet [${inPackets[i]?.split(',')?.[0] ?? inPackets[i]}]`);
       // throw err;
     }
   }

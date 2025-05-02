@@ -8,12 +8,12 @@ const persistence = new mySqlPersistence();
 
 test('Simulate command [TRVYP16]', async () => {
   const imei = '869207032612724';
-  const remoteAdd = '127.0.0.1';
+  const remoteAddress = '127.0.0.1';
   const data = 'TRVYP16,10000002300010120000204000099992#';
 
   await handleData({
     imei,
-    remoteAdd,
+    remoteAddress,
     data,
     handlePacket,
     persistence,
@@ -34,12 +34,12 @@ test('Simulate command [TRVYP16]', async () => {
 
 test('Simulate command [TRVYP02]', async () => {
   const imei = '869207032612724';
-  const remoteAdd = '127.0.0.1';
+  const remoteAddress = '127.0.0.1';
   const data = 'TRVYP02,214042006963593,8934041422092533560F#';
 
   await handleData({
     imei,
-    remoteAdd,
+    remoteAddress,
     data,
     handlePacket,
     persistence,
@@ -60,12 +60,12 @@ test('Simulate command [TRVYP02]', async () => {
 
 test('Simulate command [TRVAP89]', async () => {
   const imei = '869207032612724';
-  const remoteAdd = '127.0.0.1';
+  const remoteAddress = '127.0.0.1';
   const data = 'TRVAP89,000001,1,0#';
 
   await handleData({
     imei,
-    remoteAdd,
+    remoteAddress,
     data,
     handlePacket,
     persistence,
@@ -86,11 +86,11 @@ test('Simulate command [TRVAP89]', async () => {
 
 test('Simulate command [TRVAP14] (ERROR)', async () => {
   const imei = '869207032612724';
-  const remoteAdd = '127.0.0.1';
+  const remoteAddress = '127.0.0.1';
   const data = 'TRVYP14240128A3951.0473N00307.1110E004.6141347056.3004100906600#';
   await handleData({
     imei,
-    remoteAdd,
+    remoteAddress,
     data,
     handlePacket,
     persistence,
@@ -111,12 +111,12 @@ test('Simulate command [TRVAP14] (ERROR)', async () => {
 
 test('Simulate command [TRVAP14]', async () => {
   const imei = '869207032612724';
-  const remoteAdd = '127.0.0.1';
+  const remoteAddress = '127.0.0.1';
   const data = 'TRVAP14,214,03,6103,4445#';
 
   await handleData({
     imei,
-    remoteAdd,
+    remoteAddress,
     data,
     handlePacket,
     persistence,
@@ -137,12 +137,12 @@ test('Simulate command [TRVAP14]', async () => {
 
 test('Simulate command [TRVYP14] (TWO PACKETS VALID DATA AND INVALID DATA)', async () => {
   const imei = '869207032612724';
-  const remoteAdd = '127.0.0.1';
+  const remoteAddress = '127.0.0.1';
   const data = 'TRVYP14231229A3933.7865N00241.3590E070.8160722109.470830120000000100004,214,03,6100,3626#TRVYP14040101V0000.0000N00000.0000E000.0001228000.001000000040000200004,214,03,6103,4444#';
 
   await handleData({
     imei,
-    remoteAdd,
+    remoteAddress,
     data,
     handlePacket,
     persistence,
@@ -165,12 +165,12 @@ test('Simulate command [TRVYP14] (TWO PACKETS VALID DATA AND INVALID DATA)', asy
 
 test('Simulate command [TRVYP14] (VALID DATA)', async () => {
   const imei = '869207032612724';
-  const remoteAdd = '127.0.0.1';
+  const remoteAddress = '127.0.0.1';
   const data = 'TRVYP14231229A3933.7865N00241.3590E070.8160722109.470830120000000100004,214,03,6100,3626#';
 
   await handleData({
     imei,
-    remoteAdd,
+    remoteAddress,
     data,
     handlePacket,
     persistence,
@@ -191,12 +191,12 @@ test('Simulate command [TRVYP14] (VALID DATA)', async () => {
 
 test('Simulate command [TRVYP14] (INVALID DATA)', async () => {
   const imei = '869207032612724';
-  const remoteAdd = '127.0.0.1';
+  const remoteAddress = '127.0.0.1';
   const data = 'TRVYP14040101V0000.0000N00000.0000E000.0001228000.001000000040000200004,214,03,6103,4444#';
 
   await handleData({
     imei,
-    remoteAdd,
+    remoteAddress,
     data,
     handlePacket,
     persistence,
@@ -217,12 +217,12 @@ test('Simulate command [TRVYP14] (INVALID DATA)', async () => {
 
 test('Simulate command [INVALID] - Check discard', async () => {
   const imei = '';
-  const remoteAdd = '127.0.0.1';
+  const remoteAddress = '127.0.0.1';
   const data = 'INVALID-PACKET';
 
   await handleData({
     imei,
-    remoteAdd,
+    remoteAddress,
     data,
     handlePacket,
     persistence,
@@ -241,12 +241,12 @@ test('Simulate command [INVALID] - Check discard', async () => {
 
 test('Simulate command [TRVAP00] - start connection', async () => {
   const imei = '';
-  const remoteAdd = '127.0.0.1';
+  const remoteAddress = '127.0.0.1';
   const data = 'TRVAP00869207032612724#';
 
   await handleData({
     imei,
-    remoteAdd,
+    remoteAddress,
     data,
     handlePacket,
     persistence,

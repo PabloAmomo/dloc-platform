@@ -4,7 +4,7 @@ import net from 'node:net';
 
 export interface HandleDataProps {
   imei: string;
-  remoteAdd: string;
+  remoteAddress: string;
   data: string;
   handlePacket: HandlePacket;
   persistence: Persistence;

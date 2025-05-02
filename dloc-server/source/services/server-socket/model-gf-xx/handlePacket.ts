@@ -19,7 +19,7 @@ const noImei: string = "no imei received";
 const handlePacket: HandlePacket = async (
   props: HandlePacketProps
 ): Promise<HandlePacketResult> => {
-  const { imei, remoteAdd, data, persistence } = props;
+  const { imei, remoteAddress: remoteAddress, data, persistence } = props;
 
   let updateLastActivity: boolean = false;
   let response: HandlePacketResult = { imei, error: "", response: "" };
@@ -36,7 +36,7 @@ const handlePacket: HandlePacket = async (
 
     /** Update last activity */
     if (response.imei !== "") updateLastActivity = true;
-    printMessage(`[${imeiTemp}] (${remoteAdd}) imei [${response.imei}]`);
+    printMessage(`[${imeiTemp}] (${remoteAddress}) imei [${response.imei}]`);
 
     response.response = "TRVBP00" + getUtcDateTime(false) + "#";
   }
@@ -54,7 +54,7 @@ const handlePacket: HandlePacket = async (
     );
     if (regexIndex != -1)
       printMessage(
-        `[${imeiTemp}] (${remoteAdd}) process data (REGEX ${regexIndex}) [${
+        `[${imeiTemp}] (${remoteAddress}) process data (REGEX ${regexIndex}) [${
           data.split(",")[0]
         }]`
       );
@@ -66,7 +66,7 @@ const handlePacket: HandlePacket = async (
         true,
         persistence,
         imeiTemp,
-        remoteAdd,
+        remoteAddress,
         data,
         response
       );
@@ -74,7 +74,7 @@ const handlePacket: HandlePacket = async (
     /** Create location packet and persist */
     const locationPacket: PositionPacket | undefined = createLocationPacket(
       response.imei,
-      remoteAdd,
+      remoteAddress,
       values,
       GpsAccuracy.unknown,
       "{}"
@@ -87,7 +87,7 @@ const handlePacket: HandlePacket = async (
         false,
         persistence,
         imeiTemp,
-        remoteAdd,
+        remoteAddress,
         data,
         response
       );
@@ -98,7 +98,7 @@ const handlePacket: HandlePacket = async (
     if (!locationPacket.valid) {
       /** Invalid position, try to get location from LBS */
       printMessage(
-        `[${imeiTemp}] (${remoteAdd}) invalid position (NOT 'A') [${
+        `[${imeiTemp}] (${remoteAddress}) invalid position (NOT 'A') [${
           data.split(",")[0]
         }]`
       );
@@ -109,7 +109,7 @@ const handlePacket: HandlePacket = async (
         packetType,
         persistence,
         imeiTemp,
-        remoteAdd,
+        remoteAddress,
         response
       );
       if ("error" in lbsGetResponse && lbsGetResponse.error)
@@ -131,7 +131,7 @@ const handlePacket: HandlePacket = async (
 
       await locationAddPositionAndUpdateDevice(
         imeiTemp,
-        remoteAdd,
+        remoteAddress,
         locationPacket,
         persistence,
         () => {},
@@ -146,7 +146,7 @@ const handlePacket: HandlePacket = async (
           true,
           persistence,
           imeiTemp,
-          remoteAdd,
+          remoteAddress,
           data,
           response
         );
@@ -167,7 +167,7 @@ const handlePacket: HandlePacket = async (
         true,
         persistence,
         imeiTemp,
-        remoteAdd,
+        remoteAddress,
         data,
         response
       );
@@ -178,7 +178,7 @@ const handlePacket: HandlePacket = async (
       packetType,
       persistence,
       imeiTemp,
-      remoteAdd,
+      remoteAddress,
       response
     );
     if ("error" in lbsGetResponse && lbsGetResponse.error)
@@ -209,7 +209,7 @@ const handlePacket: HandlePacket = async (
         true,
         persistence,
         imeiTemp,
-        remoteAdd,
+        remoteAddress,
         data,
         response
       );
@@ -221,7 +221,7 @@ const handlePacket: HandlePacket = async (
         const batteryLevel: number = parseInt(data.substring(14, 17) ?? "-1");
         await locationUpdateBattertAndLastActivity(
           imeiTemp,
-          remoteAdd,
+          remoteAddress,
           persistence,
           batteryLevel
         );
@@ -241,7 +241,7 @@ const handlePacket: HandlePacket = async (
         true,
         persistence,
         imeiTemp,
-        remoteAdd,
+        remoteAddress,
         data,
         response
       );
@@ -254,7 +254,7 @@ const handlePacket: HandlePacket = async (
   // ------------------------------------------------
   else if (data.startsWith("TRVAP20") || data.startsWith("TRVAP61")) {
     printMessage(
-      `[${imeiTemp}] (${remoteAdd}) received no response needed [${data}]`
+      `[${imeiTemp}] (${remoteAddress}) received no response needed [${data}]`
     );
   }
 
@@ -266,7 +266,7 @@ const handlePacket: HandlePacket = async (
     printMessage(
       `[${
         imeiTemp == "" ? "---------------" : response.imei
-      }] (${remoteAdd}) confirmed TRVWP02 packet received`
+      }] (${remoteAddress}) confirmed TRVWP02 packet received`
     );
   }
 
@@ -275,7 +275,7 @@ const handlePacket: HandlePacket = async (
   // ---------------------------------------------
   else {
     printMessage(
-      `[${imeiTemp}] (${remoteAdd}) command unknown in data [${
+      `[${imeiTemp}] (${remoteAddress}) command unknown in data [${
         data.length > 20 ? data.substring(0, 20) + "..." : data
       }...]`
     );
@@ -284,7 +284,7 @@ const handlePacket: HandlePacket = async (
       false,
       persistence,
       imeiTemp,
-      remoteAdd,
+      remoteAddress,
       data,
       response
     );
@@ -293,7 +293,7 @@ const handlePacket: HandlePacket = async (
   /** Update last activity and add history */
   await locationUpdateLastActivityAndAddHistory(
     imeiTemp,
-    remoteAdd,
+    remoteAddress,
     data,
     persistence,
     updateLastActivity
@@ -304,7 +304,7 @@ const handlePacket: HandlePacket = async (
     response.response !== ""
       ? `response [${response.response}]`
       : `no response to send for packet [${data}]`;
-  printMessage(`[${imeiTemp}] (${remoteAdd}) ${message}`);
+  printMessage(`[${imeiTemp}] (${remoteAddress}) ${message}`);
 
   /** Return imei */
   return response;
