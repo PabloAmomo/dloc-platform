@@ -9,11 +9,10 @@ import { REGEX_PACKETS } from "../../../functions/packetParseREGEX";
 import { GpsAccuracy } from "../../../models/GpsAccuracy";
 import getValuesFromStringByRegexs from "../../../functions/getValuesFromStringByRegex";
 import discardData from "../../../functions/discardData";
-import updateDeviceAndAddPosition from "../../../functions/updateDeviceAndAddPosition";
 import getLbsLocation from "../../../functions/getLbsLocation";
 import updateBattery from "../../../functions/updateBattery";
 import locationUpdateLastActivityAndAddHistory from "../../../functions/locationUpdateLastActivityAndAddHistory";
-import { handlePacketOnError } from "../../../functions/handlePacketOnError";
+import locationAddPositionAndUpdateDevice from "../../../functions/locationAddPositionAndUpdateDevice";
 
 const noImei: string = "no imei received";
 
@@ -126,15 +125,32 @@ const handlePacket: HandlePacket = async (
     }
 
     /** Add position and update device */
-    if (locationPacket.valid)
-      await updateDeviceAndAddPosition(
-        locationPacket,
-        persistence,
+    if (locationPacket.valid) {
+      let oldPacket: boolean = false;
+      const oldPacketMessage = "old packet";
+
+      await locationAddPositionAndUpdateDevice(
         imeiTemp,
         remoteAdd,
-        data,
-        response
+        locationPacket,
+        persistence,
+        () => {},
+        (error) => {
+          oldPacket = error?.message === "old packet";
+        }
       );
+
+      if (oldPacket)
+        await discardData(
+          oldPacketMessage,
+          true,
+          persistence,
+          imeiTemp,
+          remoteAdd,
+          data,
+          response
+        );
+    }
 
     response.response = `TRVZP${data.substring(5, 7)}#`;
   }
@@ -268,32 +284,12 @@ const handlePacket: HandlePacket = async (
   }
 
   /** Update last activity and add history */
-  locationUpdateLastActivityAndAddHistory(
+  await locationUpdateLastActivityAndAddHistory(
     imeiTemp,
     remoteAdd,
     data,
     persistence,
-    updateLastActivity,
-    (error) => {
-      handlePacketOnError({
-        imei: imeiTemp,
-        remoteAdd,
-        data,
-        persistence,
-        name: "lastActivity",
-        error,
-      });
-    },
-    (error) => {
-      handlePacketOnError({
-        imei: imeiTemp,
-        remoteAdd,
-        data,
-        persistence,
-        name: "history",
-        error,
-      });
-    }
+    updateLastActivity
   );
 
   /** */

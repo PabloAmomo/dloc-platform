@@ -14,8 +14,7 @@ async function updateDeviceAndAddPosition(
   remoteAdd: string,
   data: string,
   response: HandlePacketResult
-): Promise<HandlePacketResult> {
-
+): Promise<void> {
   /** Add location packet to cache */
   printMessage(
     `[${imeiTemp}] (${remoteAdd}) updating device [${JSON.stringify(
@@ -68,18 +67,17 @@ async function updateDeviceAndAddPosition(
         );
     });
 
-  /** Report error (or not) */
-  return !isOldPacket
-    ? response
-    : await discardData(
-        oldPacketMessage,
-        true,
-        persistence,
-        imeiTemp,
-        remoteAdd,
-        data,
-        response
-      );
+  if (isOldPacket) {
+    await discardData(
+      oldPacketMessage,
+      true,
+      persistence,
+      imeiTemp,
+      remoteAdd,
+      data,
+      response
+    );
+  }
 }
 
 export default updateDeviceAndAddPosition;

@@ -8,7 +8,9 @@ async function locationAddPositionAndUpdateDevice(
   imei: string,
   remoteAddress: string,
   positionPacket: PositionPacket,
-  persistence: Persistence
+  persistence: Persistence,
+  onErrorAddPosition?: (error: Error) => void,
+  onErrorUpdateDevice?: (error: Error) => void
 ): Promise<string> {
   var message: string = "ok";
 
@@ -31,6 +33,8 @@ async function locationAddPositionAndUpdateDevice(
             result.error?.message || result.error
           }]`
         );
+
+        onErrorAddPosition && onErrorAddPosition(result.error);
       }
     });
   if (message !== "ok") return message;
@@ -51,6 +55,8 @@ async function locationAddPositionAndUpdateDevice(
             result.error?.message || result.error
           }]`
         );
+
+        onErrorUpdateDevice && onErrorUpdateDevice(result.error);
       }
     });
 
