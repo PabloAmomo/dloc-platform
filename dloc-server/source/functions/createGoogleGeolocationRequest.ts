@@ -1,3 +1,5 @@
+import { GoogleGeolocationRequest } from "../models/GoogleGeolocationRequest";
+
 export type PacketType = "TRVYP14" | "TRVYP15" | "TRVAP14";
 
 function createGoogleGeolocationRequest(
