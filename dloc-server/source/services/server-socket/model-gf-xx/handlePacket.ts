@@ -10,9 +10,9 @@ import { GpsAccuracy } from "../../../models/GpsAccuracy";
 import getValuesFromStringByRegexs from "../../../functions/getValuesFromStringByRegex";
 import discardData from "../../../functions/discardData";
 import getLbsLocation from "../../../functions/getLbsLocation";
-import updateBattery from "../../../functions/updateBattery";
 import locationUpdateLastActivityAndAddHistory from "../../../functions/locationUpdateLastActivityAndAddHistory";
 import locationAddPositionAndUpdateDevice from "../../../functions/locationAddPositionAndUpdateDevice";
+import locationUpdateBattertAndLastActivity from "../../../functions/locationUpdateBatteryAndLastActivity";
 
 const noImei: string = "no imei received";
 
@@ -217,8 +217,15 @@ const handlePacket: HandlePacket = async (
     /** Process Battery level on packet heartbeat */
     if (data.startsWith("TRVYP16")) {
       if (data.length < 18) updateLastActivity = true;
-      else
-        await updateBattery(data, persistence, response, imeiTemp, remoteAdd);
+      else {
+        const batteryLevel: number = parseInt(data.substring(14, 17) ?? "-1");
+        await locationUpdateBattertAndLastActivity(
+          imeiTemp,
+          remoteAdd,
+          persistence,
+          batteryLevel
+        );
+      }
     }
 
     response.response = `TRVZP${data.substring(5, 7)}#`;
