@@ -5,6 +5,7 @@ import { PositionPacket } from "../models/PositionPacket";
 import discardData from "./discardData";
 import { handlePacketOnError } from "./handlePacketOnError";
 import { printMessage } from "./printMessage";
+import { CACHE_LOCATION } from "../infraestucture/caches/cacheLocation";
 
 async function updateDeviceAndAddPosition(
   locationPacket: PositionPacket,
@@ -14,6 +15,9 @@ async function updateDeviceAndAddPosition(
   data: string,
   response: HandlePacketResult
 ): Promise<HandlePacketResult> {
+  /** Add location packet to cache */
+  CACHE_LOCATION.set(imeiTemp, locationPacket);
+
   /** Add position */
   await persistence
     .addPosition(locationPacket)
