@@ -16,8 +16,8 @@ class mySqlPersistence implements Persistence {
   addDiscarted(imei: string, remoteAddress: string, message: string, data: string): Promise<PersistenceResult> {
     return wrapper.handleAddDiscarted(imei, remoteAddress, message, data);
   }
-  addPosition(locationPacket: PositionPacket):  Promise<PersistenceResult> {
-    return wrapper.handleAddPosition(locationPacket);
+  addPosition(positionPacket: PositionPacket):  Promise<PersistenceResult> {
+    return wrapper.handleAddPosition(positionPacket);
   }
   addBatteryLevel(imei: string, batteryLevel: number):  Promise<PersistenceResult> {
     return wrapper.handleAddBatteryLevel(imei, batteryLevel);
@@ -25,8 +25,8 @@ class mySqlPersistence implements Persistence {
   addHistory(imei: string, remoteAddress: string, data: string, response: string):  Promise<PersistenceResult> {
     return wrapper.handleAddHistory(imei, remoteAddress, data, response);
   }
-  updateDevice(locationPacket: PositionPacket):  Promise<PersistenceResult> {
-    return wrapper.handleUpdateDevice(locationPacket);
+  updateDevice(positionPacket: PositionPacket):  Promise<PersistenceResult> {
+    return wrapper.handleUpdateDevice(positionPacket);
   }
   updateLastActivity(imei: string):  Promise<PersistenceResult> {
     return wrapper.handleUpdateLastActivity(imei);

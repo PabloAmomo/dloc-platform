@@ -1,4 +1,4 @@
-import { createPositionPacket } from "../../../functions/createLocationPacket";
+import { createPositionPacket } from "../../../functions/createPositionPacket";
 import { getUtcDateTime } from "../../../functions/getUtcDateTime";
 import { HandlePacket } from "../../../models/HandlePacket";
 import { HandlePacketProps } from "../../../models/HandlePacketProps";
@@ -72,7 +72,7 @@ const handlePacket: HandlePacket = async (
       );
 
     /** Create location packet and persist */
-    const locationPacket: PositionPacket | undefined = createPositionPacket(
+    const positionPacket: PositionPacket | undefined = createPositionPacket(
       response.imei,
       remoteAddress,
       values,
@@ -81,7 +81,7 @@ const handlePacket: HandlePacket = async (
     );
 
     /** Check if location packet was created */
-    if (!locationPacket)
+    if (!positionPacket)
       return await discardData(
         "error creating location packet",
         false,
@@ -95,7 +95,7 @@ const handlePacket: HandlePacket = async (
     /** Update last activity */
     updateLastActivity = true;
 
-    if (!locationPacket.valid) {
+    if (!positionPacket.valid) {
       /** Invalid position, try to get location from LBS */
       printMessage(
         `[${imeiTemp}] (${remoteAddress}) invalid position (NOT 'A') [${
@@ -117,22 +117,22 @@ const handlePacket: HandlePacket = async (
 
       /** Process LBS data */
       if ("location" in lbsGetResponse) {
-        locationPacket.lat = lbsGetResponse.location.lat;
-        locationPacket.lng = lbsGetResponse.location.lng;
-        locationPacket.valid = true;
-        locationPacket.accuracy = GpsAccuracy.lbs;
+        positionPacket.lat = lbsGetResponse.location.lat;
+        positionPacket.lng = lbsGetResponse.location.lng;
+        positionPacket.valid = true;
+        positionPacket.accuracy = GpsAccuracy.lbs;
       }
     }
 
     /** Add position and update device */
-    if (locationPacket.valid) {
+    if (positionPacket.valid) {
       let oldPacket: boolean = false;
       const oldPacketMessage = "old packet";
 
       await locationAddPositionAndUpdateDevice(
         imeiTemp,
         remoteAddress,
-        locationPacket,
+        positionPacket,
         persistence,
         () => {},
         (error) => {
