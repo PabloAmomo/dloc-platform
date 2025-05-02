@@ -8,17 +8,17 @@ import { printMessage } from "./printMessage";
 async function getGoogleGeolocation(
   lbsQuery: GoogleGeolocationRequest,
   imei: string,
-  remoteAdd: string
+  remoteAddress: string
 ): Promise<GoogleGeolocationResponse | {}> {
   if (!ENABLE_LBS) {
-    printMessage(`[${imei}] (${remoteAdd}) Google Geolocation disabled`);
+    printMessage(`[${imei}] (${remoteAddress}) Google Geolocation disabled`);
     return {};
   }
 
   const apiKey = process.env.GOOGLE_GEOCODING_API_KEY;
   if (!apiKey) {
     throw new Error(
-      `[${imei}] (${remoteAdd}) Google geolocate API key is not set`
+      `[${imei}] (${remoteAddress}) Google geolocate API key is not set`
     );
   }
 
@@ -61,19 +61,19 @@ async function getGoogleGeolocation(
       /** Only use cache if wifi access points match */
       if (wifiApCoincidense > 0) {
         printMessage(
-          `[${imei}] (${remoteAdd}) [LBS] Cache hit for ${cacheKey} - ${cacheValue}`
+          `[${imei}] (${remoteAddress}) [LBS] Cache hit for ${cacheKey} - ${cacheValue}`
         );
         return cacheValue;
       } else
         printMessage(
-          `[${imei}] (${remoteAdd}) [LBS] Cache hit for ${cacheKey} - ${cacheValue} but wifi access points do not match (${wifiApCoincidense} matches)`
+          `[${imei}] (${remoteAddress}) [LBS] Cache hit for ${cacheKey} - ${cacheValue} but wifi access points do not match (${wifiApCoincidense} matches)`
         );
     }
   }
 
   /** No cache hit, make request */
   printMessage(
-    `[${imei}] (${remoteAdd}) [LBS] Cache miss for ${cacheKey} using Google Geolocation`
+    `[${imei}] (${remoteAddress}) [LBS] Cache miss for ${cacheKey} using Google Geolocation`
   );
 
   const url = `https://www.googleapis.com/geolocation/v1/geolocate?key=${apiKey}`;
@@ -93,7 +93,7 @@ async function getGoogleGeolocation(
       CACHE_LBS.set(cacheKey, { request: lbsQuery, response: returnValue });
 
       printMessage(
-        `[${imei}] (${remoteAdd}) [LBS] Cache set for ${cacheKey} ${JSON.stringify(
+        `[${imei}] (${remoteAddress}) [LBS] Cache set for ${cacheKey} ${JSON.stringify(
           returnValue
         )}`
       );

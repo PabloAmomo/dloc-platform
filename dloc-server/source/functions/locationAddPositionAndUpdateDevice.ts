@@ -1,4 +1,4 @@
-import { CACHE_LOCATION } from "../infraestucture/caches/cacheLocation";
+import { CACHE_POSITION } from "../infraestucture/caches/cachePosition";
 import { PersistenceResult } from "../infraestucture/models/PersistenceResult";
 import { Persistence } from "../models/Persistence";
 import { PositionPacket } from "../models/PositionPacket";
@@ -20,7 +20,7 @@ async function locationAddPositionAndUpdateDevice(
       positionPacket
     )}]`
   );
-  CACHE_LOCATION.set(imei, positionPacket);
+  CACHE_POSITION.set(imei, positionPacket);
 
   /** Add position */
   await persistence

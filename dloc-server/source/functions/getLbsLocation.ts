@@ -14,17 +14,17 @@ async function getLbsLocation(
   packetType: PacketType,
   persistence: Persistence,
   imeiTemp: string,
-  remoteAdd: string,
+  remoteAddress: string,
   response: HandlePacketResult
 ): Promise<HandlePacketResult | GoogleGeolocationResponse | {}> {
   if (!ENABLE_LBS) {
     printMessage(
-      `[${imeiTemp}] (${remoteAdd}) LBS (${packetType}) Google Geolocation disabled`
+      `[${imeiTemp}] (${remoteAddress}) LBS (${packetType}) Google Geolocation disabled`
     );
     return {};
   }
   printMessage(
-    `[${imeiTemp}] (${remoteAdd}) LBS (${packetType}) Google Geolocation enabled (Watch the Google Geolocation API quota)`
+    `[${imeiTemp}] (${remoteAddress}) LBS (${packetType}) Google Geolocation enabled (Watch the Google Geolocation API quota)`
   );
 
   /** LBS query */
@@ -35,20 +35,20 @@ async function getLbsLocation(
       true,
       persistence,
       imeiTemp,
-      remoteAdd,
+      remoteAddress,
       data,
       response
     );
 
   printMessage(
-    `[${imeiTemp}] (${remoteAdd}) LBS (${packetType}) request Google Geolocation`
+    `[${imeiTemp}] (${remoteAddress}) LBS (${packetType}) request Google Geolocation`
   );
 
   /** LBS query Google */
-  const lbsResponse = await getGoogleGeolocation(lbsQuery, imeiTemp, remoteAdd);
+  const lbsResponse = await getGoogleGeolocation(lbsQuery, imeiTemp, remoteAddress);
 
   printMessage(
-    `[${imeiTemp}] (${remoteAdd}) LBS (${packetType}) Google Geolocation response [${JSON.stringify(
+    `[${imeiTemp}] (${remoteAddress}) LBS (${packetType}) Google Geolocation response [${JSON.stringify(
       lbsResponse
     )}]`
   );

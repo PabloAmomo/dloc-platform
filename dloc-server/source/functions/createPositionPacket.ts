@@ -5,11 +5,11 @@ import { parseLatOrLng } from './parseLatOrLng';
 import { parseUtcDateTime } from './parseUtcDateTime';
 import { printMessage } from './printMessage';
 
-const createPositionPacket = (imei: string, remoteAdd: string, values: string[], accuracy: GpsAccuracy, activity: string): PositionPacket | undefined => {
+const createPositionPacket = (imei: string, remoteAddress: string, values: string[], accuracy: GpsAccuracy, activity: string): PositionPacket | undefined => {
   try {
     return {
       imei,
-      remoteAddress: remoteAdd,
+      remoteAddress,
       dateTimeUtc: parseUtcDateTime(values[2], values[9]),
       valid: (values[3] ?? '').toUpperCase().trim() === 'A',
       lat: parseLatOrLng(values[4], values[5] as Direction),
@@ -42,7 +42,7 @@ const createPositionPacket = (imei: string, remoteAdd: string, values: string[],
       // wifi: values?.[26] ?? '',
     };
   } catch (err: Error | any) {
-    printMessage(`[${imei}] (${remoteAdd}) error updating device [${err.message}]`);
+    printMessage(`[${imei}] (${remoteAddress}) error updating device [${err.message}]`);
     return undefined;
   }
 };
