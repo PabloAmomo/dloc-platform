@@ -1,4 +1,7 @@
 import { CACHE_LBS } from "../infraestucture/caches/cacheLBS";
+import { GoogleGeolocationRequest } from "../models/GoogleGeolocationRequest";
+import { GoogleGeolocationResponse } from "../models/GoogleGeolocationResponse";
+import { WifiAccessPoint } from "../models/WifiAccessPoint";
 import { ENABLE_LBS } from "../server";
 import { printMessage } from "./printMessage";
 
@@ -7,12 +10,11 @@ async function getGoogleGeolocation(
   imei: string,
   remoteAdd: string
 ): Promise<GoogleGeolocationResponse | {}> {
-
   if (!ENABLE_LBS) {
     printMessage(`[${imei}] (${remoteAdd}) Google Geolocation disabled`);
     return {};
   }
-  
+
   const apiKey = process.env.GOOGLE_GEOCODING_API_KEY;
   if (!apiKey) {
     throw new Error(
@@ -31,6 +33,7 @@ async function getGoogleGeolocation(
     };
   }
 
+  /** Generate cache key */
   let cacheKey = "";
   if (
     "homeMobileCountryCode" in lbsQuery &&
@@ -42,13 +45,33 @@ async function getGoogleGeolocation(
   if (cacheKey) {
     const cacheValue = CACHE_LBS.get(cacheKey);
 
-    if (cacheValue) {
-      printMessage(
-        `[${imei}] (${remoteAdd}) [LBS] Cache hit for ${cacheKey} - ${cacheValue}`
+    /** Check if wifi access points match */
+    let wifiApCoincidense = 0;
+    if (
+      "wifiAccessPoints" in lbsQuery &&
+      cacheValue &&
+      "wifiAccessPoints" in cacheValue.request
+    )
+      wifiApCoincidense = countMatchingMacAddresses(
+        lbsQuery.wifiAccessPoints,
+        cacheValue.request.wifiAccessPoints
       );
-      return cacheValue;
+
+    if (cacheValue) {
+      /** Only use cache if wifi access points match */
+      if (wifiApCoincidense > 0) {
+        printMessage(
+          `[${imei}] (${remoteAdd}) [LBS] Cache hit for ${cacheKey} - ${cacheValue}`
+        );
+        return cacheValue;
+      } else
+        printMessage(
+          `[${imei}] (${remoteAdd}) [LBS] Cache hit for ${cacheKey} - ${cacheValue} but wifi access points do not match (${wifiApCoincidense} matches)`
+        );
     }
   }
+
+  /** No cache hit, make request */
   printMessage(
     `[${imei}] (${remoteAdd}) [LBS] Cache miss for ${cacheKey} using Google Geolocation`
   );
@@ -66,7 +89,8 @@ async function getGoogleGeolocation(
 
   if (response.status === 200) {
     if (cacheKey) {
-      CACHE_LBS.set(cacheKey, returnValue);
+      /** Set cache */
+      CACHE_LBS.set(cacheKey, { request: lbsQuery, response: returnValue });
 
       printMessage(
         `[${imei}] (${remoteAdd}) [LBS] Cache set for ${cacheKey} - ${JSON.stringify(
@@ -80,3 +104,21 @@ async function getGoogleGeolocation(
 }
 
 export default getGoogleGeolocation;
+
+function countMatchingMacAddresses(
+  arr1: WifiAccessPoint[],
+  arr2: WifiAccessPoint[]
+): number {
+  const macSet1 = new Set(
+    arr1.map((device) => device.macAddress.toLowerCase())
+  );
+  let count = 0;
+
+  for (const device of arr2) {
+    if (macSet1.has(device.macAddress.toLowerCase())) {
+      count++;
+    }
+  }
+
+  return count;
+}

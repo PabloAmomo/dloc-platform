@@ -1,15 +1,12 @@
-type GoogleGeolocationRequest =  {
-  homeMobileCountryCode: string;
-  homeMobileNetworkCode: string;
-  cellTowers: {
-    cellId: string;
-    locationAreaCode: string;
-    mobileCountryCode: string;
-    mobileNetworkCode: string;
-  }[];
-  wifiAccessPoints: 
-    {
-      macAddress: string;
-      signalStrength: number;
-    }[]
-} | { error: string };
+import { CellTower } from "./CellTower";
+import { WifiAccessPoint } from "./WifiAccessPoint";
+
+export type GoogleGeolocationRequest =
+  | {
+      homeMobileCountryCode: string;
+      homeMobileNetworkCode: string;
+      cellTowers: CellTower[];
+      wifiAccessPoints: WifiAccessPoint[];
+    }
+  | { error: string };
+
