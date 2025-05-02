@@ -1,5 +1,6 @@
 import { HandlePacketResult } from "../models/HandlePacketResult";
 import { Persistence } from "../models/Persistence";
+import { ENABLE_LBS } from "../server";
 import createGoogleGeolocationRequest, { PacketType } from "./createGoogleGeolocationRequest";
 import discardData from "./discardData";
 import getGoogleGeolocation from "./getGoogleGeolocation";
@@ -12,13 +13,13 @@ async function getLbsLocation(
   imeiTemp: string,
   remoteAdd: string,
   response: HandlePacketResult
-): Promise<HandlePacketResult | GoogleGeolocationResponse> {
+): Promise<HandlePacketResult | GoogleGeolocationResponse | {}> { 
 
-  if (process.env.ENABLE_LBS !== 'true') {
+  if (!ENABLE_LBS) {
     printMessage(
       `[${imeiTemp}] (${remoteAdd}) LBS (${packetType}) Google Geolocation disabled`
     );
-    return {} as GoogleGeolocationResponse;
+    return {};
   }
 
   /** LBS query */
