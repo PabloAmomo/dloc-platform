@@ -8,7 +8,7 @@ import { startServerSocket } from "./inits/startServerSocket";
 import dotenv from "dotenv";
 import routes from "./controllers/server-http/routes";
 import { initCacheLBS } from "./infraestucture/caches/cacheLBS";
-import { initCacheLocation } from "./infraestucture/caches/cacheLocation";
+import { initCachePosition } from "./infraestucture/caches/cachePosition";
 
 /** Load environment variables */
 dotenv.config();
@@ -50,7 +50,7 @@ printMessage(
 if (ENABLE_LBS) initCacheLBS();
 
 /** Start Location Cache */
-initCacheLocation();
+initCachePosition();
 
 /** Start Persistence */
 startPersistence(new mySqlPersistence());
