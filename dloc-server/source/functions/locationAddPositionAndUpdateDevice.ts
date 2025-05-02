@@ -13,6 +13,11 @@ async function locationAddPositionAndUpdateDevice(
   var message: string = "ok";
 
   /** Add location packet to cache */
+  printMessage(
+    `[${imei}] (${remoteAddress}) updating device [${JSON.stringify(
+      positionPacket
+    )}]`
+  );
   CACHE_LOCATION.set(imei, positionPacket);
 
   /** Add position */

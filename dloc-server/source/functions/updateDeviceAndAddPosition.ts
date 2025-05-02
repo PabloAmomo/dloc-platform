@@ -15,7 +15,13 @@ async function updateDeviceAndAddPosition(
   data: string,
   response: HandlePacketResult
 ): Promise<HandlePacketResult> {
+
   /** Add location packet to cache */
+  printMessage(
+    `[${imeiTemp}] (${remoteAdd}) updating device [${JSON.stringify(
+      locationPacket
+    )}]`
+  );
   CACHE_LOCATION.set(imeiTemp, locationPacket);
 
   /** Add position */
