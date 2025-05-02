@@ -7,7 +7,8 @@ import { startServerHTTP } from "./inits/startServerHTTP";
 import { startServerSocket } from "./inits/startServerSocket";
 import dotenv from "dotenv";
 import routes from "./controllers/server-http/routes";
-import { Cache } from "./infraestucture/cache/cache";
+import { initCacheLBS } from "./infraestucture/caches/cacheLBS";
+import { initCacheLocation } from "./infraestucture/caches/cacheLocation";
 
 /** Load environment variables */
 dotenv.config();
@@ -36,17 +37,11 @@ if (!PORT_HTTP && !PORT_SOCKET) {
   process.exit(1);
 }
 
-/** LBS Status */
-printMessage(
-  `Google Geolocation: ${
-    process.env.ENABLE_LBS === "true"
-      ? "enabled (Watch the Google Geolocation API quota)"
-      : "disabled"
-  }`
-);
+/** Start Location Cache */
+initCacheLocation();
 
 /** Start LBS Cache */
-export const LBS_CACHE = new Cache<string>(3600); // 1 hour in seconds
+initCacheLBS();
 
 /** Start Persistence */
 startPersistence(new mySqlPersistence());
