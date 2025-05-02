@@ -1,7 +1,7 @@
 import { CellTower } from "./CellTower";
 import { WifiAccessPoint } from "./WifiAccessPoint";
 
-export type GoogleGeolocationRequest =
+export type GoogleGeoPositionRequest =
   | {
       homeMobileCountryCode: string;
       homeMobileNetworkCode: string;

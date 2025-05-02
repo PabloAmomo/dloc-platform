@@ -1,17 +1,17 @@
 import { CACHE_LBS } from "../infraestucture/caches/cacheLBS";
-import { GoogleGeolocationRequest } from "../models/GoogleGeolocationRequest";
-import { GoogleGeolocationResponse } from "../models/GoogleGeolocationResponse";
+import { GoogleGeoPositionRequest } from "../models/GoogleGeoPositionRequest";
+import { GoogleGeoPositionResponse } from "../models/GoogleGeoPositionResponse";
 import { WifiAccessPoint } from "../models/WifiAccessPoint";
 import { ENABLE_LBS } from "../server";
 import { printMessage } from "./printMessage";
 
-async function getGoogleGeolocation(
-  lbsQuery: GoogleGeolocationRequest,
+async function getGoogleGeoPosition(
+  lbsQuery: GoogleGeoPositionRequest,
   imei: string,
   remoteAddress: string
-): Promise<GoogleGeolocationResponse | {}> {
+): Promise<GoogleGeoPositionResponse | {}> {
   if (!ENABLE_LBS) {
-    printMessage(`[${imei}] (${remoteAddress}) Google Geolocation disabled`);
+    printMessage(`[${imei}] (${remoteAddress}) Google Geoposition disabled`);
     return {};
   }
 
@@ -85,7 +85,7 @@ async function getGoogleGeolocation(
     body: JSON.stringify(lbsQuery),
   });
 
-  const returnValue: GoogleGeolocationResponse = await response.json();
+  const returnValue: GoogleGeoPositionResponse = await response.json();
 
   if (response.status === 200) {
     if (cacheKey) {
@@ -103,7 +103,7 @@ async function getGoogleGeolocation(
   return returnValue;
 }
 
-export default getGoogleGeolocation;
+export default getGoogleGeoPosition;
 
 function countMatchingMacAddresses(
   arr1: WifiAccessPoint[],

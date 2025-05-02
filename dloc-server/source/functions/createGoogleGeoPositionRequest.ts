@@ -1,11 +1,11 @@
-import { GoogleGeolocationRequest } from "../models/GoogleGeolocationRequest";
+import { GoogleGeoPositionRequest } from "../models/GoogleGeoPositionRequest";
 
 export type PacketType = "TRVYP14" | "TRVYP15" | "TRVAP14";
 
-function createGoogleGeolocationRequest(
+function createGoogleGeoPositionRequest(
   packet: string,
   packetType: PacketType
-): GoogleGeolocationRequest {
+): GoogleGeoPositionRequest {
   if (!packet.startsWith(packetType)) {
     return {
       error: `Invalid ${packetType} packet format`,
@@ -39,7 +39,7 @@ function createGoogleGeolocationRequest(
     })
     ?.filter((wifi) => wifi.macAddress) ?? [];
 
-  const lbsQuery: GoogleGeolocationRequest = {
+  const lbsQuery: GoogleGeoPositionRequest = {
     homeMobileCountryCode: mcc,
     homeMobileNetworkCode: mnc,
     cellTowers: [
@@ -56,4 +56,4 @@ function createGoogleGeolocationRequest(
   return lbsQuery;
 }
 
-export default createGoogleGeolocationRequest;
+export default createGoogleGeoPositionRequest;

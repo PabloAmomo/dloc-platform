@@ -1,4 +1,4 @@
-export type GoogleGeolocationResponse = {
+export type GoogleGeoPositionResponse = {
   "location": {
     "lat": number;
     "lng": number;

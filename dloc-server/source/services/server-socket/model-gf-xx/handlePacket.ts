@@ -9,7 +9,7 @@ import { REGEX_PACKETS } from "../../../functions/packetParseREGEX";
 import { GpsAccuracy } from "../../../models/GpsAccuracy";
 import getValuesFromStringByRegexs from "../../../functions/getValuesFromStringByRegex";
 import discardData from "../../../functions/discardData";
-import getLbsLocation from "../../../functions/getLbsLocation";
+import getLbsPosition from "../../../functions/getLbsPosition";
 import positionUpdateLastActivityAndAddHistory from "../../../functions/positionUpdateLastActivityAndAddHistory";
 import positionAddPositionAndUpdateDevice from "../../../functions/positionAddPositionAndUpdateDevice";
 import positionUpdateBattertAndLastActivity from "../../../functions/positionUpdateBatteryAndLastActivity";
@@ -80,10 +80,10 @@ const handlePacket: HandlePacket = async (
       "{}"
     );
 
-    /** Check if location packet was created */
+    /** Check if position packet was created */
     if (!positionPacket)
       return await discardData(
-        "error creating location packet",
+        "error creating position packet",
         false,
         persistence,
         imeiTemp,
@@ -96,7 +96,7 @@ const handlePacket: HandlePacket = async (
     updateLastActivity = true;
 
     if (!positionPacket.valid) {
-      /** Invalid position, try to get location from LBS */
+      /** Invalid position, try to get position from LBS */
       printMessage(
         `[${imeiTemp}] (${remoteAddress}) invalid position (NOT 'A') [${
           data.split(",")[0]
@@ -104,7 +104,7 @@ const handlePacket: HandlePacket = async (
       );
 
       /** LBS query */
-      const lbsGetResponse = await getLbsLocation(
+      const lbsGetResponse = await getLbsPosition(
         data,
         packetType,
         persistence,
@@ -173,7 +173,7 @@ const handlePacket: HandlePacket = async (
       );
 
     /** LBS query */
-    const lbsGetResponse = await getLbsLocation(
+    const lbsGetResponse = await getLbsPosition(
       data,
       packetType,
       persistence,
