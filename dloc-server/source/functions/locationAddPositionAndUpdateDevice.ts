@@ -16,7 +16,7 @@ async function locationAddPositionAndUpdateDevice(
 
   /** Add location packet to cache */
   printMessage(
-    `[${imei}] (${remoteAddress}) updating device [${JSON.stringify(
+    `[${imei}] (${remoteAddress}) updating cache [${JSON.stringify(
       positionPacket
     )}]`
   );
