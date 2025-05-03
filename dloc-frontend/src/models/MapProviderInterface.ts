@@ -30,6 +30,8 @@ export interface MapProviderInterface {
   showPath: boolean;
   setShowPath: { (showPath: boolean): void };
 
+  closeAllTooltips: () => void;
+  
   bounds: LatLngArray[] | undefined;
   isUserAction: MutableRefObject<boolean>;
   visiblePaths: MapPath[];

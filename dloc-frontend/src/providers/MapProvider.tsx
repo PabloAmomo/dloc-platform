@@ -33,6 +33,15 @@ export function MapProvider({ children }: { children: any }) {
   const { devices } = useDevicesContext();
   const { user, isLoggedIn } = useUserContext();
 
+  /** Close all tooltips */
+  const closeAllTooltips = () => {
+    map?.eachLayer((layer) => {
+      if (layer.getTooltip && layer.getTooltip()) {
+        layer.closePopup();
+      }
+    });
+  };
+
   /** Get device by IMEI */
   const getDeviceByImei = (imei: string): Device | undefined =>
     devices?.find((device: Device) => device.imei === imei);
@@ -127,7 +136,7 @@ export function MapProvider({ children }: { children: any }) {
   }, [devices, selectedDevices, showPath, selectedMinutes]);
 
 
-
+  
   /** Provider */
   return (
     <MapContext.Provider
@@ -151,6 +160,7 @@ export function MapProvider({ children }: { children: any }) {
         showDevices: selectedDevices,
         showPath,
         visiblePaths,
+        closeAllTooltips,
       }}
     >
       {children}
@@ -180,4 +190,5 @@ const MapContext = createContext<MapProviderInterface>({
   showDevices: [],
   showPath: false,
   visiblePaths: [],
+  closeAllTooltips: () => logError("MapContext.closeAllTooltips"),
 });

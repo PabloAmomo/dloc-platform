@@ -20,10 +20,11 @@ const getButtonItemSx = (isActive: boolean): SxProps => {
 
 const GeoMapButtons = () => {
   const { devices } = useDevicesContext();
-  const { showPath, setShowPath, centerMapOn, setCenterMapOn, showDevices, setMapMoved, mapMoved, isUserAction, minutes, setMinutes } = useMapContext();
+  const { showPath, setShowPath, centerMapOn, setCenterMapOn, showDevices, setMapMoved, mapMoved, isUserAction, minutes, setMinutes, closeAllTooltips } = useMapContext();
 
   /** Set automatic bounds  */
   const clickCenterBounds = () => {
+    closeAllTooltips();
     setCenterMapOn(centerMapOn.type === CenterMapOnType.all ? { type: CenterMapOnType.none } : { type: CenterMapOnType.all });
     isUserAction.current = true;
     if (mapMoved) setMapMoved(false);
@@ -31,6 +32,7 @@ const GeoMapButtons = () => {
 
   /** Center on Device  */
   const clickCenterOnDevice = (device: Device) => {
+    closeAllTooltips();
     setCenterMapOn(centerMapOn.device?.imei === device.imei ? { type: CenterMapOnType.none } : { type: CenterMapOnType.device, device });
     isUserAction.current = true;
     if (mapMoved) setMapMoved(false);
@@ -38,6 +40,7 @@ const GeoMapButtons = () => {
 
   /** Center on my position  */
   const clickCenterMyPosition = () => {
+    closeAllTooltips();
     setCenterMapOn(centerMapOn.type === CenterMapOnType.myPosition ? { type: CenterMapOnType.none } : { type: CenterMapOnType.myPosition });
     isUserAction.current = true;
     if (mapMoved) setMapMoved(false);
