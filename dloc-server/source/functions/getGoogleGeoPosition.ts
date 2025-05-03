@@ -63,7 +63,7 @@ async function getGoogleGeoPosition(
         printMessage(
           `[${imei}] (${remoteAddress}) [LBS] Cache hit for ${cacheKey} - [Wifi Match: ${wifiApCoincidense}] ${cacheValue.response}`
         );
-        return cacheValue;
+        return cacheValue.response;
       } else
         printMessage(
           `[${imei}] (${remoteAddress}) [LBS] Cache hit for ${cacheKey} - ${cacheValue.response} but wifi access points do not match (${wifiApCoincidense} matches)`
