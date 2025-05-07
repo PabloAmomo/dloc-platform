@@ -94,15 +94,15 @@
     "step2": {
       "title": "2. Intervalo de disponibilidad",
       "resume": "Configura el tiempo en segundos, en que el localizador reportará su estado.",
-      "command": "md#10",
-      "extraCommand": "10 segundos",
-      "response": "MD#10 o +IN:10"
+      "command": "md#15",
+      "extraCommand": "15 segundos",
+      "response": "MD#15 o +IN:15"
     },
     "step3": {
       "title": "3. Intervalo de visibilidad",
       "resume": "Configura el tiempo en segundos, que el localizador reportará que esta encendido y operativo.",
-      "command": "heartbeat#30",
-      "extraCommand": "30 segundos",
+      "command": "heartbeat#60",
+      "extraCommand": "60 segundos",
       "response": "Heartbeat OK"
     },
     "step4": {

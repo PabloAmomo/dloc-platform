@@ -94,15 +94,15 @@
     "step2": {
       "title": "2. Availability Interval",
       "resume": "Set the time in seconds for the tracker to report its status.",
-      "command": "md#10",
-      "extraCommand": "10 seconds",
-      "response": "MD#10 or +IN:10"
+      "command": "md#15",
+      "extraCommand": "15 seconds",
+      "response": "MD#15 or +IN:15"
     },
     "step3": {
       "title": "3. Visibility Interval",
       "resume": "Set the time in seconds for the tracker to report that it is turned on and operational.",
-      "command": "heartbeat#30",
-      "extraCommand": "30 seconds",
+      "command": "heartbeat#60",
+      "extraCommand": "60 seconds",
       "response": "Heartbeat OK"
     },
     "step4": {
