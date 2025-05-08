@@ -12,8 +12,21 @@ export class Cache<T = any> {
   }
 
   set(key: string, value: T): void {
-    const expiry = this.ttl === 0 ? 0 : (Date.now() + this.ttl);
+    const expiry = this.ttl === 0 ? 0 : Date.now() + this.ttl;
     this.store.set(key, { value, expiry });
+  }
+
+  update(key: string, value: Partial<T>): void {
+    let entry = this.store.get(key);
+
+    if (!entry) entry = { value: {} as T, expiry: 0 }; // Create a new entry if it doesn't exist
+
+    // Update the value renewing the expiry
+    const expiry = this.ttl === 0 ? 0 : Date.now() + this.ttl;
+    this.store.set(key, {
+      expiry,
+      value: { ...entry.value, ...value },
+    });
   }
 
   get(key: string): T | undefined {
@@ -38,11 +51,11 @@ export class Cache<T = any> {
 
   _isExpired(key: string): boolean {
     const entry = this.store.get(key);
-    
+
     if (!entry) return true;
 
     if (entry.expiry != 0 && Date.now() > entry.expiry) {
-      this.delete(key); 
+      this.delete(key);
       return true;
     }
 
