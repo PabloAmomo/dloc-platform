@@ -9,6 +9,7 @@ import dotenv from "dotenv";
 import routes from "./controllers/server-http/routes";
 import { initCacheLBS } from "./infraestucture/caches/cacheLBS";
 import { initCachePosition } from "./infraestucture/caches/cachePosition";
+import { initCacheIMEI } from "./infraestucture/caches/cacheIMEI";
 
 /** Load environment variables */
 dotenv.config();
@@ -48,6 +49,9 @@ printMessage(
 
 /** Start LBS Cache */
 if (ENABLE_LBS) initCacheLBS();
+
+/** Start IMEI Database Cache */
+initCacheIMEI();
 
 /** Start position Cache */
 initCachePosition();
