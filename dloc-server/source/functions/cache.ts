@@ -12,29 +12,20 @@ export class Cache<T = any> {
   }
 
   set(key: string, value: T): void {
-    const expiry = Date.now() + this.ttl;
+    const expiry = this.ttl === 0 ? 0 : (Date.now() + this.ttl);
     this.store.set(key, { value, expiry });
   }
 
   get(key: string): T | undefined {
     const entry = this.store.get(key);
-    if (!entry) return undefined;
 
-    if (Date.now() > entry.expiry) {
-      this.store.delete(key); // Remove expired entry
-      return undefined;
-    }
+    if (!entry || this._isExpired(key)) return undefined; // Entry is expired or not found
 
     return entry.value;
   }
 
   has(key: string): boolean {
-    const entry = this.store.get(key);
-    if (!entry || Date.now() > entry.expiry) {
-      this.store.delete(key);
-      return false;
-    }
-    return true;
+    return !this._isExpired(key);
   }
 
   delete(key: string): boolean {
@@ -43,5 +34,18 @@ export class Cache<T = any> {
 
   clear(): void {
     this.store.clear();
+  }
+
+  _isExpired(key: string): boolean {
+    const entry = this.store.get(key);
+    
+    if (!entry) return true;
+
+    if (entry.expiry != 0 && Date.now() > entry.expiry) {
+      this.delete(key); 
+      return true;
+    }
+
+    return false;
   }
 }
