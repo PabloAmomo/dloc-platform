@@ -10,10 +10,10 @@ import net from "node:net";
 import { CACHE_POSITION } from "../../../infraestucture/caches/cachePosition";
 import { PositionPacketWithDatetime } from "../../../models/PositionPacketWithDatetime";
 
-const heartbeatInterval: string = "180"; // seconds
+const heartbeatInterval: string = "120"; // seconds
 const uploadInterval: string = "0020"; // seconds
 const ledDisplay: string = "0"; // 0: off, 1: on
-const forceReportLocInterval: string = "60"; // 0: off, 1...720: on [every seconds]
+const forceReportLocInMsSec: number = 60000; // 0: off, 1000...720000: on [every milliseconds]
 
 const HTTP_200 = `${[
   "HTTP/1.1 200 OK",
@@ -68,6 +68,10 @@ const gfxxHandler = (conn: net.Socket, persistence: Persistence) => {
         .then((results) => {
           imei = results[0].imei;
 
+          /** Get last position packet */
+          const lastPosacket: PositionPacketWithDatetime | undefined =
+            CACHE_POSITION.get(imei);
+
           /** Save response to send */
           let toSend: string = "";
           for (let i = 0; i < results.length; i++) {
@@ -95,18 +99,14 @@ const gfxxHandler = (conn: net.Socket, persistence: Persistence) => {
             newConnection = false;
           }
 
-          /** send TRVBP20# every minute (Force to report Position) */
-          const lastPositionPacket: PositionPacketWithDatetime | undefined =
-            CACHE_POSITION.get(imei);
-            
-          const lastPositionSince = !lastPositionPacket
-            ? parseInt(forceReportLocInterval) * 2 * 1000
-            : Date.now() - lastPositionPacket.datetimeUtc.getTime();
+          const lastPosMsSec = !lastPosacket
+            ? forceReportLocInMsSec
+            : Date.now() - lastPosacket.datetimeUtc.getTime();
 
           if (
-            parseInt(forceReportLocInterval) > 0 &&
-            lastPositionSince > 1000 * parseInt(forceReportLocInterval) &&
-            Date.now() - lastTime > parseInt(forceReportLocInterval) * 1000
+            forceReportLocInMsSec > 0 &&
+            lastPosMsSec >= forceReportLocInMsSec &&
+            Date.now() - lastTime >= forceReportLocInMsSec
           ) {
             lastTime = Date.now();
             toSend += "TRVBP20#";
