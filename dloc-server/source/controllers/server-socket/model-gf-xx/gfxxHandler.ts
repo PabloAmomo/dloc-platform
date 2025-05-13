@@ -58,7 +58,7 @@ const gfxxHandler = (conn: net.Socket, persistence: Persistence) => {
           /** Save response to send */
           let toSend: string = '';
           for (let i = 0; i < results.length; i++) {
-            if (results[i].response !== '') toSend += results[i].response;
+            if (results[i].response !== '') toSend += results[i].response + '\r\n';
           }
 
           /** If new connection send configuration after response */
@@ -69,21 +69,21 @@ const gfxxHandler = (conn: net.Socket, persistence: Persistence) => {
             printMessage(`[${tempImei}] (${remoteAddress}) send command HeartBeat [${heartbeatInterval}] - Leds [${ledDisplay}] - Upload Interval [${uploadInterval}]`);
 
             // Set heartbeat packet interval (issue: dp03, reply: cp03)
-            toSend += `TRVDP03${timestamp},${heartbeatInterval}#`;
+            toSend += `TRVDP03${timestamp},${heartbeatInterval}#\r\n`;
             // Set LED display switch (up: AP92; down: bp92)
-            toSend += `TRVBP92${timestamp + 1}${ledDisplay}#`;   
+            toSend += `TRVBP92${timestamp + 1}${ledDisplay}#\r\n`;   
             // Set upload interval (downlink protocol No.: wp02, response: xp02)
-            toSend += `TRVWP02${timestamp + 2}${uploadInterval}#`;
+            toSend += `TRVWP02${timestamp + 2}${uploadInterval}#\r\n`;
             // Add force report location interval
-            toSend += 'TRVBP20#';
-            
+            toSend += 'TRVBP20#\r\n';
+
             newConnection = false;
           }
 
           /** send TRVBP20# every minute (Force to report Position) */
           if (parseInt(forceReportLocInterval) > 0 && Date.now() - lastTime > parseInt(forceReportLocInterval) * 1000) {
             lastTime = Date.now();
-            toSend += 'TRVBP20#';
+            toSend += 'TRVBP20#\r\n';
             printMessage(`[${tempImei}] (${remoteAddress}) send command TRVBP20 (Force to report Position).`);
           }
 
