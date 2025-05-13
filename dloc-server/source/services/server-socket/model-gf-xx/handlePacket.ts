@@ -259,6 +259,18 @@ const handlePacket: HandlePacket = async (
   }
 
   // ------------------------------------------------
+  // Packets with not response needed
+  // TRVCP03: Set heartbeat packet interval
+  // TRVXP02: Set upload interval
+  // TRVAP92: Set LED display switch
+  // ------------------------------------------------
+  else if (data.startsWith("TRVCP03") || data.startsWith("TRVXP02") || data.startsWith("TRVAP92")) {
+    printMessage(
+      `[${imeiTemp}] (${remoteAddress}) confirmation packet from device [${data}]`
+    );
+  }
+
+  // ------------------------------------------------
   // Response to TRVWP02 config packet (Only Info)
   // ------------------------------------------------
   else if (data.startsWith("TRVXP020000010")) {
