@@ -269,10 +269,15 @@ const handlePacket: HandlePacket = async (
     data.startsWith("TRVXP02") ||
     data.startsWith("TRVAP92")
   ) {
+    let message: string = "";
+    const resultVal: string = data.endsWith("0#") ? "OK" : "ERROR";
+
+    if (data.startsWith("TRVCP03")) message = "Set heartbeat packet interval";
+    if (data.startsWith("TRVXP02")) message = "Set Upload interval";
+    if (data.startsWith("TRVAP92")) message = "Set Led display switch";
+
     printMessage(
-      `[${imeiTemp}] (${remoteAddress}) confirmation packet from device [${data}] (RESULT: ${
-        data.endsWith("0#") ? "OK" : "ERROR"
-      })`
+      `[${imeiTemp}] (${remoteAddress}) confirmation from device [${data}] (${message} ${resultVal})`
     );
   }
 
