@@ -58,7 +58,7 @@ const gfxxHandler = (conn: net.Socket, persistence: Persistence) => {
           /** Save response to send */
           let toSend: string = '';
           for (let i = 0; i < results.length; i++) {
-            if (results[i].response !== '') toSend += results[i].response + '\n';
+            if (results[i].response !== '') toSend += results[i].response;
           }
 
           /** If new connection send configuration after response */
@@ -66,14 +66,14 @@ const gfxxHandler = (conn: net.Socket, persistence: Persistence) => {
             // get five digits of timestamp
             const timestamp: string = (Date.now() / 1000).toFixed(0).slice(-6);
 
-            printMessage(`[${tempImei}] (${remoteAddress}) send command HeartBeat [${heartbeatInterval}] - Leds [${ledDisplay}] - Upload Interval [${uploadInterval}]`);
+            printMessage(`[${imei}] (${remoteAddress}) send command HeartBeat [${heartbeatInterval}] - Leds [${ledDisplay}] - Upload Interval [${uploadInterval}]`);
 
             // Set heartbeat packet interval (issue: dp03, reply: cp03)
-            toSend += `TRVDP03${timestamp},${heartbeatInterval}#\n`;
+            toSend += `TRVDP03${timestamp},${heartbeatInterval}#`;
             // Set LED display switch (up: AP92; down: bp92)
-            toSend += `TRVBP92${timestamp + 1}${ledDisplay}#\n`;   
+            toSend += `TRVBP92${timestamp + 1}${ledDisplay}#`;   
             // Set upload interval (downlink protocol No.: wp02, response: xp02)
-            toSend += `TRVWP02${timestamp + 2}${uploadInterval}#\n`;
+            toSend += `TRVWP02${timestamp + 2}${uploadInterval}#`;
             // Add force report location interval
             toSend += 'TRVBP20#\n';
 
@@ -83,8 +83,8 @@ const gfxxHandler = (conn: net.Socket, persistence: Persistence) => {
           /** send TRVBP20# every minute (Force to report Position) */
           if (parseInt(forceReportLocInterval) > 0 && Date.now() - lastTime > parseInt(forceReportLocInterval) * 1000) {
             lastTime = Date.now();
-            toSend += 'TRVBP20#\n';
-            printMessage(`[${tempImei}] (${remoteAddress}) send command TRVBP20 (Force to report Position).`);
+            toSend += 'TRVBP20#';
+            printMessage(`[${imei}] (${remoteAddress}) send command TRVBP20 (Force to report Position).`);
           }
 
           /** Send */
