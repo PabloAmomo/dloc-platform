@@ -56,7 +56,7 @@ const gfxxHandler = (conn: net.Socket, persistence: Persistence) => {
 
       /** New socket connection */
       if (newConnection)
-        printMessage(`[---------------] (${remoteAddress}) new connection.`);
+        printMessage(`[${tempImei}] (${remoteAddress}) new connection.`);
 
       /** Handle data */
       handleData({
