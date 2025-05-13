@@ -7,6 +7,7 @@ import handleData from '../../../services/server-socket/model-gf-xx/connection/h
 import handleEnd from '../../../services/server-socket/model-gf-xx/connection/handleEnd';
 import handleError from '../../../services/server-socket/model-gf-xx/connection/handleError';
 import net from 'node:net';
+import { CACHE_IMEI } from '../../../infraestucture/caches/cacheIMEI';
 
 const heartbeatInterval: string = "180";      // seconds
 const uploadInterval: string = "0020";        // seconds
@@ -75,7 +76,7 @@ const gfxxHandler = (conn: net.Socket, persistence: Persistence) => {
             // Set upload interval (downlink protocol No.: wp02, response: xp02)
             toSend += `TRVWP02${timestamp + 2}${uploadInterval}#`;
             // Add force report location interval
-            toSend += 'TRVBP20#\n';
+            toSend += 'TRVBP20#';
 
             newConnection = false;
           }
