@@ -85,7 +85,7 @@
       "response": ""
     },
     "step1": {
-      "title": "1. IMEI del Localizador",
+      "title": "1. IMEI del Localizador o ID del Dispositivo",
       "resume": "Obtén el IMEI de tu localizador (Necesario para darlo de alta en la plataforma).",
       "command": "imei#",
       "extraCommand": "",
@@ -99,7 +99,7 @@
       "response": "Setting apn ok! o APN set success"
     },
     "step3": {
-      "title": "3. Platforma",
+      "title": "3. Servidor de la Platforma",
       "resume": "Configura el servidor de la plataforma donde reportará el localizador.",
       "command": "DOMAIN#82.223.64.197#24666#",
       "extraCommand": "",

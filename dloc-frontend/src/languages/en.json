@@ -85,7 +85,7 @@
       "response": ""
     },
     "step1": {
-      "title": "1. Tracker IMEI",
+      "title": "1. Tracker IMEI or Device ID",
       "resume": "Obtain the IMEI of your tracker (Necessary to activate it on the platform).",
       "command": "imei#",
       "extraCommand": "",
@@ -99,7 +99,7 @@
       "response": "Setting apn ok! or APN set success"
     },
     "step3": {
-      "title": "3. Platform",
+      "title": "3. Set Platform Server",
       "resume": "Configure the server of the platform where the tracker will report.",
       "command": "DOMAIN#82.223.64.197#24666#",
       "extraCommand": "",
