@@ -9,6 +9,7 @@ import handleError from "../../../services/server-socket/model-gf-xx/connection/
 import net from "node:net";
 import { CACHE_POSITION } from "../../../infraestucture/caches/cachePosition";
 import { PositionPacketWithDatetime } from "../../../models/PositionPacketWithDatetime";
+import { time } from "node:console";
 
 const heartbeatInterval: string = "120"; // seconds
 const uploadInterval: string = "0020"; // seconds
@@ -81,7 +82,7 @@ const gfxxHandler = (conn: net.Socket, persistence: Persistence) => {
           /** If new connection send configuration after response */
           if (newConnection) {
             // get five digits of timestamp
-            const timestamp: string = (Date.now() / 1000).toFixed(0).slice(-6);
+            const timestamp: string = parseInt(String(Date.now()).slice(-6)).toString().padStart(6, "1");
 
             printMessage(
               `[${imei}] (${remoteAddress}) send command (${timestamp}) HeartBeat [${heartbeatInterval}] - Leds [${ledDisplay}] - Upload Interval [${uploadInterval}]`
