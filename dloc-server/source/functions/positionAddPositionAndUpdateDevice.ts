@@ -20,7 +20,7 @@ async function positionAddPositionAndUpdateDevice(
       positionPacket
     )}]`
   );
-  CACHE_POSITION.set(imei, positionPacket);
+  CACHE_POSITION.set(imei, { ...positionPacket, datetimeUtc: new Date() });
 
   /** Add position */
   await persistence
