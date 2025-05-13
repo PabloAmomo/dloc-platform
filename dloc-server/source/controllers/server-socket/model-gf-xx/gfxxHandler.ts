@@ -84,15 +84,15 @@ const gfxxHandler = (conn: net.Socket, persistence: Persistence) => {
             const timestamp: string = (Date.now() / 1000).toFixed(0).slice(-6);
 
             printMessage(
-              `[${imei}] (${remoteAddress}) send command HeartBeat [${heartbeatInterval}] - Leds [${ledDisplay}] - Upload Interval [${uploadInterval}]`
+              `[${imei}] (${remoteAddress}) send command (${timestamp}) HeartBeat [${heartbeatInterval}] - Leds [${ledDisplay}] - Upload Interval [${uploadInterval}]`
             );
 
             // Set heartbeat packet interval (issue: dp03, reply: cp03)
             toSend += `TRVDP03${timestamp},${heartbeatInterval}#`;
             // Set LED display switch (up: AP92; down: bp92)
-            toSend += `TRVBP92${timestamp + 1}${ledDisplay}#`;
+            toSend += `TRVBP92${parseInt(timestamp) + 1}${ledDisplay}#`;
             // Set upload interval (downlink protocol No.: wp02, response: xp02)
-            toSend += `TRVWP02${timestamp + 2}${uploadInterval}#`;
+            toSend += `TRVWP02${parseInt(timestamp) + 2}${uploadInterval}#`;
             // Add force report location interval
             toSend += "TRVBP20#";
 
