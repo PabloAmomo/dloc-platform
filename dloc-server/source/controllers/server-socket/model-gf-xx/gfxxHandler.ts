@@ -9,7 +9,8 @@ import handleError from "../../../services/server-socket/model-gf-xx/connection/
 import net from "node:net";
 import { CACHE_POSITION } from "../../../infraestucture/caches/cachePosition";
 import { PositionPacketWithDatetime } from "../../../models/PositionPacketWithDatetime";
-import { time } from "node:console";
+import { CACHE_IMEI } from "../../../infraestucture/caches/cacheIMEI";
+import { uniqueId } from "../../../functions/uniqueId";
 
 const heartbeatInterval: string = "120"; // seconds
 const uploadInterval: string = "0020"; // seconds
@@ -31,9 +32,9 @@ const gfxxHandler = (conn: net.Socket, persistence: Persistence) => {
   var newConnection: boolean = true;
 
   /** Create event listeners for socket connection */
-  conn.once("close", () => handleClose(remoteAddress));
-  conn.on("end", () => handleEnd(remoteAddress));
-  conn.on("error", (err: Error) => handleError(remoteAddress, err));
+  conn.once("close", () => handleClose(remoteAddress, imei));
+  conn.on("end", () => handleEnd(remoteAddress, imei));
+  conn.on("error", (err: Error) => handleError(remoteAddress, imei, err));
 
   /** Handle data */
   conn.on("data", (data: any) => {
@@ -73,6 +74,11 @@ const gfxxHandler = (conn: net.Socket, persistence: Persistence) => {
           const lastPosacket: PositionPacketWithDatetime | undefined =
             CACHE_POSITION.get(imei);
 
+          /** create or update socket connection to cache */
+          CACHE_IMEI.update(imei, {
+            socketConn: conn,
+          });
+
           /** Save response to send */
           let toSend: string = "";
           for (let i = 0; i < results.length; i++) {
@@ -82,7 +88,7 @@ const gfxxHandler = (conn: net.Socket, persistence: Persistence) => {
           /** If new connection send configuration after response */
           if (newConnection) {
             // get five digits of timestamp
-            const timestamp: string = parseInt(String(Date.now()).slice(-6)).toString().padStart(6, "1");
+            const timestamp: string = uniqueId();
 
             printMessage(
               `[${imei}] (${remoteAddress}) send command (${timestamp}) HeartBeat [${heartbeatInterval}] - Leds [${ledDisplay}] - Upload Interval [${uploadInterval}]`
@@ -124,6 +130,14 @@ const gfxxHandler = (conn: net.Socket, persistence: Persistence) => {
         });
     } catch (err: Error | any) {
       conn.destroy();
+
+      if (imei !== "") {
+        /** Remove socket connection from cache */
+        CACHE_IMEI.update(imei, {
+          socketConn: undefined,
+        });
+      }
+
       printMessage(
         `[${tempImei}] (${remoteAddress}) error handling data (${
           err?.message ?? "unknown error"
