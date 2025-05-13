@@ -264,9 +264,15 @@ const handlePacket: HandlePacket = async (
   // TRVXP02: Set upload interval
   // TRVAP92: Set LED display switch
   // ------------------------------------------------
-  else if (data.startsWith("TRVCP03") || data.startsWith("TRVXP02") || data.startsWith("TRVAP92")) {
+  else if (
+    data.startsWith("TRVCP03") ||
+    data.startsWith("TRVXP02") ||
+    data.startsWith("TRVAP92")
+  ) {
     printMessage(
-      `[${imeiTemp}] (${remoteAddress}) confirmation packet from device [${data}]`
+      `[${imeiTemp}] (${remoteAddress}) confirmation packet from device [${data}] (RESULT: ${
+        data.endsWith("0#") ? "OK" : "ERROR"
+      })`
     );
   }
 
