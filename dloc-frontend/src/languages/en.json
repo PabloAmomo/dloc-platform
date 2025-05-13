@@ -92,34 +92,20 @@
       "response": "123456789012345"
     },
     "step2": {
-      "title": "2. Availability Interval",
-      "resume": "Set the time in seconds for the tracker to report its status.",
-      "command": "md#15",
-      "extraCommand": "15 seconds",
-      "response": "MD#15 or +IN:15"
-    },
-    "step3": {
-      "title": "3. Visibility Interval",
-      "resume": "Set the time in seconds for the tracker to report that it is turned on and operational.",
-      "command": "heartbeat#60",
-      "extraCommand": "60 seconds",
-      "response": "Heartbeat OK"
-    },
-    "step4": {
-      "title": "4. Data Network",
+      "title": "2. Data Network",
       "resume": "Set up access to the data network of the mobile operator of the SIM card. (Example: MasMovil Spain APN#internet###)",
       "command": "APN#name#user#password#",
       "extraCommand": "",
       "response": "Setting apn ok! or APN set success"
     },
-    "step5": {
-      "title": "5. Platform",
+    "step3": {
+      "title": "3. Platform",
       "resume": "Configure the server of the platform where the tracker will report.",
       "command": "DOMAIN#82.223.64.197#24666#",
       "extraCommand": "",
       "response": "Domain set success"
     },
-    "step6": {
+    "step4": {
       "text1": "Leave the tracker on for about 10 minutes in a place with a direct view of the sky so it can position itself and start sending data to the platform.",
       "text2": "... after 10 minutes ....",
       "text3": "You can activate the tracker on the platform by simply going to 'Add Pet' in the application menu and entering the IMEI you obtained at the beginning of this guide."

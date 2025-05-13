@@ -23,7 +23,7 @@ const PlatformInstructionsSteps = (props: PlatformInstructionsStepsProps) => {
       )}
 
       {/* Instructions */}
-      {[0, 1, 2, 3, 4, 5].map((item) =>
+      {[0, 1, 2, 3].map((item) =>
         ConfigInstructionLine(
           `${item}`,
           t(`${stepsKey}.step${item}.title`),
@@ -36,14 +36,14 @@ const PlatformInstructionsSteps = (props: PlatformInstructionsStepsProps) => {
 
       {/* Final step */}
       <Grid item xs={12}>
-        <Typography variant={'caption'}>{t(`${stepsKey}.step6.text1`)}</Typography>
+        <Typography variant={'caption'}>{t(`${stepsKey}.step4.text1`)}</Typography>
       </Grid>
       <Grid item xs={12}>
         <Typography variant="caption" color={'grey'}>
-          {t(`${stepsKey}.step6.text2`)}
+          {t(`${stepsKey}.step4.text2`)}
         </Typography>
         <br />
-        <Typography variant="caption">{t(`${stepsKey}.step6.text3`)}</Typography>
+        <Typography variant="caption">{t(`${stepsKey}.step4.text3`)}</Typography>
       </Grid>
     </Grid>
   );

@@ -92,34 +92,20 @@
       "response": "123456789012345"
     },
     "step2": {
-      "title": "2. Intervalo de disponibilidad",
-      "resume": "Configura el tiempo en segundos, en que el localizador reportará su estado.",
-      "command": "md#15",
-      "extraCommand": "15 segundos",
-      "response": "MD#15 o +IN:15"
-    },
-    "step3": {
-      "title": "3. Intervalo de visibilidad",
-      "resume": "Configura el tiempo en segundos, que el localizador reportará que esta encendido y operativo.",
-      "command": "heartbeat#60",
-      "extraCommand": "60 segundos",
-      "response": "Heartbeat OK"
-    },
-    "step4": {
-      "title": "4. Red de datos",
+      "title": "2. Red de datos",
       "resume": "Configura el acceso a la red de datos del operador movil de la tarjeta sim. (Ej: MasMovil españa APN#internet###)",
       "command": "APN#name#user#password#",
       "extraCommand": "",
       "response": "Setting apn ok! o APN set success"
     },
-    "step5": {
-      "title": "5. Platforma",
+    "step3": {
+      "title": "3. Platforma",
       "resume": "Configura el servidor de la plataforma donde reportará el localizador.",
       "command": "DOMAIN#82.223.64.197#24666#",
       "extraCommand": "",
       "response": "Domain set success"
     },
-    "step6": {
+    "step4": {
       "text1": "Deja durante unos 10 minutos el localizador ecendido y en un sitio con vista directa al cielo, para que pueda posicionarse y comenzar a enviar datos a la plataforma.",
       "text2": "... pasados 10 minutos ....",
       "text3": "Ya puedes dar de alta el localizador en la plataforma, simplemente llendo a 'Añadir Mascota' en el menu de la aplicación, e introduciendo el IMEI que obtuviste al comienzo de esta guía."
