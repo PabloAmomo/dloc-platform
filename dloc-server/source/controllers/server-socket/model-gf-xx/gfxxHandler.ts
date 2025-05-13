@@ -8,6 +8,11 @@ import handleEnd from '../../../services/server-socket/model-gf-xx/connection/ha
 import handleError from '../../../services/server-socket/model-gf-xx/connection/handleError';
 import net from 'node:net';
 
+const heartbeatInterval: string = "180";      // seconds
+const uploadInterval: string = "0020";        // seconds
+const ledDisplay: string = "0";               // 0: off, 1: on
+const forceReportLocInterval: string = "60";  // 0: off, 1...720: on [every seconds]
+
 const HTTP_200 = `${[
   'HTTP/1.1 200 OK',
   'Content-Type: text/html; charset=UTF-8',
@@ -58,16 +63,28 @@ const gfxxHandler = (conn: net.Socket, persistence: Persistence) => {
 
           /** If new connection send configuration after response */
           if (newConnection) {
-            toSend += 'TRVWP020000010020#';
+            // get five digits of timestamp
+            const timestamp: string = (Date.now() / 1000).toFixed(0).slice(-6);
+
+            printMessage(`[${tempImei}] (${remoteAddress}) send command HeartBeat [${heartbeatInterval}] - Leds [${ledDisplay}] - Upload Interval [${uploadInterval}]`);
+
+            // Set heartbeat packet interval (issue: dp03, reply: cp03)
+            toSend += `TRVDP03${timestamp},${heartbeatInterval}#`;
+            // Set LED display switch (up: AP92; down: bp92)
+            toSend += `TRVBP92${timestamp + 1}${ledDisplay}#`;   
+            // Set upload interval (downlink protocol No.: wp02, response: xp02)
+            toSend += `TRVWP02${timestamp + 2}${uploadInterval}#`;
+            // Add force report location interval
             toSend += 'TRVBP20#';
+            
             newConnection = false;
           }
 
           /** send TRVBP20# every minute (Force to report Position) */
-          if (Date.now() - lastTime > 60000) {
+          if (parseInt(forceReportLocInterval) > 0 && Date.now() - lastTime > parseInt(forceReportLocInterval) * 1000) {
             lastTime = Date.now();
             toSend += 'TRVBP20#';
-            printMessage(`[${tempImei}] (${remoteAddress}) send command TRVBP20.`);
+            printMessage(`[${tempImei}] (${remoteAddress}) send command TRVBP20 (Force to report Position).`);
           }
 
           /** Send */
