@@ -4,5 +4,5 @@ export enum WebSocketDataCommands {
   'Hi' = 'Hi',
   'GetPositions' = 'GetPositions',
   'Positions' = 'Positions',
-  'UpdatePowerProfile' = 'SetPowerProfile',
+  'UpdatePowerProfile' = 'UpdatePowerProfile',
 }
