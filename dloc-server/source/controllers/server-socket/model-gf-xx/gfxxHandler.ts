@@ -81,10 +81,11 @@ const gfxxHandler = (conn: net.Socket, persistence: Persistence) => {
               }]`
             );
           } else {
-            const powerPrf = powerPrfile?.results[0]?.powerProfile ?? "MINIMAL";
+            powerProfile = (powerPrfile?.results[0]?.powerProfile ??
+              "MINIMAL") as PowerProfileType;
 
             printMessage(
-              `[${tempImei}] (${remoteAddress}) 🔋 power profile for device [${powerPrf}]`
+              `[${tempImei}] (${remoteAddress}) 🔋 power profile for device [${powerProfile}]`
             );
           }
 
