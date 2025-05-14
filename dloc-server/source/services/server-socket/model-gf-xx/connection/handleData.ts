@@ -27,7 +27,7 @@ const handleData = async ({ imei, remoteAddress, data, handlePacket, persistence
       });
     } catch (err: Error | any) {
       const printImei = getNormalizedIMEI(imei);
-      printMessage(`[${printImei}] (${remoteAddress}) error handling packet (1) (${err?.message ?? 'unknown error'}) packet [${inPackets[i]?.split(',')?.[0] ?? inPackets[i]}]`);
+      printMessage(`[${printImei}] (${remoteAddress}) ❌ error handling packet (1) (${err?.message ?? 'unknown error'}) packet [${inPackets[i]?.split(',')?.[0] ?? inPackets[i]}]`);
       // throw err;
     }
   }

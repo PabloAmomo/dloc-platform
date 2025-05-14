@@ -5,7 +5,7 @@ import { clearItemInCacheIMEI } from "../../../../infraestucture/caches/cacheIME
 const handleEnd = (remoteAddress: string, imei: string) => {
   const imeiTemp = getNormalizedIMEI(imei);
 
-  printMessage(`[${imeiTemp}] (${remoteAddress}) connection closed.`);
+  printMessage(`[${imeiTemp}] (${remoteAddress}) 🚫 connection closed.`);
 
   /** Clear cache for the imei */
   clearItemInCacheIMEI(imei);

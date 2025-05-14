@@ -40,10 +40,10 @@ if (!PORT_HTTP && !PORT_SOCKET) {
 
 /** No LBS */
 printMessage(
-  `Google GeoPosition: ${
+  `🧭 Google GeoPosition: ${
     ENABLE_LBS
-      ? "enabled (Watch the Google GeoPosition API quota)"
-      : "disabled"
+      ? "✅ enabled (Watch the Google GeoPosition API quota)"
+      : "🚫 disabled"
   }`
 );
 

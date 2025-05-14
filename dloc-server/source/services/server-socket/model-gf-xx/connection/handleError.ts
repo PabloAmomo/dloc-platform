@@ -6,7 +6,7 @@ const handleError = (remoteAddress: string, imei: string, err: Error) => {
   const imeiTemp = getNormalizedIMEI(imei);
 
   printMessage(
-    `[${imeiTemp}] (${remoteAddress}) connection error: [${err.message}]`
+    `[${imeiTemp}] (${remoteAddress}) ❌ connection error: [${err.message}]`
   );
 
   /** Clear cache for the imei */
