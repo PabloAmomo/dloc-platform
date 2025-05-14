@@ -6,7 +6,7 @@ import { WebSocketDataCommands } from "../../enums/WebSocketDataCommands";
 import { WebSocketServiceResponse } from "../../persistence/models/WebSocketServiceResponse";
 import getPositionService from "../services/getPositionService";
 import WebSocket from "ws";
-import updatePowerProfile from "../services/setPowerProfile";
+import updatePowerProfileService from "../services/updatePowerProfileService";
 
 const handleMessage = async (props: HandleMessageProps) => {
   const { webSocket, data, persistence, userData, sendData } = props;
@@ -46,7 +46,7 @@ const handleMessage = async (props: HandleMessageProps) => {
         break;
       }
 
-      returnData = await updatePowerProfile({
+      returnData = await updatePowerProfileService({
         webSocket,
         persistence,
         userData,

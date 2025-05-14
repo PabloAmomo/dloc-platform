@@ -1,21 +1,21 @@
-import { PowerProfileType } from "./../../enums/PowerProfileType";
-import { UpdatePowerProfileResult } from "./../../persistence/models/UpdatePowerProfileResult";
-import { updatePowerProfile } from "./../../persistence/_Persistence";
+import { PowerProfileType } from "../../enums/PowerProfileType";
+import { UpdatePowerProfileResult } from "../../persistence/models/UpdatePowerProfileResult";
+import { updatePowerProfile as updatePowerProfileService } from "../../persistence/_Persistence";
 import { Persistence } from "../../persistence/_Persistence";
 import { UserData } from "../../models/UserData";
 import { WebSocketDataCommands } from "../../enums/WebSocketDataCommands";
 import { WebSocketServiceResponse } from "../../persistence/models/WebSocketServiceResponse";
 import WebSocket from "ws";
 
-const updatePowerProfile = async (
-  props: updatePowerProfileProps
+const updatePowerProfileService = async (
+  props: updatePowerProfileServiceProps
 ): Promise<WebSocketServiceResponse> => {
   const {
     persistence,
     userData,
     imei,
     powerProfileType,
-  }: updatePowerProfileProps = props;
+  }: updatePowerProfileServiceProps = props;
 
   const updatePowerProfileResult: UpdatePowerProfileResult =
     await persistence.updatePowerProfile(
@@ -35,9 +35,9 @@ const updatePowerProfile = async (
       };
 };
 
-export default updatePowerProfile;
+export default updatePowerProfileService;
 
-interface updatePowerProfileProps {
+interface updatePowerProfileServiceProps {
   webSocket: WebSocket;
   persistence: Persistence;
   userData: UserData;
