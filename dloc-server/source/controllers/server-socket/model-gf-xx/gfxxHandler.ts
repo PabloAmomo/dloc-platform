@@ -103,16 +103,18 @@ const gfxxHandler = (conn: net.Socket, persistence: Persistence) => {
             newConnection = false;
           }
 
+          const currentTime = Date.now();
+          
           const lastPosMsSec = !lastPosacket
             ? forceReportLocInMs
-            : Date.now() - lastPosacket.datetimeUtc.getTime();
+            : currentTime - lastPosacket.datetimeUtc.getTime();
 
           if (
             forceReportLocInMs > 0 &&
             lastPosMsSec >= forceReportLocInMs &&
-            Date.now() - lastTime >= forceReportLocInMs
+            currentTime - lastTime >= forceReportLocInMs
           ) {
-            lastTime = Date.now();
+            lastTime = currentTime;
             toSend += "TRVBP20#";
             printMessage(
               `[${imei}] (${remoteAddress}) send command TRVBP20 (Force to report Position).`
