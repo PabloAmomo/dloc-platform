@@ -84,7 +84,7 @@ const gfxxHandler = (conn: net.Socket, persistence: Persistence) => {
             );
           } else {
             powerProfile = (powerPrfile?.results[0]?.powerProfile ??
-              "MINIMAL") as PowerProfileType;
+              "MINIMAL").toLowerCase() as PowerProfileType;
 
             printMessage(
               `${prefix} 🔋 power profile for device [${powerProfile}]`

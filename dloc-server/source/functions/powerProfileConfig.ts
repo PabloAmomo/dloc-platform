@@ -1,4 +1,5 @@
 import { PowerProfileType } from "./powerProfileType";
+import { printMessage } from "./printMessage";
 
 function powerProfileConfigGFxx(profileType: PowerProfileType = PowerProfileType.FULL) {
 
@@ -21,12 +22,20 @@ function powerProfileConfigGFxx(profileType: PowerProfileType = PowerProfileType
   }
 
   // Full power profile configuration
-  return {
-    heartBeatSec: "120",              // seconds
-    uploadSec: "0020",                // seconds
-    ledState: "1",                    // 0: off, 1: on
-    forceReportLocInMs: 60 * 1000,    // 0: off, 1000...720000: on [every milliseconds]
-  };
+  if (profileType !== PowerProfileType.FULL) 
+    printMessage(
+      `❌ power profile [${profileType}] not found, defaulting to full power profile`
+    );
+
+    return {
+      heartBeatSec: "120",              // seconds
+      uploadSec: "0020",                // seconds
+      ledState: "1",                    // 0: off, 1: on
+      forceReportLocInMs: 60 * 1000,    // 0: off, 1000...720000: on [every milliseconds]
+    };
+  
+
+  // Default to full power profile if no valid type is provided
 }
 
 export default powerProfileConfigGFxx;
