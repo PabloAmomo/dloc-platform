@@ -3,6 +3,7 @@ import { ConnectionConfig } from 'mysql';
 import { DeleteShareDeviceCodeResult } from '../models/DeleteShareDeviceCodeResult';
 import { mySqlConnectionConfig } from './functions/mySqlConnectionConfig';
 import mySqlQueryAsync from './functions/mySqlQueryAsync';
+import { PersistenceResult } from '../models/PersistenceResult';
 
 const connectionConfig: ConnectionConfig = mySqlConnectionConfig;
 
