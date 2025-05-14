@@ -1,12 +1,12 @@
 import { ConnectionConfig } from "mysql";
 import { mySqlConnectionConfig } from "./functions/mySqlConnectionConfig";
 import mySqlQueryAsync from "./functions/mySqlQueryAsync";
-import { PowerProfileType } from "../../enums/powerProfileType";
 import { UpdatePowerProfileResult } from "../models/UpdatePowerProfileResult";
+import { PowerProfileType } from "../../enums/PowerProfileType";
 
 const connectionConfig: ConnectionConfig = mySqlConnectionConfig;
 
-const udpdatePowerProfile: udpdatePowerProfileProps = async (
+const updatePowerProfile: updatePowerProfileProps = async (
   imei,
   powerProfileType,
   userId
@@ -32,9 +32,9 @@ const udpdatePowerProfile: udpdatePowerProfileProps = async (
   return response;
 };
 
-export { udpdatePowerProfile };
+export { updatePowerProfile };
 
-interface udpdatePowerProfileProps {
+interface updatePowerProfileProps {
   (
     imei: string,
     powerProfile: PowerProfileType,

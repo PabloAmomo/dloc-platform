@@ -33,9 +33,9 @@ import { Persistence } from "../_Persistence";
 import { PersistenceResult } from "../models/PersistenceResult";
 import { saveDeviceParams } from "./saveDeviceParams";
 import { SaveDeviceParamsResult } from "../models/SaveDeviceParamsResult";
-import { PowerProfileType } from "../../enums/powerProfileType";
 import { UpdatePowerProfileResult } from "../models/UpdatePowerProfileResult";
-import { udpdatePowerProfile } from "./udpdatePowerProfile";
+import { updatePowerProfile } from "./updatePowerProfile";
+import { PowerProfileType } from "../../enums/PowerProfileType";
 
 class mySqlPersistence implements Persistence {
   getPersistenceName(): string {
@@ -95,12 +95,12 @@ class mySqlPersistence implements Persistence {
     return addShareDevice(imei, userId, sharedImeiId, deviceParams, encription);
   }
 
-  udpdatePowerProfile(
+  updatePowerProfile(
     imei: string,
     powerProfileType: PowerProfileType,
     userId: string
   ): Promise<UpdatePowerProfileResult> {
-    return udpdatePowerProfile(imei, powerProfileType, userId);
+    return updatePowerProfile(imei, powerProfileType, userId);
   }
 
   getPersistenceConfig(): string {

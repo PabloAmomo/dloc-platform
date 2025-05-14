@@ -14,6 +14,8 @@ import { GetDevicesResult } from './models/GetDevicesResult';
 import { PersistenceResult } from './models/PersistenceResult';
 import { SaveDeviceParamsResult } from './models/SaveDeviceParamsResult';
 import { EncriptionHelper } from '../models/EncriptionHelper';
+import { UpdatePowerProfileResult } from './models/UpdatePowerProfileResult';
+import { PowerProfileType } from '../enums/PowerProfileType';
 
 export interface Persistence {
   addDevice: addDevice;
@@ -35,6 +37,7 @@ export interface Persistence {
   health: health;
   isDeviceOwner: isDeviceOwner;
   saveDeviceParams: saveDeviceParams;
+  updatePowerProfile: updatePowerProfile;
 }
 
 export interface getPersistenceName {
@@ -63,6 +66,10 @@ export interface getDeviceParams {
 
 export interface addShareDeviceCode {
   (imei: string, verificationCode: string): Promise<AddShareDeviceCodeResult>;
+}
+
+export interface updatePowerProfile {
+  (imei: string, powerProfileType: PowerProfileType, userId: string): Promise<UpdatePowerProfileResult>;
 }
 
 export interface addShareDevice {
