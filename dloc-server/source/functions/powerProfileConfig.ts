@@ -25,3 +25,5 @@ function powerProfileConfig(profileType: 'full' | 'balanced' |  'minimal' = 'ful
     forceReportLocInMs: 60 * 1000,    // 0: off, 1000...720000: on [every milliseconds]
   };
 }
+
+export default powerProfileConfig;

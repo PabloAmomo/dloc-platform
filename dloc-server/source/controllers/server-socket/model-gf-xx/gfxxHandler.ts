@@ -15,6 +15,7 @@ import {
 } from "../../../infraestucture/caches/cacheIMEI";
 import { uniqueId } from "../../../functions/uniqueId";
 import { getNormalizedIMEI } from "../../../functions/getNormalizedIMEI";
+import powerProfileConfig from "../../../functions/powerProfileConfig";
 
 const HTTP_200 = `${[
   "HTTP/1.1 200 OK",
