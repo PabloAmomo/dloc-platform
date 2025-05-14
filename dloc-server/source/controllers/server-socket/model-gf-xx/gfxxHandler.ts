@@ -121,7 +121,7 @@ const gfxxHandler = (conn: net.Socket, persistence: Persistence) => {
               );
 
             printMessage(
-              `${prefix} 📡 send HeartBeat [${heartBeatSec}] - Leds [${ledState}] - Upload Interval [${uploadSec}]`
+              `${prefix} 📡 send HeartBeat [${heartBeatSec} sec] - Leds [${ledState}] - Upload Interval [${uploadSec} sec] - forceUpdateLoc [${forceReportLocInMs / 1000} sec]`
             );
 
             toSend += createConfigGFxx(powerProfile);
