@@ -11,6 +11,8 @@ export interface Persistence {
   updateLastActivity: UpdateLastActivity;
   getPersistenceName: GetPersistenceName;
   getPersistenceConfig: GetPersistenceName;
+  addPowerProfile: AddPowerProfile;
+  getPowerProfile: GetPowerProfile;
   clean: clean;
   health: health;
 }
@@ -30,10 +32,10 @@ export interface AddPosition {
 export interface AddBatteryLevel {
   (imei: string, batteryLevel: number):  Promise<PersistenceResult>;
 }
-export interface addPowerProfile {
+export interface AddPowerProfile {
   (imei: string, profile: PowerProfileType):  Promise<PersistenceResult>;
 }
-export interface getPowerProfile {
+export interface GetPowerProfile {
   (imei: string):  Promise<PersistenceResult>;
 }
 export interface AddHistory {
