@@ -9,8 +9,12 @@ import handleError from "../../../services/server-socket/model-gf-xx/connection/
 import net from "node:net";
 import { CACHE_POSITION } from "../../../infraestucture/caches/cachePosition";
 import { PositionPacketWithDatetime } from "../../../models/PositionPacketWithDatetime";
-import { CACHE_IMEI } from "../../../infraestucture/caches/cacheIMEI";
+import {
+  CACHE_IMEI,
+  clearItemInCacheIMEI,
+} from "../../../infraestucture/caches/cacheIMEI";
 import { uniqueId } from "../../../functions/uniqueId";
+import { getNormalizedIMEI } from "../../../functions/getNormalizedIMEI";
 
 const heartbeatInterval: string = "120"; // seconds
 const uploadInterval: string = "0020"; // seconds
@@ -38,7 +42,7 @@ const gfxxHandler = (conn: net.Socket, persistence: Persistence) => {
 
   /** Handle data */
   conn.on("data", (data: any) => {
-    const tempImei: string = imei !== "" ? imei : "---------------";
+    const tempImei: string = getNormalizedIMEI(imei);
     try {
       /** Process data */
       const dataString: string = data.toString();
@@ -75,7 +79,7 @@ const gfxxHandler = (conn: net.Socket, persistence: Persistence) => {
             CACHE_POSITION.get(imei);
 
           /** create or update socket connection to cache */
-          CACHE_IMEI.update(imei, {
+          CACHE_IMEI.updateOrCreate(imei, {
             socketConn: conn,
           });
 
@@ -131,12 +135,8 @@ const gfxxHandler = (conn: net.Socket, persistence: Persistence) => {
     } catch (err: Error | any) {
       conn.destroy();
 
-      if (imei !== "") {
-        /** Remove socket connection from cache */
-        CACHE_IMEI.update(imei, {
-          socketConn: undefined,
-        });
-      }
+      /** Clear cache for the imei */
+      clearItemInCacheIMEI(imei);
 
       printMessage(
         `[${tempImei}] (${remoteAddress}) error handling data (${

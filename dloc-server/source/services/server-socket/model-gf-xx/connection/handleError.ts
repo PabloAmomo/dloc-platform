@@ -1,16 +1,16 @@
+import { getNormalizedIMEI } from "../../../../functions/getNormalizedIMEI";
 import { printMessage } from "../../../../functions/printMessage";
-import { CACHE_IMEI } from "../../../../infraestucture/caches/cacheIMEI";
+import { clearItemInCacheIMEI } from "../../../../infraestucture/caches/cacheIMEI";
 
 const handleError = (remoteAddress: string, imei: string, err: Error) => {
-  const imeiTemp = imei !== "" ? imei : "---------------";
-  
-  printMessage(`[${imeiTemp}] (${remoteAddress}) connection error: [${err.message}]`);
+  const imeiTemp = getNormalizedIMEI(imei);
 
-  if (imei !== "") {
-    CACHE_IMEI.update(imei, {
-      socketConn: undefined,
-    });
-  }
+  printMessage(
+    `[${imeiTemp}] (${remoteAddress}) connection error: [${err.message}]`
+  );
+
+  /** Clear cache for the imei */
+  clearItemInCacheIMEI(imei);
 };
 
 export default handleError;

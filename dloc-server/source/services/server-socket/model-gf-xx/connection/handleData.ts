@@ -1,6 +1,7 @@
 import { HandleDataProps } from '../../../../models/HandleDataProps';
 import { HandlePacketResult } from '../../../../models/HandlePacketResult';
 import { printMessage } from '../../../../functions/printMessage';
+import { getNormalizedIMEI } from '../../../../functions/getNormalizedIMEI';
 
 const handleData = async ({ imei, remoteAddress, data, handlePacket, persistence }: HandleDataProps): Promise<HandlePacketResult[]> => {
   /** Save results */
@@ -25,7 +26,7 @@ const handleData = async ({ imei, remoteAddress, data, handlePacket, persistence
         if (result.imei !== '') imei = result.imei;
       });
     } catch (err: Error | any) {
-      const printImei = imei !== '' ? imei : '---------------';
+      const printImei = getNormalizedIMEI(imei);
       printMessage(`[${printImei}] (${remoteAddress}) error handling packet (1) (${err?.message ?? 'unknown error'}) packet [${inPackets[i]?.split(',')?.[0] ?? inPackets[i]}]`);
       // throw err;
     }

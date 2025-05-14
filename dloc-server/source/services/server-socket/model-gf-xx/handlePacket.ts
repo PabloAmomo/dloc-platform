@@ -13,6 +13,7 @@ import getLbsPosition from "../../../functions/getLbsPosition";
 import positionUpdateLastActivityAndAddHistory from "../../../functions/positionUpdateLastActivityAndAddHistory";
 import positionAddPositionAndUpdateDevice from "../../../functions/positionAddPositionAndUpdateDevice";
 import positionUpdateBattertAndLastActivity from "../../../functions/positionUpdateBatteryAndLastActivity";
+import { getNormalizedIMEI, NO_IMEI_STRING } from "../../../functions/getNormalizedIMEI";
 
 const noImei: string = "no imei received";
 
@@ -25,14 +26,14 @@ const handlePacket: HandlePacket = async (
   let response: HandlePacketResult = { imei, error: "", response: "" };
 
   /** Temporal imei (Used only for print messages for user) */
-  var imeiTemp: string = imei == "" ? "---------------" : imei;
+  var imeiTemp: string = getNormalizedIMEI(imei);
 
   // ---------------------------------------
   // Login Package TRVAP00xxxxIMEIxxxxxxx#
   // ---------------------------------------
   if (data.startsWith("TRVAP00")) {
     response.imei = data.replace("TRVAP00", "").replace("#", "");
-    imeiTemp = response.imei == "" ? "---------------" : response.imei;
+    imeiTemp = getNormalizedIMEI(response.imei);
 
     /** Update last activity */
     if (response.imei !== "") updateLastActivity = true;
@@ -288,7 +289,7 @@ const handlePacket: HandlePacket = async (
     updateLastActivity = true;
     printMessage(
       `[${
-        imeiTemp == "" ? "---------------" : response.imei
+        imeiTemp == "" ? NO_IMEI_STRING : response.imei
       }] (${remoteAddress}) confirmed TRVWP02 packet received`
     );
   }

@@ -18,4 +18,16 @@ function initCacheIMEI() {
   }>(0); // no expiration
 }
 
-export { initCacheIMEI };
+/**
+ * Clear item in cache
+ * @param imei IMEI
+ */
+function clearItemInCacheIMEI(imei: string) {
+  if (imei === "") return;
+
+  CACHE_IMEI.updateOrCreate(imei, {
+      socketConn: undefined,
+    });
+}
+
+export { initCacheIMEI, clearItemInCacheIMEI };

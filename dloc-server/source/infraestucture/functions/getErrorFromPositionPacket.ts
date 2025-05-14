@@ -1,9 +1,10 @@
+import { getNormalizedIMEI } from '../../functions/getNormalizedIMEI';
 import { PositionPacket } from '../../models/PositionPacket';
 
 type getErrorFromPositionPacketResult = { errorMsg: string; message: string };
 
 const getErrorFromPositionPacket = (positionPacket: PositionPacket): getErrorFromPositionPacketResult => {
-  const imei: string = positionPacket.imei === '' ? '---------------' : positionPacket.imei;
+  const imei: string = getNormalizedIMEI(positionPacket.imei);
   let errorMsg: string = '';
   let message: string = '';
 

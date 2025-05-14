@@ -16,6 +16,10 @@ export class Cache<T = any> {
     this.store.set(key, { value, expiry });
   }
 
+  updateOrCreate(key: string, value: Partial<T>): void {
+    this.update(key, value);
+  }
+
   update(key: string, value: Partial<T>): void {
     let entry = this.store.get(key);
 

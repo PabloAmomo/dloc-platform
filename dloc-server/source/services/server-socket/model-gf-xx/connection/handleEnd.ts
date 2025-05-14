@@ -1,16 +1,14 @@
+import { getNormalizedIMEI } from "../../../../functions/getNormalizedIMEI";
 import { printMessage } from "../../../../functions/printMessage";
-import { CACHE_IMEI } from "../../../../infraestucture/caches/cacheIMEI";
+import { clearItemInCacheIMEI } from "../../../../infraestucture/caches/cacheIMEI";
 
-const handleEnd = (remoteAddress:string, imei:string) => {
-  const imeiTemp = imei !== "" ? imei : "---------------";
+const handleEnd = (remoteAddress: string, imei: string) => {
+  const imeiTemp = getNormalizedIMEI(imei);
 
   printMessage(`[${imeiTemp}] (${remoteAddress}) connection closed.`);
 
-  if (imei !== "") {
-    CACHE_IMEI.update(imei, {
-      socketConn: undefined,
-    });
-  }
+  /** Clear cache for the imei */
+  clearItemInCacheIMEI(imei);
 };
 
 export default handleEnd;
