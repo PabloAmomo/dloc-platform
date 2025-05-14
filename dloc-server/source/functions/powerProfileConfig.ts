@@ -1,5 +1,12 @@
-function powerProfileConfig(profileType: 'full' | 'balanced' |  'minimal' = 'full') {
-  if (profileType === 'minimal') {
+export enum PowerProfileConfigGFxxType {
+  FULL = "full",
+  BALANCED = "balanced",
+  MINIMAL = "minimal",
+}
+
+function powerProfileConfigGFxx(profileType: PowerProfileConfigGFxxType = PowerProfileConfigGFxxType.FULL) {
+
+  if (profileType === PowerProfileConfigGFxxType.MINIMAL) {
     return {
       heartBeatSec: "240",            // seconds
       uploadSec: "0180",              // seconds
@@ -8,7 +15,7 @@ function powerProfileConfig(profileType: 'full' | 'balanced' |  'minimal' = 'ful
     };
   }
 
-  if (profileType === 'balanced') {
+  if (profileType === PowerProfileConfigGFxxType.BALANCED) {
     return {
       heartBeatSec: "180",            // seconds
       uploadSec: "060",               // seconds
@@ -26,4 +33,4 @@ function powerProfileConfig(profileType: 'full' | 'balanced' |  'minimal' = 'ful
   };
 }
 
-export default powerProfileConfig;
+export default powerProfileConfigGFxx;

@@ -15,7 +15,10 @@ import {
 } from "../../../infraestucture/caches/cacheIMEI";
 import { uniqueId } from "../../../functions/uniqueId";
 import { getNormalizedIMEI } from "../../../functions/getNormalizedIMEI";
-import powerProfileConfig from "../../../functions/powerProfileConfig";
+import powerProfileConfigGFxx, {
+  PowerProfileConfigGFxxType,
+} from "../../../functions/powerProfileConfig";
+import createConfigGFxx from "../../../functions/createConfigGFxx";
 
 const HTTP_200 = `${[
   "HTTP/1.1 200 OK",
@@ -85,26 +88,17 @@ const gfxxHandler = (conn: net.Socket, persistence: Persistence) => {
             if (results[i].response !== "") toSend += results[i].response;
           }
 
+          const powerProfile = PowerProfileConfigGFxxType.FULL;
           const { heartBeatSec, uploadSec, ledState, forceReportLocInMs } =
-            powerProfileConfig("full");
+            powerProfileConfigGFxx(powerProfile);
 
           /** If new connection send configuration after response */
           if (newConnection) {
-            // get five digits of timestamp
-            const timestamp: string = uniqueId();
-
             printMessage(
-              `[${imei}] (${remoteAddress}) send command (${timestamp}) HeartBeat [${heartBeatSec}] - Leds [${ledState}] - Upload Interval [${uploadSec}]`
+              `[${imei}] (${remoteAddress}) send HeartBeat [${heartBeatSec}] - Leds [${ledState}] - Upload Interval [${uploadSec}]`
             );
-
-            // Set heartbeat packet interval (issue: dp03, reply: cp03)
-            toSend += `TRVDP03${timestamp},${heartBeatSec}#`;
-            // Set LED display switch (up: AP92; down: bp92)
-            toSend += `TRVBP92${parseInt(timestamp) + 1}${ledState}#`;
-            // Set upload interval (downlink protocol No.: wp02, response: xp02)
-            toSend += `TRVWP02${parseInt(timestamp) + 2}${uploadSec}#`;
-            // Add force report location interval
-            toSend += "TRVBP20#";
+            
+            toSend += createConfigGFxx(powerProfile);
 
             newConnection = false;
           }
