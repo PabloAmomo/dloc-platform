@@ -16,4 +16,5 @@ export interface Device {
   clonedImei?: string;
   locationAccuracy: GpsAccuracy
   activity: string;
+  powerProfile: string;
 }

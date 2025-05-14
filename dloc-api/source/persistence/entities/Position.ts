@@ -10,4 +10,5 @@ export interface Position {
   batteryLevel: number;
   locationAccuracy: GpsAccuracy
   activity: string;
+  powerProfile: string;
 }

@@ -16,7 +16,7 @@ const getDevices: GetDevicesProps = async (userId, interval, encription) => {
   /** Create query */
   const params: any[] = [userId];
   const sql = `SELECT imei, lat, lng, speed, directionAngle, gsmSignal, batteryLevel, 
-                      lastPositionUTC, lastVisibilityUTC, params, clonedImei, locationAccuracy, activity
+                      lastPositionUTC, lastVisibilityUTC, params, clonedImei, locationAccuracy, activity, powerProfile
                 FROM device 
                 WHERE userId = ?
                 ORDER BY imei;`;
@@ -48,7 +48,7 @@ const getDevices: GetDevicesProps = async (userId, interval, encription) => {
 
     /** Get positions */
     const paramsPositions: any[] = [positionImei, interval];
-    const sqlPositions = `SELECT dateTimeUTC, lat, lng, speed, directionAngle, gsmSignal, batteryLevel, locationAccuracy, activity 
+    const sqlPositions = `SELECT dateTimeUTC, lat, lng, speed, directionAngle, gsmSignal, batteryLevel, locationAccuracy, activity, powerProfile 
                           FROM \`position\` WHERE imei = ? 
                           ${interval > 1 ? 'AND dateTimeUTC >= DATE_ADD(UTC_TIMESTAMP(), INTERVAL -? MINUTE)' : ''}
                           ORDER BY dateTimeUTC DESC
