@@ -16,11 +16,6 @@ import {
 import { uniqueId } from "../../../functions/uniqueId";
 import { getNormalizedIMEI } from "../../../functions/getNormalizedIMEI";
 
-const heartbeatInterval: string = "120"; // seconds
-const uploadInterval: string = "0020"; // seconds
-const ledDisplay: string = "0"; // 0: off, 1: on
-const forceReportLocInMsSec: number = 60000; // 0: off, 1000...720000: on [every milliseconds]
-
 const HTTP_200 = `${[
   "HTTP/1.1 200 OK",
   "Content-Type: text/html; charset=UTF-8",
@@ -89,21 +84,24 @@ const gfxxHandler = (conn: net.Socket, persistence: Persistence) => {
             if (results[i].response !== "") toSend += results[i].response;
           }
 
+          const { heartBeatSec, uploadSec, ledState, forceReportLocInMs } =
+            powerProfileConfig("full");
+
           /** If new connection send configuration after response */
           if (newConnection) {
             // get five digits of timestamp
             const timestamp: string = uniqueId();
 
             printMessage(
-              `[${imei}] (${remoteAddress}) send command (${timestamp}) HeartBeat [${heartbeatInterval}] - Leds [${ledDisplay}] - Upload Interval [${uploadInterval}]`
+              `[${imei}] (${remoteAddress}) send command (${timestamp}) HeartBeat [${heartBeatSec}] - Leds [${ledState}] - Upload Interval [${uploadSec}]`
             );
 
             // Set heartbeat packet interval (issue: dp03, reply: cp03)
-            toSend += `TRVDP03${timestamp},${heartbeatInterval}#`;
+            toSend += `TRVDP03${timestamp},${heartBeatSec}#`;
             // Set LED display switch (up: AP92; down: bp92)
-            toSend += `TRVBP92${parseInt(timestamp) + 1}${ledDisplay}#`;
+            toSend += `TRVBP92${parseInt(timestamp) + 1}${ledState}#`;
             // Set upload interval (downlink protocol No.: wp02, response: xp02)
-            toSend += `TRVWP02${parseInt(timestamp) + 2}${uploadInterval}#`;
+            toSend += `TRVWP02${parseInt(timestamp) + 2}${uploadSec}#`;
             // Add force report location interval
             toSend += "TRVBP20#";
 
@@ -111,13 +109,13 @@ const gfxxHandler = (conn: net.Socket, persistence: Persistence) => {
           }
 
           const lastPosMsSec = !lastPosacket
-            ? forceReportLocInMsSec
+            ? forceReportLocInMs
             : Date.now() - lastPosacket.datetimeUtc.getTime();
 
           if (
-            forceReportLocInMsSec > 0 &&
-            lastPosMsSec >= forceReportLocInMsSec &&
-            Date.now() - lastTime >= forceReportLocInMsSec
+            forceReportLocInMs > 0 &&
+            lastPosMsSec >= forceReportLocInMs &&
+            Date.now() - lastTime >= forceReportLocInMs
           ) {
             lastTime = Date.now();
             toSend += "TRVBP20#";
