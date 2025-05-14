@@ -110,7 +110,8 @@ const gfxxHandler = (conn: net.Socket, persistence: Persistence) => {
             socketConn: conn,
             powerProfile,
           });
-          const powerPrfChanged = imeiData?.powerProfile !== powerProfile;
+          const powerPrfChanged =
+            imeiData?.powerProfile && imeiData?.powerProfile !== powerProfile;
 
           /** If new connection send configuration after response */
           if (newConnection || powerPrfChanged) {
