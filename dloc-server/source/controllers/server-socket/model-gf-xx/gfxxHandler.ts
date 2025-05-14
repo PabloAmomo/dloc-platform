@@ -68,8 +68,25 @@ const gfxxHandler = (conn: net.Socket, persistence: Persistence) => {
         persistence,
         conn,
       })
-        .then((results) => {
+        .then(async (results) => {
           imei = results[0].imei;
+
+          /** Get power profile for the imei */
+          let powerProfile = PowerProfileType.FULL;
+          const powerPrfile = await persistence.getPowerProfile(imei);
+          if (powerPrfile.error) {
+            printMessage(
+              `[${tempImei}] (${remoteAddress}) error getting power profile [${
+                powerPrfile.error?.message || powerPrfile.error
+              }]`
+            );
+          } else {
+            const powerPrf = powerPrfile?.results[0]?.powerProfile ?? "MINIMAL";
+
+            printMessage(
+              `[${tempImei}] (${remoteAddress}) power profile [${powerPrf}]`
+            );
+          }
 
           /** Get last position packet */
           const lastPosacket: PositionPacketWithDatetime | undefined =
@@ -86,7 +103,6 @@ const gfxxHandler = (conn: net.Socket, persistence: Persistence) => {
             if (results[i].response !== "") toSend += results[i].response;
           }
 
-          const powerProfile = PowerProfileType.FULL;
           const { heartBeatSec, uploadSec, ledState, forceReportLocInMs } =
             powerProfileConfigGFxx(powerProfile);
 
@@ -95,7 +111,7 @@ const gfxxHandler = (conn: net.Socket, persistence: Persistence) => {
             printMessage(
               `[${imei}] (${remoteAddress}) send HeartBeat [${heartBeatSec}] - Leds [${ledState}] - Upload Interval [${uploadSec}]`
             );
-            
+
             toSend += createConfigGFxx(powerProfile);
 
             newConnection = false;
