@@ -16,7 +16,7 @@ async function positionAddPositionAndUpdateDevice(
 
   /** Add position packet to cache */
   printMessage(
-    `[${imei}] (${remoteAddress}) updating cache [${JSON.stringify(
+    `[${imei}] (${remoteAddress}) ✅ updating cache [${JSON.stringify(
       positionPacket
     )}]`
   );
@@ -29,7 +29,7 @@ async function positionAddPositionAndUpdateDevice(
       if (result.error) {
         message = result.error.message;
         printMessage(
-          `[${imei}] (${remoteAddress}) error persisting position (addPosition) [${
+          `[${imei}] (${remoteAddress}) ❌ error persisting position (addPosition) [${
             result.error?.message || result.error
           }]`
         );
@@ -44,14 +44,14 @@ async function positionAddPositionAndUpdateDevice(
     .updateDevice(positionPacket)
     .then((result: PersistenceResult) => {
       printMessage(
-        `[${imei}] (${remoteAddress}) updating device [${JSON.stringify(
+        `[${imei}] (${remoteAddress}) ✅ updating device [${JSON.stringify(
           positionPacket
         )}]`
       );
       if (result.error) {
         message = result.error.message;
         printMessage(
-          `[${imei}] (${remoteAddress}) error persisting position (updateDevice) [${
+          `[${imei}] (${remoteAddress}) ❌ error persisting position (updateDevice) [${
             result.error?.message || result.error
           }]`
         );

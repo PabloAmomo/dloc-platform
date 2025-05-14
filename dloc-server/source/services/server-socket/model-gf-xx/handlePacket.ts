@@ -326,7 +326,7 @@ const handlePacket: HandlePacket = async (
   /** */
   const message =
     response.response !== ""
-      ? `ℹ️ response [${response.response}]`
+      ? `✅ response [${response.response}]`
       : `👉 no response to send for packet [${data}]`;
   printMessage(`[${imeiTemp}] (${remoteAddress}) ${message}`);
 
