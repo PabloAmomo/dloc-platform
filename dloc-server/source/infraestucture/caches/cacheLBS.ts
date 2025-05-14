@@ -11,7 +11,7 @@ export var CACHE_LBS: Cache<{
 
 /** LBS Status */
 function initCacheLBS() {
-  printMessage(`LBS cache initialized`);
+  printMessage(`✅ LBS cache initialized`);
 
   CACHE_LBS = new Cache<{
     request: GoogleGeoPositionRequest;

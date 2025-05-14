@@ -7,7 +7,7 @@ export var CACHE_POSITION: Cache<PositionPacketWithDatetime>;
 
 
 function initCachePosition() {
-  printMessage(`Position cache initialized`);
+  printMessage(`✅ Position cache initialized`);
 
   CACHE_POSITION = new Cache<PositionPacketWithDatetime>(3600);
 }

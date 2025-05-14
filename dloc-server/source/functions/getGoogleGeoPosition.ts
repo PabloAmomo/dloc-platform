@@ -15,14 +15,14 @@ async function getGoogleGeoPosition(
 ): Promise<GoogleGeoPositionResponse | {}> {
   /** Check if Google Geoposition is enabled */
   if (!ENABLE_LBS) {
-    printMessage(`[${imei}] (${remoteAddress}) Google Geoposition disabled`);
+    printMessage(`[${imei}] (${remoteAddress}) 🚫 Google Geoposition disabled`);
     return {};
   }
 
   const apiKey = process.env.GOOGLE_GEOCODING_API_KEY;
   if (!apiKey) {
     throw new Error(
-      `[${imei}] (${remoteAddress}) Google geolocate API key is not set`
+      `[${imei}] (${remoteAddress}) ❌ Google geolocate API key is not set`
     );
   }
 
@@ -65,14 +65,14 @@ async function getGoogleGeoPosition(
       /** Only use cache if wifi access points match */
       if (wifiApCoincidense > 0) {
         printMessage(
-          `[${imei}] (${remoteAddress}) [LBS] Cache hit for ${cacheKey} - [Wifi Match: ${wifiApCoincidense}] ${JSON.stringify(
+          `[${imei}] (${remoteAddress}) 🧭 [LBS] Cache hit for ${cacheKey} - [Wifi Match: ${wifiApCoincidense}] ${JSON.stringify(
             cacheValue.response
           )}`
         );
         return cacheValue.response;
       } else
         printMessage(
-          `[${imei}] (${remoteAddress}) [LBS] Cache hit for ${cacheKey} - ${JSON.stringify(
+          `[${imei}] (${remoteAddress}) ✅ [LBS] Cache hit for ${cacheKey} - ${JSON.stringify(
             cacheValue.response
           )} but wifi access points do not match (${wifiApCoincidense} matches)`
         );
@@ -81,7 +81,7 @@ async function getGoogleGeoPosition(
 
   /** No cache hit, make request */
   printMessage(
-    `[${imei}] (${remoteAddress}) [LBS] Cache miss for ${cacheKey} using Google GeoPosition`
+    `[${imei}] (${remoteAddress}) 🤷‍♂️ [LBS] Cache miss for ${cacheKey} using Google GeoPosition`
   );
 
   const imeiData = CACHE_IMEI.get(imei);
@@ -93,7 +93,7 @@ async function getGoogleGeoPosition(
         GOOGLE_LBS_MAX_TIME_DIFF_MINUTES * 60 * 1000
     ) {
       printMessage(
-        `[${imei}] (${remoteAddress}) [LBS] Abort request ! Last request was made less than ${GOOGLE_LBS_MAX_TIME_DIFF_MINUTES} minutes ago`
+        `[${imei}] (${remoteAddress}) ⚠️ [LBS] Abort request ! Last request was made less than ${GOOGLE_LBS_MAX_TIME_DIFF_MINUTES} minutes ago`
       );
       return {};
     }
@@ -120,7 +120,7 @@ async function getGoogleGeoPosition(
       CACHE_LBS.set(cacheKey, { request: lbsQuery, response: returnValue });
 
       printMessage(
-        `[${imei}] (${remoteAddress}) [LBS] Cache set for ${cacheKey} ${JSON.stringify(
+        `[${imei}] (${remoteAddress}) ℹ️ [LBS] Cache set for ${cacheKey} ${JSON.stringify(
           returnValue
         )}`
       );

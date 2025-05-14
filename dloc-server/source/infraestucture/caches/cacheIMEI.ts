@@ -12,7 +12,7 @@ export var CACHE_IMEI: Cache<{
 
 /** IMEI cahce init */
 function initCacheIMEI() {
-  printMessage(`IMEI (Devices) cache initialized`);
+  printMessage(`✅ IMEI (Devices) cache initialized`);
 
   CACHE_IMEI = new Cache<{
     lastLBSRequestTimestamp: number;

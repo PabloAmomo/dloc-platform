@@ -55,7 +55,7 @@ const handlePacket: HandlePacket = async (
     );
     if (regexIndex != -1)
       printMessage(
-        `[${imeiTemp}] (${remoteAddress}) process data (REGEX ${regexIndex}) [${
+        `[${imeiTemp}] (${remoteAddress}) ℹ️ process data (REGEX ${regexIndex}) [${
           data.split(",")[0]
         }]`
       );
@@ -99,7 +99,7 @@ const handlePacket: HandlePacket = async (
     if (!positionPacket.valid) {
       /** Invalid position, try to get position from LBS */
       printMessage(
-        `[${imeiTemp}] (${remoteAddress}) invalid position (NOT 'A') [${
+        `[${imeiTemp}] (${remoteAddress}) ⚠️ invalid position (NOT 'A') [${
           data.split(",")[0]
         }]`
       );
@@ -255,7 +255,7 @@ const handlePacket: HandlePacket = async (
   // ------------------------------------------------
   else if (data.startsWith("TRVAP20") || data.startsWith("TRVAP61")) {
     printMessage(
-      `[${imeiTemp}] (${remoteAddress}) received no response needed [${data}]`
+      `[${imeiTemp}] (${remoteAddress}) 🥷 received no response needed [${data}]`
     );
   }
 
@@ -278,7 +278,7 @@ const handlePacket: HandlePacket = async (
     if (data.startsWith("TRVAP92")) message = "Set Led display switch";
 
     printMessage(
-      `[${imeiTemp}] (${remoteAddress}) confirmation from device [${data}] (${message} ${resultVal})`
+      `[${imeiTemp}] (${remoteAddress}) 👍 confirmation from device [${data}] (${message} ${resultVal})`
     );
   }
 
@@ -290,7 +290,7 @@ const handlePacket: HandlePacket = async (
     printMessage(
       `[${
         imeiTemp == "" ? NO_IMEI_STRING : response.imei
-      }] (${remoteAddress}) confirmed TRVWP02 packet received`
+      }] (${remoteAddress}) 👌 confirmed TRVWP02 packet received`
     );
   }
 
@@ -299,7 +299,7 @@ const handlePacket: HandlePacket = async (
   // ---------------------------------------------
   else {
     printMessage(
-      `[${imeiTemp}] (${remoteAddress}) command unknown in data [${
+      `[${imeiTemp}] (${remoteAddress}) 🤷‍♂️ command unknown in data [${
         data.length > 20 ? data.substring(0, 20) + "..." : data
       }...]`
     );
@@ -326,8 +326,8 @@ const handlePacket: HandlePacket = async (
   /** */
   const message =
     response.response !== ""
-      ? `response [${response.response}]`
-      : `no response to send for packet [${data}]`;
+      ? `ℹ️ response [${response.response}]`
+      : `👉 no response to send for packet [${data}]`;
   printMessage(`[${imeiTemp}] (${remoteAddress}) ${message}`);
 
   /** Return imei */
