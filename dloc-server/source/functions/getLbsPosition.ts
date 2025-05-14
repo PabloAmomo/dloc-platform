@@ -19,12 +19,12 @@ async function getLbsPosition(
 ): Promise<HandlePacketResult | GoogleGeoPositionResponse | {}> {
   if (!ENABLE_LBS) {
     printMessage(
-      `[${imeiTemp}] (${remoteAddress}) LBS (${packetType}) Google Geoposition disabled`
+      `[${imeiTemp}] (${remoteAddress}) 🚫 LBS (${packetType}) Google Geoposition disabled`
     );
     return {};
   }
   printMessage(
-    `[${imeiTemp}] (${remoteAddress}) LBS (${packetType}) Google Geoposition enabled (Watch the Google Geoposition API quota)`
+    `[${imeiTemp}] (${remoteAddress}) ✅ LBS (${packetType}) Google Geoposition enabled (Watch the Google Geoposition API quota)`
   );
 
   /** LBS query */
@@ -41,14 +41,14 @@ async function getLbsPosition(
     );
 
   printMessage(
-    `[${imeiTemp}] (${remoteAddress}) LBS (${packetType}) request Google Geoposition`
+    `[${imeiTemp}] (${remoteAddress}) 📡 LBS (${packetType}) request Google Geoposition`
   );
 
   /** LBS query Google */
   const lbsResponse = await getGoogleGeoPosition(lbsQuery, imeiTemp, remoteAddress);
 
   printMessage(
-    `[${imeiTemp}] (${remoteAddress}) LBS (${packetType}) Google Geoposition response [${JSON.stringify(
+    `[${imeiTemp}] (${remoteAddress}) 🧭 LBS (${packetType}) Google Geoposition response [${JSON.stringify(
       lbsResponse
     )}]`
   );
