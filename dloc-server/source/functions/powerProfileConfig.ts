@@ -1,4 +1,4 @@
-import { PowerProfileType } from "./powerProfileType";
+import { PowerProfileType } from "../enums/PowerProfileType";
 import { printMessage } from "./printMessage";
 
 function powerProfileConfigGFxx(profileType: PowerProfileType = PowerProfileType.FULL) {

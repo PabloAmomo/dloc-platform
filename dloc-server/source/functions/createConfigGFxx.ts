@@ -1,5 +1,5 @@
 import powerProfileConfigGFxx from "./powerProfileConfig";
-import { PowerProfileType } from "./powerProfileType";
+import { PowerProfileType } from "../enums/PowerProfileType";
 import { uniqueId } from "./uniqueId";
 
 function createConfigGFxx(

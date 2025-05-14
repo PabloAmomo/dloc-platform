@@ -3,7 +3,7 @@ import { Persistence } from '../../models/Persistence';
 import { PersistenceResult } from '../models/PersistenceResult';
 import { PositionPacket } from '../../models/PositionPacket';
 import * as wrapper from './handles/handleWrapper';
-import { PowerProfileType } from '../../functions/powerProfileType';
+import { PowerProfileType } from '../../enums/PowerProfileType';
 
 class mySqlPersistence implements Persistence {
   getPersistenceName(): string {  

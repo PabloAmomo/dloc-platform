@@ -1,4 +1,4 @@
-import { PowerProfileType } from '../functions/powerProfileType';
+import { PowerProfileType } from '../enums/PowerProfileType';
 import { PersistenceResult } from '../infraestucture/models/PersistenceResult';
 import { PositionPacket } from './PositionPacket';
 

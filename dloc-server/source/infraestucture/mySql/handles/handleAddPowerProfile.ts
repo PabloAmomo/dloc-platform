@@ -3,7 +3,7 @@ import { mySqlClonedImeiUpdate } from '../functions/mySqlClonedImeiUpdate';
 import { mySqlConnectionConfig } from '../functions/mySqlConnectionConfig';
 import { PersistenceResult } from '../../models/PersistenceResult';
 import mySqlQueryAsync from '../functions/mySqlQueryAsync';
-import { PowerProfileType } from '../../../functions/powerProfileType';
+import { PowerProfileType } from '../../../enums/PowerProfileType';
 
 const connectionConfig: ConnectionConfig = mySqlConnectionConfig;
 

@@ -16,7 +16,7 @@ import {
 import { getNormalizedIMEI } from "../../../functions/getNormalizedIMEI";
 import powerProfileConfigGFxx from "../../../functions/powerProfileConfig";
 import createConfigGFxx from "../../../functions/createConfigGFxx";
-import { PowerProfileType } from "../../../functions/powerProfileType";
+import { PowerProfileType } from "../../../enums/PowerProfileType";
 
 const HTTP_200 = `${[
   "HTTP/1.1 200 OK",

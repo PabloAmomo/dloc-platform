@@ -1,7 +1,7 @@
 import net from "node:net";
 import { printMessage } from "../../functions/printMessage";
 import { Cache } from "../../functions/cache";
-import { PowerProfileType } from "../../functions/powerProfileType";
+import { PowerProfileType } from "../../enums/PowerProfileType";
 
 /** Start IMEI Cache */
 export var CACHE_IMEI: Cache<{
