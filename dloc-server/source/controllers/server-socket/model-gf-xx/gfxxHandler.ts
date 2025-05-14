@@ -48,7 +48,7 @@ const gfxxHandler = (conn: net.Socket, persistence: Persistence) => {
       if (dataString.indexOf("HEAD /health") !== -1) {
         if (!remoteAddress.includes("127.0.0.1"))
           printMessage(
-            `[${tempImei}] (${remoteAddress}) health packet received.`
+            `[${tempImei}] (${remoteAddress}) 🩺 health packet received.`
           );
         conn.write(HTTP_200);
         conn.destroy();
@@ -57,7 +57,7 @@ const gfxxHandler = (conn: net.Socket, persistence: Persistence) => {
 
       /** New socket connection */
       if (newConnection)
-        printMessage(`[${tempImei}] (${remoteAddress}) new connection.`);
+        printMessage(`[${tempImei}] (${remoteAddress}) 🧑‍💻 new connection.`);
 
       /** Handle data */
       handleData({
@@ -76,7 +76,7 @@ const gfxxHandler = (conn: net.Socket, persistence: Persistence) => {
           const powerPrfile = await persistence.getPowerProfile(imei);
           if (powerPrfile.error) {
             printMessage(
-              `[${tempImei}] (${remoteAddress}) error getting power profile [${
+              `[${tempImei}] (${remoteAddress}) ❌ error getting power profile [${
                 powerPrfile.error?.message || powerPrfile.error
               }]`
             );
@@ -84,7 +84,7 @@ const gfxxHandler = (conn: net.Socket, persistence: Persistence) => {
             const powerPrf = powerPrfile?.results[0]?.powerProfile ?? "MINIMAL";
 
             printMessage(
-              `[${tempImei}] (${remoteAddress}) power profile [${powerPrf}]`
+              `[${tempImei}] (${remoteAddress}) 🔋 power profile for device [${powerPrf}]`
             );
           }
 
@@ -109,7 +109,7 @@ const gfxxHandler = (conn: net.Socket, persistence: Persistence) => {
           /** If new connection send configuration after response */
           if (newConnection) {
             printMessage(
-              `[${imei}] (${remoteAddress}) send HeartBeat [${heartBeatSec}] - Leds [${ledState}] - Upload Interval [${uploadSec}]`
+              `[${imei}] (${remoteAddress}) 📡 send HeartBeat [${heartBeatSec}] - Leds [${ledState}] - Upload Interval [${uploadSec}]`
             );
 
             toSend += createConfigGFxx(powerProfile);
@@ -131,7 +131,7 @@ const gfxxHandler = (conn: net.Socket, persistence: Persistence) => {
             lastTime = currentTime;
             toSend += "TRVBP20#";
             printMessage(
-              `[${imei}] (${remoteAddress}) send command TRVBP20 (Force to report Position).`
+              `[${imei}] (${remoteAddress}) 📡 send command TRVBP20 (Force to report Position).`
             );
           }
 
@@ -148,7 +148,7 @@ const gfxxHandler = (conn: net.Socket, persistence: Persistence) => {
       clearItemInCacheIMEI(imei);
 
       printMessage(
-        `[${tempImei}] (${remoteAddress}) error handling data (${
+        `[${tempImei}] (${remoteAddress}) ❌ error handling data (${
           err?.message ?? "unknown error"
         }) data [${data}].`
       );
