@@ -1,11 +1,13 @@
 import net from "node:net";
 import { printMessage } from "../../functions/printMessage";
 import { Cache } from "../../functions/cache";
+import { PowerProfileType } from "../../functions/powerProfileType";
 
 /** Start IMEI Cache */
 export var CACHE_IMEI: Cache<{
   lastLBSRequestTimestamp: number;
-  socketConn: net.Socket
+  socketConn: net.Socket;
+  powerProfile: PowerProfileType;
 }>;
 
 /** IMEI cahce init */
@@ -14,7 +16,8 @@ function initCacheIMEI() {
 
   CACHE_IMEI = new Cache<{
     lastLBSRequestTimestamp: number;
-    socketConn: net.Socket
+    socketConn: net.Socket;
+    powerProfile: PowerProfileType;
   }>(0); // no expiration
 }
 
@@ -27,6 +30,7 @@ function clearItemInCacheIMEI(imei: string) {
 
   CACHE_IMEI.updateOrCreate(imei, {
       socketConn: undefined,
+      powerProfile: PowerProfileType.FULL,
     });
 }
 

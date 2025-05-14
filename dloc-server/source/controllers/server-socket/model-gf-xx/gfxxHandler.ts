@@ -71,12 +71,14 @@ const gfxxHandler = (conn: net.Socket, persistence: Persistence) => {
         .then(async (results) => {
           imei = results[0].imei;
 
+          const prefix = `[${imei}] (${remoteAddress})`;
+
           /** Get power profile for the imei */
           let powerProfile = PowerProfileType.FULL;
           const powerPrfile = await persistence.getPowerProfile(imei);
           if (powerPrfile.error) {
             printMessage(
-              `[${tempImei}] (${remoteAddress}) ❌ error getting power profile [${
+              `${prefix} ❌ error getting power profile [${
                 powerPrfile.error?.message || powerPrfile.error
               }]`
             );
@@ -85,18 +87,13 @@ const gfxxHandler = (conn: net.Socket, persistence: Persistence) => {
               "MINIMAL") as PowerProfileType;
 
             printMessage(
-              `[${tempImei}] (${remoteAddress}) 🔋 power profile for device [${powerProfile}]`
+              `${prefix} 🔋 power profile for device [${powerProfile}]`
             );
           }
 
           /** Get last position packet */
-          const lastPosacket: PositionPacketWithDatetime | undefined =
+          const lastPosPacket: PositionPacketWithDatetime | undefined =
             CACHE_POSITION.get(imei);
-
-          /** create or update socket connection to cache */
-          CACHE_IMEI.updateOrCreate(imei, {
-            socketConn: conn,
-          });
 
           /** Save response to send */
           let toSend: string = "";
@@ -107,10 +104,23 @@ const gfxxHandler = (conn: net.Socket, persistence: Persistence) => {
           const { heartBeatSec, uploadSec, ledState, forceReportLocInMs } =
             powerProfileConfigGFxx(powerProfile);
 
+          /** create or update socket connection to cache */
+          const imeiData = CACHE_IMEI.get(imei);
+          CACHE_IMEI.updateOrCreate(imei, {
+            socketConn: conn,
+            powerProfile,
+          });
+          const powerPrfChanged = imeiData?.powerProfile !== powerProfile;
+
           /** If new connection send configuration after response */
-          if (newConnection) {
+          if (newConnection || powerPrfChanged) {
+            if (powerPrfChanged)
+              printMessage(
+                `${prefix} ⚡️ power profile changed from [${imeiData?.powerProfile}] to [${powerProfile}]`
+              );
+
             printMessage(
-              `[${imei}] (${remoteAddress}) 📡 send HeartBeat [${heartBeatSec}] - Leds [${ledState}] - Upload Interval [${uploadSec}]`
+              `${prefix} 📡 send HeartBeat [${heartBeatSec}] - Leds [${ledState}] - Upload Interval [${uploadSec}]`
             );
 
             toSend += createConfigGFxx(powerProfile);
@@ -120,9 +130,9 @@ const gfxxHandler = (conn: net.Socket, persistence: Persistence) => {
 
           const currentTime = Date.now();
 
-          const lastPosMsSec = !lastPosacket
+          const lastPosMsSec = !lastPosPacket
             ? forceReportLocInMs
-            : currentTime - lastPosacket.datetimeUtc.getTime();
+            : currentTime - lastPosPacket.datetimeUtc.getTime();
 
           if (
             forceReportLocInMs > 0 &&
@@ -132,7 +142,7 @@ const gfxxHandler = (conn: net.Socket, persistence: Persistence) => {
             lastTime = currentTime;
             toSend += "TRVBP20#";
             printMessage(
-              `[${imei}] (${remoteAddress}) 📡 send command TRVBP20 (Force to report Position).`
+              `${prefix} 📡 send command TRVBP20 (Force to report Position).`
             );
           }
 
