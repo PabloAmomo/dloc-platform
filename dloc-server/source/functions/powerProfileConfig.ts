@@ -1,12 +1,8 @@
-export enum PowerProfileConfigGFxxType {
-  FULL = "full",
-  BALANCED = "balanced",
-  MINIMAL = "minimal",
-}
+import { PowerProfileType } from "./powerProfileType";
 
-function powerProfileConfigGFxx(profileType: PowerProfileConfigGFxxType = PowerProfileConfigGFxxType.FULL) {
+function powerProfileConfigGFxx(profileType: PowerProfileType = PowerProfileType.FULL) {
 
-  if (profileType === PowerProfileConfigGFxxType.MINIMAL) {
+  if (profileType === PowerProfileType.MINIMAL) {
     return {
       heartBeatSec: "240",            // seconds
       uploadSec: "0180",              // seconds
@@ -15,7 +11,7 @@ function powerProfileConfigGFxx(profileType: PowerProfileConfigGFxxType = PowerP
     };
   }
 
-  if (profileType === PowerProfileConfigGFxxType.BALANCED) {
+  if (profileType === PowerProfileType.BALANCED) {
     return {
       heartBeatSec: "180",            // seconds
       uploadSec: "060",               // seconds

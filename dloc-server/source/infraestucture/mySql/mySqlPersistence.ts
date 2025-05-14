@@ -3,6 +3,7 @@ import { Persistence } from '../../models/Persistence';
 import { PersistenceResult } from '../models/PersistenceResult';
 import { PositionPacket } from '../../models/PositionPacket';
 import * as wrapper from './handles/handleWrapper';
+import { PowerProfileType } from '../../functions/powerProfileType';
 
 class mySqlPersistence implements Persistence {
   getPersistenceName(): string {  
@@ -21,6 +22,12 @@ class mySqlPersistence implements Persistence {
   }
   addBatteryLevel(imei: string, batteryLevel: number):  Promise<PersistenceResult> {
     return wrapper.handleAddBatteryLevel(imei, batteryLevel);
+  }
+  getPowerProfile(imei: string):  Promise<PersistenceResult> {
+    return wrapper.handleGetPowerProfile(imei);
+  }
+  addPowerProfile(imei: string, profile: PowerProfileType):  Promise<PersistenceResult> {
+    return wrapper.handleAddPowerProfile(imei, profile);
   }
   addHistory(imei: string, remoteAddress: string, data: string, response: string):  Promise<PersistenceResult> {
     return wrapper.handleAddHistory(imei, remoteAddress, data, response);

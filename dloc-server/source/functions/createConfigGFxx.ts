@@ -1,10 +1,15 @@
-import powerProfileConfigGFxx, { PowerProfileConfigGFxxType } from "./powerProfileConfig";
+import powerProfileConfigGFxx from "./powerProfileConfig";
+import { PowerProfileType } from "./powerProfileType";
 import { uniqueId } from "./uniqueId";
 
-function createConfigGFxx(powerProfileConfigGFxxType: PowerProfileConfigGFxxType): string {
+function createConfigGFxx(
+  powerProfileType: PowerProfileType
+): string {
   let response = "";
   const timestamp: string = uniqueId();
-  const { heartBeatSec, uploadSec, ledState } = powerProfileConfigGFxx(powerProfileConfigGFxxType);
+  const { heartBeatSec, uploadSec, ledState } = powerProfileConfigGFxx(
+    powerProfileType
+  );
 
   // Set heartbeat packet interval (issue: dp03, reply: cp03)
   response += `TRVDP03${timestamp},${heartBeatSec}#`;

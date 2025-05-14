@@ -13,12 +13,10 @@ import {
   CACHE_IMEI,
   clearItemInCacheIMEI,
 } from "../../../infraestucture/caches/cacheIMEI";
-import { uniqueId } from "../../../functions/uniqueId";
 import { getNormalizedIMEI } from "../../../functions/getNormalizedIMEI";
-import powerProfileConfigGFxx, {
-  PowerProfileConfigGFxxType,
-} from "../../../functions/powerProfileConfig";
+import powerProfileConfigGFxx from "../../../functions/powerProfileConfig";
 import createConfigGFxx from "../../../functions/createConfigGFxx";
+import { PowerProfileType } from "../../../functions/powerProfileType";
 
 const HTTP_200 = `${[
   "HTTP/1.1 200 OK",
@@ -88,7 +86,7 @@ const gfxxHandler = (conn: net.Socket, persistence: Persistence) => {
             if (results[i].response !== "") toSend += results[i].response;
           }
 
-          const powerProfile = PowerProfileConfigGFxxType.FULL;
+          const powerProfile = PowerProfileType.FULL;
           const { heartBeatSec, uploadSec, ledState, forceReportLocInMs } =
             powerProfileConfigGFxx(powerProfile);
 
@@ -104,7 +102,7 @@ const gfxxHandler = (conn: net.Socket, persistence: Persistence) => {
           }
 
           const currentTime = Date.now();
-          
+
           const lastPosMsSec = !lastPosacket
             ? forceReportLocInMs
             : currentTime - lastPosacket.datetimeUtc.getTime();

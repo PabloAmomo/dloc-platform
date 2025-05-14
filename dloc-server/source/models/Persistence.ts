@@ -1,3 +1,4 @@
+import { PowerProfileType } from '../functions/powerProfileType';
 import { PersistenceResult } from '../infraestucture/models/PersistenceResult';
 import { PositionPacket } from './PositionPacket';
 
@@ -28,6 +29,12 @@ export interface AddPosition {
 }
 export interface AddBatteryLevel {
   (imei: string, batteryLevel: number):  Promise<PersistenceResult>;
+}
+export interface addPowerProfile {
+  (imei: string, profile: PowerProfileType):  Promise<PersistenceResult>;
+}
+export interface getPowerProfile {
+  (imei: string):  Promise<PersistenceResult>;
 }
 export interface AddHistory {
   (imei: string, remoteAddress: string, data: string, response: string):  Promise<PersistenceResult>;
