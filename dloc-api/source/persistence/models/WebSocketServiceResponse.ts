@@ -6,6 +6,10 @@ export interface WebSocketServiceGetPosition {
   positions: Device[];
 }
 
+export interface WebSocketServiceUpdatePowerProfile {
+  result: boolean;
+}
+
 export interface WebSocketServiceResponseResult<WebSocketCommands, T> {
   command: WebSocketCommands;
   data: T;
@@ -21,4 +25,5 @@ export type WebSocketServiceResponse =
   | WebSocketServiceResponseResult<WebSocketDataCommands.KeepAlive, {}>
   | WebSocketServiceResponseResult<WebSocketDataCommands.NewData, {}>
   | WebSocketServiceResponseResult<WebSocketDataCommands.Positions, WebSocketServiceGetPosition>
+  | WebSocketServiceResponseResult<WebSocketDataCommands.UpdatePowerProfile, WebSocketServiceUpdatePowerProfile>
   | WebSocketServiceResponseError;

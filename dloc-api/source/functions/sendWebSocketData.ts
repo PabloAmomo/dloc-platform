@@ -1,5 +1,5 @@
 import WebSocket from 'ws';
-import { WebSocketServiceResponse } from '../persistence/models/WebSocketSericeResponse';
+import { WebSocketServiceResponse } from '../persistence/models/WebSocketServiceResponse';
 
 const sendWebSocketData = (props :sendWebSocketDataProps): boolean => {
   const { webSocket, data }: sendWebSocketDataProps = props;

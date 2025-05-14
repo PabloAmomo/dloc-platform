@@ -3,7 +3,7 @@ import { printMessage } from '../../functions/printMessage';
 import { sendWebSocketDataProps } from '../../functions/sendWebSocketData';
 import { UserData } from '../../models/UserData';
 import { WebSocketDataCommands } from '../../enums/WebSocketDataCommands';
-import { WebSocketServiceResponse } from '../../persistence/models/WebSocketSericeResponse';
+import { WebSocketServiceResponse } from '../../persistence/models/WebSocketServiceResponse';
 import getPositionService from '../services/getPositionService';
 import WebSocket from 'ws';
 

@@ -2,7 +2,7 @@ import { GetDevicesResult } from '../../persistence/models/GetDevicesResult';
 import { Persistence } from '../../persistence/_Persistence';
 import { UserData } from '../../models/UserData';
 import { WebSocketDataCommands } from '../../enums/WebSocketDataCommands';
-import { WebSocketServiceResponse } from '../../persistence/models/WebSocketSericeResponse';
+import { WebSocketServiceResponse } from '../../persistence/models/WebSocketServiceResponse';
 import WebSocket from 'ws';
 import { encriptionHelper } from '../../functions/encriptionHelper';
 
