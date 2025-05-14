@@ -1,23 +1,58 @@
-import { Persistence } from '../../persistence/_Persistence';
-import { printMessage } from '../../functions/printMessage';
-import { sendWebSocketDataProps } from '../../functions/sendWebSocketData';
-import { UserData } from '../../models/UserData';
-import { WebSocketDataCommands } from '../../enums/WebSocketDataCommands';
-import { WebSocketServiceResponse } from '../../persistence/models/WebSocketServiceResponse';
-import getPositionService from '../services/getPositionService';
-import WebSocket from 'ws';
+import { Persistence } from "../../persistence/_Persistence";
+import { printMessage } from "../../functions/printMessage";
+import { sendWebSocketDataProps } from "../../functions/sendWebSocketData";
+import { UserData } from "../../models/UserData";
+import { WebSocketDataCommands } from "../../enums/WebSocketDataCommands";
+import { WebSocketServiceResponse } from "../../persistence/models/WebSocketServiceResponse";
+import getPositionService from "../services/getPositionService";
+import WebSocket from "ws";
+import updatePowerProfile from "../services/setPowerProfile";
 
 const handleMessage = async (props: HandleMessageProps) => {
   const { webSocket, data, persistence, userData, sendData } = props;
 
   const commando: WebSocketDataCommands = data.command;
-  let returnData: WebSocketServiceResponse = { command: commando, error: 'Unknown command' };
+  let returnData: WebSocketServiceResponse = {
+    command: commando,
+    error: "Unknown command",
+  };
 
   switch (commando) {
     case WebSocketDataCommands.GetPositions:
       const interval = data?.data?.interval ?? -1;
       returnData =
-        interval >= 0 ? await getPositionService({ webSocket, persistence, interval, userData }) : { command: commando, error: 'Interval not provided' };
+        interval >= 0
+          ? await getPositionService({
+              webSocket,
+              persistence,
+              interval,
+              userData,
+            })
+          : { command: commando, error: "Interval not provided" };
+      break;
+
+    case WebSocketDataCommands.UpdatePowerProfile:
+      const powerProfileType = data?.data?.powerProfileType;
+      const imei = data?.data?.imei;
+      if (!powerProfileType) {
+        returnData = {
+          command: commando,
+          error: "Power profile type not provided",
+        };
+        break;
+      }
+      if (!imei) {
+        returnData = { command: commando, error: "IMEI not provided" };
+        break;
+      }
+
+      returnData = await updatePowerProfile({
+        webSocket,
+        persistence,
+        userData,
+        powerProfileType,
+        imei,
+      });
       break;
 
     default:
