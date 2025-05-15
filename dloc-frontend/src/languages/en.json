@@ -198,5 +198,7 @@
   "startIcon": "Path start icon",
   "termsAndConditions": "Terms and conditions",
   "thePet": "La mascota",
-  "yes": "Yes"
+  "yes": "Yes",
+  "powerProfileUpdated": "Power profile modified",
+  "errorPowerProfileUpdated": "Error modifying power profile"
 }

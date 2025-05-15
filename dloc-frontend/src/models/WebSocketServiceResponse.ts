@@ -12,10 +12,16 @@ export interface WebSocketServiceDataPosition extends WebSocketServiceDataError 
   interval: number;
   positions: Device[];
 }
+export interface WebSocketServiceDataUpdatePowerProfile extends WebSocketServiceDataError {
+  result: boolean;
+  imei: string;
+  powerProfile: string;
+}
 
 export type WebSocketServiceData =
   | WebSocketServiceDataHi
   | WebSocketServiceDataKeepAlive
   | WebSocketServiceDataNewData
   | WebSocketServiceDataPosition
-  | WebSocketServiceDataGetPositions;
+  | WebSocketServiceDataGetPositions
+  | WebSocketServiceDataUpdatePowerProfile;

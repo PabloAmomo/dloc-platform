@@ -198,5 +198,8 @@
   "showInstructions": "¿Como funciona la plataforma?",
   "termsAndConditions": "Términos y condiciones",
   "thePet": "La mascota",
-  "yes": "Si"
+  "yes": "Si",
+  "powerProfileUpdated": "Perfil de energía modificado",
+  "errorPowerProfileUpdated": "Error modificando el perfil de energía"
+
 }

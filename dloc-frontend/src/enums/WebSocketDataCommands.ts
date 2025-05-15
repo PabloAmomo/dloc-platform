@@ -3,5 +3,6 @@ export enum WebSocketDataCommands {
   'KeepAlive' = 'KeepAlive',
   'Hi' = 'Hi',
   'GetPositions' = 'GetPositions',
-  'Positions'= 'Positions'
+  'Positions'= 'Positions',
+  'UpdatePowerProfile' = 'UpdatePowerProfile',
 }
