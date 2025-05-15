@@ -1,3 +1,4 @@
+import { PowerProfileType } from '../../enums/PowerProfileType';
 import { WebSocketDataCommands } from '../../enums/WebSocketDataCommands';
 import { Device } from '../entities/Device';
 
@@ -8,6 +9,8 @@ export interface WebSocketServiceGetPosition {
 
 export interface WebSocketServiceUpdatePowerProfile {
   result: boolean;
+  imei: string;
+  powerProfile: PowerProfileType
 }
 
 export interface WebSocketServiceResponseResult<WebSocketCommands, T> {

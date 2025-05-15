@@ -1,4 +1,4 @@
-import { PowerProfileType } from "../../enums/PowerProfileType";
+import { PowerProfileType } from './../../enums/PowerProfileType';
 import { UpdatePowerProfileResult } from "../../persistence/models/UpdatePowerProfileResult";
 import { updatePowerProfile as updatePowerProfileService } from "../../persistence/_Persistence";
 import { Persistence } from "../../persistence/_Persistence";
@@ -14,13 +14,13 @@ const updatePowerProfileService = async (
     persistence,
     userData,
     imei,
-    powerProfileType,
+    powerProfile,
   }: updatePowerProfileServiceProps = props;
 
   const updatePowerProfileResult: UpdatePowerProfileResult =
     await persistence.updatePowerProfile(
       imei,
-      powerProfileType,
+      powerProfile,
       userData.userId
     );
 
@@ -31,7 +31,7 @@ const updatePowerProfileService = async (
       }
     : {
         command: WebSocketDataCommands.UpdatePowerProfile,
-        data: { result: true },
+        data: { result: true, imei, powerProfile },
       };
 };
 
@@ -42,5 +42,5 @@ interface updatePowerProfileServiceProps {
   persistence: Persistence;
   userData: UserData;
   imei: string;
-  powerProfileType: PowerProfileType;
+  powerProfile: PowerProfileType;
 }

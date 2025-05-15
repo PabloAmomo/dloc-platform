@@ -32,10 +32,10 @@ const handleMessage = async (props: HandleMessageProps) => {
       break;
 
     case WebSocketDataCommands.UpdatePowerProfile:
-      const powerProfileType = data?.data?.powerProfile;
+      const powerProfile = data?.data?.powerProfile;
       const imei = data?.data?.imei;
 
-      if (!powerProfileType) {
+      if (!powerProfile) {
         returnData = {
           command: commando,
           error: "Power profile type not provided",
@@ -51,7 +51,7 @@ const handleMessage = async (props: HandleMessageProps) => {
         webSocket,
         persistence,
         userData,
-        powerProfileType,
+        powerProfile,
         imei,
       });
       break;
