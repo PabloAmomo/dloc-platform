@@ -17,6 +17,7 @@ import { getNormalizedIMEI } from "../../../functions/getNormalizedIMEI";
 import powerProfileConfigGFxx from "../../../functions/powerProfileConfig";
 import createConfigGFxx from "../../../functions/createConfigGFxx";
 import { PowerProfileType } from "../../../enums/PowerProfileType";
+import GetPowerProfile from "../../../functions/getPowerProfile";
 
 const HTTP_200 = `${[
   "HTTP/1.1 200 OK",
@@ -74,35 +75,19 @@ const gfxxHandler = (conn: net.Socket, persistence: Persistence) => {
           const prefix = `[${imei}] (${remoteAddress})`;
 
           /** Get power profile for the imei */
-          let powerProfile = PowerProfileType.FULL;
-          const powerPrfile = await persistence.getPowerProfile(imei);
-          if (powerPrfile.error) {
-            printMessage(
-              `${prefix} ❌ error getting power profile [${
-                powerPrfile.error?.message || powerPrfile.error
-              }]`
-            );
-          } else {
-            powerProfile = (powerPrfile?.results[0]?.powerProfile ??
-              "MINIMAL").toLowerCase() as PowerProfileType;
-
-            printMessage(
-              `${prefix} 🔋 power profile for device [${powerProfile}]`
-            );
-          }
+          const powerProfile = await GetPowerProfile(imei, persistence, prefix);
+          const { heartBeatSec, uploadSec, ledState, forceReportLocInMs } =
+            powerProfileConfigGFxx(powerProfile);
 
           /** Get last position packet */
           const lastPosPacket: PositionPacketWithDatetime | undefined =
             CACHE_POSITION.get(imei);
 
-          /** Save response to send */
+          /** Create response to send */
           let toSend: string = "";
           for (let i = 0; i < results.length; i++) {
             if (results[i].response !== "") toSend += results[i].response;
           }
-
-          const { heartBeatSec, uploadSec, ledState, forceReportLocInMs } =
-            powerProfileConfigGFxx(powerProfile);
 
           /** create or update socket connection to cache */
           const imeiData = CACHE_IMEI.get(imei);
@@ -121,7 +106,9 @@ const gfxxHandler = (conn: net.Socket, persistence: Persistence) => {
               );
 
             printMessage(
-              `${prefix} 📡 send HeartBeat [${heartBeatSec} sec] - Leds [${ledState}] - Upload Interval [${uploadSec} sec] - forceUpdateLoc [${forceReportLocInMs / 1000} sec]`
+              `${prefix} 📡 send HeartBeat [${heartBeatSec} sec] - Leds [${ledState}] - Upload Interval [${uploadSec} sec] - forceUpdateLoc [${
+                forceReportLocInMs / 1000
+              } sec]`
             );
 
             toSend += createConfigGFxx(powerProfile);
