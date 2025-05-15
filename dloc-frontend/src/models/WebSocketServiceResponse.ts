@@ -1,3 +1,4 @@
+import { PowerProfileType } from 'enums/PowerProfileType';
 import { Device } from './Device';
 
 export interface WebSocketServiceDataError {
@@ -15,7 +16,7 @@ export interface WebSocketServiceDataPosition extends WebSocketServiceDataError 
 export interface WebSocketServiceDataUpdatePowerProfile extends WebSocketServiceDataError {
   result: boolean;
   imei: string;
-  powerProfile: string;
+  powerProfile: PowerProfileType;
 }
 
 export type WebSocketServiceData =
