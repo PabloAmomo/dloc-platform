@@ -11,8 +11,6 @@ const updatePowerProfile: updatePowerProfileProps = async (
   powerProfileType,
   userId
 ) => {
-  /** Encrypt params */
-
   /** Create query */
   const params: any[] = [powerProfileType.toLowerCase(), imei, userId];
   const sql: string = `UPDATE device SET powerProfile = ? WHERE imei = ? and userId = ?;`;

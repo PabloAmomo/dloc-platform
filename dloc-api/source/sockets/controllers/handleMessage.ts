@@ -35,9 +35,6 @@ const handleMessage = async (props: HandleMessageProps) => {
       const powerProfileType = data?.data?.powerProfile;
       const imei = data?.data?.imei;
 
-      printMessage("Power profile type: " + powerProfileType);
-      printMessage("IMEI: " + imei);
-      
       if (!powerProfileType) {
         returnData = {
           command: commando,
@@ -46,7 +43,7 @@ const handleMessage = async (props: HandleMessageProps) => {
         break;
       }
       if (!imei) {
-        returnData = { command: commando, error: "IMEI not provided" };
+        returnData = { command: commando, error: "Imei not provided" };
         break;
       }
 
