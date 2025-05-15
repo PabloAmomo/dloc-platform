@@ -8,13 +8,13 @@ function powerProfileConfigGFxx(profileType: PowerProfileType = PowerProfileType
       heartBeatSec: "240",            // seconds
       uploadSec: "0180",              // seconds
       ledState: "0",                  // 0: off, 1: on
-      forceReportLocInMs: 240 * 1000, // 0: off, 1000...720000: on [every milliseconds]
+      forceReportLocInMs: 210 * 1000, // 0: off, 1000...720000: on [every milliseconds]
     };
   }
 
   if (profileType === PowerProfileType.BALANCED) {
     return {
-      heartBeatSec: "180",            // seconds
+      heartBeatSec: "120",            // seconds
       uploadSec: "060",               // seconds
       ledState: "0",                  // 0: off, 1: on
       forceReportLocInMs: 90 * 1000,  // 0: off, 1000...720000: on [every milliseconds]
