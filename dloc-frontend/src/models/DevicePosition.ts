@@ -1,5 +1,6 @@
 import { GpsAccuracy } from "enums/GpsAccuracy";
 import { Position } from "./Position";
+import { PowerProfileType } from "enums/PowerProfileType";
 
 export type DevicePosition = {
   imei: string,
@@ -14,7 +15,8 @@ export type DevicePosition = {
   positions: Position[],
   isShared: boolean,
   locationAccuracy: GpsAccuracy,
-  activity: string
+  activity: string,
+  powerProfile: PowerProfileType
 };
 
 const DevicePositionEmpty = (props?: Partial<DevicePosition>) : DevicePosition => ({
@@ -31,6 +33,7 @@ const DevicePositionEmpty = (props?: Partial<DevicePosition>) : DevicePosition =
   isShared: false,
   locationAccuracy: GpsAccuracy.unknown,
   activity: '{}',
+  powerProfile: PowerProfileType.FULL,
   ...props
 });
 export default DevicePositionEmpty;

@@ -200,6 +200,8 @@
   "thePet": "La mascota",
   "yes": "Si",
   "powerProfileUpdated": "Perfil de energía modificado",
-  "errorPowerProfileUpdated": "Error modificando el perfil de energía"
-
+  "errorPowerProfileUpdated": "Error modificando el perfil de energía",
+  "powerProfile.balanced": "Equilibrado",
+  "powerProfile.full": "Maximo rendimiento",
+  "powerProfile.minimal": "Mínimo consumo"
 }

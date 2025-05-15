@@ -200,5 +200,8 @@
   "thePet": "La mascota",
   "yes": "Yes",
   "powerProfileUpdated": "Power profile modified",
-  "errorPowerProfileUpdated": "Error modifying power profile"
+  "errorPowerProfileUpdated": "Error modifying power profile",
+  "powerProfile.balanced": "Balanced",
+  "powerProfile.full": "Maximum performance",
+  "powerProfile.minimal": "Minimum consumption"
 }

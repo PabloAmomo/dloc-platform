@@ -28,6 +28,7 @@ const processDevices = (response: GetPositionsResult, devices: Device[]): Device
         isShared: position.isShared,
         locationAccuracy: position.locationAccuracy,
         activity: position.activity,
+        powerProfile: position.powerProfile,
         params: JSON.parse((position as any)?.params ?? DeviceParamsEmpty()),
       });
     }
@@ -37,8 +38,8 @@ const processDevices = (response: GetPositionsResult, devices: Device[]): Device
   response.positions.forEach((position: DevicePosition) => {
     for (let i = 0; i < newDevices.length; i++) {
       if (newDevices[i].imei === position.imei) {
-        const { batteryLevel, directionAngle, gsmSignal, lat, lng, speed, lastPositionUTC, lastVisibilityUTC, positions } = position;
-        Object.assign(newDevices[i], { batteryLevel, directionAngle, gsmSignal, lastPositionUTC, lastVisibilityUTC });
+        const { batteryLevel, directionAngle, gsmSignal, lat, lng, speed, lastPositionUTC, lastVisibilityUTC, positions, powerProfile } = position;
+        Object.assign(newDevices[i], { batteryLevel, directionAngle, gsmSignal, lastPositionUTC, lastVisibilityUTC, powerProfile });
         Object.assign(newDevices[i], { lat, lng, positions, speed, update: Date.now() });
         break;
       }
