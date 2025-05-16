@@ -9,6 +9,7 @@ export interface Persistence {
   addHistory: AddHistory;
   updateDevice: UpdateDevice;
   updateLastActivity: UpdateLastActivity;
+  updatePowerProfile: UpdatePowerProfile;
   getPersistenceName: GetPersistenceName;
   getPersistenceConfig: GetPersistenceName;
   addPowerProfile: AddPowerProfile;
@@ -46,6 +47,9 @@ export interface UpdateDevice {
 }
 export interface UpdateLastActivity {
   (imei: string):  Promise<PersistenceResult>;
+}
+export interface UpdatePowerProfile {
+  (imei: string, powerProfile: PowerProfileType):  Promise<PersistenceResult>;
 }
 export interface clean {
   ():  Promise<PersistenceResult>;

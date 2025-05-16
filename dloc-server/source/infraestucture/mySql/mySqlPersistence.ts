@@ -38,6 +38,9 @@ class mySqlPersistence implements Persistence {
   updateLastActivity(imei: string):  Promise<PersistenceResult> {
     return wrapper.handleUpdateLastActivity(imei);
   }
+  updatePowerProfile(imei: string, powerProfile: PowerProfileType):  Promise<PersistenceResult> {
+    return wrapper.handleUpdatePowerProfile(imei, powerProfile);
+  }
   clean():  Promise<PersistenceResult> {
     return wrapper.handleClean();
   } 
