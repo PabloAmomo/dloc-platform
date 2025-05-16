@@ -16,9 +16,7 @@ import {
 import { getNormalizedIMEI } from "../../../functions/getNormalizedIMEI";
 import powerProfileConfigGFxx from "../../../functions/powerProfileConfig";
 import createConfigGFxx from "../../../functions/createConfigGFxx";
-import { PowerProfileType } from "../../../enums/PowerProfileType";
-import GetPowerProfile from "../../../functions/getPowerProfile";
-import getMovementInLastSeconds from "../../../functions/getMovementInLastSeconds";
+import getPowerProfile from "../../../functions/getPowerProfile";
 
 const HTTP_200 = `${[
   "HTTP/1.1 200 OK",
@@ -75,19 +73,8 @@ const gfxxHandler = (conn: net.Socket, persistence: Persistence) => {
 
           const prefix = `[${imei}] (${remoteAddress})`;
 
-          /** Get the movement in last seconds */
-          const secondsToCheck : number = 300;
-          const movementInLastSeconds = await getMovementInLastSeconds(
-            imei,
-            secondsToCheck,
-            persistence,
-            prefix
-          );
-          printMessage(
-            `${prefix} 🚶‍♂️ movement in last ${secondsToCheck} seconds [${movementInLastSeconds} meters]`);
-
           /** Get power profile for the imei */
-          const powerProfile = await GetPowerProfile(imei, persistence, prefix);
+          const powerProfile = await getPowerProfile(imei, persistence, prefix);
           const { heartBeatSec, uploadSec, ledState, forceReportLocInMs } =
             powerProfileConfigGFxx(powerProfile);
 
