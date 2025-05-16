@@ -1,5 +1,4 @@
 import { ConnectionConfig } from 'mysql';
-import { mySqlClonedImeiUpdate } from '../functions/mySqlClonedImeiUpdate';
 import { mySqlConnectionConfig } from '../functions/mySqlConnectionConfig';
 import { PersistenceResult } from '../../models/PersistenceResult';
 import mySqlQueryAsync from '../functions/mySqlQueryAsync';

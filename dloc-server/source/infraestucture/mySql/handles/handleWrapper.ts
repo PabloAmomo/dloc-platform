@@ -9,6 +9,7 @@ import { handleUpdateLastActivity } from "./handleUpdateLastActivity";
 import { handleAddPowerProfile } from "./handleAddPowerProfile";
 import { handleGetPowerProfile } from "./handleGetPowerProfile";
 import { handleUpdatePowerProfile } from "./handleUpdatePowerProfile";
+import { handleGetLastPositions } from "./handleGetLastPositions";
 
 export {
   handleAddBatteryLevel,
@@ -22,4 +23,5 @@ export {
   handleAddPowerProfile,
   handleGetPowerProfile,
   handleUpdatePowerProfile,
+  handleGetLastPositions,
 };

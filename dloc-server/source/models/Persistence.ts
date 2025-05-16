@@ -14,6 +14,7 @@ export interface Persistence {
   getPersistenceConfig: GetPersistenceName;
   addPowerProfile: AddPowerProfile;
   getPowerProfile: GetPowerProfile;
+  getLastPositions: GetLastPositions;
   clean: clean;
   health: health;
 }
@@ -50,6 +51,9 @@ export interface UpdateLastActivity {
 }
 export interface UpdatePowerProfile {
   (imei: string, powerProfile: PowerProfileType):  Promise<PersistenceResult>;
+}
+export interface GetLastPositions {
+  (imei: string, timeInSec: number):  Promise<PersistenceResult>;
 }
 export interface clean {
   ():  Promise<PersistenceResult>;

@@ -41,6 +41,9 @@ class mySqlPersistence implements Persistence {
   updatePowerProfile(imei: string, powerProfile: PowerProfileType):  Promise<PersistenceResult> {
     return wrapper.handleUpdatePowerProfile(imei, powerProfile);
   }
+  getLastPositions(imei: string, timeInSec: number):  Promise<PersistenceResult> {
+    return wrapper.handleGetLastPositions(imei, timeInSec);
+  }
   clean():  Promise<PersistenceResult> {
     return wrapper.handleClean();
   } 
