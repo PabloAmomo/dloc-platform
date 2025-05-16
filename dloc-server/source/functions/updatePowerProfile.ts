@@ -5,9 +5,9 @@ import { printMessage } from "./printMessage";
 
 async function updatePowerProfile(
   imei: string,
-  remoteAddress: string,
+  powerProfile: PowerProfileType,
   persistence: Persistence,
-  powerProfile: PowerProfileType
+  errorPrefix: string
 ): Promise<boolean> {
   let response: boolean = true;
 
@@ -17,12 +17,17 @@ async function updatePowerProfile(
       if (result.error) {
         response = false;
         printMessage(
-          `[${imei}] (${remoteAddress}) error updating power profile to (${powerProfile}) [${
+          `${errorPrefix} ❌ error updating power profile to (${powerProfile}) [${
             result.error?.message || result.error
           }]`
         );
       }
     });
+
+  if (response)
+    printMessage(
+      `${errorPrefix} 🔋 power profile updated on database to (${powerProfile})`
+    );
 
   return response;
 }
