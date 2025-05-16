@@ -55,6 +55,7 @@ const getDevices: GetDevicesProps = async (userId, interval, encription) => {
                           ${interval > 1 ? '' : 'LIMIT 1'}
                           ;`;
     await mySqlQueryAsync(connectionConfig, sqlPositions, paramsPositions).then((response) => {
+      console.log('getDevices response', response);
       /** Check for errors */
       if (response.error) return { error: response.error, results: [] };
 
@@ -62,7 +63,6 @@ const getDevices: GetDevicesProps = async (userId, interval, encription) => {
       response.results = elimintateDuplicates(response.results ?? []);
 
       /** Return results */
-      console.log('getDevices',element, response.results);
       element.positions = response.results;
     });
   }
