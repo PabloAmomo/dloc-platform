@@ -73,8 +73,17 @@ const gfxxHandler = (conn: net.Socket, persistence: Persistence) => {
 
           const prefix = `[${imei}] (${remoteAddress})`;
 
+          /** Get the las information about the IMEI */
+          const imeiData = CACHE_IMEI.get(imei);
+
           /** Get power profile for the imei */
-          const powerProfile = await getPowerProfile(imei, persistence, prefix);
+          const { powerProfile, lastPowerProfileChange } =
+            await getPowerProfile(
+              imei,
+              persistence,
+              imeiData?.lastPowerProfileChange ?? 0,
+              prefix
+            );
           const { heartBeatSec, uploadSec, ledState, forceReportLocInMs } =
             powerProfileConfigGFxx(powerProfile);
 
@@ -89,10 +98,10 @@ const gfxxHandler = (conn: net.Socket, persistence: Persistence) => {
           }
 
           /** create or update socket connection to cache */
-          const imeiData = CACHE_IMEI.get(imei);
           CACHE_IMEI.updateOrCreate(imei, {
             socketConn: conn,
             powerProfile,
+            lastPowerProfileChange,
           });
           const powerPrfChanged =
             imeiData?.powerProfile && imeiData?.powerProfile !== powerProfile;

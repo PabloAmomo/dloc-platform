@@ -8,6 +8,7 @@ export var CACHE_IMEI: Cache<{
   lastLBSRequestTimestamp: number;
   socketConn: net.Socket;
   powerProfile: PowerProfileType;
+  lastPowerProfileChange: number;
 }>;
 
 /** IMEI cahce init */
@@ -18,19 +19,18 @@ function initCacheIMEI() {
     lastLBSRequestTimestamp: number;
     socketConn: net.Socket;
     powerProfile: PowerProfileType;
+    lastPowerProfileChange: number;
   }>(0); // no expiration
 }
 
-/**
- * Clear item in cache
- * @param imei IMEI
- */
+/** Clear cache for the imei */
 function clearItemInCacheIMEI(imei: string) {
   if (imei === "") return;
 
   CACHE_IMEI.updateOrCreate(imei, {
       socketConn: undefined,
       powerProfile: PowerProfileType.AUTOMATIC_FULL,
+      lastPowerProfileChange: 0
     });
 }
 
