@@ -37,7 +37,7 @@ const handlePacket: HandlePacket = async (
 
     /** Update last activity */
     if (response.imei !== "") updateLastActivity = true;
-    printMessage(`[${imeiTemp}] (${remoteAddress}) imei [${response.imei}]`);
+    printMessage(`[${imeiTemp}] (${remoteAddress}) ✅ imei [${response.imei}]`);
 
     response.response = "TRVBP00" + getUtcDateTime(false) + "#";
   }
