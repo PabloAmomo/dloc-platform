@@ -18,7 +18,8 @@
     "sharedAlreadyExists": "{{name}} ya existe en tu lista",
     "sharedNotForYou": "La mascota no fue compartida contigo, fue compartida con {{email}}",
     "sharedNotForYouToError": "El destinatario de la mascota no es correcto",
-    "unauthorized": "Sesión caducada. Por favor, inicie sesión de nuevo"
+    "unauthorized": "Sesión caducada. Por favor, inicie sesión de nuevo",
+    "connectionError": "Error de conexión"
   },
   "calculateTime": {
     "day": "día",

@@ -1,4 +1,7 @@
 /* eslint-disable no-restricted-globals */
+
+import showAlert from "functions/showAlert";
+
 // eslint-disable-next-line import/no-anonymous-default-export
 export default () => {
   self.addEventListener('message', (message) => {
@@ -33,7 +36,9 @@ export default () => {
       .then((data) => {
         returnData.positions = data.data ?? [];
       })
-      .catch((error) => console.error('Worker getPositionWorker has been a problem with your fetch operation:', error))
+      .catch((error) => {
+        console.error('Worker getPositionWorker has been a problem with your fetch operation:', error);
+      })
       /** Send the data back to the main thread */
       .finally(() => postMessage(returnData));
   });

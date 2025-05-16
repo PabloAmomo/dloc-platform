@@ -18,7 +18,8 @@
     "sharedAlreadyExists": "{{name}} is already shared with your account",
     "sharedNotForYou": "Pet not shared with you, was shared with {{email}}",
     "sharedNotForYouToError": "The pet owner is incorrect",
-    "unauthorized": "Session expired. Please login again"
+    "unauthorized": "Session expired. Please login again",
+    "connectionError": "Connection error"
   },
   "calculateTime": {
     "day": "day",
