@@ -54,6 +54,9 @@ const MapMarkerPopupStyle = {
     sx: { width: `${iconSize}px`, height: `${iconSize}px` } as SxProps,
   },
 
+  hangeToAutomaticFullIconProp: {
+    sx: { width: `${iconSize}px`, height: `${iconSize}px`, color: 'red' } as SxProps,
+  },
   ChangeToAutomaticFullProps: {
     sx: {
       paddingTop: "10px",

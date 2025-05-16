@@ -183,9 +183,9 @@ const MapMarkerPopup = (props: MapMarkerPopupProps) => {
             onClick={handleChangeToAutomaticFull}
             {...style.ChangeToAutomaticFullProps}
           >
-            <Bolt {...style.ItemIconProp} />
+            <Bolt {...style.hangeToAutomaticFullIconProp} />
             {t("changeToFull")}
-            <Bolt {...style.ItemIconProp} />
+            <Bolt {...style.hangeToAutomaticFullIconProp} />
           </Box>
         )}
 
