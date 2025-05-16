@@ -29,8 +29,6 @@ const handleMessage = async (props: HandleMessageProps) => {
               userData,
             })
           : { command: commando, error: "Interval not provided" };
-          console.log("Interval", interval);
-          console.log("Return data", returnData);
       break;
 
     case WebSocketDataCommands.UpdatePowerProfile:

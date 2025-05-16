@@ -62,6 +62,7 @@ const getDevices: GetDevicesProps = async (userId, interval, encription) => {
       response.results = elimintateDuplicates(response.results ?? []);
 
       /** Return results */
+      console.log('getDevices',element, response.results);
       element.positions = response.results;
     });
   }
