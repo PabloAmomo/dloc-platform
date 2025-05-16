@@ -7,7 +7,7 @@ async function GetPowerProfile(
   persistence: Persistence,
   errorPrefix: string
 ): Promise<PowerProfileType> {
-  let powerProfile = PowerProfileType.FULL;
+  let powerProfile = PowerProfileType.AUTOMATIC_FULL;
   try {
     const powerPrf = await persistence.getPowerProfile(imei);
 

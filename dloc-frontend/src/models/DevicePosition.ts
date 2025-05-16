@@ -33,7 +33,7 @@ const DevicePositionEmpty = (props?: Partial<DevicePosition>) : DevicePosition =
   isShared: false,
   locationAccuracy: GpsAccuracy.unknown,
   activity: '{}',
-  powerProfile: PowerProfileType.FULL,
+  powerProfile: PowerProfileType.AUTOMATIC_FULL,
   ...props
 });
 export default DevicePositionEmpty;

@@ -30,7 +30,7 @@ function clearItemInCacheIMEI(imei: string) {
 
   CACHE_IMEI.updateOrCreate(imei, {
       socketConn: undefined,
-      powerProfile: PowerProfileType.FULL,
+      powerProfile: PowerProfileType.AUTOMATIC_FULL,
     });
 }
 
