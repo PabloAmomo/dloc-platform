@@ -48,14 +48,13 @@ const getDevices: GetDevicesProps = async (userId, interval, encription) => {
 
     /** Get positions */
     const paramsPositions: any[] = [positionImei, interval];
-    const sqlPositions = `SELECT dateTimeUTC, lat, lng, speed, directionAngle, gsmSignal, batteryLevel, locationAccuracy, activity, powerProfile 
+    const sqlPositions = `SELECT dateTimeUTC, lat, lng, speed, directionAngle, gsmSignal, batteryLevel, locationAccuracy, activity 
                           FROM \`position\` WHERE imei = ? 
                           ${interval > 1 ? 'AND dateTimeUTC >= DATE_ADD(UTC_TIMESTAMP(), INTERVAL -? MINUTE)' : ''}
                           ORDER BY dateTimeUTC DESC
                           ${interval > 1 ? '' : 'LIMIT 1'}
                           ;`;
     await mySqlQueryAsync(connectionConfig, sqlPositions, paramsPositions).then((response) => {
-      console.log('getDevices response', response);
       /** Check for errors */
       if (response.error) return { error: response.error, results: [] };
 
