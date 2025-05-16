@@ -51,7 +51,7 @@ CREATE TABLE `device` (
   `clonedImei` varchar(15) DEFAULT NULL,
   `locationAccuracy` int(11) NOT NULL DEFAULT 0,
   `activity` text NOT NULL DEFAULT '{}',
-  `powerProfile` varchar(10) NOT NULL DEFAULT 'full',
+  `powerProfile` varchar(32) NOT NULL DEFAULT 'automatic_full',
   PRIMARY KEY (`imei`),
   KEY `device_idx01` (`userId`) USING BTREE,
   KEY `device_idx02` (`imei`,`userId`) USING BTREE,
