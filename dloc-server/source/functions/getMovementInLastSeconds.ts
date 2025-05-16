@@ -1,4 +1,5 @@
 import { Persistence } from "../models/Persistence";
+import distanceFromLatLngInMeters from "./distanceFromLatLngInMeters";
 
 async function getMovementInLastSeconds(
   imei: string,
@@ -15,16 +16,8 @@ async function getMovementInLastSeconds(
     const positions = response.results;
     if (positions.length < 2) return movementInMts;
 
-    console.log("--------------------------------------");
-    console.log(positions);
-    console.log("--------------------------------------");
-
     for (let i = 1; i < positions.length; i++) {
-      const distance = Math.sqrt(
-        Math.pow(positions[i].lat - positions[i - 1].lat, 2) +
-          Math.pow(positions[i].lng - positions[i - 1].lng, 2)
-      );
-      movementInMts += distance;
+      movementInMts += distanceFromLatLngInMeters(positions[i - 1].lat, positions[i - 1].lng, positions[i].lat, positions[i].lng);
     }
   } catch (error: any) {
     console.error(
