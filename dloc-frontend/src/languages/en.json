@@ -206,5 +206,6 @@
   "powerProfile.minimal": "Minimum consumption",
   "powerProfile.automatic_balanced": "Balanced (Automatic)",
   "powerProfile.automatic_full": "Maximum performance (Automatic)",
-  "powerProfile.automatic_minimal": "Minimum consumption (Automatic)"
+  "powerProfile.automatic_minimal": "Minimum consumption (Automatic)",
+  "changeToFull": "Change to maximum performance"
 }
