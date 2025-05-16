@@ -203,5 +203,8 @@
   "errorPowerProfileUpdated": "Error modifying power profile",
   "powerProfile.balanced": "Balanced",
   "powerProfile.full": "Maximum performance",
-  "powerProfile.minimal": "Minimum consumption"
+  "powerProfile.minimal": "Minimum consumption",
+  "powerProfile.automatic_balanced": "Balanced (Automatic)",
+  "powerProfile.automatic_full": "Maximum performance (Automatic)",
+  "powerProfile.automatic_minimal": "Minimum consumption (Automatic)"
 }
