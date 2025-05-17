@@ -4,6 +4,7 @@ import { WebSocketEvents } from "enums/WebSocketEvents";
 export interface WebsocketProviderInterface {
   clearOnHandlers: () => void;
   isReady: boolean | undefined;
+  hasError: boolean;
   setOnCommands: (command: WebSocketDataCommands, callback: { (data: any): void }) => void;
   setOnEvents: (command: WebSocketEvents, callback: { (data: any): void }) => void;
   value: WebsocketProviderValueType;

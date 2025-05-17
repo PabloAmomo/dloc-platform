@@ -46,6 +46,7 @@ export const WebsocketProvider = (props: WebsocketProviderProps) => {
   const onEvents = useRef<WebsockeOnEvents>(emptyWebsocketOnEvents);
   const webSocket = useRef<WebSocket>();
   const lastConnError = useRef<number>(0);
+  const hasError = useRef<boolean>(false);
   const timer = useRef<number>(0);
 
   /** Send data to the websocket */
@@ -132,6 +133,12 @@ export const WebsocketProvider = (props: WebsocketProviderProps) => {
         data: { command: WebSocketDataCommands.NewData, data: "" },
       });
     }
+
+    if (!hasError.current) {
+      showAlert(t("errors.connectionError"), "error");
+      hasError.current = true;
+    }
+
     disconnect();
   }, [setValue, lastConnError]);
 
@@ -154,12 +161,7 @@ export const WebsocketProvider = (props: WebsocketProviderProps) => {
       const socket = new WebSocket(
         `${url}?token=${user.token}&authProvider=${user.authProvider}`
       );
-      socket.addEventListener("error", (ev: Event) => {
-        if (ev.type === "error")
-          showAlert(t("errors.connectionError"), "error");
-
-        onErrorTryGetPositions();
-      });
+      socket.addEventListener("error", (ev: Event) => onErrorTryGetPositions());
       socket.addEventListener("close", () => setIsReady(false));
       socket.addEventListener("open", () => setIsReady(true));
       socket.addEventListener("message", (event) => {
@@ -172,6 +174,7 @@ export const WebsocketProvider = (props: WebsocketProviderProps) => {
           return;
         }
 
+        hasError.current = false;
         setValue({ time: Date.now(), data });
       });
 
@@ -202,6 +205,7 @@ export const WebsocketProvider = (props: WebsocketProviderProps) => {
     <WebsocketContext.Provider
       value={{
         isReady,
+        hasError: hasError.current, 
         value,
         setOnCommands,
         setOnEvents,
@@ -219,6 +223,7 @@ export const useWebsocketContext = () => useContext(WebsocketContext);
 const WebsocketContext = createContext<WebsocketProviderInterface>({
   clearOnHandlers: () => logError("WebsocketContext.cleaeOnCommands"),
   isReady: false,
+  hasError: false,
   setOnCommands: () => logError("WebsocketContext.setOnCommands"),
   setOnEvents: () => logError("WebsocketContext.setOnEvents"),
   sendCommand: () => logError("WebsocketContext.sendCommand"),
