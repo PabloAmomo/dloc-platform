@@ -94,6 +94,7 @@ const MapMarkerLabel = (props: MapMarkerLabelProps) => {
           : style.batteryTooltipHiddenProps)}
         {...style.batteryImageProps(battery * 10 < 3)}
       >
+        <Box {...style.batteryIconBackProps}></Box>
         <BatteryIcon
           iconSet={"bar"}
           level={outOffVisibilityBattery ? -1 : battery * 10}
@@ -101,9 +102,7 @@ const MapMarkerLabel = (props: MapMarkerLabelProps) => {
           fontSize={0}
         />
         {powerProfile && (
-          <Box {...style.batteryPowerProfileProps}>
-            {powerProfile}
-          </Box>
+          <Box {...style.batteryPowerProfileProps}>{powerProfile}</Box>
         )}
       </Box>
 
