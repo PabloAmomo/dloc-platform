@@ -1,4 +1,5 @@
 import { SxProps } from "@mui/material";
+import { CSSProperties } from "react";
 
 const LastUpdateInfoStyle = {
   ContainerProps: {
@@ -15,6 +16,9 @@ const LastUpdateInfoStyle = {
   },
   TypographyProps: {
     sx: { fontSize: '0.75rem', color: 'textSecondary', variant: 'caption' } as SxProps,
+  },
+  ErrorSpanProps: {
+    style: { fontSize: '0.75rem', color: 'textSecondary', variant: 'caption' } as CSSProperties,
   },
 };
 
