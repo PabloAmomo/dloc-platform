@@ -85,7 +85,7 @@ const useDeviceFormHook = (): UseDeviceFormHook => {
     
     /** Exist shared device but we have to show an error */
     if (toEmail.toLocaleLowerCase() !== user.profile.email.toLocaleLowerCase()) showAlert(t(`errors.sharedNotForYou`, { email: toEmail }), 'error');
-    else if (sharedDeviceItem?.error === 'to') showAlert(t(`errors.sharedNotForYouToError`), 'error');
+    else if (sharedDeviceItem?.error === 'to') showAlert(t(`errors.sharedNotForYouTo`), 'error');
     else if (sharedDeviceItem?.error) showAlert(t(`errors.invalidRequest`, { error: t(sharedDeviceItem.error) }), 'error');
 
     cleanQueryParams();

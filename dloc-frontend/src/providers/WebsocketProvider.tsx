@@ -135,7 +135,7 @@ export const WebsocketProvider = (props: WebsocketProviderProps) => {
     }
 
     if (!hasError.current) {
-      showAlert(t("errors.connectionError"), "error");
+      // showAlert(t("errors.connectionFail"), "error");
       hasError.current = true;
     }
 
