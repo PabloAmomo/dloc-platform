@@ -27,6 +27,9 @@ const MapMarkerLabelStyle = {
   batteryTooltipHiddenProps: {
     sx: { position: 'absolute', left: '6px', top: '-30px' } as SxProps,
   },
+  batteryPowerProfileProps: {
+    sx: {position: "absolute", right: -2, top: 0, textAlign: 'center', fontSize: 8} as SxProps,
+  },
   deviceOutOffVisibilityIconProps: {
     sx: { width: '12px', height: '12px', marginTop: '3px', color: Colors.white } as SxProps,
   },
