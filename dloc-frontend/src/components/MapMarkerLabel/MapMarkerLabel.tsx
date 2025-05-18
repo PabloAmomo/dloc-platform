@@ -54,17 +54,27 @@ const MapMarkerLabel = (props: MapMarkerLabelProps) => {
     hideTooltip ? " marker-no-tooltip" : ""
   }`;
 
-  let powerProfile = <Bolt sx={{ ...style.batteryProfileIconProps.sx, fill: '#af1515' }}  />;
+  let powerProfile =
+    battery === 0 || outOffVisibilityBattery ? (
+      <></>
+    ) : (
+      <Bolt sx={{ ...style.batteryProfileIconProps.sx, fill: "#af1515" }} />
+    );
+
   if (
     device.powerProfile == PowerProfileType.AUTOMATIC_BALANCED ||
     device.powerProfile == PowerProfileType.BALANCED
   )
-    powerProfile = <EnergySavingsLeaf sx={{ ...style.batteryProfileIconProps.sx, fill: '#936c1b' }} />;
+    powerProfile = (
+      <EnergySavingsLeaf
+        sx={{ ...style.batteryProfileIconProps.sx, fill: "#936c1b" }}
+      />
+    );
   else if (
     device.powerProfile == PowerProfileType.AUTOMATIC_MINIMAL ||
     device.powerProfile == PowerProfileType.MINIMAL
   )
-    powerProfile = <EnergySavingsLeaf { ...style.batteryProfileIconProps } />;
+    powerProfile = <EnergySavingsLeaf {...style.batteryProfileIconProps} />;
 
   return (
     <Box
