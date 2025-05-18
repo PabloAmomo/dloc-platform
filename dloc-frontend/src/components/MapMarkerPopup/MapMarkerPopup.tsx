@@ -5,7 +5,7 @@ import { MapPath } from "models/MapPath";
 import { useDevicesFormContext } from "providers/DeviceFormProvider";
 import { useMapContext } from "providers/MapProvider";
 import { useTranslation } from "react-i18next";
-import { Bolt, PowerTwoTone, Wifi, WifiOff } from "@mui/icons-material";
+import { Bolt, EnergySavingsLeafTwoTone, Wifi, WifiOff } from "@mui/icons-material";
 import BatteryIcon from "components/BatteryIcon/BatteryIcon";
 import calculateTime from "functions/calculateTime";
 import convertUTCDateToLocalDate from "functions/convertUTCDateToLocalDate";
@@ -170,7 +170,7 @@ const MapMarkerPopup = (props: MapMarkerPopupProps) => {
       {/* Power profile */}
       {LineItem(
         style.PositionSx,
-        <PowerTwoTone {...style.ItemIconProp} />,
+        <EnergySavingsLeafTwoTone {...style.ItemIconProp} />,
         t(`powerProfile.${device?.powerProfile}`)
       )}
 
