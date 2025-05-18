@@ -3,7 +3,7 @@ import { Colors } from "enums/Colors";
 import { configApp } from "config/configApp";
 import { Device } from "models/Device";
 import { useTranslation } from "react-i18next";
-import { WifiOff } from "@mui/icons-material";
+import { Bolt, EnergySavingsLeaf, WifiOff } from "@mui/icons-material";
 import BatteryIcon from "components/BatteryIcon/BatteryIcon";
 import calculateTime from "functions/calculateTime";
 import convertUTCDateToLocalDate from "functions/convertUTCDateToLocalDate";
@@ -54,17 +54,17 @@ const MapMarkerLabel = (props: MapMarkerLabelProps) => {
     hideTooltip ? " marker-no-tooltip" : ""
   }`;
 
-  let powerProfile = "";
+  let powerProfile = <Bolt sx={{ ...style.batteryProfileIconProps.sx, fill: '#af1515' }}  />;
   if (
     device.powerProfile == PowerProfileType.AUTOMATIC_BALANCED ||
     device.powerProfile == PowerProfileType.BALANCED
   )
-    powerProfile = "B";
+    powerProfile = <EnergySavingsLeaf sx={{ ...style.batteryProfileIconProps.sx, fill: '#936c1b' }} />;
   else if (
     device.powerProfile == PowerProfileType.AUTOMATIC_MINIMAL ||
     device.powerProfile == PowerProfileType.MINIMAL
   )
-    powerProfile = "M";
+    powerProfile = <EnergySavingsLeaf { ...style.batteryProfileIconProps } />;
 
   return (
     <Box

@@ -37,6 +37,9 @@ const MapMarkerLabelStyle = {
       backgroundColor: Colors.white,
     } as SxProps,
   },
+  batteryProfileIconProps: {
+    sx: { width: 10, height: 10, fill: Colors.green } as SxProps,
+  },
   batteryPowerProfileProps: {
     sx: {position: "absolute", right: -2, top: 0, textAlign: 'center', fontSize: 8} as SxProps,
   },
