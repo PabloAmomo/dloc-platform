@@ -7,28 +7,24 @@ function powerProfileConfigGFxx(
   if (
     profileType === PowerProfileType.MINIMAL ||
     profileType === PowerProfileType.AUTOMATIC_MINIMAL
-  ) {
-    const sec = 180;
+  )
     return {
-      heartBeatSec: sec.toString(), // seconds
-      uploadSec: "120", // seconds
-      ledState: "0", // 0: off, 1: on
-      forceReportLocInMs: (sec - 10) * 1000, // 0: off, 1000...720000: on [every milliseconds]
+      heartBeatSec: 120,
+      uploadSec: "090",
+      ledState: "0",
+      forceReportLocInMs: 110000,
     };
-  }
 
   if (
     profileType === PowerProfileType.BALANCED ||
     profileType === PowerProfileType.AUTOMATIC_BALANCED
-  ) {
-    const sec = 90;
+  )
     return {
-      heartBeatSec: sec.toString(), // seconds
-      uploadSec: "060", // seconds
-      ledState: "0", // 0: off, 1: on
-      forceReportLocInMs: (sec - 10) * 1000, // 0: off, 1000...720000: on [every milliseconds]
+      heartBeatSec: 90,
+      uploadSec: "060",
+      ledState: "0",
+      forceReportLocInMs: 80000,
     };
-  }
 
   // Full power profile configuration
   if (
@@ -40,12 +36,11 @@ function powerProfileConfigGFxx(
     );
 
   // Full power profile configuration
-  const sec = 60;
   return {
-    heartBeatSec: sec, // seconds
-    uploadSec: "020", // seconds
-    ledState: "1", // 0: off, 1: on
-    forceReportLocInMs: (sec - 10) * 1000, // 0: off, 1000...720000: on [every milliseconds]
+    heartBeatSec: 60,
+    uploadSec: "020",
+    ledState: "1",
+    forceReportLocInMs: 50000,
   };
 }
 
