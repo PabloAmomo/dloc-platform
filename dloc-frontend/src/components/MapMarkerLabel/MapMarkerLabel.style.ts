@@ -41,7 +41,7 @@ const MapMarkerLabelStyle = {
     sx: { width: 10, height: 10, fill: Colors.green } as SxProps,
   },
   batteryPowerProfileProps: {
-    sx: {position: "absolute", right: -2, top: 0, textAlign: 'center', fontSize: 8} as SxProps,
+    sx: {position: "absolute", right: -4, top: 2, width: 10, height: 10 } as SxProps,
   },
   deviceOutOffVisibilityIconProps: {
     sx: { width: '12px', height: '12px', marginTop: '3px', color: Colors.white } as SxProps,
