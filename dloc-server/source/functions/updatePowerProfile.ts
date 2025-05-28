@@ -26,7 +26,7 @@ async function updatePowerProfile(
 
   if (response)
     printMessage(
-      `${errorPrefix} 🔋 power profile updated on database to (${powerProfile})`
+      `${errorPrefix} ⚡️ power profile updated on database to (${powerProfile})`
     );
 
   return response;

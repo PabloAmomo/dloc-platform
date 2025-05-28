@@ -9,7 +9,7 @@ function powerProfileConfigGFxx(
     profileType === PowerProfileType.AUTOMATIC_MINIMAL
   )
     return {
-      heartBeatSec: 120,
+      heartBeatSec: 60,
       uploadSec: "090",
       ledState: "0",
       forceReportLocInMs: 110000,
@@ -20,7 +20,7 @@ function powerProfileConfigGFxx(
     profileType === PowerProfileType.AUTOMATIC_BALANCED
   )
     return {
-      heartBeatSec: 90,
+      heartBeatSec: 60,
       uploadSec: "060",
       ledState: "0",
       forceReportLocInMs: 80000,

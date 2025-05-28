@@ -99,7 +99,7 @@ async function getPowerProfile(
     }
 
     printMessage(
-      `${messagePrefix} 🔋 power profile for device [${powerProfile}]`
+      `${messagePrefix} ⚡️ power profile for device [${powerProfile}]`
     );
   } catch (error: any) {
     printMessage(
