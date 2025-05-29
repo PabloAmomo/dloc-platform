@@ -71,6 +71,14 @@ const gfxxHandler = (conn: net.Socket, persistence: Persistence) => {
         .then(async (results) => {
           imei = results[0].imei;
 
+          /** Check if IMEI is valid */
+          if (!imei) {
+
+            throw new Error(
+              `IMEI not found in data [${dataString}].`
+            );
+          }
+
           const prefix = `[${imei}] (${remoteAddress})`;
 
           /** Get the las information about the IMEI */
