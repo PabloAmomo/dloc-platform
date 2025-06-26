@@ -1,5 +1,6 @@
 import { getPersistence } from "./persistence/persistence";
-import { gfxxHandler } from "./controllers/server-socket/model-gf-xx/gfxxHandler";
+import { protocol1903Handler } from "./controllers/server-socket/protocol1903/protocol1903Handler";
+import { protocol808Handler } from "./controllers/server-socket/protocol808/protocol808Handler";
 import { mySqlPersistence } from "./infraestucture/mySql/mySqlPersistence";
 import { printMessage } from "./functions/printMessage";
 import { startPersistence } from "./inits/startPersistence";
@@ -17,6 +18,8 @@ dotenv.config();
 /** PORTS */
 const PORT_SOCKET: any = process.env.PORT_SOCKET ?? "0";
 const PORT_HTTP: any = process.env.PORT_HTTP ?? "0";
+const SOCKET_PROTOCOL: any = process.env.SOCKET_PROTOCOL ?? "1903";
+
 export const ENABLE_LBS: boolean =
   process.env.ENABLE_LBS === "true" ? true : false;
 
@@ -59,8 +62,22 @@ initCachePosition();
 /** Start Persistence */
 startPersistence(new mySqlPersistence());
 
-/** Start Socket server */
-startServerSocket((conn) => gfxxHandler(conn, getPersistence()), PORT_SOCKET);
+/** Start Socket server (Protocol 1903) */
+if (SOCKET_PROTOCOL == "1903") {
+  startServerSocket(
+    (conn) => protocol1903Handler(conn, getPersistence()),
+    PORT_SOCKET
+  );
+} else if (SOCKET_PROTOCOL == "808") {
+  /** Start Socket server (Protocol 808) */
+  startServerSocket(
+    (conn) => protocol808Handler(conn, getPersistence()),
+    PORT_SOCKET
+  );
+} else {
+  printMessage("Error: Invalid SOCKET_PROTOCOL. Use '1903' or '808'.");
+  process.exit(1);
+}
 
 /** Start HTTP server */
 startServerHTTP(routes, PORT_HTTP);

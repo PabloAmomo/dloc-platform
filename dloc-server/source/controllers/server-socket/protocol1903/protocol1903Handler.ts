@@ -1,11 +1,11 @@
-import { handlePacket } from "../../../services/server-socket/model-gf-xx/handlePacket";
+import { handlePacket } from "../../../services/server-socket/protocol1903/handlePacket";
 import { Persistence } from "../../../models/Persistence";
 import { printMessage } from "../../../functions/printMessage";
 import { getRemoteAddress } from "../../../functions/remoteAddress";
-import handleClose from "../../../services/server-socket/model-gf-xx/connection/handleClose";
-import handleData from "../../../services/server-socket/model-gf-xx/connection/handleData";
-import handleEnd from "../../../services/server-socket/model-gf-xx/connection/handleEnd";
-import handleError from "../../../services/server-socket/model-gf-xx/connection/handleError";
+import handleClose from "../../../services/server-socket/protocol1903/connection/handleClose";
+import handleData from "../../../services/server-socket/protocol1903/connection/handleData";
+import handleEnd from "../../../services/server-socket/protocol1903/connection/handleEnd";
+import handleError from "../../../services/server-socket/protocol1903/connection/handleError";
 import net from "node:net";
 import { CACHE_POSITION } from "../../../infraestucture/caches/cachePosition";
 import { PositionPacketWithDatetime } from "../../../models/PositionPacketWithDatetime";
@@ -26,7 +26,7 @@ const HTTP_200 = `${[
   "Connection: keep-alive",
 ].join("\n")}\n\n`;
 
-const gfxxHandler = (conn: net.Socket, persistence: Persistence) => {
+const protocol1903Handler = (conn: net.Socket, persistence: Persistence) => {
   const remoteAddress: string = getRemoteAddress(conn);
   var imei: string = "";
   var lastTime: number = Date.now();
@@ -171,4 +171,4 @@ const gfxxHandler = (conn: net.Socket, persistence: Persistence) => {
   });
 };
 
-export { gfxxHandler as gfxxHandler };
+export { protocol1903Handler };
