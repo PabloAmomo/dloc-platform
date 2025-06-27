@@ -25,6 +25,10 @@ COPY ./.docker.http.env ./.docker.http.env
 
 RUN if [ "$SERVER_TYPE" = "socket" ]; then \
       cp ./.docker.socket.env ./.env ; \
+    elif [ "$SERVER_TYPE" = "socket-1903" ]; then \
+      cp ./.docker.socket.1903.env ./.env ; \
+    elif [ "$SERVER_TYPE" = "socket-808" ]; then \
+      cp ./.docker.socket.808.env ./.env ; \
     elif [ "$SERVER_TYPE" = "http" ]; then \
       cp ./.docker.http.env ./.env ; \
     else \
