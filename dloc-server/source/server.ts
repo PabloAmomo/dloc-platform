@@ -64,18 +64,20 @@ startPersistence(new mySqlPersistence());
 
 /** Start Socket server (Protocol 1903) */
 if (SOCKET_PROTOCOL == "1903") {
+  printMessage(`✅ Using protocol ${SOCKET_PROTOCOL}.`);
   startServerSocket(
     (conn) => protocol1903Handler(conn, getPersistence()),
     PORT_SOCKET
   );
 } else if (SOCKET_PROTOCOL == "808") {
   /** Start Socket server (Protocol 808) */
+  printMessage(`✅ Using protocol ${SOCKET_PROTOCOL}.`);
   startServerSocket(
     (conn) => protocol808Handler(conn, getPersistence()),
     PORT_SOCKET
   );
 } else {
-  printMessage("Error: Invalid SOCKET_PROTOCOL. Use '1903' or '808'.");
+  printMessage("❌ Error: Invalid SOCKET_PROTOCOL. Use '1903' or '808'.");
   process.exit(1);
 }
 
