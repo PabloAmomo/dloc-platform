@@ -21,6 +21,8 @@ COPY ./source ./source
 
 COPY ./.docker.env ./.docker.env
 COPY ./.docker.socket.env ./.docker.socket.env
+COPY ./.docker.socket.protocol1903.env ./.docker.socket.protocol1903.env
+COPY ./.docker.socket.protocol808.env ./.docker.socket.protocol808.env
 COPY ./.docker.http.env ./.docker.http.env
 
 RUN if [ "$SERVER_TYPE" = "socket" ]; then \
