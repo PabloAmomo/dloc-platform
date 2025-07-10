@@ -1,0 +1,58 @@
+import { HuabaoPacket } from "../models/HuabaoPacket";
+
+const huabaoGetFrameData = (buffer: Buffer): HuabaoPacket => {
+
+    if (buffer[0] !== 0x7E || buffer[buffer.length - 1] !== 0x7E) {
+    throw new Error('Invalid start or end delimiter');
+  }
+
+  const content = buffer.slice(1, buffer.length - 2); // Excluye delimitadores y checksum
+  const checksum = buffer[buffer.length - 2];
+
+  const msgId = content.readUInt16BE(0);
+  const msgProp = content.readUInt16BE(2);
+
+  const terminalId = content.slice(4, 10).toString('hex');
+  const msgSerialNumber = content.readUInt16BE(10);
+
+  const isSegmented = (msgProp & 0x2000) !== 0;
+  const encryptionType = (msgProp >> 10) & 0x07;
+  const bodyLength = msgProp & 0x03FF;
+
+  let packetInfo = null;
+  let bodyStart = 12;
+
+  if (isSegmented) {
+    packetInfo = {
+      totalPackets: content.readUInt16BE(12),
+      packetIndex: content.readUInt16BE(14),
+    };
+    bodyStart += 4;
+  }
+
+  const body = content.slice(bodyStart);
+
+  const calculatedChecksum = content.reduce((sum, byte) => sum ^ byte, 0);
+  const isChecksumValid = calculatedChecksum === checksum;
+
+  return {
+    raw: buffer.toString('hex'),
+    header: {
+      msgType: msgId,
+      msgProp,
+      bodyLength,
+      isSegmented,
+      encryptionType,
+      terminalId,
+      msgSerialNumber,
+      packetInfo,
+    },
+    body,
+    checksum: {
+      value: checksum,
+      valid: isChecksumValid,
+    },
+  };
+}
+
+export default huabaoGetFrameData;
