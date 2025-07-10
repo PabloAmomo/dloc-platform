@@ -2,13 +2,14 @@ import { HandleDataProps } from '../../../../models/HandleDataProps';
 import { HandlePacketResult } from '../../../../models/HandlePacketResult';
 import { printMessage } from '../../../../functions/printMessage';
 import { getNormalizedIMEI } from '../../../../functions/getNormalizedIMEI';
+import splitJT808Frames from '../../../../functions/splitJT808Frames';
 
 const handleData = async ({ imei, remoteAddress, data, handlePacket, persistence }: HandleDataProps): Promise<HandlePacketResult[]> => {
   /** Save results */
   const results: HandlePacketResult[] = [];
 
-  /** broke data into packets (Sometimes more than one packet is received) */
-  const inPackets: string[] = (data ?? '').split('#');
+  // crea una algoritmo que parta los mensajes que llegan en data, que comienzan y terminan con el byte 7e
+  const inPackets: string[] = data  ? splitJT808Frames(data) : [];
 
   /** Process each packet */
   for (let i = 0; i < inPackets.length; i++) {
@@ -28,7 +29,6 @@ const handleData = async ({ imei, remoteAddress, data, handlePacket, persistence
     } catch (err: Error | any) {
       const printImei = getNormalizedIMEI(imei);
       printMessage(`[${printImei}] (${remoteAddress}) ❌ error handling packet (1) (${err?.message ?? 'unknown error'}) packet [${inPackets[i]?.split(',')?.[0] ?? inPackets[i]}]`);
-      // throw err;
     }
   }
 
