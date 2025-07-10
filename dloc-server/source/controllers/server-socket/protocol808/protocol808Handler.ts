@@ -59,6 +59,19 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
       if (newConnection)
         printMessage(`[${tempImei}] (${remoteAddress}) 🧑‍💻 new connection.`);
 
+      /* convert data to hex string */
+      const hexData: string = data
+        .toString("hex")
+        .toUpperCase()
+        .replace(/(.{2})/g, "$1 ")
+        .trim();  
+      printMessage(
+        `[${tempImei}] (${remoteAddress}) 📡 data received in hex [${hexData}].`);
+
+
+
+
+        
       /** Handle data */
       handleData({
         imei,
