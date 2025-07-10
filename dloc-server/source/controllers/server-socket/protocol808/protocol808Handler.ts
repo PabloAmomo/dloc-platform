@@ -13,7 +13,10 @@ import {
   CACHE_IMEI,
   clearItemInCacheIMEI,
 } from "../../../infraestucture/caches/cacheIMEI";
-import { getNormalizedIMEI, NO_IMEI_STRING } from "../../../functions/getNormalizedIMEI";
+import {
+  getNormalizedIMEI,
+  NO_IMEI_STRING,
+} from "../../../functions/getNormalizedIMEI";
 import powerProfileConfigGFxx from "../../../functions/powerProfileConfig";
 import createConfigGFxx from "../../../functions/createConfigGFxx";
 import getPowerProfile from "../../../functions/getPowerProfile";
@@ -42,12 +45,11 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
   /** Handle data */
   conn.on("data", (data: any) => {
     const tempImei: string = getNormalizedIMEI(imei);
-    try {
-      /** Process data */
-      const dataString: string = data.toString();
+    const dataStringHex: string = convertStringToHexString(data);
 
+    try {
       /** Check if health packet */
-      if (dataString.indexOf("HEAD /health") !== -1) {
+      if ((data as string).indexOf("HEAD /health") !== -1) {
         if (!remoteAddress.includes("127.0.0.1"))
           printMessage(
             `[${tempImei}] (${remoteAddress}) 🩺 health packet received.`
@@ -71,10 +73,9 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
         conn,
       })
         .then(async (result) => {
-
           /** Check if IMEI is valid */
           if (!result?.imei) {
-            printMessage(`IMEI not found in data [${convertStringToHexString(data)}].`);
+            printMessage(`IMEI not found in data [${dataStringHex}].`);
             conn.destroy();
             return;
           }
@@ -123,11 +124,17 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
             );
 
             // toSend += createConfigGFxx(powerProfile);
-            
+
             newConnection = false;
           }
 
           /** Send */
+          printMessage(
+            `${prefix} 👉 response to send [${convertStringToHexString(
+              result.response
+            )}].`
+          );
+
           conn.write(result.response);
         })
         .catch((err: Error) => {
@@ -142,7 +149,7 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
       printMessage(
         `[${tempImei}] (${remoteAddress}) ❌ error handling data (${
           err?.message ?? "unknown error"
-        }) data [${data}].`
+        }) data [${dataStringHex}].`
       );
     }
   });
