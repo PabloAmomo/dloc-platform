@@ -1,4 +1,4 @@
-const splitJT808Frames = (buffer: any) : string[] => {
+const splitJT808Frames = (buffer: any) : any[] => {
     const messages = [];
     let start = -1;
 
