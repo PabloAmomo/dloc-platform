@@ -340,7 +340,7 @@ const handlePacket: HandlePacket = async (
   /** */
   const message =
     response.response !== ""
-      ? `✅ response [${response.response}]`
+      ? `✅ response [${convertStringToHexString(response.response)}]`
       : `👉 no response to send for packet [${dataString}]`;
   printMessage(`[${imeiTemp}] (${remoteAddress}) ${message}`);
 

@@ -130,12 +130,6 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
           }
 
           /** Send */
-          result.response = encodeHuabaoFrame(result.response)
-          printMessage(
-            `${prefix} 👉 response to send [${convertStringToHexString(
-              result.response
-            )}].`
-          );
           conn.write(result.response);
         })
         .catch((err: Error) => {
