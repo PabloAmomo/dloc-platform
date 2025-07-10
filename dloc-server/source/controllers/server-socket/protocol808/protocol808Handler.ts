@@ -76,7 +76,7 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
         conn,
       })
         .then(async (results) => {
-          imei = results[0].imei;
+          imei = results[0]?.imei;
 
           /** Check if IMEI is valid */
           if (!imei) {
@@ -136,24 +136,6 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
             toSend += createConfigGFxx(powerProfile);
 
             newConnection = false;
-          }
-
-          const currentTime = Date.now();
-
-          const lastPosMsSec = !lastPosPacket
-            ? forceReportLocInMs
-            : currentTime - lastPosPacket.datetimeUtc.getTime();
-
-          if (
-            forceReportLocInMs > 0 &&
-            lastPosMsSec >= forceReportLocInMs &&
-            currentTime - lastTime >= forceReportLocInMs
-          ) {
-            lastTime = currentTime;
-            toSend += "TRVBP20#";
-            printMessage(
-              `${prefix} 📡 send command TRVBP20 (Force to report Position).`
-            );
           }
 
           /** Send */

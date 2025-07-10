@@ -69,7 +69,7 @@ const protocol1903Handler = (conn: net.Socket, persistence: Persistence) => {
         conn,
       })
         .then(async (results) => {
-          imei = results[0].imei;
+          imei = results[0]?.imei;
 
           /** Check if IMEI is valid */
           if (!imei) {
