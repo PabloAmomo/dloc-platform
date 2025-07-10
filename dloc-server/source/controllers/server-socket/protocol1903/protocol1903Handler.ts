@@ -69,14 +69,14 @@ const protocol1903Handler = (conn: net.Socket, persistence: Persistence) => {
         conn,
       })
         .then(async (results) => {
-          imei = results[0]?.imei;
 
           /** Check if IMEI is valid */
-          if (!imei) {
+          if (!results[0]?.imei) {
             printMessage(`IMEI not found in data [${dataString}].`);
             conn.destroy();
             return;
           }
+          imei = results[0].imei;
 
           const prefix = `[${imei}] (${remoteAddress})`;
 

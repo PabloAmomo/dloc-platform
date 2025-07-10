@@ -13,7 +13,7 @@ import {
   CACHE_IMEI,
   clearItemInCacheIMEI,
 } from "../../../infraestucture/caches/cacheIMEI";
-import { getNormalizedIMEI } from "../../../functions/getNormalizedIMEI";
+import { getNormalizedIMEI, NO_IMEI_STRING } from "../../../functions/getNormalizedIMEI";
 import powerProfileConfigGFxx from "../../../functions/powerProfileConfig";
 import createConfigGFxx from "../../../functions/createConfigGFxx";
 import getPowerProfile from "../../../functions/getPowerProfile";
@@ -70,14 +70,14 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
         conn,
       })
         .then(async (results) => {
-          imei = results[0]?.imei;
-
+          
           /** Check if IMEI is valid */
-          if (!imei) {
+          if (!results[0]?.imei) {
             printMessage(`IMEI not found in data [${convertStringToHexString(data)}].`);
             conn.destroy();
             return;
           }
+          imei = results[0].imei;
 
           const prefix = `[${imei}] (${remoteAddress})`;
 
