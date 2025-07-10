@@ -30,9 +30,9 @@ const handlePacket: HandlePacket = async (
   var imeiTemp: string = getNormalizedIMEI(imei);
 
   /* convert data to hex string */
-  const hexData: string = convertStringToHexString(data);
+  const dataString: string = convertStringToHexString(data);
   printMessage(
-    `[${imei}] (${remoteAddress}) 📡 HEX ----> [${hexData}].`);
+    `[${imei}] (${remoteAddress}) 📡 HEX ----> [${dataString}].`);
 
   // ---------------------------------------
   // Login Package TRVAP00xxxxIMEIxxxxxxx#
@@ -306,7 +306,7 @@ const handlePacket: HandlePacket = async (
   //else {
     printMessage(
       `[${imeiTemp}] (${remoteAddress}) 🤷‍♂️ command unknown in data [${
-        data.length > 20 ? convertStringToHexString(data.slice(0,20)) + "..." : convertStringToHexString(data)
+        dataString.length > 20 ? dataString.substring(0, 20) + "..." : dataString
       }]`
     );
     return await discardData(
@@ -315,7 +315,7 @@ const handlePacket: HandlePacket = async (
       persistence,
       imeiTemp,
       remoteAddress,
-      data,
+      dataString,
       response
     );
   //}
@@ -324,7 +324,7 @@ const handlePacket: HandlePacket = async (
   await positionUpdateLastActivityAndAddHistory(
     imeiTemp,
     remoteAddress,
-    data,
+    dataString,
     persistence,
     updateLastActivity
   );
@@ -333,7 +333,7 @@ const handlePacket: HandlePacket = async (
   const message =
     response.response !== ""
       ? `✅ response [${response.response}]`
-      : `👉 no response to send for packet [${data}]`;
+      : `👉 no response to send for packet [${dataString}]`;
   printMessage(`[${imeiTemp}] (${remoteAddress}) ${message}`);
 
   /** Return */
