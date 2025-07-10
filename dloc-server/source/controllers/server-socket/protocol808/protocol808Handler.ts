@@ -71,7 +71,7 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
 
 
 
-        
+
       /** Handle data */
       handleData({
         imei,
@@ -86,10 +86,9 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
 
           /** Check if IMEI is valid */
           if (!imei) {
-
-            throw new Error(
-              `IMEI not found in data [${dataString}].`
-            );
+            printMessage(`IMEI not found in data [${dataString}].`);
+            conn.destroy();
+            return;
           }
 
           const prefix = `[${imei}] (${remoteAddress})`;
