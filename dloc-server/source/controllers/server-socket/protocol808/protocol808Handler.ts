@@ -22,6 +22,7 @@ import createConfigGFxx from "../../../functions/createConfigGFxx";
 import getPowerProfile from "../../../functions/getPowerProfile";
 import convertStringToHexString from "../../../functions/convertStringToHexString";
 import { send } from "node:process";
+import encodeHuabaoFrame from "../../../functions/huabaoFrameEncode";
 
 const HTTP_200 = `${[
   "HTTP/1.1 200 OK",
@@ -129,12 +130,12 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
           }
 
           /** Send */
+          result.response = encodeHuabaoFrame(result.response)
           printMessage(
             `${prefix} 👉 response to send [${convertStringToHexString(
               result.response
             )}].`
           );
-
           conn.write(result.response);
         })
         .catch((err: Error) => {
