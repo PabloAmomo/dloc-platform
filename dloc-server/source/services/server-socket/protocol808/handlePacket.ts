@@ -15,6 +15,7 @@ import positionAddPositionAndUpdateDevice from "../../../functions/positionAddPo
 import positionUpdateBattertAndLastActivity from "../../../functions/positionUpdateBatteryAndLastActivity";
 import { getNormalizedIMEI, NO_IMEI_STRING } from "../../../functions/getNormalizedIMEI";
 import convertStringToHexString from "../../../functions/convertStringToHexString";
+import huabaoFormatMessage from "../../../functions/huabaoFormatMessage";
 
 const noImei: string = "no imei received";
 
@@ -40,7 +41,13 @@ const handlePacket: HandlePacket = async (
   //     response 0x8100
   // ---------------------------------------
   if (dataBuffer[0] == 0x01 && dataBuffer[1] == 0x00) {
-    response.response = Buffer.from([ 0x7e, 0x81, 0x00, dataBuffer[2], dataBuffer[3], 0x00, 0x00, 0x7e ]);
+    response.response = huabaoFormatMessage(
+      0x7e,
+      0x8100,
+      Buffer.from([dataBuffer[2], dataBuffer[3]]),
+      true,
+      Buffer.from([0x00, 0x00])
+    );
     response.imei = "123456789012345";
     imeiTemp = getNormalizedIMEI(response.imei);
 
