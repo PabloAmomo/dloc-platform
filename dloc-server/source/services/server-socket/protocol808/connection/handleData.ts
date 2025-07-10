@@ -4,6 +4,7 @@ import { printMessage } from "../../../../functions/printMessage";
 import { getNormalizedIMEI } from "../../../../functions/getNormalizedIMEI";
 import splitJT808Frames from "../../../../functions/splitJT808Frames";
 import convertStringToHexString from "../../../../functions/convertStringToHexString";
+import huabaoFrameDevice from "../../../../functions/huabaoFrameDecode";
 
 const handleData = async ({
   imei,
@@ -17,6 +18,13 @@ const handleData = async ({
 
   // crea una algoritmo que parta los mensajes que llegan en data, que comienzan y terminan con el byte 7e
   const inPackets: any[] = data ? splitJT808Frames(data) : [];
+  
+  const packet = huabaoFrameDevice(data);
+
+  const dataString: string = convertStringToHexString(data);
+  printMessage(
+    `[asdasdasdasd] (${remoteAddress}) 📡 1111HEX ----> [${dataString}].`);
+
 
   /** Process each packet */
   for (let i = 0; i < inPackets.length; i++) {
