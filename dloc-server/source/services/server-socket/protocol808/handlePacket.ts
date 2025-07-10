@@ -32,7 +32,7 @@ const handlePacket: HandlePacket = async (
   /* convert data to hex string */
   const dataString: string = convertStringToHexString(data);
   printMessage(
-    `[${imei}] (${remoteAddress}) 📡 HEX ----> [${dataString}].`);
+    `[${imeiTemp}] (${remoteAddress}) 📡 HEX ----> [${dataString}].`);
 
   // ---------------------------------------
   // Login Package TRVAP00xxxxIMEIxxxxxxx#
