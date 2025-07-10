@@ -304,7 +304,7 @@ const handlePacket: HandlePacket = async (
   // ---------------------------------------------
   // Unknow command - Discart packet
   // ---------------------------------------------
-  //else {
+  else {
     printMessage(
       `[${imeiTemp}] (${remoteAddress}) 🤷‍♂️ command unknown in data [${
         dataString.length > 20 ? dataString.substring(0, 20) + "..." : dataString
@@ -319,7 +319,7 @@ const handlePacket: HandlePacket = async (
       dataString,
       response
     );
-  //}
+  }
 
   /** Update last activity and add history */
   await positionUpdateLastActivityAndAddHistory(
