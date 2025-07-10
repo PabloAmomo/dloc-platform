@@ -22,9 +22,10 @@ const handlePacket: HandlePacket = async (
   props: HandlePacketProps
 ): Promise<HandlePacketResult> => {
   const { imei, remoteAddress: remoteAddress, data, persistence } = props;
+  const dataBuffer: Buffer = data as Buffer;
 
   let updateLastActivity: boolean = false;
-  let response: HandlePacketResult = { imei, error: "", response: "" };
+  let response: HandlePacketResult = { imei, error: "", response: Buffer.from([]) };
 
   /** Temporal imei (Used only for print messages for user) */
   var imeiTemp: string = getNormalizedIMEI(imei);
@@ -32,21 +33,21 @@ const handlePacket: HandlePacket = async (
   /* convert data to hex string */
   const dataString: string = convertStringToHexString(data);
   printMessage(
-    `[${imeiTemp}] (${remoteAddress}) 📡 HEX ----> [${dataString}].`);
+    `[${imeiTemp}] (${remoteAddress}) 📡 WORKING ----> [${dataString}].`);
 
   // ---------------------------------------
-  // Login Package TRVAP00xxxxIMEIxxxxxxx#
+  // 2.4 Terminal registration（0x0100)
+  //     response 0x8100
   // ---------------------------------------
-  //if (data.startsWith("TRVAP00")) {
-  //  response.imei = data.replace("TRVAP00", "").replace("#", "");
-  //  imeiTemp = getNormalizedIMEI(response.imei);
-//
-  //  /** Update last activity */
-  //  if (response.imei !== "") updateLastActivity = true;
-  //  printMessage(`[${imeiTemp}] (${remoteAddress}) ✅ imei [${response.imei}]`);
-//
-  //  response.response = "TRVBP00" + getUtcDateTime(false) + "#";
-  //}
+  if (dataBuffer[0] == 0x01 && dataBuffer[1] == 0x00) {
+    response.response = Buffer.from([ 0x7e, 0x81, 0x00, dataBuffer[2], dataBuffer[3], 0x00, 0x00, 0x7e ]);
+    response.imei = "123456789012345";
+    imeiTemp = getNormalizedIMEI(response.imei);
+
+    /** Update last activity */
+    if (response.imei !== "") updateLastActivity = true;
+    printMessage(`[${imeiTemp}] (${remoteAddress}) ✅ imei [${response.imei}]`);
+  }
 
   // ---------------------------------------
   // GPS DATA (14 or REPLY 15)

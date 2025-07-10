@@ -69,15 +69,15 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
         persistence,
         conn,
       })
-        .then(async (results) => {
-          
+        .then(async (result) => {
+
           /** Check if IMEI is valid */
-          if (!results[0]?.imei) {
+          if (!result?.imei) {
             printMessage(`IMEI not found in data [${convertStringToHexString(data)}].`);
             conn.destroy();
             return;
           }
-          imei = results[0].imei;
+          imei = result.imei;
 
           const prefix = `[${imei}] (${remoteAddress})`;
 
@@ -98,12 +98,6 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
           /** Get last position packet */
           const lastPosPacket: PositionPacketWithDatetime | undefined =
             CACHE_POSITION.get(imei);
-
-          /** Create response to send */
-          let toSend: string = "";
-          for (let i = 0; i < results.length; i++) {
-            if (results[i].response !== "") toSend += results[i].response;
-          }
 
           /** create or update socket connection to cache */
           CACHE_IMEI.updateOrCreate(imei, {
@@ -127,13 +121,11 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
               } sec]`
             );
 
-            toSend += createConfigGFxx(powerProfile);
-
             newConnection = false;
           }
 
           /** Send */
-          conn.write(toSend);
+          conn.write(result.response);
         })
         .catch((err: Error) => {
           throw err;

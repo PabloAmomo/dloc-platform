@@ -11,9 +11,9 @@ const handleData = async ({
   data,
   handlePacket,
   persistence,
-}: HandleDataProps): Promise<HandlePacketResult[]> => {
+}: HandleDataProps): Promise<HandlePacketResult> => {
   /** results */
-  const results: HandlePacketResult[] = [];
+  let result: HandlePacketResult = {  imei, error: "", response: Buffer.from([]) };
 
   const dataString: string = convertStringToHexString(data);
   printMessage(
@@ -29,11 +29,12 @@ const handleData = async ({
         imei
       )}] (${remoteAddress}) ❌ error decoding packet.`
     );
-    return results;
+    return result;
   }
 
   /** Remove first byte on packet */
   if (inPacket[0] === 0x7e) inPacket = inPacket.slice(1);
+
   /** Remove last byte on packet */
   if (inPacket[inPacket.length - 1] === 0x7e) inPacket = inPacket.slice(0, -1);
 
@@ -44,25 +45,25 @@ const handleData = async ({
       remoteAddress,
       data: inPacket as Buffer,
       persistence,
-    }).then((result: HandlePacketResult) => {
+    }).then((resultVal: HandlePacketResult) => {
       /** Save result */
-      results.push(result);
+      result = resultVal;
       /** Error handling packet */
-      if (result.error !== "") throw new Error(result.error);
+      if (resultVal.error !== "") throw new Error(resultVal.error);
       /** Update imei */
-      if (result.imei !== "") imei = result.imei;
+      if (resultVal.imei !== "") imei = resultVal.imei;
     });
   } catch (err: Error | any) {
     const printImei = getNormalizedIMEI(imei);
     printMessage(
       `[${printImei}] (${remoteAddress}) ❌ error handling packet (1) (${
         err?.message ?? "unknown error"
-      }) packet [${convertStringToHexString(inPacket)}]`
+      }) packet [${dataString}]`
     );
   }
 
   /** Return results */
-  return results;
+  return result;
 };
 
 export default handleData;
