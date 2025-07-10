@@ -301,7 +301,7 @@ const handlePacket: HandlePacket = async (
     printMessage(
       `[${imeiTemp}] (${remoteAddress}) 🤷‍♂️ command unknown in data [${
         data.length > 20 ? data.substring(0, 20) + "..." : data
-      }...]`
+      }]`
     );
     return await discardData(
       "commad unknown",
