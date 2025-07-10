@@ -18,6 +18,7 @@ import powerProfileConfigGFxx from "../../../functions/powerProfileConfig";
 import createConfigGFxx from "../../../functions/createConfigGFxx";
 import getPowerProfile from "../../../functions/getPowerProfile";
 import convertStringToHexString from "../../../functions/convertStringToHexString";
+import { send } from "node:process";
 
 const HTTP_200 = `${[
   "HTTP/1.1 200 OK",
@@ -121,6 +122,8 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
               } sec]`
             );
 
+            // toSend += createConfigGFxx(powerProfile);
+            
             newConnection = false;
           }
 
