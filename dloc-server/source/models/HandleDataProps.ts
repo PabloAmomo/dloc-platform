@@ -5,7 +5,7 @@ import net from 'node:net';
 export interface HandleDataProps {
   imei: string;
   remoteAddress: string;
-  data: string  | any;
+  data: string | Buffer;
   handlePacket: HandlePacket;
   persistence: Persistence;
   conn: net.Socket | { write: (arg0: string) => void; destroy: () => void };
