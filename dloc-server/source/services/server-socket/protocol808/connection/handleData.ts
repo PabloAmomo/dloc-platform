@@ -9,7 +9,7 @@ const handleData = async ({ imei, remoteAddress, data, handlePacket, persistence
   const results: HandlePacketResult[] = [];
 
   // crea una algoritmo que parta los mensajes que llegan en data, que comienzan y terminan con el byte 7e
-  const inPackets: string[] = data  ? splitJT808Frames(data) : [];
+  const inPackets: any[] = data  ? splitJT808Frames(data) : [];
 
   /** Process each packet */
   for (let i = 0; i < inPackets.length; i++) {
