@@ -61,9 +61,9 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
         printMessage(`[${tempImei}] (${remoteAddress}) 🧑‍💻 new connection.`);
 
       /* convert data to hex string */
-      const hexData: string = convertStringToHexString(data);
-      printMessage(
-        `[${tempImei}] (${remoteAddress}) 📡 data received in hex [${hexData}].`);
+      //const hexData: string = convertStringToHexString(data);
+      //printMessage(
+      //  `[${tempImei}] (${remoteAddress}) 📡 data received in hex [${hexData}].`);
       //  7E 01 00 00 21 05 62 13 41 96 19 00 00 00 2A 08 52 31 32 33 34 35 53 4B 2D 30 31 20 20 20 30 30 30 30 30 30 30 01 D4 C1 42 38 38 38 38 38 91 7E
 
       /** Handle data */
