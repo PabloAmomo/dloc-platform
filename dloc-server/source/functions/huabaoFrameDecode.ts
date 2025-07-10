@@ -1,4 +1,4 @@
-const huabaoFrameDevice = (buf: Buffer): Buffer | null => {
+const huabaoFrameDecode = (buf: Buffer): Buffer | null => {
   if (buf.length < 2) {
     return null;
   }
@@ -51,4 +51,4 @@ const huabaoFrameDevice = (buf: Buffer): Buffer | null => {
   return null;
 };
 
-export default huabaoFrameDevice;
+export default huabaoFrameDecode;

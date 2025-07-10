@@ -16,6 +16,7 @@ import positionUpdateBattertAndLastActivity from "../../../functions/positionUpd
 import { getNormalizedIMEI, NO_IMEI_STRING } from "../../../functions/getNormalizedIMEI";
 import convertStringToHexString from "../../../functions/convertStringToHexString";
 import huabaoFormatMessage from "../../../functions/huabaoFormatMessage";
+import huabaoFrameEncode from "../../../functions/huabaoFrameEncode";
 
 const noImei: string = "no imei received";
 
@@ -336,6 +337,8 @@ const handlePacket: HandlePacket = async (
     persistence,
     updateLastActivity
   );
+
+  response.response = huabaoFrameEncode(response.response);
 
   /** */
   const message =

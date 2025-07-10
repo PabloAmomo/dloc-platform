@@ -1,4 +1,4 @@
-const encodeHuabaoFrame = (buf: Buffer): Buffer => {
+const huabaoFrameEncode = (buf: Buffer): Buffer => {
   const alternative = buf[0] === 0xe7;
   const startIndex = 0;
 
@@ -35,4 +35,4 @@ const encodeHuabaoFrame = (buf: Buffer): Buffer => {
   return Buffer.from(result);
 };
 
-export default encodeHuabaoFrame;
+export default huabaoFrameEncode;

@@ -3,7 +3,7 @@ import { HandlePacketResult } from "../../../../models/HandlePacketResult";
 import { printMessage } from "../../../../functions/printMessage";
 import { getNormalizedIMEI } from "../../../../functions/getNormalizedIMEI";
 import convertStringToHexString from "../../../../functions/convertStringToHexString";
-import huabaoFrameDevice from "../../../../functions/huabaoFrameDecode";
+import huabaoFrameDecode from "../../../../functions/huabaoFrameDecode";
 
 const handleData = async ({
   imei,
@@ -21,7 +21,7 @@ const handleData = async ({
   );
 
   // crea una algoritmo que parta los mensajes que llegan en data, que comienzan y terminan con el byte 7e
-  let inPacket: Buffer | null = huabaoFrameDevice(data as Buffer);
+  let inPacket: Buffer | null = huabaoFrameDecode(data as Buffer);
 
   if (!inPacket) {
     printMessage(

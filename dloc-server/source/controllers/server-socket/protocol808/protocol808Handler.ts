@@ -22,7 +22,7 @@ import createConfigGFxx from "../../../functions/createConfigGFxx";
 import getPowerProfile from "../../../functions/getPowerProfile";
 import convertStringToHexString from "../../../functions/convertStringToHexString";
 import { send } from "node:process";
-import encodeHuabaoFrame from "../../../functions/huabaoFrameEncode";
+import huabaoFrameEncode from "../../../functions/huabaoFrameEncode";
 
 const HTTP_200 = `${[
   "HTTP/1.1 200 OK",
