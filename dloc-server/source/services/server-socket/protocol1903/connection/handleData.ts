@@ -8,7 +8,8 @@ const handleData = async ({ imei, remoteAddress, data, handlePacket, persistence
   const results: HandlePacketResult[] = [];
 
   /** broke data into packets (Sometimes more than one packet is received) */
-  const inPackets: string[] = (data ?? '').split('#');
+  const dataString : string = data as string;
+  const inPackets: string[] = dataString.split('#');
 
   /** Process each packet */
   for (let i = 0; i < inPackets.length; i++) {

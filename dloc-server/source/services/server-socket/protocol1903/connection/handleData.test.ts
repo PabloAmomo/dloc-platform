@@ -27,8 +27,8 @@ test('Simulate command [TRVYP16]', async () => {
     },
   }).then((results) => {
     assert.equal(results.length, 1);
-    assert.equal(results[0].response.startsWith('TRVZP16'), true);
-    assert.equal(results[0].response.endsWith('#'), true);
+    assert.equal((results[0].response as string).startsWith('TRVZP16'), true);
+    assert.equal((results[0].response as string).endsWith('#'), true);
   });
 });
 
@@ -53,8 +53,8 @@ test('Simulate command [TRVYP02]', async () => {
     },
   }).then((results) => {
     assert.equal(results.length, 1);
-    assert.equal(results[0].response.startsWith('TRVZP02'), true);
-    assert.equal(results[0].response.endsWith('#'), true);
+    assert.equal((results[0].response as string).startsWith('TRVZP02'), true);
+    assert.equal((results[0].response as string).endsWith('#'), true);
   });
 });
 
@@ -79,8 +79,8 @@ test('Simulate command [TRVAP89]', async () => {
     },
   }).then((results) => {
     assert.equal(results.length, 1);
-    assert.equal(results[0].response.startsWith('TRVBP89'), true);
-    assert.equal(results[0].response.endsWith('#'), true);
+    assert.equal((results[0].response as string).startsWith('TRVBP89'), true);
+    assert.equal((results[0].response as string).endsWith('#'), true);
   });
 });
 
@@ -104,8 +104,8 @@ test('Simulate command [TRVAP14] (ERROR)', async () => {
     },
   }).then((results) => {
     assert.equal(results.length, 1);
-    assert.equal(results[0].response.startsWith('TRVZP14'), true);
-    assert.equal(results[0].response.endsWith('#'), true);
+    assert.equal((results[0].response as string).startsWith('TRVZP14'), true);
+    assert.equal((results[0].response as string).endsWith('#'), true);
   });
 });
 
@@ -130,8 +130,8 @@ test('Simulate command [TRVAP14]', async () => {
     },
   }).then((results) => {
     assert.equal(results.length, 1);
-    assert.equal(results[0].response.startsWith('TRVBP14'), true);
-    assert.equal(results[0].response.endsWith('#'), true);
+    assert.equal((results[0].response as string).startsWith('TRVBP14'), true);
+    assert.equal((results[0].response as string).endsWith('#'), true);
   });
 });
 
@@ -156,10 +156,10 @@ test('Simulate command [TRVYP14] (TWO PACKETS VALID DATA AND INVALID DATA)', asy
     },
   }).then((results) => {
     assert.equal(results.length, 2);
-    assert.equal(results[0].response.startsWith('TRVZP14'), true);
-    assert.equal(results[0].response.endsWith('#'), true);
-    assert.equal(results[1].response.startsWith('TRVZP14'), true);
-    assert.equal(results[1].response.endsWith('#'), true);
+    assert.equal((results[0].response as string).startsWith('TRVZP14'), true);
+    assert.equal((results[0].response as string).endsWith('#'), true);
+    assert.equal((results[1].response as string).startsWith('TRVZP14'), true);
+    assert.equal((results[1].response as string).endsWith('#'), true);
   });
 });
 
@@ -184,8 +184,8 @@ test('Simulate command [TRVYP14] (VALID DATA)', async () => {
     },
   }).then((results) => {
     assert.equal(results.length, 1);
-    assert.equal(results[0].response.startsWith('TRVZP14'), true);
-    assert.equal(results[0].response.endsWith('#'), true);
+    assert.equal((results[0].response as string).startsWith('TRVZP14'), true);
+    assert.equal((results[0].response as string).endsWith('#'), true);
   });
 });
 
@@ -210,8 +210,8 @@ test('Simulate command [TRVYP14] (INVALID DATA)', async () => {
     },
   }).then((results) => {
     assert.equal(results.length, 1);
-    assert.equal(results[0].response.startsWith('TRVZP14'), true);
-    assert.equal(results[0].response.endsWith('#'), true);
+    assert.equal((results[0].response as string).startsWith('TRVZP14'), true);
+    assert.equal((results[0].response as string).endsWith('#'), true);
   });
 });
 
@@ -260,8 +260,8 @@ test('Simulate command [TRVAP00] - start connection', async () => {
     },
   }).then((results) => {
     assert.equal(results.length, 1);
-    assert.equal(results[0].response.startsWith('TRVBP00'), true);
-    assert.equal(results[0].response.endsWith('#'), true);
+    assert.equal((results[0].response as string).startsWith('TRVBP00'), true);
+    assert.equal((results[0].response as string).endsWith('#'), true);
     assert.equal(results[0].response.length, 22);
     assert.equal(results[0].imei, '869207032612724');
   });
