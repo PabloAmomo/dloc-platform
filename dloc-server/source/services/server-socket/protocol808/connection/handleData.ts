@@ -1,15 +1,22 @@
-import { HandleDataProps } from '../../../../models/HandleDataProps';
-import { HandlePacketResult } from '../../../../models/HandlePacketResult';
-import { printMessage } from '../../../../functions/printMessage';
-import { getNormalizedIMEI } from '../../../../functions/getNormalizedIMEI';
-import splitJT808Frames from '../../../../functions/splitJT808Frames';
+import { HandleDataProps } from "../../../../models/HandleDataProps";
+import { HandlePacketResult } from "../../../../models/HandlePacketResult";
+import { printMessage } from "../../../../functions/printMessage";
+import { getNormalizedIMEI } from "../../../../functions/getNormalizedIMEI";
+import splitJT808Frames from "../../../../functions/splitJT808Frames";
+import convertStringToHexString from "../../../../functions/convertStringToHexString";
 
-const handleData = async ({ imei, remoteAddress, data, handlePacket, persistence }: HandleDataProps): Promise<HandlePacketResult[]> => {
+const handleData = async ({
+  imei,
+  remoteAddress,
+  data,
+  handlePacket,
+  persistence,
+}: HandleDataProps): Promise<HandlePacketResult[]> => {
   /** Save results */
   const results: HandlePacketResult[] = [];
 
   // crea una algoritmo que parta los mensajes que llegan en data, que comienzan y terminan con el byte 7e
-  const inPackets: any[] = data  ? splitJT808Frames(data) : [];
+  const inPackets: any[] = data ? splitJT808Frames(data) : [];
 
   /** Process each packet */
   for (let i = 0; i < inPackets.length; i++) {
@@ -18,17 +25,26 @@ const handleData = async ({ imei, remoteAddress, data, handlePacket, persistence
 
     /** Handle packet */
     try {
-      await handlePacket({ imei, remoteAddress, data: inPackets[i], persistence }).then((result: HandlePacketResult) => {
+      await handlePacket({
+        imei,
+        remoteAddress,
+        data: inPackets[i],
+        persistence,
+      }).then((result: HandlePacketResult) => {
         /** Save result */
         results.push(result);
         /** Error handling packet */
-        if (result.error !== '') throw new Error(result.error);
+        if (result.error !== "") throw new Error(result.error);
         /** Update imei */
-        if (result.imei !== '') imei = result.imei;
+        if (result.imei !== "") imei = result.imei;
       });
     } catch (err: Error | any) {
       const printImei = getNormalizedIMEI(imei);
-      printMessage(`[${printImei}] (${remoteAddress}) ❌ error handling packet (1) (${err?.message ?? 'unknown error'}) packet [${inPackets[i]?.split(',')?.[0] ?? inPackets[i]}]`);
+      printMessage(
+        `[${printImei}] (${remoteAddress}) ❌ error handling packet (1) (${
+          err?.message ?? "unknown error"
+        }) packet [${convertStringToHexString(inPackets[i])}]`
+      );
     }
   }
 
