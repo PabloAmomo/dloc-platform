@@ -14,11 +14,11 @@ const handleData = async ({ imei, remoteAddress, data, handlePacket, persistence
   /** Process each packet */
   for (let i = 0; i < inPackets.length; i++) {
     /** Discart empty packets */
-    if (inPackets[i] == '') continue;
+    if (inPackets[i].length == 0) continue;
 
     /** Handle packet */
     try {
-      await handlePacket({ imei, remoteAddress, data: inPackets[i] + '#', persistence }).then((result: HandlePacketResult) => {
+      await handlePacket({ imei, remoteAddress, data: inPackets[i], persistence }).then((result: HandlePacketResult) => {
         /** Save result */
         results.push(result);
         /** Error handling packet */
