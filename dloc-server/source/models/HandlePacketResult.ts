@@ -1,5 +1,5 @@
 export interface HandlePacketResult { 
   imei: string;
   error: string;
-  response: string | Buffer;
+  response: any; // TODO: Limit to Buffer or string type
 }
