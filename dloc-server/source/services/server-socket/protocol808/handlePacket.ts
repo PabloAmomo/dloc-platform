@@ -28,6 +28,7 @@ import padNumberLeft from "../../../functions/padNumberLeft";
 import huabaoCreateGeneralResponse from "../../../functions/huabaoCreateGeneralResponse";
 import huabaoDecodeLocations from "../../../functions/huabaoDecodeLocations";
 import huabaoTimeSyncBody from "../../../functions/huabaoTimeSyncBody";
+import toHexWith from "../../../functions/toHexWith";
 
 const noImei: string = "no imei received";
 
@@ -138,14 +139,21 @@ const handlePacket: HandlePacket = async (
 
   // ---------------------------------------
   // 3.1 Request synchronization time（0x0109）
-  //     response 0x8109
+  //     response 0x8109 (With time sync body)
   // ---------------------------------------
   else if (huabaoPacket.header.msgType === 0x0109) {
     response.response = huabaoCreateFrameData({
       msgType: 0x8109,
       terminalId: Buffer.from(huabaoPacket.header.terminalId, "hex"),
       msgSerialNumber: counter,
-      body: huabaoTimeSyncBody(),
+      body: Buffer.from(
+        byteArrayToHexString(
+          numberToHexByteArray(huabaoPacket.header.msgSerialNumber)
+        ) +
+          toHexWith(huabaoPacket.header.msgType, 4) +
+          huabaoTimeSyncBody().toString("hex"),
+        "hex"
+      ),
     });
 
     response.imei = padNumberLeft(huabaoPacket.header.terminalId, 15, "0");
