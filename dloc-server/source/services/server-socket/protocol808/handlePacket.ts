@@ -91,7 +91,7 @@ const handlePacket: HandlePacket = async (
   //     response 0x8001
   // ---------------------------------------
   else if (huabaoPacket.header.msgType === 0x0102) {
-    const bufferResponse = huabaoCreateGeneralResponse(
+    response.response = huabaoCreateGeneralResponse(
       huabaoPacket.header.terminalId,
       counter,
       huabaoPacket.header.msgSerialNumber,
@@ -99,12 +99,10 @@ const handlePacket: HandlePacket = async (
       "00"
     );
 
-    const queryLocation = huabaoCreateQueryLocationMessage(
-      huabaoPacket.header.terminalId,
-      counter + 100
-    );
-
-    response.response = Buffer.concat([bufferResponse, Buffer.from("00","hex"), queryLocation]);
+    //const queryLocation = huabaoCreateQueryLocationMessage(
+    //  huabaoPacket.header.terminalId,
+    //  counter + 100
+    //);
 
     response.imei = padNumberLeft(huabaoPacket.header.terminalId, 15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
@@ -219,7 +217,7 @@ const handlePacket: HandlePacket = async (
   //     response 0x8001
   // ---------------------------------------
   else if (huabaoPacket.header.msgType === 0x0002) {
-    const bufferResponse = huabaoCreateGeneralResponse(
+    response.response = huabaoCreateGeneralResponse(
       huabaoPacket.header.terminalId,
       counter,
       huabaoPacket.header.msgSerialNumber,
@@ -227,12 +225,10 @@ const handlePacket: HandlePacket = async (
       "00"
     );
 
-    const queryLocation = huabaoCreateQueryLocationMessage(
-      huabaoPacket.header.terminalId,
-      counter + 100
-    );
-
-    response.response = Buffer.concat([bufferResponse, Buffer.from("00","hex"), queryLocation]);
+    //const queryLocation = huabaoCreateQueryLocationMessage(
+    //  huabaoPacket.header.terminalId,
+    //  counter + 100
+    //);
 
     response.imei = padNumberLeft(huabaoPacket.header.terminalId, 15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
