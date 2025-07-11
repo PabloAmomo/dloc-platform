@@ -58,29 +58,37 @@ const handlePacket: HandlePacket = async (
   /* convert data to hex string */
   const dataString: string = convertStringToHexString(data);
   printMessage(
-    `[${imeiTemp}] (${remoteAddress}) 📡 WORKING ----> [${dataString}].`
+    `[${imeiTemp}] (${remoteAddress}) 📡 PACKET RECEIVED oOo ----> [${dataString}].`
   );
 
   let huabaoPacket = huabaoGetFrameData(dataBuffer);
 
   // ---------------------------------------
-  // 2.4 Terminal registration（0x0100)
+  // Terminal registration（0x0100)
   //     response 0x8100
   // ---------------------------------------
   if (huabaoPacket.header.msgType === 0x0100) {
-    response.response = huabaoCreateFrameData({
-      msgType: 0x8100,
-      terminalId: Buffer.from(huabaoPacket.header.terminalId, "hex"),
-      msgSerialNumber: counter,
-      body: Buffer.from(
-        byteArrayToHexString(
-          numberToHexByteArray(huabaoPacket.header.msgSerialNumber)
-        ) +
-          "00" +
-          huabaoPacket.header.terminalId,
-        "hex"
-      ),
-    });
+    response.response = huabaoCreateGeneralResponse(
+      huabaoPacket.header.terminalId,
+      counter,
+      huabaoPacket.header.msgSerialNumber,
+      huabaoPacket.header.msgType,
+      "00" + huabaoPacket.header.terminalId
+    );
+
+    //response.response = huabaoCreateFrameData({
+    //  msgType: 0x8100,
+    //  terminalId: Buffer.from(huabaoPacket.header.terminalId, "hex"),
+    //  msgSerialNumber: counter,
+    //  body: Buffer.from(
+    //    byteArrayToHexString(
+    //      numberToHexByteArray(huabaoPacket.header.msgSerialNumber)
+    //    ) +
+    //      "00" +
+    //      huabaoPacket.header.terminalId,
+    //    "hex"
+    //  ),
+    //});
 
     response.imei = padNumberLeft(huabaoPacket.header.terminalId, 15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
@@ -92,7 +100,7 @@ const handlePacket: HandlePacket = async (
   }
 
   // ---------------------------------------
-  // 2.7 Terminal authentication（0x0102)
+  // Terminal authentication（0x0102)
   //     response 0x8001
   // ---------------------------------------
   else if (huabaoPacket.header.msgType === 0x0102) {
@@ -114,7 +122,7 @@ const handlePacket: HandlePacket = async (
   }
 
   // ---------------------------------------
-  // 2.20 Positioning data batch upload（0x0704）
+  // Positioning data batch upload（0x0704）
   //     response 0x8001
   // ---------------------------------------
   else if (huabaoPacket.header.msgType === 0x0704) {
@@ -138,7 +146,7 @@ const handlePacket: HandlePacket = async (
   }
 
   // ---------------------------------------
-  // 3.1 Request synchronization time（0x0109）
+  // Request synchronization time（0x0109）
   //     response 0x8109 (With time sync body)
   // ---------------------------------------
   else if (huabaoPacket.header.msgType === 0x0109) {
@@ -166,7 +174,7 @@ const handlePacket: HandlePacket = async (
   }
 
   // ---------------------------------------
-  // 3.20 Battery level update when sleep（0x0210）
+  // Battery level update when sleep（0x0210）
   //     response 0x8001
   // ---------------------------------------
   else if (huabaoPacket.header.msgType === 0x0210) {
@@ -207,7 +215,7 @@ const handlePacket: HandlePacket = async (
   }
 
   // ---------------------------------------
-  // 2.3 Terminal heartbeat（0x0002）
+  // Terminal heartbeat（0x0002）
   //     response 0x8001
   // ---------------------------------------
   else if (huabaoPacket.header.msgType === 0x0002) {
@@ -225,6 +233,28 @@ const handlePacket: HandlePacket = async (
     updateLastActivity = true;
     printMessage(
       `[${imeiTemp}] (${remoteAddress}) ✅ Terminal heartbeat successful`
+    );
+  }
+
+  // ---------------------------------------
+  // Sleep notification（0x0105）
+  //     response 0x8001
+  // ---------------------------------------
+  else if (huabaoPacket.header.msgType === 0x0105) {
+    response.response = huabaoCreateGeneralResponse(
+      huabaoPacket.header.terminalId,
+      counter,
+      huabaoPacket.header.msgSerialNumber,
+      huabaoPacket.header.msgType,
+      "00"
+    );
+
+    response.imei = padNumberLeft(huabaoPacket.header.terminalId, 15, "0");
+    imeiTemp = getNormalizedIMEI(response.imei);
+
+    updateLastActivity = true;
+    printMessage(
+      `[${imeiTemp}] (${remoteAddress}) ✅ Sleep notification successful`
     );
   }
 
