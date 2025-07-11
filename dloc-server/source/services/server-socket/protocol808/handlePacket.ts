@@ -64,7 +64,7 @@ const handlePacket: HandlePacket = async (
   }
 
   // ---------------------------------------
-  // 2.7 Terminal authentication（0x0102
+  // 2.7 Terminal authentication（0x0102)
   //     response 0x8001
   // ---------------------------------------
   else if (huabaoPacket.header.msgType === 0x0102) {
@@ -72,7 +72,7 @@ const handlePacket: HandlePacket = async (
       msgType: 0x8001,
       terminalId: Buffer.from(huabaoPacket.header.terminalId, "hex"),
       msgSerialNumber: 1,
-      body: Buffer.from(byteArrayToHexString(numberToHexByteArray(huabaoPacket.header.msgSerialNumber)) + "0000", "hex"),
+      body: Buffer.from(byteArrayToHexString(numberToHexByteArray(huabaoPacket.header.msgSerialNumber)) + "999900", "hex"),
     });
 
     response.imei = padNumberLeft(huabaoPacket.header.terminalId,15, "0");
@@ -81,6 +81,27 @@ const handlePacket: HandlePacket = async (
     if (response.imei !== "") updateLastActivity = true;
     printMessage(`[${imeiTemp}] (${remoteAddress}) ✅ Terminal authentication IMEI [${response.imei}]`);
   }
+
+  // ---------------------------------------
+  // 2.7 Terminal authentication（0x0102
+  //     response 0x8001
+  // ---------------------------------------
+  /*
+  else if (huabaoPacket.header.msgType === 0x0102) {
+    response.response = huabaoCreateFrameData({
+      msgType: 0x8001,
+      terminalId: Buffer.from(huabaoPacket.header.terminalId, "hex"),
+      msgSerialNumber: 1,
+      body: Buffer.from(byteArrayToHexString(numberToHexByteArray(huabaoPacket.header.msgSerialNumber)) + "111100", "hex"),
+    });
+
+    response.imei = padNumberLeft(huabaoPacket.header.terminalId,15, "0");
+    imeiTemp = getNormalizedIMEI(response.imei);
+
+    if (response.imei !== "") updateLastActivity = true;
+    printMessage(`[${imeiTemp}] (${remoteAddress}) ✅ Terminal authentication IMEI [${response.imei}]`);
+  }
+  */
   //  const packetType = data.startsWith("TRVYP14") ? "TRVYP14" : "TRVYP15";
 //
   //  /** Process GPS data */
