@@ -112,7 +112,7 @@ const handlePacket: HandlePacket = async (
         counter + 100
       )
     );
-    
+
     response.imei = padNumberLeft(huabaoPacket.header.terminalId, 15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
 
@@ -304,9 +304,13 @@ const handlePacket: HandlePacket = async (
 
   // ---------------------------------------
   // Sleep notification（0x0105）
+  // Sleep wake up notification（0x0108）
   //     response 0x8001
   // ---------------------------------------
-  else if (huabaoPacket.header.msgType === 0x0105) {
+  else if (
+    huabaoPacket.header.msgType === 0x0105 ||
+    huabaoPacket.header.msgType === 0x0108
+  ) {
     (response.response as Buffer[]).push(
       huabaoCreateGeneralResponse(
         huabaoPacket.header.terminalId,
@@ -320,9 +324,36 @@ const handlePacket: HandlePacket = async (
     response.imei = padNumberLeft(huabaoPacket.header.terminalId, 15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
 
+    const bodyString = huabaoPacket.body.toString("hex");
+
+    updateLastActivity = true;
+    if (huabaoPacket.header.msgType === 0x0105) {
+      printMessage(
+        `[${imeiTemp}] (${remoteAddress}) ✅ Sleep notification successful ${bodyString}`
+      );
+    }
+    if (huabaoPacket.header.msgType === 0x0108) {
+      printMessage(
+        `[${imeiTemp}] (${remoteAddress}) ✅ Sleep wake up notification successful ${bodyString}`
+      );
+    }
+  }
+
+  // ---------------------------------------
+  // Terminal Logout（0x0003）
+  //     response NONE
+  // ---------------------------------------
+  else if (huabaoPacket.header.msgType === 0x0003) {
+    response.imei = padNumberLeft(huabaoPacket.header.terminalId, 15, "0");
+    imeiTemp = getNormalizedIMEI(response.imei);
+
+    const bodyString = huabaoPacket.body.toString("hex");
+
+    // TODO: Desconectar el dispositivo (conn.close)
+
     updateLastActivity = true;
     printMessage(
-      `[${imeiTemp}] (${remoteAddress}) ✅ Sleep notification successful`
+      `[${imeiTemp}] (${remoteAddress}) ✅ Terminal Logout successful ${bodyString}`
     );
   }
 
