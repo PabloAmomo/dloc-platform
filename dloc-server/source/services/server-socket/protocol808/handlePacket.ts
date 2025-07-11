@@ -99,7 +99,8 @@ const handlePacket: HandlePacket = async (
       huabaoPacket.header.terminalId,
       counter,
       huabaoPacket.header.msgSerialNumber,
-      huabaoPacket.header.msgType
+      huabaoPacket.header.msgType,
+      "00"
     );
 
     response.imei = padNumberLeft(huabaoPacket.header.terminalId, 15, "0");
@@ -122,7 +123,8 @@ const handlePacket: HandlePacket = async (
       huabaoPacket.header.terminalId,
       counter,
       huabaoPacket.header.msgSerialNumber,
-      huabaoPacket.header.msgType
+      huabaoPacket.header.msgType,
+      "00"
     );
 
     response.imei = padNumberLeft(huabaoPacket.header.terminalId, 15, "0");
@@ -155,6 +157,44 @@ const handlePacket: HandlePacket = async (
       `[${imeiTemp}] (${remoteAddress}) ✅ Request synchronization time successful`
     );
   }
+
+  // ---------------------------------------
+  // 3.20 Battery level update when sleep（0x0210）
+  //     response 0x8001
+  // ---------------------------------------
+  else if (huabaoPacket.header.msgType === 0x0210) {
+   
+    printMessage(
+      `[${imeiTemp}] (${remoteAddress}) ✅ Battery level update when sleep received`);
+
+    const batteryPercent : number = huabaoPacket.body.readUInt8(0);
+    const date: string = "20" + huabaoPacket.body.readUInt8(1) + "-" + huabaoPacket.body.readUInt8(2) + "-" + huabaoPacket.body.readUInt8(3);
+    const time: string = huabaoPacket.body.readUInt8(4) + ":" + huabaoPacket.body.readUInt8(5) + ":" + huabaoPacket.body.readUInt8(6);
+
+    printMessage(
+      `[${imeiTemp}] (${remoteAddress}) ✅ Battery level: ${batteryPercent}% at ${date} ${time}`);
+
+    response.response = huabaoCreateGeneralResponse(
+      huabaoPacket.header.terminalId,
+      counter,
+      huabaoPacket.header.msgSerialNumber,
+      huabaoPacket.header.msgType,
+      "00"
+    );
+
+    response.imei = padNumberLeft(huabaoPacket.header.terminalId, 15, "0");
+    imeiTemp = getNormalizedIMEI(response.imei);
+
+    updateLastActivity = true;
+    printMessage(
+      `[${imeiTemp}] (${remoteAddress}) ✅ Request synchronization time successful`
+    );
+  }
+
+
+
+
+
 
   //  const packetType = data.startsWith("TRVYP14") ? "TRVYP14" : "TRVYP15";
   //

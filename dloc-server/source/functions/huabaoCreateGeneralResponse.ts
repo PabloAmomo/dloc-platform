@@ -7,7 +7,8 @@ const huabaoCreateGeneralResponse = (
   terminalId: string,
   counter: number,
   originalMsgSerialNumber: number,
-  msgType: number
+  msgType: number,
+  response: string
 ) => {
   return huabaoCreateFrameData({
     msgType: 0x8001,
@@ -16,7 +17,7 @@ const huabaoCreateGeneralResponse = (
     body: Buffer.from(
       byteArrayToHexString(numberToHexByteArray(originalMsgSerialNumber)) +
         toHexWith(msgType, 4) +
-        "00",
+        response,
       "hex"
     ),
   });
