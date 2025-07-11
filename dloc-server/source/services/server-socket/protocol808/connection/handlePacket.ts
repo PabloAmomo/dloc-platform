@@ -121,10 +121,11 @@ const handlePacket: HandlePacket = async (
 
   // ---------------------------------------
   // Positioning data batch upload（0x0704）
+  // 15Location information query response（0x0201）
   //     response 0x8001
   // ---------------------------------------
-  else if (huabaoPacket.header.msgType === 0x0704) {
-    const locations = huabaoDecodeLocations(huabaoPacket.body, true);
+  else if (huabaoPacket.header.msgType === 0x0704 || huabaoPacket.header.msgType === 0x0201) {
+    const locations = huabaoDecodeLocations(huabaoPacket.body, (huabaoPacket.header.msgType === 0x0704));
 
     (response.response as Buffer[]).push(
       huabaoCreateGeneralResponse(
