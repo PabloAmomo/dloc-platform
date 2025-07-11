@@ -1,3 +1,6 @@
+import huabaoParseAlarmBits from "./huabaoParseAlarmBits";
+import huabaoParseStatusBits from "./huabaoParseStatusBits";
+
 /*
 0003 //table 76 Numbers of data item，total 3 data（the length of total packet from here）
 01  //table 76 Type of location data
@@ -39,7 +42,7 @@ const huabaoDecodeLocations = (body: Buffer, multiLocations: boolean) => {
     const locData = body.subarray(offset, offset + locLength);
     offset += locLength - 1;
 
-    const alarmFlags = locData.readUInt32BE(0);
+    const alarm = locData.readUInt32BE(0);
     const status = locData.readUInt32BE(4);
     const lat = locData.readUInt32BE(8) / 1e6;
     const lon = locData.readUInt32BE(12) / 1e6;
@@ -76,8 +79,10 @@ const huabaoDecodeLocations = (body: Buffer, multiLocations: boolean) => {
 
     records.push({
       dataType,
-      alarmFlags,
+      alarm,
+      alarmFlags: huabaoParseAlarmBits(alarm),
       status,
+      statusFlags: huabaoParseStatusBits(status),
       lat,
       lon,
       altitude,

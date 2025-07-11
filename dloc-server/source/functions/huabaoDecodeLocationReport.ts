@@ -1,5 +1,8 @@
+import huabaoParseAlarmBits from "./huabaoParseAlarmBits";
+import huabaoParseStatusBits from "./huabaoParseStatusBits";
+
 const huabaoDecodeLocationReport = (data: Buffer) => {
-  const alarmFlags = data.readUInt32BE(0);
+  const alarm= data.readUInt32BE(0);
   const status = data.readUInt32BE(4);
   const lat = data.readUInt32BE(8) / 1e6;
   const lon = data.readUInt32BE(12) / 1e6;
@@ -17,8 +20,10 @@ const huabaoDecodeLocationReport = (data: Buffer) => {
     .padStart(2, "0")}`;
 
   const response = {
-    alarmFlags,
+    alarm,
+    alarmFlags: huabaoParseAlarmBits(alarm),
     status,
+    statusFlags: huabaoParseStatusBits(status),
     lat,
     lon,
     altitude,
