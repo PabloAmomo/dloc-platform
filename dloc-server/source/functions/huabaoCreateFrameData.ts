@@ -1,9 +1,9 @@
-export function huabaoCreateFrameData(options: {
+const  huabaoCreateFrameData = (options: {
   msgType: number;          // tipo de mensaje (2 bytes)
   terminalId: Buffer;       // ID del dispositivo (6 o 7 bytes)
   msgSerialNumber: number;  // índice de mensaje (1 o 2 bytes)
   body: Buffer;             // cuerpo del mensaje
-}): Buffer {
+}): Buffer  => {
   const {
     msgType,
     terminalId,
@@ -48,3 +48,5 @@ export function huabaoCreateFrameData(options: {
 
   return buffer;
 }
+
+export { huabaoCreateFrameData };
