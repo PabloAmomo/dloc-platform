@@ -18,11 +18,9 @@ import {
   NO_IMEI_STRING,
 } from "../../../functions/getNormalizedIMEI";
 import powerProfileConfigGFxx from "../../../functions/powerProfileConfig";
-import createConfigGFxx from "../../../functions/createConfigGFxx";
 import getPowerProfile from "../../../functions/getPowerProfile";
 import convertStringToHexString from "../../../functions/convertStringToHexString";
-import { send } from "node:process";
-import huabaoFrameEncode from "../../../functions/huabaoFrameEncode";
+import huabaoFrameEncode from "../../../services/server-socket/protocol808/functions/huabaoFrameEncode";
 
 const HTTP_200 = `${[
   "HTTP/1.1 200 OK",

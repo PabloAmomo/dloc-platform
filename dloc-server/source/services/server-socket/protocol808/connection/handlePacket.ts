@@ -19,18 +19,20 @@ import {
   NO_IMEI_STRING,
 } from "../../../../functions/getNormalizedIMEI";
 import convertStringToHexString from "../../../../functions/convertStringToHexString";
-import huabaoFrameEncode from "../../../../functions/huabaoFrameEncode";
-import huabaoGetFrameData from "../../../../functions/huabaoGetFrameData";
-import { huabaoCreateFrameData } from "../../../../functions/huabaoCreateFrameData";
+
 import numberToHexByteArray from "../../../../functions/numberToHexByteArray";
 import byteArrayToHexString from "../../../../functions/byteArrayToHexString";
 import padNumberLeft from "../../../../functions/padNumberLeft";
-import huabaoCreateGeneralResponse from "../../../../functions/huabaoCreateGeneralResponse";
-import huabaoDecodeLocations from "../../../../functions/huabaoDecodeLocations";
-import huabaoTimeSyncBody from "../../../../functions/huabaoTimeSyncBody";
+
+import huabaoTimeSyncBody from "../functions/huabaoTimeSyncBody";
 import toHexWith from "../../../../functions/toHexWith";
-import huabaoCreateQueryLocationMessage from "../../../../functions/huabaoCreateQueryLocationMessage";
-import huabaoDecodeLocationReport from "../../../../functions/huabaoDecodeLocationReport";
+import huabaoGetFrameData from "../functions/huabaoGetFrameData";
+import huabaoCreateGeneralResponse from "../functions/huabaoCreateGeneralResponse";
+import huabaoCreateQueryLocationMessage from "../functions/huabaoCreateQueryLocationMessage";
+import huabaoDecodeLocations from "../functions/huabaoDecodeLocations";
+import huabaoDecodeLocationReport from "../functions/huabaoDecodeLocationReport";
+import { huabaoCreateFrameData } from "../functions/huabaoCreateFrameData";
+
 
 const noImei: string = "no imei received";
 

@@ -3,7 +3,7 @@ import { HandlePacketResult } from "../../../models/HandlePacketResult";
 import { printMessage } from "../../../functions/printMessage";
 import { getNormalizedIMEI } from "../../../functions/getNormalizedIMEI";
 import convertStringToHexString from "../../../functions/convertStringToHexString";
-import huabaoFrameDecode from "../../../functions/huabaoFrameDecode";
+import huabaoFrameDecode from "./functions/huabaoFrameDecode";
 
 const handler = async ({
   imei,

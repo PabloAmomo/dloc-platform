@@ -1,4 +1,4 @@
-import { HuabaoPacket } from "../models/HuabaoPacket";
+import { HuabaoPacket } from "../../../../models/HuabaoPacket";
 
 const huabaoGetFrameData = (buffer: Buffer): HuabaoPacket => {
 
