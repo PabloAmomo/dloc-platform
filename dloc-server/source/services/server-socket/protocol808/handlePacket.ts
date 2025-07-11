@@ -15,8 +15,11 @@ import positionAddPositionAndUpdateDevice from "../../../functions/positionAddPo
 import positionUpdateBattertAndLastActivity from "../../../functions/positionUpdateBatteryAndLastActivity";
 import { getNormalizedIMEI, NO_IMEI_STRING } from "../../../functions/getNormalizedIMEI";
 import convertStringToHexString from "../../../functions/convertStringToHexString";
-import huabaoFormatMessage from "../../../functions/huabaoFormatMessage";
 import huabaoFrameEncode from "../../../functions/huabaoFrameEncode";
+import huabaoGetFrameData from "../../../functions/huabaoGetFrameData";
+import { huabaoCreateFrameData } from "../../../functions/huabaoCreateFrameData";
+import numberToHexByteArray from "../../../functions/numberToHexByteArray";
+import byteArrayToHexString from "../../../functions/byteArrayToHexString";
 
 const noImei: string = "no imei received";
 
@@ -37,19 +40,23 @@ const handlePacket: HandlePacket = async (
   printMessage(
     `[${imeiTemp}] (${remoteAddress}) 📡 WORKING ----> [${dataString}].`);
 
+  let huabaoPacket = huabaoGetFrameData(dataBuffer);
+
   // ---------------------------------------
   // 2.4 Terminal registration（0x0100)
   //     response 0x8100
   // ---------------------------------------
-  if (dataBuffer[0] == 0x01 && dataBuffer[1] == 0x00) {
-    response.response = huabaoFormatMessage(
-      0x7e,
-      0x8100,
-      Buffer.from([dataBuffer[2], dataBuffer[3]]),
-      true,
-      Buffer.from([0x00, 0x00])
-    );
-    response.imei = "123456789012345";
+  if (huabaoPacket.header.msgType === 0x0100) {
+    
+    response.response = huabaoCreateFrameData({
+      msgType: 0x8100,
+      terminalId: Buffer.from(huabaoPacket.header.terminalId, "hex"),
+      msgSerialNumber: 1,
+      body: Buffer.from(byteArrayToHexString(numberToHexByteArray(huabaoPacket.header.msgSerialNumber)) + "00" + huabaoPacket.header.terminalId, "hex"),
+    });
+    const last10 = huabaoPacket.header.terminalId.slice(-10);
+    // TODO: Agregar el factory ID que esta en el body
+    response.imei = "12345" + last10;
     imeiTemp = getNormalizedIMEI(response.imei);
 
     /** Update last activity */
