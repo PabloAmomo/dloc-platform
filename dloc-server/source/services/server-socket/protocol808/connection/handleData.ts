@@ -11,6 +11,7 @@ const handleData = async ({
   data,
   handlePacket,
   persistence,
+  counter,
 }: HandleDataProps): Promise<HandlePacketResult> => {
   /** results */
   let result: HandlePacketResult = {  imei, error: "", response: Buffer.from([]) };
@@ -35,6 +36,7 @@ const handleData = async ({
       remoteAddress,
       data: inPacket as Buffer,
       persistence,
+      counter
     }).then((resultVal: HandlePacketResult) => {
       /** Save result */
       result = resultVal;

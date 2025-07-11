@@ -9,4 +9,5 @@ export interface HandleDataProps {
   handlePacket: HandlePacket;
   persistence: Persistence;
   conn: net.Socket | { write: (arg0: string) => void; destroy: () => void };
+  counter: number; 
 }

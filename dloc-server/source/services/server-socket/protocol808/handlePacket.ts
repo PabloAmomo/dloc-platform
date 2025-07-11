@@ -21,6 +21,7 @@ import { huabaoCreateFrameData } from "../../../functions/huabaoCreateFrameData"
 import numberToHexByteArray from "../../../functions/numberToHexByteArray";
 import byteArrayToHexString from "../../../functions/byteArrayToHexString";
 import padNumberLeft from "../../../functions/padNumberLeft";
+import toHexWith from "../../../functions/toHexWith";
 
 const noImei: string = "no imei received";
 
@@ -28,6 +29,8 @@ const handlePacket: HandlePacket = async (
   props: HandlePacketProps
 ): Promise<HandlePacketResult> => {
   const { imei, remoteAddress: remoteAddress, data, persistence } = props;
+  let { counter } = props;
+
   const dataBuffer: Buffer = data as Buffer;
 
   let updateLastActivity: boolean = false;
@@ -52,7 +55,7 @@ const handlePacket: HandlePacket = async (
     response.response = huabaoCreateFrameData({
       msgType: 0x8100,
       terminalId: Buffer.from(huabaoPacket.header.terminalId, "hex"),
-      msgSerialNumber: 1,
+      msgSerialNumber: counter++,
       body: Buffer.from(byteArrayToHexString(numberToHexByteArray(huabaoPacket.header.msgSerialNumber)) + "00" + huabaoPacket.header.terminalId, "hex"),
     });
 
@@ -71,8 +74,8 @@ const handlePacket: HandlePacket = async (
     response.response = huabaoCreateFrameData({
       msgType: 0x8001,
       terminalId: Buffer.from(huabaoPacket.header.terminalId, "hex"),
-      msgSerialNumber: 2,
-      body: Buffer.from(byteArrayToHexString(numberToHexByteArray(huabaoPacket.header.msgSerialNumber)) + "000100", "hex"),
+      msgSerialNumber: counter++,
+      body: Buffer.from(byteArrayToHexString(numberToHexByteArray(huabaoPacket.header.msgSerialNumber)) + toHexWith(counter++, 4) + "00", "hex"),
     });
 
     response.imei = padNumberLeft(huabaoPacket.header.terminalId,15, "0");

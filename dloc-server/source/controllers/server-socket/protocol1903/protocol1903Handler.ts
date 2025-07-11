@@ -39,6 +39,7 @@ const protocol1903Handler = (conn: net.Socket, persistence: Persistence) => {
 
   /** Handle data */
   conn.on("data", (data: any) => {
+    let counter = 0;
     const tempImei: string = getNormalizedIMEI(imei);
     try {
       /** Process data */
@@ -67,9 +68,9 @@ const protocol1903Handler = (conn: net.Socket, persistence: Persistence) => {
         handlePacket,
         persistence,
         conn,
+        counter,
       })
         .then(async (results) => {
-
           /** Check if IMEI is valid */
           if (!results[0]?.imei) {
             printMessage(`IMEI not found in data [${dataString}].`);

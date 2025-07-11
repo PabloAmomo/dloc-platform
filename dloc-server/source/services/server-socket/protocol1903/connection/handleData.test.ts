@@ -5,12 +5,13 @@ import handleData from './handleData';
 import { handlePacket } from '../handlePacket';
 
 const persistence = new mySqlPersistence();
+let counter = 0;
 
 test('Simulate command [TRVYP16]', async () => {
   const imei = '869207032612724';
   const remoteAddress = '127.0.0.1';
   const data = 'TRVYP16,10000002300010120000204000099992#';
-
+  
   await handleData({
     imei,
     remoteAddress,
@@ -25,6 +26,7 @@ test('Simulate command [TRVYP16]', async () => {
         assert.ok(false, 'connection closed');
       },
     },
+    counter,
   }).then((results) => {
     assert.equal(results.length, 1);
     assert.equal((results[0].response as string).startsWith('TRVZP16'), true);
@@ -51,6 +53,7 @@ test('Simulate command [TRVYP02]', async () => {
         assert.ok(false, 'connection closed');
       },
     },
+    counter
   }).then((results) => {
     assert.equal(results.length, 1);
     assert.equal((results[0].response as string).startsWith('TRVZP02'), true);
@@ -77,6 +80,7 @@ test('Simulate command [TRVAP89]', async () => {
         assert.ok(false, 'connection closed');
       },
     },
+    counter
   }).then((results) => {
     assert.equal(results.length, 1);
     assert.equal((results[0].response as string).startsWith('TRVBP89'), true);
@@ -102,6 +106,7 @@ test('Simulate command [TRVAP14] (ERROR)', async () => {
         assert.ok(false, 'connection closed');
       },
     },
+    counter
   }).then((results) => {
     assert.equal(results.length, 1);
     assert.equal((results[0].response as string).startsWith('TRVZP14'), true);
@@ -128,6 +133,7 @@ test('Simulate command [TRVAP14]', async () => {
         assert.ok(false, 'connection closed');
       },
     },
+    counter
   }).then((results) => {
     assert.equal(results.length, 1);
     assert.equal((results[0].response as string).startsWith('TRVBP14'), true);
@@ -154,6 +160,7 @@ test('Simulate command [TRVYP14] (TWO PACKETS VALID DATA AND INVALID DATA)', asy
         assert.ok(false, 'connection closed');
       },
     },
+    counter
   }).then((results) => {
     assert.equal(results.length, 2);
     assert.equal((results[0].response as string).startsWith('TRVZP14'), true);
@@ -182,6 +189,7 @@ test('Simulate command [TRVYP14] (VALID DATA)', async () => {
         assert.ok(false, 'connection closed');
       },
     },
+    counter
   }).then((results) => {
     assert.equal(results.length, 1);
     assert.equal((results[0].response as string).startsWith('TRVZP14'), true);
@@ -208,6 +216,7 @@ test('Simulate command [TRVYP14] (INVALID DATA)', async () => {
         assert.ok(false, 'connection closed');
       },
     },
+    counter
   }).then((results) => {
     assert.equal(results.length, 1);
     assert.equal((results[0].response as string).startsWith('TRVZP14'), true);
@@ -232,6 +241,7 @@ test('Simulate command [INVALID] - Check discard', async () => {
       },
       destroy: () => {},
     },
+    counter
   }).then((results: any) => {
     assert.equal(results.length, 1);
     assert.equal(results[0].imei, '');
@@ -258,6 +268,7 @@ test('Simulate command [TRVAP00] - start connection', async () => {
         assert.ok(false, 'connection closed');
       },
     },
+    counter
   }).then((results) => {
     assert.equal(results.length, 1);
     assert.equal((results[0].response as string).startsWith('TRVBP00'), true);

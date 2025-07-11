@@ -45,6 +45,7 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
 
   /** Handle data */
   conn.on("data", (data: any) => {
+    let counter = 0;
     const tempImei: string = getNormalizedIMEI(imei);
     const dataStringHex: string = convertStringToHexString(data);
 
@@ -72,17 +73,21 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
         handlePacket,
         persistence,
         conn,
+        counter,
       })
         .then(async (result) => {
-          /** Check if IMEI is valid */
           if (!result?.imei) {
-            printMessage(`IMEI not found in data [${dataStringHex}].`);
+            printMessage(
+              `[${tempImei}] (${remoteAddress}) ❌ IMEI not found in data [${dataStringHex}].`
+            );
             conn.destroy();
             return;
           }
           imei = result.imei;
 
           const prefix = `[${imei}] (${remoteAddress})`;
+
+          printMessage(`${prefix} ℹ️ Current serial counter [${counter}].`);
 
           /** Get the las information about the IMEI */
           const imeiData = CACHE_IMEI.get(imei);

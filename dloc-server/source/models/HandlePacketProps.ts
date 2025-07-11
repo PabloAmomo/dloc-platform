@@ -5,5 +5,6 @@ export interface HandlePacketProps {
   remoteAddress: string;
   data: any; // TODO: Limit to Buffer or string type
   persistence: Persistence;
+  counter: number;
 }
 
