@@ -32,6 +32,7 @@ import huabaoCreateQueryLocationMessage from "../functions/huabaoCreateQueryLoca
 import huabaoDecodeLocations from "../functions/huabaoDecodeLocations";
 import huabaoDecodeLocationReport from "../functions/huabaoDecodeLocationReport";
 import { huabaoCreateFrameData } from "../functions/huabaoCreateFrameData";
+import huabaoCreateTerminalAttributesMessage from "../functions/huabaoCreateTerminalAttributesMessage";
 
 
 const noImei: string = "no imei received";
@@ -79,6 +80,13 @@ const handlePacket: HandlePacket = async (
         huabaoPacket.header.msgSerialNumber,
         huabaoPacket.header.msgType,
         "00" + huabaoPacket.header.terminalId
+      )
+    );
+    
+    (response.response as Buffer[]).push(
+      huabaoCreateTerminalAttributesMessage(
+        huabaoPacket.header.terminalId,
+        counter + 100
       )
     );
 
