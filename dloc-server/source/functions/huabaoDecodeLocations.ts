@@ -80,6 +80,9 @@ const huabaoDecodeLocations = (body: Buffer) => {
     });
   }
 
+  console.log(`Packet count: ${packetCount}`);
+  console.log(`Records: ${JSON.stringify(records, null, 2)}`);
+
   return {
     packetCount,
     records,

@@ -18,7 +18,7 @@ async function discardData(
 
   /** Discarted packet */
   printMessage(
-    `[${imeiTemp}] (${remoteAddress}) discarted data (${message}) [${
+    `[${imeiTemp}] (${remoteAddress}) ❌ discarted data (${message}) [${
       data.length > 20 ? data.substring(0, 40) + "..." : data
     }]`
   );

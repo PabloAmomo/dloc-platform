@@ -25,9 +25,9 @@ import { huabaoCreateFrameData } from "../../../functions/huabaoCreateFrameData"
 import numberToHexByteArray from "../../../functions/numberToHexByteArray";
 import byteArrayToHexString from "../../../functions/byteArrayToHexString";
 import padNumberLeft from "../../../functions/padNumberLeft";
-import toHexWith from "../../../functions/toHexWith";
 import huabaoCreateGeneralResponse from "../../../functions/huabaoCreateGeneralResponse";
 import huabaoDecodeLocations from "../../../functions/huabaoDecodeLocations";
+import huabaoTimeSyncBody from "../../../functions/huabaoTimeSyncBody";
 
 const noImei: string = "no imei received";
 
@@ -117,7 +117,7 @@ const handlePacket: HandlePacket = async (
   // ---------------------------------------
   else if (huabaoPacket.header.msgType === 0x0704) {
     const locations = huabaoDecodeLocations(huabaoPacket.body); 
-    
+
     response.response = huabaoCreateGeneralResponse(
       huabaoPacket.header.terminalId,
       counter,
@@ -131,6 +131,28 @@ const handlePacket: HandlePacket = async (
     updateLastActivity = true;
     printMessage(
       `[${imeiTemp}] (${remoteAddress}) ✅ Positioning data batch upload successful`
+    );
+  }
+
+  // ---------------------------------------
+  // 3.1 Request synchronization time（0x0109）
+  //     response 0x8109
+  // ---------------------------------------
+  else if (huabaoPacket.header.msgType === 0x0109) {
+   
+    response.response = huabaoCreateFrameData({
+      msgType: 0x8109,
+      terminalId: Buffer.from(huabaoPacket.header.terminalId, "hex"),
+      msgSerialNumber: counter,
+      body: huabaoTimeSyncBody(),
+    });
+
+    response.imei = padNumberLeft(huabaoPacket.header.terminalId, 15, "0");
+    imeiTemp = getNormalizedIMEI(response.imei);
+
+    updateLastActivity = true;
+    printMessage(
+      `[${imeiTemp}] (${remoteAddress}) ✅ Request synchronization time successful`
     );
   }
 
