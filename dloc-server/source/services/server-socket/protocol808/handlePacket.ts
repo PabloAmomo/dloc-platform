@@ -77,20 +77,6 @@ const handlePacket: HandlePacket = async (
       "00" + huabaoPacket.header.terminalId
     );
 
-    //response.response = huabaoCreateFrameData({
-    //  msgType: 0x8100,
-    //  terminalId: Buffer.from(huabaoPacket.header.terminalId, "hex"),
-    //  msgSerialNumber: counter,
-    //  body: Buffer.from(
-    //    byteArrayToHexString(
-    //      numberToHexByteArray(huabaoPacket.header.msgSerialNumber)
-    //    ) +
-    //      "00" +
-    //      huabaoPacket.header.terminalId,
-    //    "hex"
-    //  ),
-    //});
-
     response.imei = padNumberLeft(huabaoPacket.header.terminalId, 15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
 
@@ -209,7 +195,13 @@ const handlePacket: HandlePacket = async (
     response.imei = padNumberLeft(huabaoPacket.header.terminalId, 15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
 
-    updateLastActivity = true;
+    await positionUpdateBattertAndLastActivity(
+      imeiTemp,
+      remoteAddress,
+      persistence,
+      batteryPercent
+    );
+
     printMessage(
       `[${imeiTemp}] (${remoteAddress}) ✅ Battery level update when sleep successful`
     );
@@ -233,7 +225,7 @@ const handlePacket: HandlePacket = async (
       counter + 100
     );
 
-    response.response =  Buffer.concat([bufferResponse, queryLocation]);
+    response.response = queryLocation; // Buffer.concat([bufferResponse, queryLocation]);
 
     response.imei = padNumberLeft(huabaoPacket.header.terminalId, 15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
@@ -415,44 +407,6 @@ const handlePacket: HandlePacket = async (
   //}
 
   // ---------------------------------------------
-  // TRVYP1:  UNKNOW but need response
-  // TRVYP02: IMSI and ICCID number of the device
-  // TRVYP16: Device heartbeat packet
-  // ---------------------------------------------
-  //else if (
-  //  data.startsWith("TRVYP02") ||
-  //  data.startsWith("TRVYP1") ||
-  //  data.startsWith("TRVYP16")
-  //) {
-  //  if (response.imei == "")
-  //    return await discardData(
-  //      noImei,
-  //      true,
-  //      persistence,
-  //      imeiTemp,
-  //      remoteAddress,
-  //      data,
-  //      response
-  //    );
-  //
-  //  /** Process Battery level on packet heartbeat */
-  //  if (data.startsWith("TRVYP16")) {
-  //    if (data.length < 18) updateLastActivity = true;
-  //    else {
-  //      const batteryLevel: number = parseInt(data.substring(14, 17) ?? "-1");
-  //      await positionUpdateBattertAndLastActivity(
-  //        imeiTemp,
-  //        remoteAddress,
-  //        persistence,
-  //        batteryLevel
-  //      );
-  //    }
-  //  }
-  //
-  //  response.response = `TRVZP${data.substring(5, 7)}#`;
-  //}
-
-  // ---------------------------------------------
   // UNKNOW but need response (TRVAP Packets)
   // ---------------------------------------------
   //else if (data.startsWith("TRVAP89")) {
@@ -468,15 +422,6 @@ const handlePacket: HandlePacket = async (
   //    );
   //
   //  response.response = `TRVBP${data.substring(5, 7)}#`;
-  //}
-
-  // ------------------------------------------------
-  // Packets with not response needed
-  // ------------------------------------------------
-  //else if (data.startsWith("TRVAP20") || data.startsWith("TRVAP61")) {
-  //  printMessage(
-  //    `[${imeiTemp}] (${remoteAddress}) 🥷 received no response needed [${data}]`
-  //  );
   //}
 
   // ------------------------------------------------
