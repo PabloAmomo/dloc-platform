@@ -225,7 +225,7 @@ const handlePacket: HandlePacket = async (
       counter + 100
     );
 
-    response.response = queryLocation; // Buffer.concat([bufferResponse, queryLocation]);
+    response.response = Buffer.concat([bufferResponse, Buffer.from("00","hex"), queryLocation]);
 
     response.imei = padNumberLeft(huabaoPacket.header.terminalId, 15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
