@@ -75,7 +75,7 @@ const handlePacket: HandlePacket = async (
       msgType: 0x8001,
       terminalId: Buffer.from(huabaoPacket.header.terminalId, "hex"),
       msgSerialNumber: counter++,
-      body: Buffer.from(byteArrayToHexString(numberToHexByteArray(huabaoPacket.header.msgSerialNumber)) + toHexWith(counter++, 4) + "00", "hex"),
+      body: Buffer.from(byteArrayToHexString(numberToHexByteArray(huabaoPacket.header.msgSerialNumber)) + toHexWith(counter, 4) + "01", "hex"),
     });
     printMessage(` 📡 COUNTER ZZZZZZZ [${counter}].`)
     ;
