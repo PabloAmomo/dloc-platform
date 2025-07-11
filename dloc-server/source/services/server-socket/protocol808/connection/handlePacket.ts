@@ -30,6 +30,7 @@ import huabaoDecodeLocations from "../../../../functions/huabaoDecodeLocations";
 import huabaoTimeSyncBody from "../../../../functions/huabaoTimeSyncBody";
 import toHexWith from "../../../../functions/toHexWith";
 import huabaoCreateQueryLocationMessage from "../../../../functions/huabaoCreateQueryLocationMessage";
+import huabaoDecodeLocationReport from "../../../../functions/huabaoDecodeLocationReport";
 
 const noImei: string = "no imei received";
 
@@ -79,6 +80,8 @@ const handlePacket: HandlePacket = async (
       )
     );
 
+    // TODO: Enviar configuración inicial al dispositivo
+
     response.imei = padNumberLeft(huabaoPacket.header.terminalId, 15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
 
@@ -109,7 +112,7 @@ const handlePacket: HandlePacket = async (
         counter + 100
       )
     );
-
+    
     response.imei = padNumberLeft(huabaoPacket.header.terminalId, 15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
 
@@ -121,11 +124,54 @@ const handlePacket: HandlePacket = async (
 
   // ---------------------------------------
   // Positioning data batch upload（0x0704）
-  // 15Location information query response（0x0201）
+  // Location information query response（0x0201）
   //     response 0x8001
   // ---------------------------------------
-  else if (huabaoPacket.header.msgType === 0x0704 || huabaoPacket.header.msgType === 0x0201) {
-    const locations = huabaoDecodeLocations(huabaoPacket.body, (huabaoPacket.header.msgType === 0x0704));
+  else if (
+    huabaoPacket.header.msgType === 0x0704 ||
+    huabaoPacket.header.msgType === 0x0201
+  ) {
+    const locations = huabaoDecodeLocations(
+      huabaoPacket.body,
+      huabaoPacket.header.msgType === 0x0704
+    );
+
+    // TODO: Tratar las locations
+
+    (response.response as Buffer[]).push(
+      huabaoCreateGeneralResponse(
+        huabaoPacket.header.terminalId,
+        counter,
+        huabaoPacket.header.msgSerialNumber,
+        huabaoPacket.header.msgType,
+        "00"
+      )
+    );
+
+    response.imei = padNumberLeft(huabaoPacket.header.terminalId, 15, "0");
+    imeiTemp = getNormalizedIMEI(response.imei);
+
+    updateLastActivity = true;
+    if (huabaoPacket.header.msgType === 0x0704) {
+      printMessage(
+        `[${imeiTemp}] (${remoteAddress}) ✅ Positioning data batch upload successful`
+      );
+    }
+    if (huabaoPacket.header.msgType === 0x0201) {
+      printMessage(
+        `[${imeiTemp}] (${remoteAddress}) ✅ Location information query response successful`
+      );
+    }
+  }
+
+  // ---------------------------------------
+  // Location report（0x0200）
+  //     response 0x8001
+  // ---------------------------------------
+  else if (huabaoPacket.header.msgType === 0x0200) {
+    const location = huabaoDecodeLocationReport(huabaoPacket.body);
+
+    // TODO: Tratar las location
 
     (response.response as Buffer[]).push(
       huabaoCreateGeneralResponse(
@@ -142,7 +188,7 @@ const handlePacket: HandlePacket = async (
 
     updateLastActivity = true;
     printMessage(
-      `[${imeiTemp}] (${remoteAddress}) ✅ Positioning data batch upload successful`
+      `[${imeiTemp}] (${remoteAddress}) ✅ Positioning Location report successful`
     );
   }
 
@@ -520,7 +566,9 @@ const handlePacket: HandlePacket = async (
   } else {
     for (let i = 0; i < response.response.length; i++) {
       printMessage(
-        `[${imeiTemp}] (${remoteAddress}) ✅ response [${convertStringToHexString(response.response[i])}].`
+        `[${imeiTemp}] (${remoteAddress}) ✅ response [${convertStringToHexString(
+          response.response[i]
+        )}].`
       );
     }
   }
