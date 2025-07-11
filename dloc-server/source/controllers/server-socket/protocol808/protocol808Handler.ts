@@ -45,7 +45,7 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
 
   /** Handle data */
   conn.on("data", (data: any) => {
-    let counter = 0;
+    let counter = 1;
     const tempImei: string = getNormalizedIMEI(imei);
     const dataStringHex: string = convertStringToHexString(data);
 
@@ -87,6 +87,7 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
 
           const prefix = `[${imei}] (${remoteAddress})`;
 
+          counter += 5;
           printMessage(`${prefix} ℹ️ Current serial counter [${counter}].`);
 
           /** Get the las information about the IMEI */

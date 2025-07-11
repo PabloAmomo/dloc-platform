@@ -77,7 +77,8 @@ const handlePacket: HandlePacket = async (
       msgSerialNumber: counter++,
       body: Buffer.from(byteArrayToHexString(numberToHexByteArray(huabaoPacket.header.msgSerialNumber)) + toHexWith(counter++, 4) + "00", "hex"),
     });
-
+    printMessage(` 📡 COUNTER ZZZZZZZ [${counter}].`)
+    ;
     response.imei = padNumberLeft(huabaoPacket.header.terminalId,15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
 
