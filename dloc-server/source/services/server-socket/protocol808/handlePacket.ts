@@ -71,8 +71,8 @@ const handlePacket: HandlePacket = async (
     response.response = huabaoCreateFrameData({
       msgType: 0x8001,
       terminalId: Buffer.from(huabaoPacket.header.terminalId, "hex"),
-      msgSerialNumber: 1,
-      body: Buffer.from(byteArrayToHexString(numberToHexByteArray(huabaoPacket.header.msgSerialNumber)) + "999900", "hex"),
+      msgSerialNumber: 2,
+      body: Buffer.from(byteArrayToHexString(numberToHexByteArray(huabaoPacket.header.msgSerialNumber)) + "000300", "hex"),
     });
 
     response.imei = padNumberLeft(huabaoPacket.header.terminalId,15, "0");
