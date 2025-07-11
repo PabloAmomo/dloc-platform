@@ -55,11 +55,11 @@ const huabaoDecodeLocations = (body: Buffer) => {
       .padStart(2, '0')}`;
 
     const mileage = locData.subarray(28, 34);
-    const gsm = locData.subarray(34, 37);
-    const satellites = locData.subarray(37, 41);
-    const battery = locData.subarray(41, 45);
-    const additionalInfo = locData.subarray(45, 61);
-    const lbsInfo = locData.subarray(61, 77); 
+    const gsm = locData.subarray(34, 38);
+    const satellites = locData.subarray(38, 41);
+    const battery = locData.subarray(41, 44);
+    const additionalInfo = locData.subarray(44, 60);
+    const lbsInfo = locData.subarray(60, 76); 
 
     records.push({
       dataType,
