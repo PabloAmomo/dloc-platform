@@ -8,7 +8,7 @@ const huabaoCreateTerminalAttributesMessage = (
     msgType: 0x8107,
     terminalId: Buffer.from(terminalId, "hex"),
     msgSerialNumber: counter,
-    body: Buffer.from("", "hex"),
+    body: Buffer.from("", "hex"), // No body data for terminal attributes message
   });
 };
 
