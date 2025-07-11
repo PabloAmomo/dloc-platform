@@ -14,7 +14,7 @@ const handleData = async ({
   counter,
 }: HandleDataProps): Promise<HandlePacketResult> => {
   /** results */
-  let result: HandlePacketResult = {  imei, error: "", response: Buffer.from([]) };
+  let result: HandlePacketResult = {  imei, error: "", response: [] };
 
   const dataString: string = convertStringToHexString(data);
 

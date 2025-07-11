@@ -109,7 +109,11 @@ const protocol1903Handler = (conn: net.Socket, persistence: Persistence) => {
           /** Create response to send */
           let toSend: string = "";
           for (let i = 0; i < results.length; i++) {
-            if (results[i].response !== "") toSend += results[i].response;
+            if (results[i].response.length > 0) {
+              for (const response of results[i].response) {
+                toSend += response;
+              }
+            }
           }
 
           /** create or update socket connection to cache */

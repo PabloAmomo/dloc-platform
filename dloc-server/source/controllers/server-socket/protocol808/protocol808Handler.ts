@@ -138,7 +138,9 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
           }
 
           /** Send */
-          conn.write(result.response);
+          for (const response  of result.response) {
+            conn.write(huabaoFrameEncode(response as Buffer));
+          }
         })
         .catch((err: Error) => {
           throw err;

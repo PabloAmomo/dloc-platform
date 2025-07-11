@@ -50,7 +50,7 @@ const handlePacket: HandlePacket = async (
   let response: HandlePacketResult = {
     imei,
     error: "",
-    response: Buffer.from([]),
+    response: [],
   };
 
   /** Temporal imei (Used only for print messages for user) */
@@ -69,12 +69,14 @@ const handlePacket: HandlePacket = async (
   //     response 0x8100
   // ---------------------------------------
   if (huabaoPacket.header.msgType === 0x0100) {
-    response.response = huabaoCreateGeneralResponse(
-      huabaoPacket.header.terminalId,
-      counter,
-      huabaoPacket.header.msgSerialNumber,
-      huabaoPacket.header.msgType,
-      "00" + huabaoPacket.header.terminalId
+    (response.response as Buffer[]).push(
+      huabaoCreateGeneralResponse(
+        huabaoPacket.header.terminalId,
+        counter,
+        huabaoPacket.header.msgSerialNumber,
+        huabaoPacket.header.msgType,
+        "00" + huabaoPacket.header.terminalId
+      )
     );
 
     response.imei = padNumberLeft(huabaoPacket.header.terminalId, 15, "0");
@@ -91,18 +93,22 @@ const handlePacket: HandlePacket = async (
   //     response 0x8001
   // ---------------------------------------
   else if (huabaoPacket.header.msgType === 0x0102) {
-    response.response = huabaoCreateGeneralResponse(
-      huabaoPacket.header.terminalId,
-      counter,
-      huabaoPacket.header.msgSerialNumber,
-      huabaoPacket.header.msgType,
-      "00"
+    (response.response as Buffer[]).push(
+      huabaoCreateGeneralResponse(
+        huabaoPacket.header.terminalId,
+        counter,
+        huabaoPacket.header.msgSerialNumber,
+        huabaoPacket.header.msgType,
+        "00"
+      )
     );
 
-    //const queryLocation = huabaoCreateQueryLocationMessage(
-    //  huabaoPacket.header.terminalId,
-    //  counter + 100
-    //);
+    (response.response as Buffer[]).push(
+      huabaoCreateQueryLocationMessage(
+        huabaoPacket.header.terminalId,
+        counter + 100
+      )
+    );
 
     response.imei = padNumberLeft(huabaoPacket.header.terminalId, 15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
@@ -120,12 +126,14 @@ const handlePacket: HandlePacket = async (
   else if (huabaoPacket.header.msgType === 0x0704) {
     const locations = huabaoDecodeLocations(huabaoPacket.body);
 
-    response.response = huabaoCreateGeneralResponse(
-      huabaoPacket.header.terminalId,
-      counter,
-      huabaoPacket.header.msgSerialNumber,
-      huabaoPacket.header.msgType,
-      "00"
+    (response.response as Buffer[]).push(
+      huabaoCreateGeneralResponse(
+        huabaoPacket.header.terminalId,
+        counter,
+        huabaoPacket.header.msgSerialNumber,
+        huabaoPacket.header.msgType,
+        "00"
+      )
     );
 
     response.imei = padNumberLeft(huabaoPacket.header.terminalId, 15, "0");
@@ -142,19 +150,21 @@ const handlePacket: HandlePacket = async (
   //     response 0x8109 (With time sync body)
   // ---------------------------------------
   else if (huabaoPacket.header.msgType === 0x0109) {
-    response.response = huabaoCreateFrameData({
-      msgType: 0x8109,
-      terminalId: Buffer.from(huabaoPacket.header.terminalId, "hex"),
-      msgSerialNumber: counter,
-      body: Buffer.from(
-        byteArrayToHexString(
-          numberToHexByteArray(huabaoPacket.header.msgSerialNumber)
-        ) +
-          toHexWith(huabaoPacket.header.msgType, 4) +
-          huabaoTimeSyncBody().toString("hex"),
-        "hex"
-      ),
-    });
+    (response.response as Buffer[]).push(
+      huabaoCreateFrameData({
+        msgType: 0x8109,
+        terminalId: Buffer.from(huabaoPacket.header.terminalId, "hex"),
+        msgSerialNumber: counter,
+        body: Buffer.from(
+          byteArrayToHexString(
+            numberToHexByteArray(huabaoPacket.header.msgSerialNumber)
+          ) +
+            toHexWith(huabaoPacket.header.msgType, 4) +
+            huabaoTimeSyncBody().toString("hex"),
+          "hex"
+        ),
+      })
+    );
 
     response.imei = padNumberLeft(huabaoPacket.header.terminalId, 15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
@@ -189,12 +199,14 @@ const handlePacket: HandlePacket = async (
       `[${imeiTemp}] (${remoteAddress}) ✅ Battery level: ${batteryPercent}% at ${date} ${time}`
     );
 
-    response.response = huabaoCreateGeneralResponse(
-      huabaoPacket.header.terminalId,
-      counter,
-      huabaoPacket.header.msgSerialNumber,
-      huabaoPacket.header.msgType,
-      "00"
+    (response.response as Buffer[]).push(
+      huabaoCreateGeneralResponse(
+        huabaoPacket.header.terminalId,
+        counter,
+        huabaoPacket.header.msgSerialNumber,
+        huabaoPacket.header.msgType,
+        "00"
+      )
     );
 
     response.imei = padNumberLeft(huabaoPacket.header.terminalId, 15, "0");
@@ -217,18 +229,22 @@ const handlePacket: HandlePacket = async (
   //     response 0x8001
   // ---------------------------------------
   else if (huabaoPacket.header.msgType === 0x0002) {
-    response.response = huabaoCreateGeneralResponse(
-      huabaoPacket.header.terminalId,
-      counter,
-      huabaoPacket.header.msgSerialNumber,
-      huabaoPacket.header.msgType,
-      "00"
+    (response.response as Buffer[]).push(
+      huabaoCreateGeneralResponse(
+        huabaoPacket.header.terminalId,
+        counter,
+        huabaoPacket.header.msgSerialNumber,
+        huabaoPacket.header.msgType,
+        "00"
+      )
     );
 
-    //const queryLocation = huabaoCreateQueryLocationMessage(
-    //  huabaoPacket.header.terminalId,
-    //  counter + 100
-    //);
+    (response.response as Buffer[]).push(
+      huabaoCreateQueryLocationMessage(
+        huabaoPacket.header.terminalId,
+        counter + 100
+      )
+    );
 
     response.imei = padNumberLeft(huabaoPacket.header.terminalId, 15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
@@ -244,12 +260,14 @@ const handlePacket: HandlePacket = async (
   //     response 0x8001
   // ---------------------------------------
   else if (huabaoPacket.header.msgType === 0x0105) {
-    response.response = huabaoCreateGeneralResponse(
-      huabaoPacket.header.terminalId,
-      counter,
-      huabaoPacket.header.msgSerialNumber,
-      huabaoPacket.header.msgType,
-      "00"
+    (response.response as Buffer[]).push(
+      huabaoCreateGeneralResponse(
+        huabaoPacket.header.terminalId,
+        counter,
+        huabaoPacket.header.msgSerialNumber,
+        huabaoPacket.header.msgType,
+        "00"
+      )
     );
 
     response.imei = padNumberLeft(huabaoPacket.header.terminalId, 15, "0");
@@ -493,14 +511,18 @@ const handlePacket: HandlePacket = async (
     updateLastActivity
   );
 
-  response.response = huabaoFrameEncode(response.response);
-
   /** */
-  const message =
-    response.response !== ""
-      ? `✅ response [${convertStringToHexString(response.response)}]`
-      : `👉 no response to send for packet [${dataString}]`;
-  printMessage(`[${imeiTemp}] (${remoteAddress}) ${message}`);
+  if (response.response.length === 0) {
+    printMessage(
+      `[${imeiTemp}] (${remoteAddress}) ❌ no response to send for packet [${dataString}]`
+    );
+  } else {
+    for (let i = 0; i < response.response.length; i++) {
+      printMessage(
+        `✅ response [${convertStringToHexString(response.response[i])}].`
+      );
+    }
+  }
 
   /** Return */
   return response;

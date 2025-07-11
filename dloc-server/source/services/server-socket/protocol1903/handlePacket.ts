@@ -13,7 +13,10 @@ import getLbsPosition from "../../../functions/getLbsPosition";
 import positionUpdateLastActivityAndAddHistory from "../../../functions/positionUpdateLastActivityAndAddHistory";
 import positionAddPositionAndUpdateDevice from "../../../functions/positionAddPositionAndUpdateDevice";
 import positionUpdateBattertAndLastActivity from "../../../functions/positionUpdateBatteryAndLastActivity";
-import { getNormalizedIMEI, NO_IMEI_STRING } from "../../../functions/getNormalizedIMEI";
+import {
+  getNormalizedIMEI,
+  NO_IMEI_STRING,
+} from "../../../functions/getNormalizedIMEI";
 
 const noImei: string = "no imei received";
 
@@ -24,7 +27,7 @@ const handlePacket: HandlePacket = async (
   const dataString = data as string;
 
   let updateLastActivity: boolean = false;
-  let response: HandlePacketResult = { imei, error: "", response: "" };
+  let response: HandlePacketResult = { imei, error: "", response: [] };
 
   /** Temporal imei (Used only for print messages for user) */
   var imeiTemp: string = getNormalizedIMEI(imei);
@@ -40,13 +43,18 @@ const handlePacket: HandlePacket = async (
     if (response.imei !== "") updateLastActivity = true;
     printMessage(`[${imeiTemp}] (${remoteAddress}) ✅ imei [${response.imei}]`);
 
-    response.response = "TRVBP00" + getUtcDateTime(false) + "#";
+    (response.response as string[]).push(
+      "TRVBP00" + getUtcDateTime(false) + "#"
+    );
   }
 
   // ---------------------------------------
   // GPS DATA (14 or REPLY 15)
   // ---------------------------------------
-  else if (dataString.startsWith("TRVYP14") || dataString.startsWith("TRVYP15")) {
+  else if (
+    dataString.startsWith("TRVYP14") ||
+    dataString.startsWith("TRVYP15")
+  ) {
     const packetType = dataString.startsWith("TRVYP14") ? "TRVYP14" : "TRVYP15";
 
     /** Process GPS data */
@@ -154,7 +162,7 @@ const handlePacket: HandlePacket = async (
         );
     }
 
-    response.response = `TRVZP${dataString.substring(5, 7)}#`;
+    (response.response as string[]).push(`TRVZP${dataString.substring(5, 7)}#`);
   }
 
   // ---------------------------------------------
@@ -189,9 +197,13 @@ const handlePacket: HandlePacket = async (
     /** Process LBS data */
     if ("location" in lbsGetResponse) {
       const { lat, lng } = lbsGetResponse.location;
-      response.response = `TRVBP14,${lat.toFixed(5)},${lng.toFixed(5)}#`;
+      (response.response as string[]).push(
+        `TRVBP14,${lat.toFixed(5)},${lng.toFixed(5)}#`
+      );
     } else {
-      response.response = `TRVBP${dataString.substring(5, 7)}#`;
+      (response.response as string[]).push(
+        `TRVBP${dataString.substring(5, 7)}#`
+      );
     }
   }
 
@@ -220,7 +232,9 @@ const handlePacket: HandlePacket = async (
     if (dataString.startsWith("TRVYP16")) {
       if (data.length < 18) updateLastActivity = true;
       else {
-        const batteryLevel: number = parseInt(dataString.substring(14, 17) ?? "-1");
+        const batteryLevel: number = parseInt(
+          dataString.substring(14, 17) ?? "-1"
+        );
         await positionUpdateBattertAndLastActivity(
           imeiTemp,
           remoteAddress,
@@ -230,7 +244,7 @@ const handlePacket: HandlePacket = async (
       }
     }
 
-    response.response = `TRVZP${dataString.substring(5, 7)}#`;
+    (response.response as string[]).push(`TRVZP${dataString.substring(5, 7)}#`);
   }
 
   // ---------------------------------------------
@@ -248,13 +262,16 @@ const handlePacket: HandlePacket = async (
         response
       );
 
-    response.response = `TRVBP${dataString.substring(5, 7)}#`;
+    (response.response as string[]).push(`TRVBP${dataString.substring(5, 7)}#`);
   }
 
   // ------------------------------------------------
   // Packets with not response needed
   // ------------------------------------------------
-  else if (dataString.startsWith("TRVAP20") || dataString.startsWith("TRVAP61")) {
+  else if (
+    dataString.startsWith("TRVAP20") ||
+    dataString.startsWith("TRVAP61")
+  ) {
     printMessage(
       `[${imeiTemp}] (${remoteAddress}) 🥷 received no response needed [${data}]`
     );
@@ -274,7 +291,8 @@ const handlePacket: HandlePacket = async (
     let message: string = "";
     const resultVal: string = dataString.endsWith("0#") ? "OK" : "ERROR";
 
-    if (dataString.startsWith("TRVCP03")) message = "Set heartbeat packet interval";
+    if (dataString.startsWith("TRVCP03"))
+      message = "Set heartbeat packet interval";
     if (dataString.startsWith("TRVXP02")) message = "Set Upload interval";
     if (dataString.startsWith("TRVAP92")) message = "Set Led display switch";
 
@@ -325,11 +343,15 @@ const handlePacket: HandlePacket = async (
   );
 
   /** */
-  const message =
-    response.response !== ""
-      ? `✅ response [${response.response}]`
-      : `👉 no response to send for packet [${data}]`;
-  printMessage(`[${imeiTemp}] (${remoteAddress}) ${message}`);
+  if (response.response.length === 0) {
+    printMessage(
+      `[${imeiTemp}] (${remoteAddress}) ❌ no response to send for packet [${dataString}]`
+    );
+  } else {
+    for (let i = 0; i < response.response.length; i++) {
+      printMessage(`✅ response [${response.response[i]}].`);
+    }
+  }
 
   /** Return imei */
   return response;
