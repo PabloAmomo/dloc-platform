@@ -83,15 +83,6 @@ const handlePacket: HandlePacket = async (
       )
     );
     
-    (response.response as Buffer[]).push(
-      huabaoCreateTerminalAttributesMessage(
-        huabaoPacket.header.terminalId,
-        counter + 100
-      )
-    );
-
-    // TODO: Enviar configuración inicial al dispositivo
-
     response.imei = padNumberLeft(huabaoPacket.header.terminalId, 15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
 
@@ -122,6 +113,15 @@ const handlePacket: HandlePacket = async (
         counter + 100
       )
     );
+
+    (response.response as Buffer[]).push(
+      huabaoCreateTerminalAttributesMessage(
+        huabaoPacket.header.terminalId,
+        counter + 101
+      )
+    );
+
+    // TODO: Enviar configuración inicial al dispositivo
 
     response.imei = padNumberLeft(huabaoPacket.header.terminalId, 15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
