@@ -29,6 +29,7 @@ import huabaoCreateGeneralResponse from "../../../functions/huabaoCreateGeneralR
 import huabaoDecodeLocations from "../../../functions/huabaoDecodeLocations";
 import huabaoTimeSyncBody from "../../../functions/huabaoTimeSyncBody";
 import toHexWith from "../../../functions/toHexWith";
+import huabaoCreateQueryLocationMessage from "../../../functions/huabaoCreateQueryLocationMessage";
 
 const noImei: string = "no imei received";
 
@@ -219,13 +220,20 @@ const handlePacket: HandlePacket = async (
   //     response 0x8001
   // ---------------------------------------
   else if (huabaoPacket.header.msgType === 0x0002) {
-    response.response = huabaoCreateGeneralResponse(
+    const bufferResponse = huabaoCreateGeneralResponse(
       huabaoPacket.header.terminalId,
       counter,
       huabaoPacket.header.msgSerialNumber,
       huabaoPacket.header.msgType,
       "00"
     );
+
+    const queryLocation = huabaoCreateQueryLocationMessage(
+      huabaoPacket.header.terminalId,
+      counter + 100
+    );
+
+    response.response =  Buffer.concat([bufferResponse, queryLocation]);
 
     response.imei = padNumberLeft(huabaoPacket.header.terminalId, 15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
