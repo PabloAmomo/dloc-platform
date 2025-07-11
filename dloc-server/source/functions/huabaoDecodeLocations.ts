@@ -62,6 +62,8 @@ const huabaoDecodeLocations = (body: Buffer, multiLocations: boolean) => {
       .toString(16)
       .padStart(2, "0")}:${timeBCD[5].toString(16).padStart(2, "0")}`;
 
+    // TODO: Asignar los items segun su ID y tamaño
+    
     const mileage = locData.subarray(28, 34);
     const gsm = locData.subarray(34, 38);
     const satellites = locData.subarray(38, 41);
