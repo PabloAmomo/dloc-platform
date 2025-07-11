@@ -349,11 +349,11 @@ const handlePacket: HandlePacket = async (
     );
   } else {
     for (let i = 0; i < response.response.length; i++) {
-      printMessage(`✅ response [${response.response[i]}].`);
+      printMessage(`[${imeiTemp}] (${remoteAddress}) ✅ response [${response.response[i]}].`);
     }
   }
 
-  /** Return imei */
+  /** Return responses */
   return response;
 };
 
