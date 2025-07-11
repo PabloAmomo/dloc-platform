@@ -16,11 +16,7 @@ const handleData = async ({
   let result: HandlePacketResult = {  imei, error: "", response: Buffer.from([]) };
 
   const dataString: string = convertStringToHexString(data);
-  printMessage(
-    `[---------------] (${remoteAddress}) 📡 RECEIVED ----> [${dataString}].`
-  );
 
-  // crea una algoritmo que parta los mensajes que llegan en data, que comienzan y terminan con el byte 7e
   let inPacket: Buffer | null = huabaoFrameDecode(data as Buffer);
 
   if (!inPacket) {
@@ -33,10 +29,9 @@ const handleData = async ({
   }
 
   /** Remove first byte on packet */
-  if (inPacket[0] === 0x7e) inPacket = inPacket.slice(1);
-
+  //if (inPacket[0] === 0x7e) inPacket = inPacket.slice(1);
   /** Remove last byte on packet */
-  if (inPacket[inPacket.length - 1] === 0x7e) inPacket = inPacket.slice(0, -1);
+  //if (inPacket[inPacket.length - 1] === 0x7e) inPacket = inPacket.slice(0, -1);
 
   /** Handle packet */
   try {
