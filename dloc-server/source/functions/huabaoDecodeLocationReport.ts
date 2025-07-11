@@ -16,7 +16,7 @@ const huabaoDecodeLocationReport = (data: Buffer) => {
     .toString(16)
     .padStart(2, "0")}`;
 
-  return {
+  const response = {
     alarmFlags,
     status,
     lat,
@@ -26,6 +26,10 @@ const huabaoDecodeLocationReport = (data: Buffer) => {
     direction,
     time,
   };
+
+  console.log(`Record: ${JSON.stringify(response, null, 2)}`);
+
+  return response;
 };
 
 export default huabaoDecodeLocationReport;
