@@ -72,10 +72,10 @@ const handlePacket: HandlePacket = async (
   // ---------------------------------------
   else if (huabaoPacket.header.msgType === 0x0102) {
     response.response = huabaoCreateFrameData({
-      msgType: 0x8001,
+      msgType: 0x0001,
       terminalId: Buffer.from(huabaoPacket.header.terminalId, "hex"),
       msgSerialNumber: counter++,
-      body: Buffer.from(byteArrayToHexString(numberToHexByteArray(huabaoPacket.header.msgSerialNumber)) + toHexWith(counter, 4) + "01", "hex"),
+      body: Buffer.from(byteArrayToHexString(numberToHexByteArray(huabaoPacket.header.msgSerialNumber)) + toHexWith(counter, 4) + "00", "hex"),
     });
     printMessage(` 📡 COUNTER ZZZZZZZ [${counter}].`)
     ;
