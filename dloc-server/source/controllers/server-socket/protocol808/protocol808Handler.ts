@@ -87,7 +87,7 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
 
           const prefix = `[${imei}] (${remoteAddress})`;
 
-          counter += 5;
+          counter++;
           printMessage(`${prefix} ℹ️ Current serial counter [${counter}].`);
 
           /** Get the las information about the IMEI */
