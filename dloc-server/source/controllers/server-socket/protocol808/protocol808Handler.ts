@@ -35,8 +35,8 @@ const HTTP_200 = `${[
 const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
   const remoteAddress: string = getRemoteAddress(conn);
   var imei: string = "";
-  var lastTime: number = Date.now();
   var newConnection: boolean = true;
+  var counter = 0;
 
   /** Create event listeners for socket connection */
   conn.once("close", () => handleClose(remoteAddress, imei));
@@ -45,9 +45,12 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
 
   /** Handle data */
   conn.on("data", (data: any) => {
-    let counter = 1;
+    
     const tempImei: string = getNormalizedIMEI(imei);
     const dataStringHex: string = convertStringToHexString(data);
+
+    counter++;
+    if (counter > 32000) counter = 1;
 
     try {
       /** Check if health packet */
@@ -87,7 +90,6 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
 
           const prefix = `[${imei}] (${remoteAddress})`;
 
-          counter++;
           printMessage(`${prefix} ℹ️ Current serial counter [${counter}].`);
 
           /** Get the las information about the IMEI */

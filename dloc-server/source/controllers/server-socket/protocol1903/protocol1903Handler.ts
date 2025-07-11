@@ -31,7 +31,8 @@ const protocol1903Handler = (conn: net.Socket, persistence: Persistence) => {
   var imei: string = "";
   var lastTime: number = Date.now();
   var newConnection: boolean = true;
-
+  var counter = 0;
+  
   /** Create event listeners for socket connection */
   conn.once("close", () => handleClose(remoteAddress, imei));
   conn.on("end", () => handleEnd(remoteAddress, imei));
@@ -39,8 +40,12 @@ const protocol1903Handler = (conn: net.Socket, persistence: Persistence) => {
 
   /** Handle data */
   conn.on("data", (data: any) => {
-    let counter = 0;
+    
     const tempImei: string = getNormalizedIMEI(imei);
+
+    counter++;
+    if (counter > 32000) counter = 1;
+
     try {
       /** Process data */
       const dataString: string = data.toString();
@@ -73,7 +78,7 @@ const protocol1903Handler = (conn: net.Socket, persistence: Persistence) => {
         .then(async (results) => {
           /** Check if IMEI is valid */
           if (!results[0]?.imei) {
-            printMessage(`IMEI not found in data [${dataString}].`);
+            printMessage(`${tempImei}] (${remoteAddress}) ❌ IMEI not found in data [${dataString}].`);
             conn.destroy();
             return;
           }
@@ -81,6 +86,8 @@ const protocol1903Handler = (conn: net.Socket, persistence: Persistence) => {
 
           const prefix = `[${imei}] (${remoteAddress})`;
 
+          printMessage(`${prefix} ℹ️ Current serial counter [${counter}].`);
+          
           /** Get the las information about the IMEI */
           const imeiData = CACHE_IMEI.get(imei);
 

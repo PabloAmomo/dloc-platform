@@ -22,15 +22,14 @@ import { huabaoCreateFrameData } from "../../../functions/huabaoCreateFrameData"
 import numberToHexByteArray from "../../../functions/numberToHexByteArray";
 import byteArrayToHexString from "../../../functions/byteArrayToHexString";
 import padNumberLeft from "../../../functions/padNumberLeft";
-import toHexWith from "../../../functions/toHexWith";
+import toHexWith from '../../../functions/toHexWith';
 
 const noImei: string = "no imei received";
 
 const handlePacket: HandlePacket = async (
   props: HandlePacketProps
 ): Promise<HandlePacketResult> => {
-  const { imei, remoteAddress: remoteAddress, data, persistence } = props;
-  let { counter } = props;
+  const { imei, remoteAddress: remoteAddress, data, persistence, counter } = props;
 
   const dataBuffer: Buffer = data as Buffer;
 
@@ -52,19 +51,18 @@ const handlePacket: HandlePacket = async (
   //     response 0x8100
   // ---------------------------------------
   if (huabaoPacket.header.msgType === 0x0100) {
-    
     response.response = huabaoCreateFrameData({
       msgType: 0x8100,
       terminalId: Buffer.from(huabaoPacket.header.terminalId, "hex"),
-      msgSerialNumber: counter++,
+      msgSerialNumber: counter,
       body: Buffer.from(byteArrayToHexString(numberToHexByteArray(huabaoPacket.header.msgSerialNumber)) + "00" + huabaoPacket.header.terminalId, "hex"),
     });
 
     response.imei = padNumberLeft(huabaoPacket.header.terminalId,15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
 
-    if (response.imei !== "") updateLastActivity = true;
-    printMessage(`[${imeiTemp}] (${remoteAddress}) ✅ imei [${response.imei}]`);
+    updateLastActivity = true;
+    printMessage(`[${imeiTemp}] (${remoteAddress}) ✅ Terminal registration successful`);
   }
 
   // ---------------------------------------
@@ -75,37 +73,18 @@ const handlePacket: HandlePacket = async (
     response.response = huabaoCreateFrameData({
       msgType: 0x8001,
       terminalId: Buffer.from(huabaoPacket.header.terminalId, "hex"),
-      msgSerialNumber: counter++,
-      body: Buffer.from(byteArrayToHexString(numberToHexByteArray(huabaoPacket.header.msgSerialNumber)) + "0102" + "00", "hex"),
+      msgSerialNumber: counter,
+      body: Buffer.from(byteArrayToHexString(numberToHexByteArray(huabaoPacket.header.msgSerialNumber)) + toHexWith(huabaoPacket.header.msgType, 4) + "00", "hex"),
     });
 
     response.imei = padNumberLeft(huabaoPacket.header.terminalId,15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
 
-    if (response.imei !== "") updateLastActivity = true;
-    printMessage(`[${imeiTemp}] (${remoteAddress}) ✅ Terminal authentication IMEI [${response.imei}]`);
+    updateLastActivity = true;
+    printMessage(`[${imeiTemp}] (${remoteAddress}) ✅ Terminal authentication successful`);
   }
 
-  // ---------------------------------------
-  // 2.7 Terminal authentication（0x0102
-  //     response 0x8001
-  // ---------------------------------------
-  /*
-  else if (huabaoPacket.header.msgType === 0x0102) {
-    response.response = huabaoCreateFrameData({
-      msgType: 0x8001,
-      terminalId: Buffer.from(huabaoPacket.header.terminalId, "hex"),
-      msgSerialNumber: 1,
-      body: Buffer.from(byteArrayToHexString(numberToHexByteArray(huabaoPacket.header.msgSerialNumber)) + "111100", "hex"),
-    });
 
-    response.imei = padNumberLeft(huabaoPacket.header.terminalId,15, "0");
-    imeiTemp = getNormalizedIMEI(response.imei);
-
-    if (response.imei !== "") updateLastActivity = true;
-    printMessage(`[${imeiTemp}] (${remoteAddress}) ✅ Terminal authentication IMEI [${response.imei}]`);
-  }
-  */
   //  const packetType = data.startsWith("TRVYP14") ? "TRVYP14" : "TRVYP15";
 //
   //  /** Process GPS data */
