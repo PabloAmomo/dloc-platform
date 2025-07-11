@@ -124,7 +124,7 @@ const handlePacket: HandlePacket = async (
   //     response 0x8001
   // ---------------------------------------
   else if (huabaoPacket.header.msgType === 0x0704) {
-    const locations = huabaoDecodeLocations(huabaoPacket.body);
+    const locations = huabaoDecodeLocations(huabaoPacket.body, true);
 
     (response.response as Buffer[]).push(
       huabaoCreateGeneralResponse(

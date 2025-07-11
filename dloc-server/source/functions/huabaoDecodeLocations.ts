@@ -21,19 +21,25 @@ E7080000000000000000 //table 19 status additional infomation
 EE0A01CC01262C0CBC089B00 //table 19 4G LBS infomation
 
 */
-const huabaoDecodeLocations = (body: Buffer) => {
+const huabaoDecodeLocations = (body: Buffer, multiLocations: boolean) => {
   const records: any[] = [];
-
   let offset = 0;
 
-  const packetCount = body.readUInt16BE(offset); offset += 2;
+  let packetCount = 1;
+  if (multiLocations) {
+    packetCount = body.readUInt16BE(offset);
+    offset += 2;
+  }
 
   for (let i = 0; i < packetCount; i++) {
-    const dataType = body.readUInt8(offset++);
-    const locLength = body.readUInt16BE(offset); offset += 2;
+    const dataType = multiLocations ? body.readUInt8(offset++) : 0; 
+    const locLength = body.readUInt16BE(offset);
+    offset += 2;
 
-    console.log(`Data Type: ${dataType}, offset: ${offset}, Length: ${locLength}`);
-   
+    console.log(
+      `Data Type: ${dataType}, offset: ${offset}, Length: ${locLength}`
+    );
+
     const locData = body.subarray(offset, offset + locLength);
     offset += locLength - 1;
 
@@ -46,20 +52,22 @@ const huabaoDecodeLocations = (body: Buffer) => {
     const direction = locData.readUInt16BE(20);
 
     const timeBCD = locData.subarray(22, 28);
-    const time = `20${timeBCD[0].toString(16).padStart(2, '0')}-${timeBCD[1]
+    const time = `20${timeBCD[0].toString(16).padStart(2, "0")}-${timeBCD[1]
       .toString(16)
-      .padStart(2, '0')}-${timeBCD[2].toString(16).padStart(2, '0')} ${timeBCD[3]
+      .padStart(2, "0")}-${timeBCD[2]
       .toString(16)
-      .padStart(2, '0')}:${timeBCD[4].toString(16).padStart(2, '0')}:${timeBCD[5]
+      .padStart(2, "0")} ${timeBCD[3]
       .toString(16)
-      .padStart(2, '0')}`;
+      .padStart(2, "0")}:${timeBCD[4]
+      .toString(16)
+      .padStart(2, "0")}:${timeBCD[5].toString(16).padStart(2, "0")}`;
 
     const mileage = locData.subarray(28, 34);
     const gsm = locData.subarray(34, 38);
     const satellites = locData.subarray(38, 41);
     const battery = locData.subarray(41, 44);
     const additionalInfo = locData.subarray(44, 60);
-    const lbsInfo = locData.subarray(60, 76); 
+    const lbsInfo = locData.subarray(60, 76);
 
     records.push({
       dataType,
@@ -71,12 +79,12 @@ const huabaoDecodeLocations = (body: Buffer) => {
       speed,
       direction,
       time,
-      mileage: mileage.toString('hex'),
-      gsm: gsm.toString('hex'),
-      satellites: satellites.toString('hex'),     
-      battery: battery.toString('hex'),
-      additionalInfo: additionalInfo.toString('hex'),
-      lbsInfo: lbsInfo.toString('hex'), 
+      mileage: mileage.toString("hex"),
+      gsm: gsm.toString("hex"),
+      satellites: satellites.toString("hex"),
+      battery: battery.toString("hex"),
+      additionalInfo: additionalInfo.toString("hex"),
+      lbsInfo: lbsInfo.toString("hex"),
     });
   }
 
@@ -87,6 +95,6 @@ const huabaoDecodeLocations = (body: Buffer) => {
     packetCount,
     records,
   };
-}
+};
 
 export default huabaoDecodeLocations;
