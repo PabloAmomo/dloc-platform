@@ -1,4 +1,4 @@
-import { health } from './../../../models/Persistence';
+import { health } from "./../../../models/Persistence";
 import { createPositionPacket } from "../../../functions/createPositionPacket";
 import { getUtcDateTime } from "../../../functions/getUtcDateTime";
 import { HandlePacket } from "../../../models/HandlePacket";
@@ -14,7 +14,10 @@ import getLbsPosition from "../../../functions/getLbsPosition";
 import positionUpdateLastActivityAndAddHistory from "../../../functions/positionUpdateLastActivityAndAddHistory";
 import positionAddPositionAndUpdateDevice from "../../../functions/positionAddPositionAndUpdateDevice";
 import positionUpdateBattertAndLastActivity from "../../../functions/positionUpdateBatteryAndLastActivity";
-import { getNormalizedIMEI, NO_IMEI_STRING } from "../../../functions/getNormalizedIMEI";
+import {
+  getNormalizedIMEI,
+  NO_IMEI_STRING,
+} from "../../../functions/getNormalizedIMEI";
 import convertStringToHexString from "../../../functions/convertStringToHexString";
 import huabaoFrameEncode from "../../../functions/huabaoFrameEncode";
 import huabaoGetFrameData from "../../../functions/huabaoGetFrameData";
@@ -22,19 +25,31 @@ import { huabaoCreateFrameData } from "../../../functions/huabaoCreateFrameData"
 import numberToHexByteArray from "../../../functions/numberToHexByteArray";
 import byteArrayToHexString from "../../../functions/byteArrayToHexString";
 import padNumberLeft from "../../../functions/padNumberLeft";
-import toHexWith from '../../../functions/toHexWith';
+import toHexWith from "../../../functions/toHexWith";
+import huabaoCreateGeneralResponse from "../../../functions/huabaoCreateGeneralResponse";
+import huabaoDecodeLocations from "../../../functions/huabaoDecodeLocations";
 
 const noImei: string = "no imei received";
 
 const handlePacket: HandlePacket = async (
   props: HandlePacketProps
 ): Promise<HandlePacketResult> => {
-  const { imei, remoteAddress: remoteAddress, data, persistence, counter } = props;
+  const {
+    imei,
+    remoteAddress: remoteAddress,
+    data,
+    persistence,
+    counter,
+  } = props;
 
   const dataBuffer: Buffer = data as Buffer;
 
   let updateLastActivity: boolean = false;
-  let response: HandlePacketResult = { imei, error: "", response: Buffer.from([]) };
+  let response: HandlePacketResult = {
+    imei,
+    error: "",
+    response: Buffer.from([]),
+  };
 
   /** Temporal imei (Used only for print messages for user) */
   var imeiTemp: string = getNormalizedIMEI(imei);
@@ -42,7 +57,8 @@ const handlePacket: HandlePacket = async (
   /* convert data to hex string */
   const dataString: string = convertStringToHexString(data);
   printMessage(
-    `[${imeiTemp}] (${remoteAddress}) 📡 WORKING ----> [${dataString}].`);
+    `[${imeiTemp}] (${remoteAddress}) 📡 WORKING ----> [${dataString}].`
+  );
 
   let huabaoPacket = huabaoGetFrameData(dataBuffer);
 
@@ -55,14 +71,23 @@ const handlePacket: HandlePacket = async (
       msgType: 0x8100,
       terminalId: Buffer.from(huabaoPacket.header.terminalId, "hex"),
       msgSerialNumber: counter,
-      body: Buffer.from(byteArrayToHexString(numberToHexByteArray(huabaoPacket.header.msgSerialNumber)) + "00" + huabaoPacket.header.terminalId, "hex"),
+      body: Buffer.from(
+        byteArrayToHexString(
+          numberToHexByteArray(huabaoPacket.header.msgSerialNumber)
+        ) +
+          "00" +
+          huabaoPacket.header.terminalId,
+        "hex"
+      ),
     });
 
-    response.imei = padNumberLeft(huabaoPacket.header.terminalId,15, "0");
+    response.imei = padNumberLeft(huabaoPacket.header.terminalId, 15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
 
     updateLastActivity = true;
-    printMessage(`[${imeiTemp}] (${remoteAddress}) ✅ Terminal registration successful`);
+    printMessage(
+      `[${imeiTemp}] (${remoteAddress}) ✅ Terminal registration successful`
+    );
   }
 
   // ---------------------------------------
@@ -70,23 +95,47 @@ const handlePacket: HandlePacket = async (
   //     response 0x8001
   // ---------------------------------------
   else if (huabaoPacket.header.msgType === 0x0102) {
-    response.response = huabaoCreateFrameData({
-      msgType: 0x8001,
-      terminalId: Buffer.from(huabaoPacket.header.terminalId, "hex"),
-      msgSerialNumber: counter,
-      body: Buffer.from(byteArrayToHexString(numberToHexByteArray(huabaoPacket.header.msgSerialNumber)) + toHexWith(huabaoPacket.header.msgType, 4) + "00", "hex"),
-    });
+    response.response = huabaoCreateGeneralResponse(
+      huabaoPacket.header.terminalId,
+      counter,
+      huabaoPacket.header.msgSerialNumber,
+      huabaoPacket.header.msgType
+    );
 
-    response.imei = padNumberLeft(huabaoPacket.header.terminalId,15, "0");
+    response.imei = padNumberLeft(huabaoPacket.header.terminalId, 15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
 
     updateLastActivity = true;
-    printMessage(`[${imeiTemp}] (${remoteAddress}) ✅ Terminal authentication successful`);
+    printMessage(
+      `[${imeiTemp}] (${remoteAddress}) ✅ Terminal authentication successful`
+    );
   }
 
+  // ---------------------------------------
+  // 2.20 Positioning data batch upload（0x0704）
+  //     response 0x8001
+  // ---------------------------------------
+  else if (huabaoPacket.header.msgType === 0x0704) {
+    const locations = huabaoDecodeLocations(huabaoPacket.body); 
+    
+    response.response = huabaoCreateGeneralResponse(
+      huabaoPacket.header.terminalId,
+      counter,
+      huabaoPacket.header.msgSerialNumber,
+      huabaoPacket.header.msgType
+    );
+
+    response.imei = padNumberLeft(huabaoPacket.header.terminalId, 15, "0");
+    imeiTemp = getNormalizedIMEI(response.imei);
+
+    updateLastActivity = true;
+    printMessage(
+      `[${imeiTemp}] (${remoteAddress}) ✅ Positioning data batch upload successful`
+    );
+  }
 
   //  const packetType = data.startsWith("TRVYP14") ? "TRVYP14" : "TRVYP15";
-//
+  //
   //  /** Process GPS data */
   //  let { values, regexIndex } = getValuesFromStringByRegexs(
   //    data,
@@ -98,7 +147,7 @@ const handlePacket: HandlePacket = async (
   //        data.split(",")[0]
   //      }]`
   //    );
-//
+  //
   //  /** imei not received */
   //  if (response.imei == "")
   //    return await discardData(
@@ -110,7 +159,7 @@ const handlePacket: HandlePacket = async (
   //      data,
   //      response
   //    );
-//
+  //
   //  /** Create position packet and persist */
   //  const positionPacket: PositionPacket | undefined = createPositionPacket(
   //    response.imei,
@@ -119,7 +168,7 @@ const handlePacket: HandlePacket = async (
   //    GpsAccuracy.unknown,
   //    "{}"
   //  );
-//
+  //
   //  /** Check if position packet was created */
   //  if (!positionPacket)
   //    return await discardData(
@@ -131,10 +180,10 @@ const handlePacket: HandlePacket = async (
   //      data,
   //      response
   //    );
-//
+  //
   //  /** Update last activity */
   //  updateLastActivity = true;
-//
+  //
   //  if (!positionPacket.valid) {
   //    /** Invalid position, try to get position from LBS */
   //    printMessage(
@@ -142,7 +191,7 @@ const handlePacket: HandlePacket = async (
   //        data.split(",")[0]
   //      }]`
   //    );
-//
+  //
   //    /** LBS query */
   //    const lbsGetResponse = await getLbsPosition(
   //      data,
@@ -154,7 +203,7 @@ const handlePacket: HandlePacket = async (
   //    );
   //    if ("error" in lbsGetResponse && lbsGetResponse.error)
   //      return lbsGetResponse;
-//
+  //
   //    /** Process LBS data */
   //    if ("location" in lbsGetResponse) {
   //      positionPacket.lat = lbsGetResponse.location.lat;
@@ -163,12 +212,12 @@ const handlePacket: HandlePacket = async (
   //      positionPacket.accuracy = GpsAccuracy.lbs;
   //    }
   //  }
-//
+  //
   //  /** Add position and update device */
   //  if (positionPacket.valid) {
   //    let oldPacket: boolean = false;
   //    const oldPacketMessage = "old packet";
-//
+  //
   //    await positionAddPositionAndUpdateDevice(
   //      imeiTemp,
   //      remoteAddress,
@@ -179,7 +228,7 @@ const handlePacket: HandlePacket = async (
   //        oldPacket = error?.message === "old packet";
   //      }
   //    );
-//
+  //
   //    if (oldPacket)
   //      await discardData(
   //        oldPacketMessage,
@@ -191,7 +240,7 @@ const handlePacket: HandlePacket = async (
   //        response
   //      );
   //  }
-//
+  //
   //  response.response = `TRVZP${data.substring(5, 7)}#`;
   //}
 
@@ -200,7 +249,7 @@ const handlePacket: HandlePacket = async (
   // ---------------------------------------------
   //else if (data.startsWith("TRVAP14")) {
   //  const packetType = "TRVAP14";
-//
+  //
   //  if (response.imei == "")
   //    return await discardData(
   //      noImei,
@@ -211,7 +260,7 @@ const handlePacket: HandlePacket = async (
   //      data,
   //      response
   //    );
-//
+  //
   //  /** LBS query */
   //  const lbsGetResponse = await getLbsPosition(
   //    data,
@@ -223,7 +272,7 @@ const handlePacket: HandlePacket = async (
   //  );
   //  if ("error" in lbsGetResponse && lbsGetResponse.error)
   //    return lbsGetResponse;
-//
+  //
   //  /** Process LBS data */
   //  if ("location" in lbsGetResponse) {
   //    const { lat, lng } = lbsGetResponse.location;
@@ -253,7 +302,7 @@ const handlePacket: HandlePacket = async (
   //      data,
   //      response
   //    );
-//
+  //
   //  /** Process Battery level on packet heartbeat */
   //  if (data.startsWith("TRVYP16")) {
   //    if (data.length < 18) updateLastActivity = true;
@@ -267,7 +316,7 @@ const handlePacket: HandlePacket = async (
   //      );
   //    }
   //  }
-//
+  //
   //  response.response = `TRVZP${data.substring(5, 7)}#`;
   //}
 
@@ -285,7 +334,7 @@ const handlePacket: HandlePacket = async (
   //      data,
   //      response
   //    );
-//
+  //
   //  response.response = `TRVBP${data.substring(5, 7)}#`;
   //}
 
@@ -311,11 +360,11 @@ const handlePacket: HandlePacket = async (
   //) {
   //  let message: string = "";
   //  const resultVal: string = data.endsWith("0#") ? "OK" : "ERROR";
-//
+  //
   //  if (data.startsWith("TRVCP03")) message = "Set heartbeat packet interval";
   //  if (data.startsWith("TRVXP02")) message = "Set Upload interval";
   //  if (data.startsWith("TRVAP92")) message = "Set Led display switch";
-//
+  //
   //  printMessage(
   //    `[${imeiTemp}] (${remoteAddress}) 👍 confirmation from device [${data}] (${message} ${resultVal})`
   //  );
@@ -339,7 +388,9 @@ const handlePacket: HandlePacket = async (
   else {
     printMessage(
       `[${imeiTemp}] (${remoteAddress}) 🤷‍♂️ command unknown in data [${
-        dataString.length > 20 ? dataString.substring(0, 20) + "..." : dataString
+        dataString.length > 20
+          ? dataString.substring(0, 20) + "..."
+          : dataString
       }]`
     );
     return await discardData(
