@@ -1,22 +1,22 @@
-import { createPositionPacket } from "../../../functions/createPositionPacket";
-import { getUtcDateTime } from "../../../functions/getUtcDateTime";
-import { HandlePacket } from "../../../models/HandlePacket";
-import { HandlePacketProps } from "../../../models/HandlePacketProps";
-import { HandlePacketResult } from "../../../models/HandlePacketResult";
-import { PositionPacket } from "../../../models/PositionPacket";
-import { printMessage } from "../../../functions/printMessage";
-import { REGEX_PACKETS } from "../../../functions/packetParseREGEX";
-import { GpsAccuracy } from "../../../models/GpsAccuracy";
-import getValuesFromStringByRegexs from "../../../functions/getValuesFromStringByRegex";
-import discardData from "../../../functions/discardData";
-import getLbsPosition from "../../../functions/getLbsPosition";
-import positionUpdateLastActivityAndAddHistory from "../../../functions/positionUpdateLastActivityAndAddHistory";
-import positionAddPositionAndUpdateDevice from "../../../functions/positionAddPositionAndUpdateDevice";
-import positionUpdateBattertAndLastActivity from "../../../functions/positionUpdateBatteryAndLastActivity";
+import { createPositionPacket } from "../../../../functions/createPositionPacket";
+import { getUtcDateTime } from "../../../../functions/getUtcDateTime";
+import { HandlePacket } from "../../../../models/HandlePacket";
+import { HandlePacketProps } from "../../../../models/HandlePacketProps";
+import { HandlePacketResult } from "../../../../models/HandlePacketResult";
+import { PositionPacket } from "../../../../models/PositionPacket";
+import { printMessage } from "../../../../functions/printMessage";
+import { REGEX_PACKETS } from "../../../../functions/packetParseREGEX";
+import { GpsAccuracy } from "../../../../models/GpsAccuracy";
+import getValuesFromStringByRegexs from "../../../../functions/getValuesFromStringByRegex";
+import discardData from "../../../../functions/discardData";
+import getLbsPosition from "../../../../functions/getLbsPosition";
+import positionUpdateLastActivityAndAddHistory from "../../../../functions/positionUpdateLastActivityAndAddHistory";
+import positionAddPositionAndUpdateDevice from "../../../../functions/positionAddPositionAndUpdateDevice";
+import positionUpdateBattertAndLastActivity from "../../../../functions/positionUpdateBatteryAndLastActivity";
 import {
   getNormalizedIMEI,
   NO_IMEI_STRING,
-} from "../../../functions/getNormalizedIMEI";
+} from "../../../../functions/getNormalizedIMEI";
 
 const noImei: string = "no imei received";
 

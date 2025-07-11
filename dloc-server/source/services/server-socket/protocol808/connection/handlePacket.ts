@@ -1,35 +1,35 @@
-import { health } from "./../../../models/Persistence";
-import { createPositionPacket } from "../../../functions/createPositionPacket";
-import { getUtcDateTime } from "../../../functions/getUtcDateTime";
-import { HandlePacket } from "../../../models/HandlePacket";
-import { HandlePacketProps } from "../../../models/HandlePacketProps";
-import { HandlePacketResult } from "../../../models/HandlePacketResult";
-import { PositionPacket } from "../../../models/PositionPacket";
-import { printMessage } from "../../../functions/printMessage";
-import { REGEX_PACKETS } from "../../../functions/packetParseREGEX";
-import { GpsAccuracy } from "../../../models/GpsAccuracy";
-import getValuesFromStringByRegexs from "../../../functions/getValuesFromStringByRegex";
-import discardData from "../../../functions/discardData";
-import getLbsPosition from "../../../functions/getLbsPosition";
-import positionUpdateLastActivityAndAddHistory from "../../../functions/positionUpdateLastActivityAndAddHistory";
-import positionAddPositionAndUpdateDevice from "../../../functions/positionAddPositionAndUpdateDevice";
-import positionUpdateBattertAndLastActivity from "../../../functions/positionUpdateBatteryAndLastActivity";
+import { health } from "../../../../models/Persistence";
+import { createPositionPacket } from "../../../../functions/createPositionPacket";
+import { getUtcDateTime } from "../../../../functions/getUtcDateTime";
+import { HandlePacket } from "../../../../models/HandlePacket";
+import { HandlePacketProps } from "../../../../models/HandlePacketProps";
+import { HandlePacketResult } from "../../../../models/HandlePacketResult";
+import { PositionPacket } from "../../../../models/PositionPacket";
+import { printMessage } from "../../../../functions/printMessage";
+import { REGEX_PACKETS } from "../../../../functions/packetParseREGEX";
+import { GpsAccuracy } from "../../../../models/GpsAccuracy";
+import getValuesFromStringByRegexs from "../../../../functions/getValuesFromStringByRegex";
+import discardData from "../../../../functions/discardData";
+import getLbsPosition from "../../../../functions/getLbsPosition";
+import positionUpdateLastActivityAndAddHistory from "../../../../functions/positionUpdateLastActivityAndAddHistory";
+import positionAddPositionAndUpdateDevice from "../../../../functions/positionAddPositionAndUpdateDevice";
+import positionUpdateBattertAndLastActivity from "../../../../functions/positionUpdateBatteryAndLastActivity";
 import {
   getNormalizedIMEI,
   NO_IMEI_STRING,
-} from "../../../functions/getNormalizedIMEI";
-import convertStringToHexString from "../../../functions/convertStringToHexString";
-import huabaoFrameEncode from "../../../functions/huabaoFrameEncode";
-import huabaoGetFrameData from "../../../functions/huabaoGetFrameData";
-import { huabaoCreateFrameData } from "../../../functions/huabaoCreateFrameData";
-import numberToHexByteArray from "../../../functions/numberToHexByteArray";
-import byteArrayToHexString from "../../../functions/byteArrayToHexString";
-import padNumberLeft from "../../../functions/padNumberLeft";
-import huabaoCreateGeneralResponse from "../../../functions/huabaoCreateGeneralResponse";
-import huabaoDecodeLocations from "../../../functions/huabaoDecodeLocations";
-import huabaoTimeSyncBody from "../../../functions/huabaoTimeSyncBody";
-import toHexWith from "../../../functions/toHexWith";
-import huabaoCreateQueryLocationMessage from "../../../functions/huabaoCreateQueryLocationMessage";
+} from "../../../../functions/getNormalizedIMEI";
+import convertStringToHexString from "../../../../functions/convertStringToHexString";
+import huabaoFrameEncode from "../../../../functions/huabaoFrameEncode";
+import huabaoGetFrameData from "../../../../functions/huabaoGetFrameData";
+import { huabaoCreateFrameData } from "../../../../functions/huabaoCreateFrameData";
+import numberToHexByteArray from "../../../../functions/numberToHexByteArray";
+import byteArrayToHexString from "../../../../functions/byteArrayToHexString";
+import padNumberLeft from "../../../../functions/padNumberLeft";
+import huabaoCreateGeneralResponse from "../../../../functions/huabaoCreateGeneralResponse";
+import huabaoDecodeLocations from "../../../../functions/huabaoDecodeLocations";
+import huabaoTimeSyncBody from "../../../../functions/huabaoTimeSyncBody";
+import toHexWith from "../../../../functions/toHexWith";
+import huabaoCreateQueryLocationMessage from "../../../../functions/huabaoCreateQueryLocationMessage";
 
 const noImei: string = "no imei received";
 
@@ -519,7 +519,7 @@ const handlePacket: HandlePacket = async (
   } else {
     for (let i = 0; i < response.response.length; i++) {
       printMessage(
-        `✅ response [${convertStringToHexString(response.response[i])}].`
+        `[${imeiTemp}] (${remoteAddress}) ✅ response [${convertStringToHexString(response.response[i])}].`
       );
     }
   }

@@ -1,9 +1,9 @@
-import { HandleDataProps } from "../../../../models/HandleDataProps";
-import { HandlePacketResult } from "../../../../models/HandlePacketResult";
-import { printMessage } from "../../../../functions/printMessage";
-import { getNormalizedIMEI } from "../../../../functions/getNormalizedIMEI";
+import { HandleDataProps } from "../../../models/HandleDataProps";
+import { HandlePacketResult } from "../../../models/HandlePacketResult";
+import { printMessage } from "../../../functions/printMessage";
+import { getNormalizedIMEI } from "../../../functions/getNormalizedIMEI";
 
-const handleData = async ({
+const handler = async ({
   imei,
   remoteAddress,
   data,
@@ -54,4 +54,4 @@ const handleData = async ({
   return results;
 };
 
-export default handleData;
+export default handler;

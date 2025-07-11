@@ -1,11 +1,11 @@
-import { HandleDataProps } from "../../../../models/HandleDataProps";
-import { HandlePacketResult } from "../../../../models/HandlePacketResult";
-import { printMessage } from "../../../../functions/printMessage";
-import { getNormalizedIMEI } from "../../../../functions/getNormalizedIMEI";
-import convertStringToHexString from "../../../../functions/convertStringToHexString";
-import huabaoFrameDecode from "../../../../functions/huabaoFrameDecode";
+import { HandleDataProps } from "../../../models/HandleDataProps";
+import { HandlePacketResult } from "../../../models/HandlePacketResult";
+import { printMessage } from "../../../functions/printMessage";
+import { getNormalizedIMEI } from "../../../functions/getNormalizedIMEI";
+import convertStringToHexString from "../../../functions/convertStringToHexString";
+import huabaoFrameDecode from "../../../functions/huabaoFrameDecode";
 
-const handleData = async ({
+const handler = async ({
   imei,
   remoteAddress,
   data,
@@ -58,4 +58,4 @@ const handleData = async ({
   return result;
 };
 
-export default handleData;
+export default handler;

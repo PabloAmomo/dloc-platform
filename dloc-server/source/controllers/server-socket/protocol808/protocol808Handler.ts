@@ -1,9 +1,9 @@
-import { handlePacket } from "../../../services/server-socket/protocol808/handlePacket";
+import { handlePacket } from "../../../services/server-socket/protocol808/connection/handlePacket";
 import { Persistence } from "../../../models/Persistence";
 import { printMessage } from "../../../functions/printMessage";
 import { getRemoteAddress } from "../../../functions/remoteAddress";
 import handleClose from "../../../services/server-socket/protocol808/connection/handleClose";
-import handleData from "../../../services/server-socket/protocol808/connection/handleData";
+import handler from "../../../services/server-socket/protocol808/handler";
 import handleEnd from "../../../services/server-socket/protocol808/connection/handleEnd";
 import handleError from "../../../services/server-socket/protocol808/connection/handleError";
 import net from "node:net";
@@ -69,7 +69,7 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
         printMessage(`[${tempImei}] (${remoteAddress}) 🧑‍💻 new connection.`);
 
       /** Handle data */
-      handleData({
+      handler({
         imei,
         remoteAddress,
         data,
