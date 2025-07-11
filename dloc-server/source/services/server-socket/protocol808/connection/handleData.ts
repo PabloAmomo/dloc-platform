@@ -28,11 +28,6 @@ const handleData = async ({
     return result;
   }
 
-  /** Remove first byte on packet */
-  //if (inPacket[0] === 0x7e) inPacket = inPacket.slice(1);
-  /** Remove last byte on packet */
-  //if (inPacket[inPacket.length - 1] === 0x7e) inPacket = inPacket.slice(0, -1);
-
   /** Handle packet */
   try {
     await handlePacket({

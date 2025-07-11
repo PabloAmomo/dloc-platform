@@ -20,6 +20,7 @@ import huabaoGetFrameData from "../../../functions/huabaoGetFrameData";
 import { huabaoCreateFrameData } from "../../../functions/huabaoCreateFrameData";
 import numberToHexByteArray from "../../../functions/numberToHexByteArray";
 import byteArrayToHexString from "../../../functions/byteArrayToHexString";
+import padNumberLeft from "../../../functions/padNumberLeft";
 
 const noImei: string = "no imei received";
 
@@ -54,12 +55,10 @@ const handlePacket: HandlePacket = async (
       msgSerialNumber: 1,
       body: Buffer.from(byteArrayToHexString(numberToHexByteArray(huabaoPacket.header.msgSerialNumber)) + "00" + huabaoPacket.header.terminalId, "hex"),
     });
-    const last10 = huabaoPacket.header.terminalId.slice(-10);
-    // TODO: Agregar el factory ID que esta en el body
-    response.imei = "12345" + last10;
+
+    response.imei = padNumberLeft(huabaoPacket.header.terminalId,15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
 
-    /** Update last activity */
     if (response.imei !== "") updateLastActivity = true;
     printMessage(`[${imeiTemp}] (${remoteAddress}) ✅ imei [${response.imei}]`);
   }
