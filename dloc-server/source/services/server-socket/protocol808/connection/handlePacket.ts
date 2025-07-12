@@ -21,6 +21,7 @@ import jt808CreateFrameData from "../functions/jt808CreateFrameData";
 import jt808CreateTerminalAttributesMessage from "../functions/jt808CreateTerminalAttributesMessage";
 import jt808ParseTerminalAttributes from "../functions/jt808ParseTerminalAttributesBits";
 import jt808PersistLocation from "../functions/jt808PersistLocation";
+import jt808CreateParameterSettingPacket from "../functions/jt808CreateParameterSettingPacket";
 
 const noImei: string = "no imei received";
 
@@ -108,6 +109,12 @@ const handlePacket: HandlePacket = async (
       )
     );
 
+    (response.response as Buffer[]).push(
+      jt808CreateParameterSettingPacket(
+        jt808Packet.header.terminalId,
+        counter + 102
+      )
+    );
     // TODO: Enviar configuración inicial al dispositivo
 
     response.imei = padNumberLeft(jt808Packet.header.terminalId, 15, "0");
