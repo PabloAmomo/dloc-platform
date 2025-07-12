@@ -34,6 +34,7 @@ async function getPowerProfile(
     const oldPowerProfile = powerProfile;
     const lastPowerProfileChangeDiff =
       Date.now() - lastPowerProfileChange > 1000 * MOVEMENTS_CONTROL_SECONDS;
+      
     const isAutomatic =
       powerProfile === PowerProfileType.AUTOMATIC_FULL ||
       powerProfile === PowerProfileType.AUTOMATIC_BALANCED ||

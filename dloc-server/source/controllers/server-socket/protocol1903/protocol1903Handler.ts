@@ -32,7 +32,7 @@ const protocol1903Handler = (conn: net.Socket, persistence: Persistence) => {
   var lastTime: number = Date.now();
   var newConnection: boolean = true;
   var counter = 0;
-  
+
   /** Create event listeners for socket connection */
   conn.once("close", () => handleClose(remoteAddress, imei));
   conn.on("end", () => handleEnd(remoteAddress, imei));
@@ -40,7 +40,6 @@ const protocol1903Handler = (conn: net.Socket, persistence: Persistence) => {
 
   /** Handle data */
   conn.on("data", (data: any) => {
-    
     const tempImei: string = getNormalizedIMEI(imei);
 
     counter++;
@@ -78,7 +77,9 @@ const protocol1903Handler = (conn: net.Socket, persistence: Persistence) => {
         .then(async (results) => {
           /** Check if IMEI is valid */
           if (!results[0]?.imei) {
-            printMessage(`${tempImei}] (${remoteAddress}) ❌ IMEI not found in data [${dataString}].`);
+            printMessage(
+              `${tempImei}] (${remoteAddress}) ❌ IMEI not found in data [${dataString}].`
+            );
             conn.destroy();
             return;
           }
@@ -87,7 +88,7 @@ const protocol1903Handler = (conn: net.Socket, persistence: Persistence) => {
           const prefix = `[${imei}] (${remoteAddress})`;
 
           printMessage(`${prefix} 🌟 Current serial counter [${counter}].`);
-          
+
           /** Get the las information about the IMEI */
           const imeiData = CACHE_IMEI.get(imei);
 
@@ -96,7 +97,7 @@ const protocol1903Handler = (conn: net.Socket, persistence: Persistence) => {
             await getPowerProfile(
               imei,
               persistence,
-              imeiData?.lastPowerProfileChange ?? 0,
+              imeiData?.lastPowerProfileChange ?? Date.now(),
               prefix
             );
           const { heartBeatSec, uploadSec, ledState, forceReportLocInMs } =

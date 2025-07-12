@@ -101,7 +101,7 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
             await getPowerProfile(
               imei,
               persistence,
-              imeiData?.lastPowerProfileChange ?? 0,
+              imeiData?.lastPowerProfileChange ??  Date.now(),
               prefix
             );
           const { heartBeatSec, uploadSec, ledState, forceReportLocInMs } =
