@@ -97,27 +97,27 @@ const handlePacket: HandlePacket = async (
       )
     );
 
-    (response.response as Buffer[]).push(
-      jt808CreateQueryLocationMessage(
-        jt808Packet.header.terminalId,
-        counter + 100
-      )
-    );
+    //(response.response as Buffer[]).push(
+    //  jt808CreateQueryLocationMessage(
+    //    jt808Packet.header.terminalId,
+    //    counter + 100
+    //  )
+    //);
 
-    (response.response as Buffer[]).push(
-      jt808CreateTerminalAttributesMessage(
-        jt808Packet.header.terminalId,
-        counter + 101
-      )
-    );
+    //(response.response as Buffer[]).push(
+    //  jt808CreateTerminalAttributesMessage(
+    //    jt808Packet.header.terminalId,
+    //    counter + 101
+    //  )
+    //);
 
     // TODO: Enviar configuración inicial al dispositivo
-    (response.response as Buffer[]).push(
-      jt808CreateParameterSettingPacket(
-        jt808Packet.header.terminalId,
-        counter + 102
-      )
-    );
+    //(response.response as Buffer[]).push(
+    //  jt808CreateParameterSettingPacket(
+    //    jt808Packet.header.terminalId,
+    //    counter + 102
+    //  )
+    //);
 
     (response.response as Buffer[]).push(
       jt808CreateCheckParameterPacket(
