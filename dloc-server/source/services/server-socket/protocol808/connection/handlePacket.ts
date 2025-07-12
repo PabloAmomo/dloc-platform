@@ -23,6 +23,7 @@ import jt808ParseTerminalAttributes from "../functions/jt808ParseTerminalAttribu
 import jt808PersistLocation from "../functions/jt808PersistLocation";
 import jt808CreateParameterSettingPacket from "../functions/jt808CreateParameterSettingPacket";
 import jt808ParseCommonResultFromTerminal from "../functions/jt808ParseCommonResultFromTerminal";
+import jt808CreateCheckParameterPacket from "../functions/jt808CreateCheckParameterPacket";
 
 const noImei: string = "no imei received";
 
@@ -303,6 +304,13 @@ const handlePacket: HandlePacket = async (
       );
       printMessage(
         `[${imeiTemp}] (${remoteAddress}) 🌟 Response from terminal to message ${reponseCommon.responseToMsgSerialNumber} -> result: ${reponseCommon.result} (${reponseCommon.msgSerialNumber})`
+      );
+
+      (response.response as Buffer[]).push(
+        jt808CreateCheckParameterPacket(
+          jt808Packet.header.terminalId,
+          counter + 100
+        )
       );
     } else if (jt808Packet.header.msgType === 0x0002) {
       messageText = "Terminal heartbeat";
