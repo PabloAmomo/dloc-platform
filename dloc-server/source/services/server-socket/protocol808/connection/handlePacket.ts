@@ -1,25 +1,15 @@
-import { health } from "../../../../models/Persistence";
-import { getUtcDateTime } from "../../../../functions/getUtcDateTime";
 import { HandlePacket } from "../../../../models/HandlePacket";
 import { HandlePacketProps } from "../../../../models/HandlePacketProps";
 import { HandlePacketResult } from "../../../../models/HandlePacketResult";
-import { PositionPacket } from "../../../../models/PositionPacket";
 import { printMessage } from "../../../../functions/printMessage";
-import { GpsAccuracy } from "../../../../models/GpsAccuracy";
 import discardData from "../../../../functions/discardData";
 import positionUpdateLastActivityAndAddHistory from "../../../../functions/positionUpdateLastActivityAndAddHistory";
-import positionAddPositionAndUpdateDevice from "../../../../functions/positionAddPositionAndUpdateDevice";
 import positionUpdateBatteryAndLastActivity from "../../../../functions/positionUpdateBatteryAndLastActivity";
-import {
-  getNormalizedIMEI,
-  NO_IMEI_STRING,
-} from "../../../../functions/getNormalizedIMEI";
+import { getNormalizedIMEI } from "../../../../functions/getNormalizedIMEI";
 import convertStringToHexString from "../../../../functions/convertStringToHexString";
-
 import numberToHexByteArray from "../../../../functions/numberToHexByteArray";
 import byteArrayToHexString from "../../../../functions/byteArrayToHexString";
 import padNumberLeft from "../../../../functions/padNumberLeft";
-
 import jt808TimeSyncBody from "../functions/jt808TimeSyncBody";
 import toHexWith from "../../../../functions/toHexWith";
 import jt808GetFrameData from "../functions/jt808GetFrameData";
@@ -30,7 +20,6 @@ import jt808DecodeLocationReport from "../functions/jt808DecodeLocationReport";
 import jt808CreateFrameData from "../functions/jt808CreateFrameData";
 import jt808CreateTerminalAttributesMessage from "../functions/jt808CreateTerminalAttributesMessage";
 import jt808ParseTerminalAttributes from "../functions/jt808ParseTerminalAttributesBits";
-import jt808CreatePositionPacket from "../functions/jt808CreatePositionPacket";
 import jt808PersistLocation from "../functions/jt808PersistLocation";
 
 const noImei: string = "no imei received";
@@ -297,12 +286,12 @@ const handlePacket: HandlePacket = async (
     let messageText = "";
 
     if (jt808Packet.header.msgType === 0x0002) {
-      (response.response as Buffer[]).push(
-        jt808CreateQueryLocationMessage(
-          jt808Packet.header.terminalId,
-          counter + 100
-        )
-      );
+      //(response.response as Buffer[]).push(
+      //  jt808CreateQueryLocationMessage(
+      //    jt808Packet.header.terminalId,
+      //    counter + 100
+      //  )
+      //);
       messageText = "Terminal heartbeat";
     } else if (jt808Packet.header.msgType === 0x0003) {
       // TODO: Desconectar el dispositivo (conn.close)
