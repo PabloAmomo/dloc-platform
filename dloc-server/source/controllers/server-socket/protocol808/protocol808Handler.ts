@@ -134,14 +134,16 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
             );
 
             const terminalId = imei.slice(-12);
-            console.log(`👉👉👉👉👉👉👉👉👉 Terminal ID: ${terminalId}, Counter: ${counter}`);
-            (result.response as Buffer[]).push(
-              jt808CreatePowerProfilePacket(
-                terminalId,
-                counter + 200,
-                powerProfile
-              )
+            console.log(
+              `👉👉👉👉👉👉👉👉👉 Terminal ID: ${terminalId}, Counter: ${counter}`
             );
+            const powerPacket = jt808CreatePowerProfilePacket(
+              terminalId,
+              counter + 200,
+              powerProfile
+            );
+            console.log(`Power Packet: ${powerPacket.toString("hex")}`);
+            (result.response as Buffer[]).push(powerPacket);
 
             newConnection = false;
           }

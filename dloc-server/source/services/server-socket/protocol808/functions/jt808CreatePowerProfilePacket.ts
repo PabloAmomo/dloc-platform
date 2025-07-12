@@ -16,7 +16,13 @@ function jt808CreatePowerProfilePacket(
   return jt808CreateTemporaryLocationTrackingPacket(
     terminalId,
     counter,
-    parseInt(uploadSec),
+    20,
     300 * 1.5)
+
+  //return jt808CreateTemporaryLocationTrackingPacket(
+  //  terminalId,
+  //  counter,
+  //  parseInt(uploadSec),
+  //  300 * 1.5)
 }
 export default jt808CreatePowerProfilePacket;
