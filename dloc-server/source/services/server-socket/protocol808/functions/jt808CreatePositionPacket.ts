@@ -15,7 +15,7 @@ const jt808CreatePositionPacket = (imei: string, remoteAddress: string, location
       lng: locationPacket.lng,
       speed: locationPacket.speed,
       directionAngle: locationPacket.direction,
-      gsmSignal: locationPacket.gsmSignal ?? 0,
+      gsmSignal: locationPacket.gsmSignal ?? -1,
       batteryLevel: locationPacket.batteryLevel ?? -1,
       accuracy: GpsAccuracy.gps, 
       activity,
