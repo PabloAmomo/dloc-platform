@@ -17,6 +17,6 @@ function jt808CreatePowerProfilePacket(
     terminalId,
     counter,
     parseInt(uploadSec),
-    300 * 1.5)
+    600)
 }
 export default jt808CreatePowerProfilePacket;

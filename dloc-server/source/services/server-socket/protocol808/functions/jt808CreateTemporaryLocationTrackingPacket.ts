@@ -9,10 +9,8 @@ const jt808CreateTemporaryLocationTrackingPacket = (terminalId : string, counter
   const bufDuration = Buffer.alloc(4);
   bufDuration.writeUInt32BE(durationSec);
 
-  const paramter1 = Buffer.concat([bufInterval, bufDuration]).toString('hex'); // 00 05 00 00 00 3C
-  // const paramter1 = "00 05 00 00 00 3C".replace(/ /g, ""); 
+  const paramter1 = Buffer.concat([bufInterval, bufDuration]).toString('hex'); 
 
-  console.log(`-----------> check Location Tracking Controls: ${paramter1}`);
   const packet =  jt808CreateFrameData({
     msgType: 0x8202,
     terminalId: Buffer.from(terminalId, "hex"),
