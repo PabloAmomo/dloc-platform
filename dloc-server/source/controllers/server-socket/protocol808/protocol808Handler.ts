@@ -139,7 +139,6 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
           /** Send */
           for (const response of result.response) {
             conn.write(jt808FrameEncode(response as Buffer));
-            conn.write("\n");
             conn.write(Buffer.alloc(0)); 
           }
         })
