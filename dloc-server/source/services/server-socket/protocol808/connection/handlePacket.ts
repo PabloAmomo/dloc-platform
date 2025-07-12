@@ -327,7 +327,7 @@ const handlePacket: HandlePacket = async (
   else if (jt808Packet.header.msgType === 0x0107) {
     const terminalAttributes = jt808ParseTerminalAttributes(jt808Packet.body);
 
-    const terminalData = `[Manufacturer ${terminalAttributes.manufacturerId}] ${terminalAttributes.terminalModel} - simIccid: ${terminalAttributes.simIccid}`;
+    const terminalData = `${terminalAttributes.manufacturerId} Model ${terminalAttributes.terminalModel} - SimIccid ${terminalAttributes.simIccid}`;
     printMessage(
       `[${imeiTemp}] (${remoteAddress}) 👉 Terminal attributtes: ${terminalData}`
     );

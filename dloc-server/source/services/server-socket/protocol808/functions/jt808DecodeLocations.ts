@@ -78,9 +78,6 @@ const jt808DecodeLocations = (body: Buffer, multiLocations: boolean) : {
     });
   }
 
-  console.log(`Packet count: ${count}`);
-  console.log(`locations: ${JSON.stringify(locations, null, 2)}`);
-
   return {
     count,
     locations,

@@ -34,8 +34,6 @@ const jt808DecodeLocationReport = (data: Buffer): Jt808LocationPacket => {
     time,
   };
 
-  console.log(`Record: ${JSON.stringify(response, null, 2)}`);
-
   return response;
 };
 
