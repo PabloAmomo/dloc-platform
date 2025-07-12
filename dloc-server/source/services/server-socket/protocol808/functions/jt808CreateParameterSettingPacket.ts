@@ -4,7 +4,7 @@ const jt808CreateParameterSettingPacket = (terminalId : string, counter : number
 
   // 
   const parametersCount = "01"; 
-  const paramter1 = "0001 02 001E".replace(/ /g, ""); 
+  const paramter1 = "0001 02 0010"; 
 
   let paramList = parametersCount + paramter1;
 

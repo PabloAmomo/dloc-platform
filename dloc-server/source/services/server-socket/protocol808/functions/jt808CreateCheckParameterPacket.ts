@@ -2,8 +2,8 @@ import jt808CreateFrameData from "./jt808CreateFrameData";
 
 const jt808CreateCheckParameterPacket = (terminalId : string, counter : number ) : Buffer => {
 
-  const parametersCount = "03"; 
-  const paramter1 = "000100130018".replace(/ /g, ""); 
+  const parametersCount = "02"; 
+  const paramter1 = "0001 0002"; 
 
   let paramList = parametersCount + paramter1;
 
