@@ -24,6 +24,7 @@ import jt808PersistLocation from "../functions/jt808PersistLocation";
 import jt808CreateParameterSettingPacket from "../functions/jt808CreateParameterSettingPacket";
 import jt808ParseCommonResultFromTerminal from "../functions/jt808ParseCommonResultFromTerminal";
 import jt808CreateCheckParameterPacket from "../functions/jt808CreateCheckParameterPacket";
+import jt808CreateTemporaryLocationTrackingPacket from "../functions/jt808CreateTemporaryLocationTrackingPacket";
 
 const noImei: string = "no imei received";
 
@@ -94,6 +95,13 @@ const handlePacket: HandlePacket = async (
         jt808Packet.header.msgSerialNumber,
         jt808Packet.header.msgType,
         "00"
+      )
+    );
+
+    (response.response as Buffer[]).push(
+      jt808CreateTemporaryLocationTrackingPacket(
+        jt808Packet.header.terminalId,
+        counter + 100
       )
     );
 
@@ -264,7 +272,6 @@ const handlePacket: HandlePacket = async (
   }
 
   // ---------------------------------------
-  // Terminal general response（0x0001）-> NO RESPONSE NEEDED
   // Terminal heartbeat（0x0002）
   // Terminal Logout（0x0003）
   // Sleep notification（0x0105）
@@ -274,7 +281,7 @@ const handlePacket: HandlePacket = async (
   //     response 0x8001
   // ---------------------------------------
   else if (
-    [0x0001, 0x0002, 0x0003, 0x0105, 0x0107, 0x0108, 0x1007].includes(
+    [0x0002, 0x0003, 0x0105, 0x0107, 0x0108, 0x1007].includes(
       jt808Packet.header.msgType
     )
   ) {
@@ -296,15 +303,7 @@ const handlePacket: HandlePacket = async (
     updateLastActivity = true;
     let messageText = "";
 
-    if (jt808Packet.header.msgType === 0x0001) {
-      messageText = "Terminal general response";
-      const reponseCommon = jt808ParseCommonResultFromTerminal(
-        jt808Packet.body
-      );
-      printMessage(
-        `[${imeiTemp}] (${remoteAddress}) 🧑🏽‍💻 Response from terminal to message ${reponseCommon.responseToMsgSerialNumber} -> result: ${reponseCommon.result} (${reponseCommon.msgSerialNumber})`
-      );
-    } else if (jt808Packet.header.msgType === 0x0002) {
+    if (jt808Packet.header.msgType === 0x0002) {
       messageText = "Terminal heartbeat";
     } else if (jt808Packet.header.msgType === 0x0003) {
       // TODO: Desconectar el dispositivo (conn.close)
@@ -328,6 +327,21 @@ const handlePacket: HandlePacket = async (
       `[${imeiTemp}] (${remoteAddress}) ✅ ${messageText} -> body ${
         bodyString !== "" ? bodyString : "(empty)"
       }`
+    );
+  }
+
+  // ---------------------------------------
+  // Terminal general response（0x0001）
+  // ---------------------------------------
+  else if ([0x0001].includes(jt808Packet.header.msgType)) {
+    response.imei = padNumberLeft(jt808Packet.header.terminalId, 15, "0");
+    imeiTemp = getNormalizedIMEI(response.imei);
+
+    updateLastActivity = true;
+
+    const reponseCommon = jt808ParseCommonResultFromTerminal(jt808Packet.body);
+    printMessage(
+      `[${imeiTemp}] (${remoteAddress}) 🧑🏽‍💻 Response from terminal to message ${reponseCommon.responseToMsgSerialNumber} -> result: ${reponseCommon.result} (${reponseCommon.msgSerialNumber})`
     );
   }
 
