@@ -16,13 +16,9 @@ async function getPowerProfile(
   messagePrefix: string
 ): Promise<{ powerProfile: PowerProfileType; lastPowerProfileChange: number }> {
   let powerProfile = PowerProfileType.AUTOMATIC_FULL;
-    console.log(`--> 1 lastPowerProfileChange: ${lastPowerProfileChange}`);
-
-
   let newLastPowerProfileChange = lastPowerProfileChange === 0 ? Date.now() : lastPowerProfileChange;
 
-  console.log(`--> 2 lastPowerProfileChange: ${lastPowerProfileChange} newLastPowerProfileChange: ${newLastPowerProfileChange} ${Date.now() - lastPowerProfileChange > 1000 * MOVEMENTS_CONTROL_SECONDS}`);
-
+  // TODO: al arrancar siempre pasar a un perfil automatico full
 
   try {
     const powerPrf = await persistence.getPowerProfile(imei);
