@@ -16,6 +16,8 @@ const handler = async ({
   /** results */
   let result: HandlePacketResult = {  imei, error: "", response: [] };
 
+  // TODO: Unificar handlers para protocolo 808 y 1903
+  
   const dataString: string = convertStringToHexString(data);
 
   let inPacket: Buffer | null = jt808FrameDecode(data as Buffer);

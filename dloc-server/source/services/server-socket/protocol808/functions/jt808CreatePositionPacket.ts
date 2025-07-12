@@ -2,14 +2,14 @@ import { GpsAccuracy } from '../../../../models/GpsAccuracy';
 import { PositionPacket } from '../../../../models/PositionPacket';
 import { printMessage } from '../../../../functions/printMessage';
 import { Jt808LocationPacket } from '../models/Jt808LocationPacket';
-import parseLocalDateToUtcDateTime from '../../../../functions/parseLocalDateToUtcDateTime';
+import parseDateTimeToUtcDateTime from '../../../../functions/parseDateTimeToUtcDateTime';
 
 const jt808CreatePositionPacket = (imei: string, remoteAddress: string, locationPacket: Jt808LocationPacket, activity: string): PositionPacket | undefined => {
   try {
     return {
       imei,
       remoteAddress,
-      dateTimeUtc: parseLocalDateToUtcDateTime(locationPacket.time),
+      dateTimeUtc: parseDateTimeToUtcDateTime(locationPacket.time),
       valid: locationPacket.lat !== 0 && locationPacket.lng !== 0,
       lat: locationPacket.lat,
       lng: locationPacket.lng,

@@ -30,6 +30,8 @@ const HTTP_200 = `${[
   "Connection: keep-alive",
 ].join("\n")}\n\n`;
 
+// TODO: Unificar handlers para protocolo 808 y 1903 (Funcion protocolXXXHandler.ts)
+
 const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
   const remoteAddress: string = getRemoteAddress(conn);
   var imei: string = "";

@@ -1,5 +1,7 @@
 import { Jt808TerminalAttributes } from "../models/Jt808TerminalAttributes";
 
+// TODO: Arreglar que no funciona
+
 const jt808ParseTerminalAttributes = (
   body: Buffer
 ): Jt808TerminalAttributes => {

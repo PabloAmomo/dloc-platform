@@ -39,7 +39,7 @@ const jt808CreateFrameData = (options: {
     offset += body.length;
   }
 
-  // Calcular checksum (XOR de todos los bytes excepto el checksum mismo)
+  // Calculate checksum excluding the first byte (delimiter) and the last byte (checksum itself)
   const checksum = buffer.slice(1).reduce((sum, byte) => sum ^ byte, 0);
 
   buffer.writeUInt8(checksum, offset);
