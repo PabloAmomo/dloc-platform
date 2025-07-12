@@ -35,7 +35,6 @@ const handlePacket: HandlePacket = async (
     data,
     persistence,
     counter,
-  
   } = props;
 
   const dataBuffer: Buffer = data as Buffer;
@@ -264,7 +263,7 @@ const handlePacket: HandlePacket = async (
   }
 
   // ---------------------------------------
-  // Terminal general response（0x0001）
+  // Terminal general response（0x0001）-> NO RESPONSE NEEDED
   // Terminal heartbeat（0x0002）
   // Terminal Logout（0x0003）
   // Sleep notification（0x0105）
@@ -277,15 +276,17 @@ const handlePacket: HandlePacket = async (
       jt808Packet.header.msgType
     )
   ) {
-    (response.response as Buffer[]).push(
-      jt808CreateGeneralResponse(
-        jt808Packet.header.terminalId,
-        counter,
-        jt808Packet.header.msgSerialNumber,
-        jt808Packet.header.msgType,
-        "00"
-      )
-    );
+    if (jt808Packet.header.msgType !== 0x0001) {
+      (response.response as Buffer[]).push(
+        jt808CreateGeneralResponse(
+          jt808Packet.header.terminalId,
+          counter,
+          jt808Packet.header.msgSerialNumber,
+          jt808Packet.header.msgType,
+          "00"
+        )
+      );
+    }
 
     response.imei = padNumberLeft(jt808Packet.header.terminalId, 15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
@@ -317,7 +318,9 @@ const handlePacket: HandlePacket = async (
     }
 
     printMessage(
-      `[${imeiTemp}] (${remoteAddress}) ✅ ${messageText} -> body ${bodyString}`
+      `[${imeiTemp}] (${remoteAddress}) ✅ ${messageText} -> body ${
+        bodyString !== "" ? bodyString : "(empty)"
+      }`
     );
   }
 
