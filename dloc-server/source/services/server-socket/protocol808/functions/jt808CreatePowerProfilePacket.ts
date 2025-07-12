@@ -13,12 +13,6 @@ function jt808CreatePowerProfilePacket(
     powerProfileType
   );
 
-  //return jt808CreateTemporaryLocationTrackingPacket(
-  //  terminalId,
-  //  counter,
-  //  20,
-  //  300 * 1.5)
-
   return jt808CreateTemporaryLocationTrackingPacket(
     terminalId,
     counter,
