@@ -127,24 +127,23 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
                 `${prefix} ⚡️ power profile changed from [${imeiData?.powerProfile}] to [${powerProfile}]`
               );
 
+              // TODO: Cuando enviemmos el heartbeat, agregar aquí tambien el dato de heartbeat
             printMessage(
-              `${prefix} 📡 send HeartBeat [${heartBeatSec} sec] - Leds [${ledState}] - Upload Interval [${uploadSec} sec] - forceUpdateLoc [${
-                forceReportLocInMs / 1000
-              } sec]`
+              `${prefix} 📡 send Upload Interval [${uploadSec} sec]`
             );
 
             const terminalId = imei.slice(-12);
-            console.log(
-              `👉👉👉👉👉👉👉👉👉 Terminal ID: ${terminalId}, Counter: ${counter}`
-            );
             const powerPacket = jt808CreatePowerProfilePacket(
               terminalId,
               counter + 200,
               powerProfile
             );
-            console.log(`Power Packet: ${powerPacket.toString("hex")}`);
+            console.log(`${prefix} 🔋 Power Packet: ${convertStringToHexString(powerPacket)}`);
             (result.response as Buffer[]).push(powerPacket);
 
+            // TODO: agregar el paquete que configure el heartbeat
+
+            
             newConnection = false;
           }
 

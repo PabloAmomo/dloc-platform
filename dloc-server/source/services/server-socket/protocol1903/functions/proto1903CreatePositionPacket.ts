@@ -16,7 +16,7 @@ const proto1903CreatePositionPacket = (imei: string, remoteAddress: string, valu
       lng: parseLatOrLng(values[6], values[7] as Direction),
       speed: parseInt(values[8] ?? '0'),
       directionAngle: parseInt(values[10] ?? '0'),
-      gsmSignal: parseInt(values[11] ?? '0'),
+      gsmSignal: parseInt(values[11] ?? '-1'),
       batteryLevel: parseInt(values[13] ?? '-1'),
       accuracy,
       activity,

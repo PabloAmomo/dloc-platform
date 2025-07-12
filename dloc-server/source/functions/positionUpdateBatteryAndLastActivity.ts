@@ -17,7 +17,7 @@ async function positionUpdateBatteryAndLastActivity(
         if (result.error) {
           message = result.error.message;
           printMessage(
-            `[${imei}] (${remoteAddress}) error updating battery level [Only battery Level] (addBatteryLevel) [${
+            `[${imei}] (${remoteAddress}) ❌ error updating battery level [Only battery Level] (addBatteryLevel) [${
               result.error?.message || result.error
             }]`
           );
