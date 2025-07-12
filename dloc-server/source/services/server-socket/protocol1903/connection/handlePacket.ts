@@ -1,22 +1,22 @@
-import { createPositionPacket } from "../../../../functions/createPositionPacket";
 import { getUtcDateTime } from "../../../../functions/getUtcDateTime";
 import { HandlePacket } from "../../../../models/HandlePacket";
 import { HandlePacketProps } from "../../../../models/HandlePacketProps";
 import { HandlePacketResult } from "../../../../models/HandlePacketResult";
 import { PositionPacket } from "../../../../models/PositionPacket";
 import { printMessage } from "../../../../functions/printMessage";
-import { REGEX_PACKETS } from "../../../../functions/packetParseREGEX";
 import { GpsAccuracy } from "../../../../models/GpsAccuracy";
 import getValuesFromStringByRegexs from "../../../../functions/getValuesFromStringByRegex";
 import discardData from "../../../../functions/discardData";
 import getLbsPosition from "../../../../functions/getLbsPosition";
 import positionUpdateLastActivityAndAddHistory from "../../../../functions/positionUpdateLastActivityAndAddHistory";
 import positionAddPositionAndUpdateDevice from "../../../../functions/positionAddPositionAndUpdateDevice";
-import positionUpdateBattertAndLastActivity from "../../../../functions/positionUpdateBatteryAndLastActivity";
+import positionUpdateBatteryAndLastActivity from "../../../../functions/positionUpdateBatteryAndLastActivity";
 import {
   getNormalizedIMEI,
   NO_IMEI_STRING,
 } from "../../../../functions/getNormalizedIMEI";
+import proto1903CreatePositionPacket from "../functions/proto1903CreatePositionPacket";
+import PROTO1903_REGEX_PACKETS from "../functions/proto1903PacketParseREGEX";
 
 const noImei: string = "no imei received";
 
@@ -60,7 +60,7 @@ const handlePacket: HandlePacket = async (
     /** Process GPS data */
     let { values, regexIndex } = getValuesFromStringByRegexs(
       dataString,
-      REGEX_PACKETS
+      PROTO1903_REGEX_PACKETS
     );
     if (regexIndex != -1)
       printMessage(
@@ -82,7 +82,7 @@ const handlePacket: HandlePacket = async (
       );
 
     /** Create position packet and persist */
-    const positionPacket: PositionPacket | undefined = createPositionPacket(
+    const positionPacket: PositionPacket | undefined = proto1903CreatePositionPacket(
       response.imei,
       remoteAddress,
       values,
@@ -235,7 +235,7 @@ const handlePacket: HandlePacket = async (
         const batteryLevel: number = parseInt(
           dataString.substring(14, 17) ?? "-1"
         );
-        await positionUpdateBattertAndLastActivity(
+        await positionUpdateBatteryAndLastActivity(
           imeiTemp,
           remoteAddress,
           persistence,

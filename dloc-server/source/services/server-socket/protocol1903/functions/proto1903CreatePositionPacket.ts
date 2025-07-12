@@ -1,11 +1,11 @@
-import { Direction } from '../models/Direction';
-import { GpsAccuracy } from '../models/GpsAccuracy';
-import { PositionPacket } from '../models/PositionPacket';
-import { parseLatOrLng } from './parseLatOrLng';
-import { parseUtcDateTime } from './parseUtcDateTime';
-import { printMessage } from './printMessage';
+import { Direction } from '../../../../models/Direction';
+import { GpsAccuracy } from '../../../../models/GpsAccuracy';
+import { PositionPacket } from '../../../../models/PositionPacket';
+import { parseLatOrLng } from '../../../../functions/parseLatOrLng';
+import { parseUtcDateTime } from '../../../../functions/parseUtcDateTime';
+import { printMessage } from '../../../../functions/printMessage';
 
-const createPositionPacket = (imei: string, remoteAddress: string, values: string[], accuracy: GpsAccuracy, activity: string): PositionPacket | undefined => {
+const proto1903CreatePositionPacket = (imei: string, remoteAddress: string, values: string[], accuracy: GpsAccuracy, activity: string): PositionPacket | undefined => {
   try {
     return {
       imei,
@@ -47,4 +47,4 @@ const createPositionPacket = (imei: string, remoteAddress: string, values: strin
   }
 };
 
-export { createPositionPacket };
+export default proto1903CreatePositionPacket;

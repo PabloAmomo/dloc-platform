@@ -2,7 +2,7 @@ import { PersistenceResult } from "../infraestucture/models/PersistenceResult";
 import { Persistence } from "../models/Persistence";
 import { printMessage } from "./printMessage";
 
-async function positionUpdateBattertAndLastActivity(
+async function positionUpdateBatteryAndLastActivity(
   imei: string,
   remoteAddress: string,
   persistence: Persistence,
@@ -43,4 +43,4 @@ async function positionUpdateBattertAndLastActivity(
   return message;
 }
 
-export default positionUpdateBattertAndLastActivity;
+export default positionUpdateBatteryAndLastActivity;

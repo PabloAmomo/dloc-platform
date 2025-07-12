@@ -1,19 +1,15 @@
 import { health } from "../../../../models/Persistence";
-import { createPositionPacket } from "../../../../functions/createPositionPacket";
 import { getUtcDateTime } from "../../../../functions/getUtcDateTime";
 import { HandlePacket } from "../../../../models/HandlePacket";
 import { HandlePacketProps } from "../../../../models/HandlePacketProps";
 import { HandlePacketResult } from "../../../../models/HandlePacketResult";
 import { PositionPacket } from "../../../../models/PositionPacket";
 import { printMessage } from "../../../../functions/printMessage";
-import { REGEX_PACKETS } from "../../../../functions/packetParseREGEX";
 import { GpsAccuracy } from "../../../../models/GpsAccuracy";
-import getValuesFromStringByRegexs from "../../../../functions/getValuesFromStringByRegex";
 import discardData from "../../../../functions/discardData";
-import getLbsPosition from "../../../../functions/getLbsPosition";
 import positionUpdateLastActivityAndAddHistory from "../../../../functions/positionUpdateLastActivityAndAddHistory";
 import positionAddPositionAndUpdateDevice from "../../../../functions/positionAddPositionAndUpdateDevice";
-import positionUpdateBattertAndLastActivity from "../../../../functions/positionUpdateBatteryAndLastActivity";
+import positionUpdateBatteryAndLastActivity from "../../../../functions/positionUpdateBatteryAndLastActivity";
 import {
   getNormalizedIMEI,
   NO_IMEI_STRING,
@@ -66,24 +62,24 @@ const handlePacket: HandlePacket = async (
     `[${imeiTemp}] (${remoteAddress}) 📡 PACKET RECEIVED oOo ----> [${dataString}].`
   );
 
-  let j808Packet = jt808GetFrameData(dataBuffer);
+  let jt808Packet = jt808GetFrameData(dataBuffer);
 
   // ---------------------------------------
   // Terminal registration（0x0100)
   //     response 0x8100
   // ---------------------------------------
-  if (j808Packet.header.msgType === 0x0100) {
+  if (jt808Packet.header.msgType === 0x0100) {
     (response.response as Buffer[]).push(
       jt808CreateGeneralResponse(
-        j808Packet.header.terminalId,
+        jt808Packet.header.terminalId,
         counter,
-        j808Packet.header.msgSerialNumber,
-        j808Packet.header.msgType,
-        "00" + j808Packet.header.terminalId
+        jt808Packet.header.msgSerialNumber,
+        jt808Packet.header.msgType,
+        "00" + jt808Packet.header.terminalId
       )
     );
 
-    response.imei = padNumberLeft(j808Packet.header.terminalId, 15, "0");
+    response.imei = padNumberLeft(jt808Packet.header.terminalId, 15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
 
     updateLastActivity = true;
@@ -96,34 +92,34 @@ const handlePacket: HandlePacket = async (
   // Terminal authentication（0x0102)
   //     response 0x8001
   // ---------------------------------------
-  else if (j808Packet.header.msgType === 0x0102) {
+  else if (jt808Packet.header.msgType === 0x0102) {
     (response.response as Buffer[]).push(
       jt808CreateGeneralResponse(
-        j808Packet.header.terminalId,
+        jt808Packet.header.terminalId,
         counter,
-        j808Packet.header.msgSerialNumber,
-        j808Packet.header.msgType,
+        jt808Packet.header.msgSerialNumber,
+        jt808Packet.header.msgType,
         "00"
       )
     );
 
     (response.response as Buffer[]).push(
       jt808CreateQueryLocationMessage(
-        j808Packet.header.terminalId,
+        jt808Packet.header.terminalId,
         counter + 100
       )
     );
 
     (response.response as Buffer[]).push(
       jt808CreateTerminalAttributesMessage(
-        j808Packet.header.terminalId,
+        jt808Packet.header.terminalId,
         counter + 101
       )
     );
 
     // TODO: Enviar configuración inicial al dispositivo
 
-    response.imei = padNumberLeft(j808Packet.header.terminalId, 15, "0");
+    response.imei = padNumberLeft(jt808Packet.header.terminalId, 15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
 
     updateLastActivity = true;
@@ -138,17 +134,21 @@ const handlePacket: HandlePacket = async (
   //     response 0x8001
   // ---------------------------------------
   else if (
-    j808Packet.header.msgType === 0x0704 ||
-    j808Packet.header.msgType === 0x0201
+    jt808Packet.header.msgType === 0x0704 ||
+    jt808Packet.header.msgType === 0x0201
   ) {
     const locations = jt808DecodeLocations(
-      j808Packet.body,
-      j808Packet.header.msgType === 0x0704
+      jt808Packet.body,
+      jt808Packet.header.msgType === 0x0704
     );
 
     // TODO: Tratar las locations
     if (locations.count > 0) {
       for (const location of locations.locations) {
+        if (location.lat !== 0 && location.lon !== 0) {
+        } 
+
+
         //const positionPacket: PositionPacket | undefined = createPositionPacket(
         //  response.imei,
         //  remoteAddress,
@@ -156,29 +156,55 @@ const handlePacket: HandlePacket = async (
         //  GpsAccuracy.unknown,
         //  "{}"
         //);
+         //  if (positionPacket.valid) {
+  //    let oldPacket: boolean = false;
+  //    const oldPacketMessage = "old packet";
+  //
+  //    await positionAddPositionAndUpdateDevice(
+  //      imeiTemp,
+  //      remoteAddress,
+  //      positionPacket,
+  //      persistence,
+  //      () => {},
+  //      (error) => {
+  //        oldPacket = error?.message === "old packet";
+  //      }
+  //    );
+  //
+  //    if (oldPacket)
+  //      await discardData(
+  //        oldPacketMessage,
+  //        true,
+  //        persistence,
+  //        imeiTemp,
+  //        remoteAddress,
+  //        data,
+  //        response
+  //      );
+  //  }
       }
     }
 
     (response.response as Buffer[]).push(
       jt808CreateGeneralResponse(
-        j808Packet.header.terminalId,
+        jt808Packet.header.terminalId,
         counter,
-        j808Packet.header.msgSerialNumber,
-        j808Packet.header.msgType,
+        jt808Packet.header.msgSerialNumber,
+        jt808Packet.header.msgType,
         "00"
       )
     );
 
-    response.imei = padNumberLeft(j808Packet.header.terminalId, 15, "0");
+    response.imei = padNumberLeft(jt808Packet.header.terminalId, 15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
 
     updateLastActivity = true;
-    if (j808Packet.header.msgType === 0x0704) {
+    if (jt808Packet.header.msgType === 0x0704) {
       printMessage(
         `[${imeiTemp}] (${remoteAddress}) ✅ Positioning data batch upload successful`
       );
     }
-    if (j808Packet.header.msgType === 0x0201) {
+    if (jt808Packet.header.msgType === 0x0201) {
       printMessage(
         `[${imeiTemp}] (${remoteAddress}) ✅ Location information query response successful`
       );
@@ -189,22 +215,22 @@ const handlePacket: HandlePacket = async (
   // Location report（0x0200）
   //     response 0x8001
   // ---------------------------------------
-  else if (j808Packet.header.msgType === 0x0200) {
-    const location = jt808DecodeLocationReport(j808Packet.body);
+  else if (jt808Packet.header.msgType === 0x0200) {
+    const location = jt808DecodeLocationReport(jt808Packet.body);
 
     // TODO: Tratar las location
 
     (response.response as Buffer[]).push(
       jt808CreateGeneralResponse(
-        j808Packet.header.terminalId,
+        jt808Packet.header.terminalId,
         counter,
-        j808Packet.header.msgSerialNumber,
-        j808Packet.header.msgType,
+        jt808Packet.header.msgSerialNumber,
+        jt808Packet.header.msgType,
         "00"
       )
     );
 
-    response.imei = padNumberLeft(j808Packet.header.terminalId, 15, "0");
+    response.imei = padNumberLeft(jt808Packet.header.terminalId, 15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
 
     updateLastActivity = true;
@@ -217,24 +243,24 @@ const handlePacket: HandlePacket = async (
   // Request synchronization time（0x0109）
   //     response 0x8109 (With time sync body)
   // ---------------------------------------
-  else if (j808Packet.header.msgType === 0x0109) {
+  else if (jt808Packet.header.msgType === 0x0109) {
     (response.response as Buffer[]).push(
       jt808CreateFrameData({
         msgType: 0x8109,
-        terminalId: Buffer.from(j808Packet.header.terminalId, "hex"),
+        terminalId: Buffer.from(jt808Packet.header.terminalId, "hex"),
         msgSerialNumber: counter,
         body: Buffer.from(
           byteArrayToHexString(
-            numberToHexByteArray(j808Packet.header.msgSerialNumber)
+            numberToHexByteArray(jt808Packet.header.msgSerialNumber)
           ) +
-            toHexWith(j808Packet.header.msgType, 4) +
+            toHexWith(jt808Packet.header.msgType, 4) +
             jt808TimeSyncBody().toString("hex"),
           "hex"
         ),
       })
     );
 
-    response.imei = padNumberLeft(j808Packet.header.terminalId, 15, "0");
+    response.imei = padNumberLeft(jt808Packet.header.terminalId, 15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
 
     updateLastActivity = true;
@@ -247,21 +273,21 @@ const handlePacket: HandlePacket = async (
   // Battery level update when sleep（0x0210）
   //     response 0x8001
   // ---------------------------------------
-  else if (j808Packet.header.msgType === 0x0210) {
-    const batteryPercent: number = j808Packet.body.readUInt8(0);
+  else if (jt808Packet.header.msgType === 0x0210) {
+    const batteryPercent: number = jt808Packet.body.readUInt8(0);
     const date: string =
       "20" +
-      j808Packet.body.readUInt8(1) +
+      jt808Packet.body.readUInt8(1) +
       "-" +
-      j808Packet.body.readUInt8(2) +
+      jt808Packet.body.readUInt8(2) +
       "-" +
-      j808Packet.body.readUInt8(3);
+      jt808Packet.body.readUInt8(3);
     const time: string =
-      j808Packet.body.readUInt8(4) +
+      jt808Packet.body.readUInt8(4) +
       ":" +
-      j808Packet.body.readUInt8(5) +
+      jt808Packet.body.readUInt8(5) +
       ":" +
-      j808Packet.body.readUInt8(6);
+      jt808Packet.body.readUInt8(6);
 
     printMessage(
       `[${imeiTemp}] (${remoteAddress}) ✅ Battery level: ${batteryPercent}% at ${date} ${time}`
@@ -269,18 +295,18 @@ const handlePacket: HandlePacket = async (
 
     (response.response as Buffer[]).push(
       jt808CreateGeneralResponse(
-        j808Packet.header.terminalId,
+        jt808Packet.header.terminalId,
         counter,
-        j808Packet.header.msgSerialNumber,
-        j808Packet.header.msgType,
+        jt808Packet.header.msgSerialNumber,
+        jt808Packet.header.msgType,
         "00"
       )
     );
 
-    response.imei = padNumberLeft(j808Packet.header.terminalId, 15, "0");
+    response.imei = padNumberLeft(jt808Packet.header.terminalId, 15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
 
-    await positionUpdateBattertAndLastActivity(
+    await positionUpdateBatteryAndLastActivity(
       imeiTemp,
       remoteAddress,
       persistence,
@@ -301,42 +327,42 @@ const handlePacket: HandlePacket = async (
   //     response 0x8001
   // ---------------------------------------
   else if (
-    [0x0002, 0x0003, 0x0105, 0x0108, 0x1007].includes(j808Packet.header.msgType)
+    [0x0002, 0x0003, 0x0105, 0x0108, 0x1007].includes(jt808Packet.header.msgType)
   ) {
     (response.response as Buffer[]).push(
       jt808CreateGeneralResponse(
-        j808Packet.header.terminalId,
+        jt808Packet.header.terminalId,
         counter,
-        j808Packet.header.msgSerialNumber,
-        j808Packet.header.msgType,
+        jt808Packet.header.msgSerialNumber,
+        jt808Packet.header.msgType,
         "00"
       )
     );
 
-    response.imei = padNumberLeft(j808Packet.header.terminalId, 15, "0");
+    response.imei = padNumberLeft(jt808Packet.header.terminalId, 15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
 
-    const bodyString = j808Packet.body.toString("hex");
+    const bodyString = jt808Packet.body.toString("hex");
 
     updateLastActivity = true;
     let messageText = "";
 
-    if (j808Packet.header.msgType === 0x0002) {
+    if (jt808Packet.header.msgType === 0x0002) {
       (response.response as Buffer[]).push(
         jt808CreateQueryLocationMessage(
-          j808Packet.header.terminalId,
+          jt808Packet.header.terminalId,
           counter + 100
         )
       );
       messageText = "Terminal heartbeat";
-    } else if (j808Packet.header.msgType === 0x0003) {
+    } else if (jt808Packet.header.msgType === 0x0003) {
       // TODO: Desconectar el dispositivo (conn.close)
       messageText = "Terminal Logout";
-    } else if (j808Packet.header.msgType === 0x0105) {
+    } else if (jt808Packet.header.msgType === 0x0105) {
       messageText = "Sleep notification";
-    } else if (j808Packet.header.msgType === 0x0108) {
+    } else if (jt808Packet.header.msgType === 0x0108) {
       messageText = "Sleep wake up notification";
-    } else if (j808Packet.header.msgType === 0x1007) {
+    } else if (jt808Packet.header.msgType === 0x1007) {
       messageText = "Unknown command 10 07";
     }
 
@@ -349,26 +375,26 @@ const handlePacket: HandlePacket = async (
   // Check terminal attribute response（0x0107）
   //     response 0x8001
   // ---------------------------------------
-  else if (j808Packet.header.msgType === 0x0107) {
-    const terminalAttributes = jt808ParseTerminalAttributes(j808Packet.body);
+  else if (jt808Packet.header.msgType === 0x0107) {
+    const terminalAttributes = jt808ParseTerminalAttributes(jt808Packet.body);
 
     // TODO: Tratar las terminalAttributes
     console.log(`Record: ${JSON.stringify(terminalAttributes, null, 2)}`);
 
     (response.response as Buffer[]).push(
       jt808CreateGeneralResponse(
-        j808Packet.header.terminalId,
+        jt808Packet.header.terminalId,
         counter,
-        j808Packet.header.msgSerialNumber,
-        j808Packet.header.msgType,
+        jt808Packet.header.msgSerialNumber,
+        jt808Packet.header.msgType,
         "00"
       )
     );
 
-    response.imei = padNumberLeft(j808Packet.header.terminalId, 15, "0");
+    response.imei = padNumberLeft(jt808Packet.header.terminalId, 15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
 
-    const bodyString = j808Packet.body.toString("hex");
+    const bodyString = jt808Packet.body.toString("hex");
 
     updateLastActivity = true;
     printMessage(
@@ -446,42 +472,10 @@ const handlePacket: HandlePacket = async (
   //    if ("error" in lbsGetResponse && lbsGetResponse.error)
   //      return lbsGetResponse;
   //
-  //    /** Process LBS data */
-  //    if ("location" in lbsGetResponse) {
-  //      positionPacket.lat = lbsGetResponse.location.lat;
-  //      positionPacket.lng = lbsGetResponse.location.lng;
-  //      positionPacket.valid = true;
-  //      positionPacket.accuracy = GpsAccuracy.lbs;
-  //    }
-  //  }
+
   //
   //  /** Add position and update device */
-  //  if (positionPacket.valid) {
-  //    let oldPacket: boolean = false;
-  //    const oldPacketMessage = "old packet";
-  //
-  //    await positionAddPositionAndUpdateDevice(
-  //      imeiTemp,
-  //      remoteAddress,
-  //      positionPacket,
-  //      persistence,
-  //      () => {},
-  //      (error) => {
-  //        oldPacket = error?.message === "old packet";
-  //      }
-  //    );
-  //
-  //    if (oldPacket)
-  //      await discardData(
-  //        oldPacketMessage,
-  //        true,
-  //        persistence,
-  //        imeiTemp,
-  //        remoteAddress,
-  //        data,
-  //        response
-  //      );
-  //  }
+ 
   //
   //  response.response = `TRVZP${data.substring(5, 7)}#`;
   //}

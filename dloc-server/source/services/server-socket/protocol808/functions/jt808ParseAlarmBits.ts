@@ -1,18 +1,6 @@
-export type J808AlarmFlags = {
-  emergency: boolean;
-  overspeed: boolean;
-  drivingMalfunction: boolean;
-  gnssAntennaDisconnected: boolean;
-  gnssAntennaShortCircuited: boolean;
-  lowBattery: boolean;
-  powerCut: boolean;
-  accumulatedOverspeed: boolean;
-  timeoutParking: boolean;
-  illegalIgnition: boolean;
-  illegalDisplacement: boolean;
-};
+import { Jt808AlarmFlags } from "../../../../models/Jt808AlarmFlags";
 
-const jt808ParseAlarmBits = (alarmInt: number): J808AlarmFlags => {
+const jt808ParseAlarmBits = (alarmInt: number): Jt808AlarmFlags => {
   return {
     emergency: (alarmInt & (1 << 0)) !== 0,
     overspeed: (alarmInt & (1 << 1)) !== 0,

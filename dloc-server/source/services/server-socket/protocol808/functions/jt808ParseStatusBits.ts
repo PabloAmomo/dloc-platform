@@ -1,17 +1,6 @@
-export type J808StatusFlags = {
-  acc: boolean;
-  positioning: boolean;
-  southLatitude: boolean;
-  westLongitude: boolean;
-  oilLineDisconnected: boolean;
-  gpsPositioning: boolean;
-  beidouPositioning: boolean;
-  glonassPositioning: boolean;
-  galileoPositioning: boolean;
-  moving: boolean;
-};
+import { Jt808StatusFlags } from "../../../../models/Jt808StatusFlags";
 
-const  jt808ParseStatusBits = (statusInt: number): J808StatusFlags => {
+const  jt808ParseStatusBits = (statusInt: number): Jt808StatusFlags => {
   return {
     acc: (statusInt & (1 << 0)) !== 0,
     positioning: (statusInt & (1 << 1)) !== 0,

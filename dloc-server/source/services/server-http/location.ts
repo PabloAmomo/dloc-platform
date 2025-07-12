@@ -1,5 +1,5 @@
 import positionAddPositionAndUpdateDevice from "../../functions/positionAddPositionAndUpdateDevice";
-import positionUpdateBattertAndLastActivity from "../../functions/positionUpdateBatteryAndLastActivity";
+import positionUpdateBatteryAndLastActivity from "../../functions/positionUpdateBatteryAndLastActivity";
 import positionUpdateLastActivityAndAddHistory from "../../functions/positionUpdateLastActivityAndAddHistory";
 import { Persistence } from "../../models/Persistence";
 import { PositionPacket } from "../../models/PositionPacket";
@@ -14,7 +14,7 @@ const location = async (
     positionPacket.lat === -999 || positionPacket.lng === -999;
 
   if (noHasPosition) {
-    message = await positionUpdateBattertAndLastActivity(
+    message = await positionUpdateBatteryAndLastActivity(
       imei,
       remoteAddress,
       persistence,

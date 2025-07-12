@@ -1,8 +1,8 @@
-import powerProfileConfigGFxx from "./powerProfileConfig";
-import { PowerProfileType } from "../enums/PowerProfileType";
-import { uniqueId } from "./uniqueId";
+import powerProfileConfigGFxx from "../../../../functions/powerProfileConfig";
+import { PowerProfileType } from "../../../../enums/PowerProfileType";
+import { uniqueId } from "../../../../functions/uniqueId";
 
-function createConfigGFxx(
+function proto1903CreateConfig(
   powerProfileType: PowerProfileType
 ): string {
   let response = "";
@@ -22,4 +22,4 @@ function createConfigGFxx(
 
   return response;
 }
-export default createConfigGFxx;
+export default proto1903CreateConfig;

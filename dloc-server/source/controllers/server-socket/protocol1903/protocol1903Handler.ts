@@ -15,7 +15,7 @@ import {
 } from "../../../infraestucture/caches/cacheIMEI";
 import { getNormalizedIMEI } from "../../../functions/getNormalizedIMEI";
 import powerProfileConfigGFxx from "../../../functions/powerProfileConfig";
-import createConfigGFxx from "../../../functions/createConfigGFxx";
+import proto1903CreateConfig from "../../../services/server-socket/protocol1903/functions/proto1903CreateConfig";
 import getPowerProfile from "../../../functions/getPowerProfile";
 
 const HTTP_200 = `${[
@@ -138,7 +138,7 @@ const protocol1903Handler = (conn: net.Socket, persistence: Persistence) => {
               } sec]`
             );
 
-            toSend += createConfigGFxx(powerProfile);
+            toSend += proto1903CreateConfig(powerProfile);
 
             newConnection = false;
           }
