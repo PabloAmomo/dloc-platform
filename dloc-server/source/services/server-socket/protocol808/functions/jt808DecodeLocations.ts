@@ -44,7 +44,7 @@ const jt808DecodeLocations = (body: Buffer, multiLocations: boolean) : {
 
     let gsmSignal = -1;
     let satellites = -1;
-    let batteryPercent = -1;
+    let batteryLevel = -1;
     let aditionalStatusInfo = Buffer.alloc(0);
     let lbsInfo = Buffer.alloc(0);
 
@@ -53,7 +53,7 @@ const jt808DecodeLocations = (body: Buffer, multiLocations: boolean) : {
     for (const block of extraData) {
       if (block.type === 0x30) gsmSignal = block.data.readUInt8(0);
       else if (block.type === 0x31) satellites = block.data.readUInt8(0);
-      else if (block.type === 0x04) batteryPercent = block.data.readUInt8(1);
+      else if (block.type === 0x04) batteryLevel = block.data.readUInt8(1);
       else if (block.type === 0xee) lbsInfo = block.data;
       else if (block.type === 0xe7) aditionalStatusInfo = block.data;
     }
@@ -71,7 +71,7 @@ const jt808DecodeLocations = (body: Buffer, multiLocations: boolean) : {
       direction,
       time,
       gsmSignal,
-      batteryPercent,
+      batteryLevel,
       satellites,
       aditionalStatusInfo,
       lbsInfo,

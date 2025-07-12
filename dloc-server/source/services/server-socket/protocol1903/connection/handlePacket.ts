@@ -345,7 +345,7 @@ const handlePacket: HandlePacket = async (
   /** */
   if (response.response.length === 0) {
     printMessage(
-      `[${imeiTemp}] (${remoteAddress}) ❌ no response to send for packet [${dataString}]`
+      `[${imeiTemp}] (${remoteAddress}) ⚠️ no response to send for packet [${dataString}]`
     );
   } else {
     for (let i = 0; i < response.response.length; i++) {

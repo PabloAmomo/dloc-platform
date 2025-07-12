@@ -1,10 +1,12 @@
 import { Jt808TerminalAttributes } from "../models/Jt808TerminalAttributes";
 
-const jt808ParseTerminalAttributes = (buf: Buffer): Jt808TerminalAttributes => {
+const jt808ParseTerminalAttributes = (
+  body: Buffer
+): Jt808TerminalAttributes => {
   let offset = 0;
 
   // 0-1: terminal type (bit flags)
-  const terminalTypeRaw = buf.readUInt16BE(offset);
+  const terminalTypeRaw = body.readUInt16BE(offset);
   offset += 2;
 
   const terminalType = {
@@ -17,53 +19,54 @@ const jt808ParseTerminalAttributes = (buf: Buffer): Jt808TerminalAttributes => {
   };
 
   // 2–6: manufacturer ID (5 bytes)
-  const manufacturerId = buf
+  const manufacturerId = body
     .subarray(offset, offset + 5)
     .toString("ascii")
     .replace(/\x00/g, "");
   offset += 5;
 
   // 7–26: terminal model (20 bytes)
-  const terminalModel = buf
+  const terminalModel = body
     .subarray(offset, offset + 20)
     .toString("ascii")
     .replace(/\x00/g, "");
   offset += 20;
 
   // 27–33: terminal ID (7 bytes)
-  const terminalId = buf
+  const terminalId = body
     .subarray(offset, offset + 7)
     .toString("ascii")
     .replace(/\x00/g, "");
   offset += 7;
 
+  /*
   // 34–43: SIM ICCID (BCD, 10 bytes)
-  const iccidBcd = buf.subarray(offset, offset + 10);
+  const iccidBcd = body.subarray(offset, offset + 10);
   const simIccid = Array.from(iccidBcd)
     .map((b) => b.toString(16).padStart(2, "0"))
     .join("");
   offset += 10;
 
   // 44: hardware version length
-  const hwLength = buf.readUInt8(offset++);
+  const hwLength = body.readUInt8(offset++);
 
   // 45–(45+n-1): hardware version string
-  const hardwareVersion = buf
+  const hardwareVersion = body
     .subarray(offset, offset + hwLength)
     .toString("ascii");
   offset += hwLength;
 
   // next: firmware version length
-  const fwLength = buf.readUInt8(offset++);
+  const fwLength = body.readUInt8(offset++);
 
   // firmware version string
-  const firmwareVersion = buf
+  const firmwareVersion = body
     .subarray(offset, offset + fwLength)
     .toString("ascii");
   offset += fwLength;
 
   // GNSS module attribute (1 byte, bit flags)
-  const gnssAttr = buf.readUInt8(offset++);
+  const gnssAttr = body.readUInt8(offset++);
 
   const gnssSupport = {
     gps: !!(gnssAttr & (1 << 0)),
@@ -73,7 +76,7 @@ const jt808ParseTerminalAttributes = (buf: Buffer): Jt808TerminalAttributes => {
   };
 
   // Communication module attribute (1 byte, bit flags)
-  const commAttr = buf.readUInt8(offset++);
+  const commAttr = body.readUInt8(offset++);
 
   const communicationSupport = {
     gprs: !!(commAttr & (1 << 0)),
@@ -84,17 +87,30 @@ const jt808ParseTerminalAttributes = (buf: Buffer): Jt808TerminalAttributes => {
     tdLte: !!(commAttr & (1 << 5)),
     other: !!(commAttr & (1 << 7)),
   };
-
+*/
   return {
     terminalType,
     manufacturerId,
     terminalModel,
     terminalId,
-    simIccid,
-    hardwareVersion,
-    firmwareVersion,
-    gnssSupport,
-    communicationSupport,
+    simIccid: "",
+    hardwareVersion: "",
+    firmwareVersion: "",
+    gnssSupport: {
+      gps: false,
+      beidou: false,
+      glonass: false,
+      galileo: false,
+    },
+    communicationSupport: {
+      gprs: false,
+      cdma: false,
+      tdScdma: false,
+      wcdma: false,
+      cdma2000: false,
+      tdLte: false,
+      other: false,
+    },
   };
 };
 

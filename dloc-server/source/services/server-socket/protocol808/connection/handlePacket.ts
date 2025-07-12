@@ -30,6 +30,8 @@ import jt808DecodeLocationReport from "../functions/jt808DecodeLocationReport";
 import jt808CreateFrameData from "../functions/jt808CreateFrameData";
 import jt808CreateTerminalAttributesMessage from "../functions/jt808CreateTerminalAttributesMessage";
 import jt808ParseTerminalAttributes from "../functions/jt808ParseTerminalAttributesBits";
+import jt808CreatePositionPacket from "../functions/jt808CreatePositionPacket";
+import jt808PersistLocation from "../functions/jt808PersistLocation";
 
 const noImei: string = "no imei received";
 
@@ -131,94 +133,21 @@ const handlePacket: HandlePacket = async (
   // ---------------------------------------
   // Positioning data batch upload（0x0704）
   // Location information query response（0x0201）
-  //     response 0x8001
-  // ---------------------------------------
-  else if (
-    jt808Packet.header.msgType === 0x0704 ||
-    jt808Packet.header.msgType === 0x0201
-  ) {
-    const locations = jt808DecodeLocations(
-      jt808Packet.body,
-      jt808Packet.header.msgType === 0x0704
-    );
-
-    // TODO: Tratar las locations
-    if (locations.count > 0) {
-      for (const location of locations.locations) {
-        if (location.lat !== 0 && location.lng !== 0) {
-        } 
-
-
-        //const positionPacket: PositionPacket | undefined = createPositionPacket(
-        //  response.imei,
-        //  remoteAddress,
-        //  location.values,
-        //  GpsAccuracy.unknown,
-        //  "{}"
-        //);
-         //  if (positionPacket.valid) {
-  //    let oldPacket: boolean = false;
-  //    const oldPacketMessage = "old packet";
-  //
-  //    await positionAddPositionAndUpdateDevice(
-  //      imeiTemp,
-  //      remoteAddress,
-  //      positionPacket,
-  //      persistence,
-  //      () => {},
-  //      (error) => {
-  //        oldPacket = error?.message === "old packet";
-  //      }
-  //    );
-  //
-  //    if (oldPacket)
-  //      await discardData(
-  //        oldPacketMessage,
-  //        true,
-  //        persistence,
-  //        imeiTemp,
-  //        remoteAddress,
-  //        data,
-  //        response
-  //      );
-  //  }
-      }
-    }
-
-    (response.response as Buffer[]).push(
-      jt808CreateGeneralResponse(
-        jt808Packet.header.terminalId,
-        counter,
-        jt808Packet.header.msgSerialNumber,
-        jt808Packet.header.msgType,
-        "00"
-      )
-    );
-
-    response.imei = padNumberLeft(jt808Packet.header.terminalId, 15, "0");
-    imeiTemp = getNormalizedIMEI(response.imei);
-
-    updateLastActivity = true;
-    if (jt808Packet.header.msgType === 0x0704) {
-      printMessage(
-        `[${imeiTemp}] (${remoteAddress}) ✅ Positioning data batch upload successful`
-      );
-    }
-    if (jt808Packet.header.msgType === 0x0201) {
-      printMessage(
-        `[${imeiTemp}] (${remoteAddress}) ✅ Location information query response successful`
-      );
-    }
-  }
-
-  // ---------------------------------------
   // Location report（0x0200）
   //     response 0x8001
   // ---------------------------------------
-  else if (jt808Packet.header.msgType === 0x0200) {
-    const location = jt808DecodeLocationReport(jt808Packet.body);
-
-    // TODO: Tratar las location
+  else if ([0x0704, 0x0201, 0x0200].includes(jt808Packet.header.msgType)) {
+    let locations;
+    if (jt808Packet.header.msgType === 0x0200)
+      locations = {
+        count: 0,
+        locations: [jt808DecodeLocationReport(jt808Packet.body)],
+      };
+    else
+      locations = jt808DecodeLocations(
+        jt808Packet.body,
+        jt808Packet.header.msgType === 0x0704
+      );
 
     (response.response as Buffer[]).push(
       jt808CreateGeneralResponse(
@@ -233,10 +162,28 @@ const handlePacket: HandlePacket = async (
     response.imei = padNumberLeft(jt808Packet.header.terminalId, 15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
 
-    updateLastActivity = true;
-    printMessage(
-      `[${imeiTemp}] (${remoteAddress}) ✅ Positioning Location report successful`
-    );
+    if (locations.count > 0) {
+      for (const location of locations.locations) {
+        if (location.lat !== 0 && location.lng !== 0)
+          await jt808PersistLocation(
+            imeiTemp,
+            remoteAddress,
+            location,
+            persistence,
+            dataBuffer,
+            response
+          );
+      }
+    }
+
+    let message = "";
+    if (jt808Packet.header.msgType === 0x0200) message = "Location report";
+    else if (jt808Packet.header.msgType === 0x0201)
+      message = "Location information query response";
+    else if (jt808Packet.header.msgType === 0x0704)
+      message = "Positioning data batch upload";
+
+    printMessage(`[${imeiTemp}] (${remoteAddress}) ✅ ${message} successful`);
   }
 
   // ---------------------------------------
@@ -274,7 +221,7 @@ const handlePacket: HandlePacket = async (
   //     response 0x8001
   // ---------------------------------------
   else if (jt808Packet.header.msgType === 0x0210) {
-    const batteryPercent: number = jt808Packet.body.readUInt8(0);
+    const batteryLevel: number = jt808Packet.body.readUInt8(0);
     const date: string =
       "20" +
       jt808Packet.body.readUInt8(1) +
@@ -290,7 +237,7 @@ const handlePacket: HandlePacket = async (
       jt808Packet.body.readUInt8(6);
 
     printMessage(
-      `[${imeiTemp}] (${remoteAddress}) ✅ Battery level: ${batteryPercent}% at ${date} ${time}`
+      `[${imeiTemp}] (${remoteAddress}) ✅ Battery level: ${batteryLevel}% at ${date} ${time}`
     );
 
     (response.response as Buffer[]).push(
@@ -310,7 +257,7 @@ const handlePacket: HandlePacket = async (
       imeiTemp,
       remoteAddress,
       persistence,
-      batteryPercent
+      batteryLevel
     );
 
     printMessage(
@@ -327,7 +274,9 @@ const handlePacket: HandlePacket = async (
   //     response 0x8001
   // ---------------------------------------
   else if (
-    [0x0002, 0x0003, 0x0105, 0x0108, 0x1007].includes(jt808Packet.header.msgType)
+    [0x0002, 0x0003, 0x0105, 0x0108, 0x1007].includes(
+      jt808Packet.header.msgType
+    )
   ) {
     (response.response as Buffer[]).push(
       jt808CreateGeneralResponse(
@@ -402,175 +351,6 @@ const handlePacket: HandlePacket = async (
     );
   }
 
-  //  const packetType = data.startsWith("TRVYP14") ? "TRVYP14" : "TRVYP15";
-  //
-  //  /** Process GPS data */
-  //  let { values, regexIndex } = getValuesFromStringByRegexs(
-  //    data,
-  //    REGEX_PACKETS
-  //  );
-  //  if (regexIndex != -1)
-  //    printMessage(
-  //      `[${imeiTemp}] (${remoteAddress}) ℹ️ process data (REGEX ${regexIndex}) [${
-  //        data.split(",")[0]
-  //      }]`
-  //    );
-  //
-  //  /** imei not received */
-  //  if (response.imei == "")
-  //    return await discardData(
-  //      noImei,
-  //      true,
-  //      persistence,
-  //      imeiTemp,
-  //      remoteAddress,
-  //      data,
-  //      response
-  //    );
-  //
-  //  /** Create position packet and persist */
-  //  const positionPacket: PositionPacket | undefined = createPositionPacket(
-  //    response.imei,
-  //    remoteAddress,
-  //    values,
-  //    GpsAccuracy.unknown,
-  //    "{}"
-  //  );
-  //
-  //  /** Check if position packet was created */
-  //  if (!positionPacket)
-  //    return await discardData(
-  //      "error creating position packet",
-  //      false,
-  //      persistence,
-  //      imeiTemp,
-  //      remoteAddress,
-  //      data,
-  //      response
-  //    );
-  //
-  //  /** Update last activity */
-  //  updateLastActivity = true;
-  //
-  //  if (!positionPacket.valid) {
-  //    /** Invalid position, try to get position from LBS */
-  //    printMessage(
-  //      `[${imeiTemp}] (${remoteAddress}) ⚠️ invalid position (NOT 'A') [${
-  //        data.split(",")[0]
-  //      }]`
-  //    );
-  //
-  //    /** LBS query */
-  //    const lbsGetResponse = await getLbsPosition(
-  //      data,
-  //      packetType,
-  //      persistence,
-  //      imeiTemp,
-  //      remoteAddress,
-  //      response
-  //    );
-  //    if ("error" in lbsGetResponse && lbsGetResponse.error)
-  //      return lbsGetResponse;
-  //
-
-  //
-  //  /** Add position and update device */
- 
-  //
-  //  response.response = `TRVZP${data.substring(5, 7)}#`;
-  //}
-
-  // ---------------------------------------------
-  // Response to TRVAP14 packet (LBS)
-  // ---------------------------------------------
-  //else if (data.startsWith("TRVAP14")) {
-  //  const packetType = "TRVAP14";
-  //
-  //  if (response.imei == "")
-  //    return await discardData(
-  //      noImei,
-  //      true,
-  //      persistence,
-  //      imeiTemp,
-  //      remoteAddress,
-  //      data,
-  //      response
-  //    );
-  //
-  //  /** LBS query */
-  //  const lbsGetResponse = await getLbsPosition(
-  //    data,
-  //    packetType,
-  //    persistence,
-  //    imeiTemp,
-  //    remoteAddress,
-  //    response
-  //  );
-  //  if ("error" in lbsGetResponse && lbsGetResponse.error)
-  //    return lbsGetResponse;
-  //
-  //  /** Process LBS data */
-  //  if ("location" in lbsGetResponse) {
-  //    const { lat, lng } = lbsGetResponse.location;
-  //    response.response = `TRVBP14,${lat.toFixed(5)},${lng.toFixed(5)}#`;
-  //  } else {
-  //    response.response = `TRVBP${data.substring(5, 7)}#`;
-  //  }
-  //}
-
-  // ---------------------------------------------
-  // UNKNOW but need response (TRVAP Packets)
-  // ---------------------------------------------
-  //else if (data.startsWith("TRVAP89")) {
-  //  if (response.imei == "")
-  //    return await discardData(
-  //      noImei,
-  //      true,
-  //      persistence,
-  //      imeiTemp,
-  //      remoteAddress,
-  //      data,
-  //      response
-  //    );
-  //
-  //  response.response = `TRVBP${data.substring(5, 7)}#`;
-  //}
-
-  // ------------------------------------------------
-  // Packets with not response needed
-  // TRVCP03: Set heartbeat packet interval
-  // TRVXP02: Set upload interval
-  // TRVAP92: Set LED display switch
-  // ------------------------------------------------
-  //else if (
-  //  data.startsWith("TRVCP03") ||
-  //  data.startsWith("TRVXP02") ||
-  //  data.startsWith("TRVAP92")
-  //) {
-  //  let message: string = "";
-  //  const resultVal: string = data.endsWith("0#") ? "OK" : "ERROR";
-  //
-  //  if (data.startsWith("TRVCP03")) message = "Set heartbeat packet interval";
-  //  if (data.startsWith("TRVXP02")) message = "Set Upload interval";
-  //  if (data.startsWith("TRVAP92")) message = "Set Led display switch";
-  //
-  //  printMessage(
-  //    `[${imeiTemp}] (${remoteAddress}) 👍 confirmation from device [${data}] (${message} ${resultVal})`
-  //  );
-  //}
-
-  // ------------------------------------------------
-  // Response to TRVWP02 config packet (Only Info)
-  // ------------------------------------------------
-  //else if (data.startsWith("TRVXP020000010")) {
-  //  updateLastActivity = true;
-  //  printMessage(
-  //    `[${
-  //      imeiTemp == "" ? NO_IMEI_STRING : response.imei
-  //    }] (${remoteAddress}) 👌 confirmed TRVWP02 packet received`
-  //  );
-  //}
-
   // ---------------------------------------------
   // Unknow command - Discart packet
   // ---------------------------------------------
@@ -605,7 +385,7 @@ const handlePacket: HandlePacket = async (
   /** */
   if (response.response.length === 0) {
     printMessage(
-      `[${imeiTemp}] (${remoteAddress}) ❌ no response to send for packet [${dataString}]`
+      `[${imeiTemp}] (${remoteAddress}) ⚠️ no response to send for packet [${dataString}]`
     );
   } else {
     for (let i = 0; i < response.response.length; i++) {

@@ -14,7 +14,7 @@ export type Jt808LocationPacket = {
   direction: number;
   time: string;
   gsmSignal?: number;
-  batteryPercent?: number;
+  batteryLevel?: number;
   satellites?: number;
   aditionalStatusInfo?: Buffer;
   lbsInfo?: Buffer;
