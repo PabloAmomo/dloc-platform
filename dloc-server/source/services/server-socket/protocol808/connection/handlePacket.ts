@@ -301,11 +301,7 @@ const handlePacket: HandlePacket = async (
         jt808Packet.body
       );
       printMessage(
-        `[${imeiTemp}] (${remoteAddress}) 🌟 Response from terminal ${JSON.stringify(
-          reponseCommon,
-          null,
-          2
-        )}`
+        `[${imeiTemp}] (${remoteAddress}) 🌟 Response from terminal to message ${reponseCommon.responseToMsgSerialNumber} -> result: ${reponseCommon.result} (${reponseCommon.msgSerialNumber})`
       );
     } else if (jt808Packet.header.msgType === 0x0002) {
       messageText = "Terminal heartbeat";
