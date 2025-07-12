@@ -1,7 +1,7 @@
 import { J808AlarmFlags } from "../services/server-socket/protocol808/functions/jt808ParseAlarmBits";
 import { J808StatusFlags } from "../services/server-socket/protocol808/functions/jt808ParseStatusBits";
 
-export type JT808LocationPacket = {
+export type Jt808LocationPacket = {
   dataType: number;
   alarm: number;
   alarmFlags: J808AlarmFlags;

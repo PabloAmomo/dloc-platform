@@ -1,4 +1,4 @@
-export interface JT808Packet  {
+export interface Jt808Packet  {
     raw: string,
   header: {
     msgType: number;

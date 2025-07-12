@@ -1,10 +1,10 @@
-import { JT808LocationPacket } from "../../../../models/JT808LocationPacket";
+import { Jt808LocationPacket } from "../../../../models/JT808LocationPacket";
 import jt808ParseAlarmBits from "./jt808ParseAlarmBits";
 import jt808ParseStatusBits from "./jt808ParseStatusBits";
 
 const jt808DecodeLocations = (body: Buffer, multiLocations: boolean) : {
   count: number;
-  locations: JT808LocationPacket[];
+  locations: Jt808LocationPacket[];
 } => {
   const locations: any[] = [];
   let offset = 0;

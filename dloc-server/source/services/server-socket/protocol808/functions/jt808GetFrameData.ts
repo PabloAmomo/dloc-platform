@@ -1,6 +1,6 @@
-import { JT808Packet } from "../../../../models/Jt808Packet";
+import { Jt808Packet } from "../../../../models/Jt808Packet";
 
-const jt808GetFrameData = (buffer: Buffer): JT808Packet => {
+const jt808GetFrameData = (buffer: Buffer): Jt808Packet => {
 
     if (buffer[0] !== 0x7E || buffer[buffer.length - 1] !== 0x7E) {
     throw new Error('Invalid start or end delimiter');
