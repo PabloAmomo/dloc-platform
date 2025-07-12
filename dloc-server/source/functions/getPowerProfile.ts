@@ -18,6 +18,8 @@ async function getPowerProfile(
   let powerProfile = PowerProfileType.AUTOMATIC_FULL;
   let newLastPowerProfileChange = lastPowerProfileChange;
 
+  console.log(`lastPowerProfileChange: ${lastPowerProfileChange}`);
+  
   try {
     const powerPrf = await persistence.getPowerProfile(imei);
     let profileChanged = false;
