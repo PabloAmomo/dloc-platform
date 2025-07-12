@@ -147,6 +147,17 @@ const handlePacket: HandlePacket = async (
     );
 
     // TODO: Tratar las locations
+    if (locations.count > 0) {
+      for (const location of locations.locations) {
+        //const positionPacket: PositionPacket | undefined = createPositionPacket(
+        //  response.imei,
+        //  remoteAddress,
+        //  location.values,
+        //  GpsAccuracy.unknown,
+        //  "{}"
+        //);
+      }
+    }
 
     (response.response as Buffer[]).push(
       jt808CreateGeneralResponse(

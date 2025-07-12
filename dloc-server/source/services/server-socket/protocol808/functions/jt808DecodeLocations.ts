@@ -1,40 +1,21 @@
+import { JT808LocationPacket } from "../../../../models/JT808LocationPacket";
 import jt808ParseAlarmBits from "./jt808ParseAlarmBits";
 import jt808ParseStatusBits from "./jt808ParseStatusBits";
 
-/*
-0003 //table 76 Numbers of data item，total 3 data（the length of total packet from here）
-01  //table 76 Type of location data
-0048 //table 77 Length of location report data body(each data length)
-00000000 //table 16 Alarm sign(each data length from here)
-004C0001 //table 16 status
-01598A80 //table 16 latitude
-06CBEFF5 //table 16 longtitude
-0000 //table 16 altitude
-0000 //table 16 speed
-0000 //table 16 direction
-200330190948 //table 16 time
-
-0104000002EE //table 19 mileage
-300116 //table 19 GSM
-310100 //table 19 Number of satellites
-E4020162 //table 19 battery level
-E50101
-E60100  
-E7080000000000000000 //table 19 status additional infomation
-EE0A01CC01262C0CBC089B00 //table 19 4G LBS infomation
-
-*/
-const jt808DecodeLocations = (body: Buffer, multiLocations: boolean) => {
-  const records: any[] = [];
+const jt808DecodeLocations = (body: Buffer, multiLocations: boolean) : {
+  count: number;
+  locations: JT808LocationPacket[];
+} => {
+  const locations: any[] = [];
   let offset = 0;
 
-  let packetCount = 1;
+  let count = 1;
   if (multiLocations) {
-    packetCount = body.readUInt16BE(offset);
+    count = body.readUInt16BE(offset);
     offset += 2;
   }
 
-  for (let i = 0; i < packetCount; i++) {
+  for (let i = 0; i < count; i++) {
     const dataType = multiLocations ? body.readUInt8(offset++) : 0;
     const locLength = body.readUInt16BE(offset);
     offset += 2;
@@ -77,7 +58,7 @@ const jt808DecodeLocations = (body: Buffer, multiLocations: boolean) => {
       else if (block.type === 0xe7) aditionalStatusInfo = block.data;
     }
 
-    records.push({
+    locations.push({
       dataType,
       alarm,
       alarmFlags: jt808ParseAlarmBits(alarm),
@@ -97,12 +78,12 @@ const jt808DecodeLocations = (body: Buffer, multiLocations: boolean) => {
     });
   }
 
-  console.log(`Packet count: ${packetCount}`);
-  console.log(`Records: ${JSON.stringify(records, null, 2)}`);
+  console.log(`Packet count: ${count}`);
+  console.log(`locations: ${JSON.stringify(locations, null, 2)}`);
 
   return {
-    packetCount,
-    records,
+    count,
+    locations,
   };
 };
 

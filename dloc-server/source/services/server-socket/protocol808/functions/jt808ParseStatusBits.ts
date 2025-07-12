@@ -1,4 +1,4 @@
-type J808StatusFlags = {
+export type J808StatusFlags = {
   acc: boolean;
   positioning: boolean;
   southLatitude: boolean;

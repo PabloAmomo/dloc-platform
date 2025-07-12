@@ -1,4 +1,4 @@
-type J808AlarmFlags = {
+export type J808AlarmFlags = {
   emergency: boolean;
   overspeed: boolean;
   drivingMalfunction: boolean;
