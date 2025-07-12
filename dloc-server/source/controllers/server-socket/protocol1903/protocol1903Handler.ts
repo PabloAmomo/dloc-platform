@@ -98,7 +98,8 @@ const protocol1903Handler = (conn: net.Socket, persistence: Persistence) => {
               imei,
               persistence,
               imeiData?.lastPowerProfileChange ?? Date.now(),
-              prefix
+              prefix,
+              newConnection
             );
           const { heartBeatSec, uploadSec, ledState, forceReportLocInMs } =
             powerProfileConfig(powerProfile);

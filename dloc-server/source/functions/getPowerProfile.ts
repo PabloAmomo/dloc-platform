@@ -13,12 +13,13 @@ async function getPowerProfile(
   imei: string,
   persistence: Persistence,
   lastPowerProfileChange: number,
-  messagePrefix: string
+  messagePrefix: string,
+  isNewConnection: boolean
 ): Promise<{ powerProfile: PowerProfileType; lastPowerProfileChange: number }> {
   let powerProfile = PowerProfileType.AUTOMATIC_FULL;
   let newLastPowerProfileChange = lastPowerProfileChange === 0 ? Date.now() : lastPowerProfileChange;
 
-  // TODO: al arrancar siempre pasar a un perfil automatico full
+  // TODO: Si es new connection pasar la base de dato a AUTOMATIC_FULL
 
   try {
     const powerPrf = await persistence.getPowerProfile(imei);

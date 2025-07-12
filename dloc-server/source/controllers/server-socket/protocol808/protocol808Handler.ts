@@ -102,9 +102,10 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
               imei,
               persistence,
               imeiData?.lastPowerProfileChange ??  Date.now(),
-              prefix
+              prefix,
+              newConnection
             );
-          const { heartBeatSec, uploadSec, ledState, forceReportLocInMs } =
+          const { uploadSec } =
             powerProfileConfig(powerProfile);
 
           /** Get last position packet */
