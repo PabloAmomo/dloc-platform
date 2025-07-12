@@ -16,10 +16,8 @@ async function getPowerProfile(
   messagePrefix: string
 ): Promise<{ powerProfile: PowerProfileType; lastPowerProfileChange: number }> {
   let powerProfile = PowerProfileType.AUTOMATIC_FULL;
-  let newLastPowerProfileChange = lastPowerProfileChange;
+  let newLastPowerProfileChange = lastPowerProfileChange === 0 ? Date.now() : lastPowerProfileChange;
 
-  console.log(`lastPowerProfileChange: ${lastPowerProfileChange}`);
-  
   try {
     const powerPrf = await persistence.getPowerProfile(imei);
     let profileChanged = false;
