@@ -45,7 +45,6 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
 
   /** Handle data */
   conn.on("data", (data: any) => {
-    
     const tempImei: string = getNormalizedIMEI(imei);
     const dataStringHex: string = convertStringToHexString(data);
 
@@ -138,8 +137,10 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
           }
 
           /** Send */
-          for (const response  of result.response) {
+          for (const response of result.response) {
             conn.write(jt808FrameEncode(response as Buffer));
+            conn.write("\n");
+            conn.write(Buffer.alloc(0)); 
           }
         })
         .catch((err: Error) => {
