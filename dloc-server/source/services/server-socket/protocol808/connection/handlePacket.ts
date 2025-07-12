@@ -145,7 +145,7 @@ const handlePacket: HandlePacket = async (
     // TODO: Tratar las locations
     if (locations.count > 0) {
       for (const location of locations.locations) {
-        if (location.lat !== 0 && location.lon !== 0) {
+        if (location.lat !== 0 && location.lng !== 0) {
         } 
 
 

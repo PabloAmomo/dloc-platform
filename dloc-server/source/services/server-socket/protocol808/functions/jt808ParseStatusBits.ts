@@ -1,4 +1,4 @@
-import { Jt808StatusFlags } from "../../../../models/Jt808StatusFlags";
+import { Jt808StatusFlags } from "../models/Jt808StatusFlags";
 
 const  jt808ParseStatusBits = (statusInt: number): Jt808StatusFlags => {
   return {

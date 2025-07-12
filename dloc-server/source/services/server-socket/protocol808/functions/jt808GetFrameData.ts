@@ -1,4 +1,4 @@
-import { Jt808Packet } from "../../../../models/Jt808Packet";
+import { Jt808Packet } from "../models/Jt808Packet";
 
 const jt808GetFrameData = (buffer: Buffer): Jt808Packet => {
 

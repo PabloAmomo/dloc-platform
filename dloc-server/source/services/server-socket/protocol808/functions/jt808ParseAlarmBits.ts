@@ -1,4 +1,4 @@
-import { Jt808AlarmFlags } from "../../../../models/Jt808AlarmFlags";
+import { Jt808AlarmFlags } from "../models/Jt808AlarmFlags";
 
 const jt808ParseAlarmBits = (alarmInt: number): Jt808AlarmFlags => {
   return {

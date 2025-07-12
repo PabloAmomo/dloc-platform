@@ -1,4 +1,4 @@
-import { Jt808TerminalAttributes } from "../../../../models/Jt808TerminalAttributes";
+import { Jt808TerminalAttributes } from "../models/Jt808TerminalAttributes";
 
 const jt808ParseTerminalAttributes = (buf: Buffer): Jt808TerminalAttributes => {
   let offset = 0;

@@ -8,7 +8,7 @@ export type Jt808LocationPacket = {
   status: number;
   statusFlags: Jt808StatusFlags;
   lat: number;
-  lon: number;
+  lng: number;
   altitude: number;
   speed: number;
   direction: number;

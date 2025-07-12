@@ -1,4 +1,4 @@
-import { Jt808LocationPacket } from "../../../../models/Jt808LocationPacket";
+import { Jt808LocationPacket } from "../models/Jt808LocationPacket";
 import jt808ParseAlarmBits from "./jt808ParseAlarmBits";
 import jt808ParseStatusBits from "./jt808ParseStatusBits";
 
@@ -6,7 +6,7 @@ const jt808DecodeLocations = (body: Buffer, multiLocations: boolean) : {
   count: number;
   locations: Jt808LocationPacket[];
 } => {
-  const locations: any[] = [];
+  const locations: Jt808LocationPacket[] = [];
   let offset = 0;
 
   let count = 1;
@@ -26,7 +26,7 @@ const jt808DecodeLocations = (body: Buffer, multiLocations: boolean) : {
     const alarm = locData.readUInt32BE(0);
     const status = locData.readUInt32BE(4);
     const lat = locData.readUInt32BE(8) / 1e6;
-    const lon = locData.readUInt32BE(12) / 1e6;
+    const lng = locData.readUInt32BE(12) / 1e6;
     const altitude = locData.readUInt16BE(16);
     const speed = locData.readUInt16BE(18);
     const direction = locData.readUInt16BE(20);
@@ -65,7 +65,7 @@ const jt808DecodeLocations = (body: Buffer, multiLocations: boolean) : {
       status,
       statusFlags: jt808ParseStatusBits(status),
       lat,
-      lon,
+      lng,
       altitude,
       speed,
       direction,
