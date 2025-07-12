@@ -338,7 +338,7 @@ const handlePacket: HandlePacket = async (
   // Check terminal attribute response（0x0107）
   //     response 0x8001
   // ---------------------------------------
-  else if (j808Packet.header.msgType === 0x1007) {
+  else if (j808Packet.header.msgType === 0x0107) {
     const terminalAttributes = jt808ParseTerminalAttributes(j808Packet.body);
 
     // TODO: Tratar las terminalAttributes
