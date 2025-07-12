@@ -1,4 +1,4 @@
-const huabaoFrameEncode = (buf: Buffer): Buffer => {
+const jt808FrameEncode = (buf: Buffer): Buffer => {
   const alternative = buf[0] === 0xe7;
   const startIndex = 0;
 
@@ -35,4 +35,4 @@ const huabaoFrameEncode = (buf: Buffer): Buffer => {
   return Buffer.from(result);
 };
 
-export default huabaoFrameEncode;
+export default jt808FrameEncode;

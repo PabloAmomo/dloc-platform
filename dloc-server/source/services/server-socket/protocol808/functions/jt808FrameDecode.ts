@@ -1,4 +1,4 @@
-const huabaoFrameDecode = (buf: Buffer): Buffer | null => {
+const jt808FrameDecode = (buf: Buffer): Buffer | null => {
   if (buf.length < 2) {
     return null;
   }
@@ -51,4 +51,4 @@ const huabaoFrameDecode = (buf: Buffer): Buffer | null => {
   return null;
 };
 
-export default huabaoFrameDecode;
+export default jt808FrameDecode;

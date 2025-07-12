@@ -1,4 +1,4 @@
-export interface HuabaoPacket  {
+export interface J808Packet  {
     raw: string,
   header: {
     msgType: number;

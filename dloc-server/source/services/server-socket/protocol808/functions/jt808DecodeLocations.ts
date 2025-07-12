@@ -1,5 +1,5 @@
-import huabaoParseAlarmBits from "./huabaoParseAlarmBits";
-import huabaoParseStatusBits from "./huabaoParseStatusBits";
+import jt808ParseAlarmBits from "./jt808ParseAlarmBits";
+import jt808ParseStatusBits from "./jt808ParseStatusBits";
 
 /*
 0003 //table 76 Numbers of data item，total 3 data（the length of total packet from here）
@@ -24,7 +24,7 @@ E7080000000000000000 //table 19 status additional infomation
 EE0A01CC01262C0CBC089B00 //table 19 4G LBS infomation
 
 */
-const huabaoDecodeLocations = (body: Buffer, multiLocations: boolean) => {
+const jt808DecodeLocations = (body: Buffer, multiLocations: boolean) => {
   const records: any[] = [];
   let offset = 0;
 
@@ -67,7 +67,7 @@ const huabaoDecodeLocations = (body: Buffer, multiLocations: boolean) => {
     let aditionalStatusInfo = Buffer.alloc(0);
     let lbsInfo = Buffer.alloc(0);
 
-    const extraData = parseTypedBlocks(locData, 28);
+    const extraData = jt808ParseTypedBlocks(locData, 28);
 
     for (const block of extraData) {
       if (block.type === 0x30) gsmSignal = block.data.readUInt8(0);
@@ -80,9 +80,9 @@ const huabaoDecodeLocations = (body: Buffer, multiLocations: boolean) => {
     records.push({
       dataType,
       alarm,
-      alarmFlags: huabaoParseAlarmBits(alarm),
+      alarmFlags: jt808ParseAlarmBits(alarm),
       status,
-      statusFlags: huabaoParseStatusBits(status),
+      statusFlags: jt808ParseStatusBits(status),
       lat,
       lon,
       altitude,
@@ -106,7 +106,7 @@ const huabaoDecodeLocations = (body: Buffer, multiLocations: boolean) => {
   };
 };
 
-export default huabaoDecodeLocations;
+export default jt808DecodeLocations;
 
 type TypedBlock = {
   type: number;
@@ -114,7 +114,7 @@ type TypedBlock = {
   data: Buffer;
 };
 
-function parseTypedBlocks(buffer: Buffer, start: number = 0): TypedBlock[] {
+function jt808ParseTypedBlocks(buffer: Buffer, start: number = 0): TypedBlock[] {
   const result: TypedBlock[] = [];
   let offset = start;
 

@@ -20,7 +20,7 @@ import {
 import powerProfileConfigGFxx from "../../../functions/powerProfileConfig";
 import getPowerProfile from "../../../functions/getPowerProfile";
 import convertStringToHexString from "../../../functions/convertStringToHexString";
-import huabaoFrameEncode from "../../../services/server-socket/protocol808/functions/huabaoFrameEncode";
+import jt808FrameEncode from "../../../services/server-socket/protocol808/functions/jt808FrameEncode";
 
 const HTTP_200 = `${[
   "HTTP/1.1 200 OK",
@@ -137,7 +137,7 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
 
           /** Send */
           for (const response  of result.response) {
-            conn.write(huabaoFrameEncode(response as Buffer));
+            conn.write(jt808FrameEncode(response as Buffer));
           }
         })
         .catch((err: Error) => {

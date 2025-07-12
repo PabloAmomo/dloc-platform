@@ -1,4 +1,4 @@
-const huabaoTimeSyncBody = (date: Date = new Date()): Buffer => {
+const jt808TimeSyncBody = (date: Date = new Date()): Buffer => {
   const buffer = Buffer.alloc(7);
 
   const year = date.getFullYear();
@@ -18,4 +18,4 @@ const huabaoTimeSyncBody = (date: Date = new Date()): Buffer => {
   return buffer;
 }
 
-export default huabaoTimeSyncBody;
+export default jt808TimeSyncBody;

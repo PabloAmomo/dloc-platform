@@ -3,7 +3,7 @@ import { HandlePacketResult } from "../../../models/HandlePacketResult";
 import { printMessage } from "../../../functions/printMessage";
 import { getNormalizedIMEI } from "../../../functions/getNormalizedIMEI";
 import convertStringToHexString from "../../../functions/convertStringToHexString";
-import huabaoFrameDecode from "./functions/huabaoFrameDecode";
+import jt808FrameDecode from "./functions/jt808FrameDecode";
 
 const handler = async ({
   imei,
@@ -18,7 +18,7 @@ const handler = async ({
 
   const dataString: string = convertStringToHexString(data);
 
-  let inPacket: Buffer | null = huabaoFrameDecode(data as Buffer);
+  let inPacket: Buffer | null = jt808FrameDecode(data as Buffer);
 
   if (!inPacket) {
     printMessage(

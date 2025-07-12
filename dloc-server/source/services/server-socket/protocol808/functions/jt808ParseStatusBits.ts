@@ -1,4 +1,4 @@
-type HuabaoStatusFlags = {
+type J808StatusFlags = {
   acc: boolean;
   positioning: boolean;
   southLatitude: boolean;
@@ -11,7 +11,7 @@ type HuabaoStatusFlags = {
   moving: boolean;
 };
 
-const  huabaoParseStatusBits = (statusInt: number): HuabaoStatusFlags => {
+const  jt808ParseStatusBits = (statusInt: number): J808StatusFlags => {
   return {
     acc: (statusInt & (1 << 0)) !== 0,
     positioning: (statusInt & (1 << 1)) !== 0,
@@ -26,4 +26,4 @@ const  huabaoParseStatusBits = (statusInt: number): HuabaoStatusFlags => {
   };
 }
 
-export default huabaoParseStatusBits;
+export default jt808ParseStatusBits;

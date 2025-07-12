@@ -1,10 +1,10 @@
-import { huabaoCreateFrameData } from "./huabaoCreateFrameData";
+import  jt808CreateFrameData  from "./jt808CreateFrameData";
 
-const huabaoCreateTerminalAttributesMessage = (
+const jt808CreateTerminalAttributesMessage = (
   terminalId: string,
   counter: number
 ): Buffer => {
-  return huabaoCreateFrameData({
+  return jt808CreateFrameData({
     msgType: 0x8107,
     terminalId: Buffer.from(terminalId, "hex"),
     msgSerialNumber: counter,
@@ -12,4 +12,4 @@ const huabaoCreateTerminalAttributesMessage = (
   });
 };
 
-export default huabaoCreateTerminalAttributesMessage;
+export default jt808CreateTerminalAttributesMessage;

@@ -1,7 +1,7 @@
-import huabaoParseAlarmBits from "./huabaoParseAlarmBits";
-import huabaoParseStatusBits from "./huabaoParseStatusBits";
+import jt808ParseAlarmBits from "./jt808ParseAlarmBits";
+import jt808ParseStatusBits from "./jt808ParseStatusBits";
 
-const huabaoDecodeLocationReport = (data: Buffer) => {
+const jt808DecodeLocationReport = (data: Buffer) => {
   const alarm= data.readUInt32BE(0);
   const status = data.readUInt32BE(4);
   const lat = data.readUInt32BE(8) / 1e6;
@@ -21,9 +21,9 @@ const huabaoDecodeLocationReport = (data: Buffer) => {
 
   const response = {
     alarm,
-    alarmFlags: huabaoParseAlarmBits(alarm),
+    alarmFlags: jt808ParseAlarmBits(alarm),
     status,
-    statusFlags: huabaoParseStatusBits(status),
+    statusFlags: jt808ParseStatusBits(status),
     lat,
     lon,
     altitude,
@@ -37,4 +37,4 @@ const huabaoDecodeLocationReport = (data: Buffer) => {
   return response;
 };
 
-export default huabaoDecodeLocationReport;
+export default jt808DecodeLocationReport;

@@ -1,4 +1,4 @@
-type HuabaoAlarmFlags = {
+type J808AlarmFlags = {
   emergency: boolean;
   overspeed: boolean;
   drivingMalfunction: boolean;
@@ -12,7 +12,7 @@ type HuabaoAlarmFlags = {
   illegalDisplacement: boolean;
 };
 
-const huabaoParseAlarmBits = (alarmInt: number): HuabaoAlarmFlags => {
+const jt808ParseAlarmBits = (alarmInt: number): J808AlarmFlags => {
   return {
     emergency: (alarmInt & (1 << 0)) !== 0,
     overspeed: (alarmInt & (1 << 1)) !== 0,
@@ -28,4 +28,4 @@ const huabaoParseAlarmBits = (alarmInt: number): HuabaoAlarmFlags => {
   };
 }
 
-export default huabaoParseAlarmBits;
+export default jt808ParseAlarmBits;

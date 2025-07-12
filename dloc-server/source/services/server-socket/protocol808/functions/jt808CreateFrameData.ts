@@ -1,4 +1,4 @@
-const huabaoCreateFrameData = (options: {
+const jt808CreateFrameData = (options: {
   msgType: number; // tipo de mensaje (2 bytes)
   terminalId: Buffer; // ID del dispositivo (6 o 7 bytes)
   msgSerialNumber: number; // índice de mensaje (1 o 2 bytes)
@@ -49,4 +49,4 @@ const huabaoCreateFrameData = (options: {
   return buffer;
 };
 
-export { huabaoCreateFrameData };
+export default jt808CreateFrameData;

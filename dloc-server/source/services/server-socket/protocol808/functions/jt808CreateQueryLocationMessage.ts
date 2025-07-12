@@ -1,10 +1,10 @@
-import { huabaoCreateFrameData } from "./huabaoCreateFrameData";
+import  jt808CreateFrameData  from "./jt808CreateFrameData";
 
-const huabaoCreateQueryLocationMessage = (
+const jt808CreateQueryLocationMessage = (
   terminalId: string,
   counter: number
 ): Buffer => {
-  return huabaoCreateFrameData({
+  return jt808CreateFrameData({
     msgType: 0x8201,
     terminalId: Buffer.from(terminalId, "hex"),
     msgSerialNumber: counter,
@@ -12,4 +12,4 @@ const huabaoCreateQueryLocationMessage = (
   });
 };
 
-export default huabaoCreateQueryLocationMessage;
+export default jt808CreateQueryLocationMessage;

@@ -1,6 +1,6 @@
-import { HuabaoPacket } from "../../../../models/HuabaoPacket";
+import { J808Packet } from "../../../../models/J808Packet";
 
-const huabaoGetFrameData = (buffer: Buffer): HuabaoPacket => {
+const jt808GetFrameData = (buffer: Buffer): J808Packet => {
 
     if (buffer[0] !== 0x7E || buffer[buffer.length - 1] !== 0x7E) {
     throw new Error('Invalid start or end delimiter');
@@ -55,4 +55,4 @@ const huabaoGetFrameData = (buffer: Buffer): HuabaoPacket => {
   };
 }
 
-export default huabaoGetFrameData;
+export default jt808GetFrameData;

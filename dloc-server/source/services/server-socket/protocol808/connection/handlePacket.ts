@@ -24,16 +24,16 @@ import numberToHexByteArray from "../../../../functions/numberToHexByteArray";
 import byteArrayToHexString from "../../../../functions/byteArrayToHexString";
 import padNumberLeft from "../../../../functions/padNumberLeft";
 
-import huabaoTimeSyncBody from "../functions/huabaoTimeSyncBody";
+import jt808TimeSyncBody from "../functions/jt808TimeSyncBody";
 import toHexWith from "../../../../functions/toHexWith";
-import huabaoGetFrameData from "../functions/huabaoGetFrameData";
-import huabaoCreateGeneralResponse from "../functions/huabaoCreateGeneralResponse";
-import huabaoCreateQueryLocationMessage from "../functions/huabaoCreateQueryLocationMessage";
-import huabaoDecodeLocations from "../functions/huabaoDecodeLocations";
-import huabaoDecodeLocationReport from "../functions/huabaoDecodeLocationReport";
-import { huabaoCreateFrameData } from "../functions/huabaoCreateFrameData";
-import huabaoCreateTerminalAttributesMessage from "../functions/huabaoCreateTerminalAttributesMessage";
-
+import jt808GetFrameData from "../functions/jt808GetFrameData";
+import jt808CreateGeneralResponse from "../functions/jt808CreateGeneralResponse";
+import jt808CreateQueryLocationMessage from "../functions/jt808CreateQueryLocationMessage";
+import jt808DecodeLocations from "../functions/jt808DecodeLocations";
+import jt808DecodeLocationReport from "../functions/jt808DecodeLocationReport";
+import jt808CreateFrameData from "../functions/jt808CreateFrameData";
+import jt808CreateTerminalAttributesMessage from "../functions/jt808CreateTerminalAttributesMessage";
+import jt808ParseTerminalAttributes from "../functions/jt808ParseTerminalAttributesBits";
 
 const noImei: string = "no imei received";
 
@@ -66,24 +66,24 @@ const handlePacket: HandlePacket = async (
     `[${imeiTemp}] (${remoteAddress}) 📡 PACKET RECEIVED oOo ----> [${dataString}].`
   );
 
-  let huabaoPacket = huabaoGetFrameData(dataBuffer);
+  let j808Packet = jt808GetFrameData(dataBuffer);
 
   // ---------------------------------------
   // Terminal registration（0x0100)
   //     response 0x8100
   // ---------------------------------------
-  if (huabaoPacket.header.msgType === 0x0100) {
+  if (j808Packet.header.msgType === 0x0100) {
     (response.response as Buffer[]).push(
-      huabaoCreateGeneralResponse(
-        huabaoPacket.header.terminalId,
+      jt808CreateGeneralResponse(
+        j808Packet.header.terminalId,
         counter,
-        huabaoPacket.header.msgSerialNumber,
-        huabaoPacket.header.msgType,
-        "00" + huabaoPacket.header.terminalId
+        j808Packet.header.msgSerialNumber,
+        j808Packet.header.msgType,
+        "00" + j808Packet.header.terminalId
       )
     );
-    
-    response.imei = padNumberLeft(huabaoPacket.header.terminalId, 15, "0");
+
+    response.imei = padNumberLeft(j808Packet.header.terminalId, 15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
 
     updateLastActivity = true;
@@ -96,34 +96,34 @@ const handlePacket: HandlePacket = async (
   // Terminal authentication（0x0102)
   //     response 0x8001
   // ---------------------------------------
-  else if (huabaoPacket.header.msgType === 0x0102) {
+  else if (j808Packet.header.msgType === 0x0102) {
     (response.response as Buffer[]).push(
-      huabaoCreateGeneralResponse(
-        huabaoPacket.header.terminalId,
+      jt808CreateGeneralResponse(
+        j808Packet.header.terminalId,
         counter,
-        huabaoPacket.header.msgSerialNumber,
-        huabaoPacket.header.msgType,
+        j808Packet.header.msgSerialNumber,
+        j808Packet.header.msgType,
         "00"
       )
     );
 
     (response.response as Buffer[]).push(
-      huabaoCreateQueryLocationMessage(
-        huabaoPacket.header.terminalId,
+      jt808CreateQueryLocationMessage(
+        j808Packet.header.terminalId,
         counter + 100
       )
     );
 
     (response.response as Buffer[]).push(
-      huabaoCreateTerminalAttributesMessage(
-        huabaoPacket.header.terminalId,
+      jt808CreateTerminalAttributesMessage(
+        j808Packet.header.terminalId,
         counter + 101
       )
     );
 
     // TODO: Enviar configuración inicial al dispositivo
 
-    response.imei = padNumberLeft(huabaoPacket.header.terminalId, 15, "0");
+    response.imei = padNumberLeft(j808Packet.header.terminalId, 15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
 
     updateLastActivity = true;
@@ -138,36 +138,36 @@ const handlePacket: HandlePacket = async (
   //     response 0x8001
   // ---------------------------------------
   else if (
-    huabaoPacket.header.msgType === 0x0704 ||
-    huabaoPacket.header.msgType === 0x0201
+    j808Packet.header.msgType === 0x0704 ||
+    j808Packet.header.msgType === 0x0201
   ) {
-    const locations = huabaoDecodeLocations(
-      huabaoPacket.body,
-      huabaoPacket.header.msgType === 0x0704
+    const locations = jt808DecodeLocations(
+      j808Packet.body,
+      j808Packet.header.msgType === 0x0704
     );
 
     // TODO: Tratar las locations
 
     (response.response as Buffer[]).push(
-      huabaoCreateGeneralResponse(
-        huabaoPacket.header.terminalId,
+      jt808CreateGeneralResponse(
+        j808Packet.header.terminalId,
         counter,
-        huabaoPacket.header.msgSerialNumber,
-        huabaoPacket.header.msgType,
+        j808Packet.header.msgSerialNumber,
+        j808Packet.header.msgType,
         "00"
       )
     );
 
-    response.imei = padNumberLeft(huabaoPacket.header.terminalId, 15, "0");
+    response.imei = padNumberLeft(j808Packet.header.terminalId, 15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
 
     updateLastActivity = true;
-    if (huabaoPacket.header.msgType === 0x0704) {
+    if (j808Packet.header.msgType === 0x0704) {
       printMessage(
         `[${imeiTemp}] (${remoteAddress}) ✅ Positioning data batch upload successful`
       );
     }
-    if (huabaoPacket.header.msgType === 0x0201) {
+    if (j808Packet.header.msgType === 0x0201) {
       printMessage(
         `[${imeiTemp}] (${remoteAddress}) ✅ Location information query response successful`
       );
@@ -178,22 +178,22 @@ const handlePacket: HandlePacket = async (
   // Location report（0x0200）
   //     response 0x8001
   // ---------------------------------------
-  else if (huabaoPacket.header.msgType === 0x0200) {
-    const location = huabaoDecodeLocationReport(huabaoPacket.body);
+  else if (j808Packet.header.msgType === 0x0200) {
+    const location = jt808DecodeLocationReport(j808Packet.body);
 
     // TODO: Tratar las location
 
     (response.response as Buffer[]).push(
-      huabaoCreateGeneralResponse(
-        huabaoPacket.header.terminalId,
+      jt808CreateGeneralResponse(
+        j808Packet.header.terminalId,
         counter,
-        huabaoPacket.header.msgSerialNumber,
-        huabaoPacket.header.msgType,
+        j808Packet.header.msgSerialNumber,
+        j808Packet.header.msgType,
         "00"
       )
     );
 
-    response.imei = padNumberLeft(huabaoPacket.header.terminalId, 15, "0");
+    response.imei = padNumberLeft(j808Packet.header.terminalId, 15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
 
     updateLastActivity = true;
@@ -206,24 +206,24 @@ const handlePacket: HandlePacket = async (
   // Request synchronization time（0x0109）
   //     response 0x8109 (With time sync body)
   // ---------------------------------------
-  else if (huabaoPacket.header.msgType === 0x0109) {
+  else if (j808Packet.header.msgType === 0x0109) {
     (response.response as Buffer[]).push(
-      huabaoCreateFrameData({
+      jt808CreateFrameData({
         msgType: 0x8109,
-        terminalId: Buffer.from(huabaoPacket.header.terminalId, "hex"),
+        terminalId: Buffer.from(j808Packet.header.terminalId, "hex"),
         msgSerialNumber: counter,
         body: Buffer.from(
           byteArrayToHexString(
-            numberToHexByteArray(huabaoPacket.header.msgSerialNumber)
+            numberToHexByteArray(j808Packet.header.msgSerialNumber)
           ) +
-            toHexWith(huabaoPacket.header.msgType, 4) +
-            huabaoTimeSyncBody().toString("hex"),
+            toHexWith(j808Packet.header.msgType, 4) +
+            jt808TimeSyncBody().toString("hex"),
           "hex"
         ),
       })
     );
 
-    response.imei = padNumberLeft(huabaoPacket.header.terminalId, 15, "0");
+    response.imei = padNumberLeft(j808Packet.header.terminalId, 15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
 
     updateLastActivity = true;
@@ -236,37 +236,37 @@ const handlePacket: HandlePacket = async (
   // Battery level update when sleep（0x0210）
   //     response 0x8001
   // ---------------------------------------
-  else if (huabaoPacket.header.msgType === 0x0210) {
-    const batteryPercent: number = huabaoPacket.body.readUInt8(0);
+  else if (j808Packet.header.msgType === 0x0210) {
+    const batteryPercent: number = j808Packet.body.readUInt8(0);
     const date: string =
       "20" +
-      huabaoPacket.body.readUInt8(1) +
+      j808Packet.body.readUInt8(1) +
       "-" +
-      huabaoPacket.body.readUInt8(2) +
+      j808Packet.body.readUInt8(2) +
       "-" +
-      huabaoPacket.body.readUInt8(3);
+      j808Packet.body.readUInt8(3);
     const time: string =
-      huabaoPacket.body.readUInt8(4) +
+      j808Packet.body.readUInt8(4) +
       ":" +
-      huabaoPacket.body.readUInt8(5) +
+      j808Packet.body.readUInt8(5) +
       ":" +
-      huabaoPacket.body.readUInt8(6);
+      j808Packet.body.readUInt8(6);
 
     printMessage(
       `[${imeiTemp}] (${remoteAddress}) ✅ Battery level: ${batteryPercent}% at ${date} ${time}`
     );
 
     (response.response as Buffer[]).push(
-      huabaoCreateGeneralResponse(
-        huabaoPacket.header.terminalId,
+      jt808CreateGeneralResponse(
+        j808Packet.header.terminalId,
         counter,
-        huabaoPacket.header.msgSerialNumber,
-        huabaoPacket.header.msgType,
+        j808Packet.header.msgSerialNumber,
+        j808Packet.header.msgType,
         "00"
       )
     );
 
-    response.imei = padNumberLeft(huabaoPacket.header.terminalId, 15, "0");
+    response.imei = padNumberLeft(j808Packet.header.terminalId, 15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
 
     await positionUpdateBattertAndLastActivity(
@@ -283,87 +283,85 @@ const handlePacket: HandlePacket = async (
 
   // ---------------------------------------
   // Terminal heartbeat（0x0002）
-  //     response 0x8001
-  // ---------------------------------------
-  else if (huabaoPacket.header.msgType === 0x0002) {
-    (response.response as Buffer[]).push(
-      huabaoCreateGeneralResponse(
-        huabaoPacket.header.terminalId,
-        counter,
-        huabaoPacket.header.msgSerialNumber,
-        huabaoPacket.header.msgType,
-        "00"
-      )
-    );
-
-    (response.response as Buffer[]).push(
-      huabaoCreateQueryLocationMessage(
-        huabaoPacket.header.terminalId,
-        counter + 100
-      )
-    );
-
-    response.imei = padNumberLeft(huabaoPacket.header.terminalId, 15, "0");
-    imeiTemp = getNormalizedIMEI(response.imei);
-
-    updateLastActivity = true;
-    printMessage(
-      `[${imeiTemp}] (${remoteAddress}) ✅ Terminal heartbeat successful`
-    );
-  }
-
-  // ---------------------------------------
+  // Terminal Logout（0x0003）
   // Sleep notification（0x0105）
   // Sleep wake up notification（0x0108）
+  // Unknown command 10 07（0x1007）
   //     response 0x8001
   // ---------------------------------------
   else if (
-    huabaoPacket.header.msgType === 0x0105 ||
-    huabaoPacket.header.msgType === 0x0108
+    [0x0002, 0x0003, 0x0105, 0x0108, 0x1007].includes(j808Packet.header.msgType)
   ) {
     (response.response as Buffer[]).push(
-      huabaoCreateGeneralResponse(
-        huabaoPacket.header.terminalId,
+      jt808CreateGeneralResponse(
+        j808Packet.header.terminalId,
         counter,
-        huabaoPacket.header.msgSerialNumber,
-        huabaoPacket.header.msgType,
+        j808Packet.header.msgSerialNumber,
+        j808Packet.header.msgType,
         "00"
       )
     );
 
-    response.imei = padNumberLeft(huabaoPacket.header.terminalId, 15, "0");
+    response.imei = padNumberLeft(j808Packet.header.terminalId, 15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
 
-    const bodyString = huabaoPacket.body.toString("hex");
+    const bodyString = j808Packet.body.toString("hex");
 
     updateLastActivity = true;
-    if (huabaoPacket.header.msgType === 0x0105) {
-      printMessage(
-        `[${imeiTemp}] (${remoteAddress}) ✅ Sleep notification successful ${bodyString}`
+    let messageText = "";
+
+    if (j808Packet.header.msgType === 0x0002) {
+      (response.response as Buffer[]).push(
+        jt808CreateQueryLocationMessage(
+          j808Packet.header.terminalId,
+          counter + 100
+        )
       );
+      messageText = "Terminal heartbeat";
+    } else if (j808Packet.header.msgType === 0x0003) {
+      // TODO: Desconectar el dispositivo (conn.close)
+      messageText = "Terminal Logout";
+    } else if (j808Packet.header.msgType === 0x0105) {
+      messageText = "Sleep notification";
+    } else if (j808Packet.header.msgType === 0x0108) {
+      messageText = "Sleep wake up notification";
+    } else if (j808Packet.header.msgType === 0x1007) {
+      messageText = "Unknown command 10 07";
     }
-    if (huabaoPacket.header.msgType === 0x0108) {
-      printMessage(
-        `[${imeiTemp}] (${remoteAddress}) ✅ Sleep wake up notification successful ${bodyString}`
-      );
-    }
+
+    printMessage(
+      `[${imeiTemp}] (${remoteAddress}) ✅ ${messageText} -> body ${bodyString}`
+    );
   }
 
   // ---------------------------------------
-  // Terminal Logout（0x0003）
-  //     response NONE
+  // Check terminal attribute response（0x0107）
+  //     response 0x8001
   // ---------------------------------------
-  else if (huabaoPacket.header.msgType === 0x0003) {
-    response.imei = padNumberLeft(huabaoPacket.header.terminalId, 15, "0");
+  else if (j808Packet.header.msgType === 0x1007) {
+    const terminalAttributes = jt808ParseTerminalAttributes(j808Packet.body);
+
+    // TODO: Tratar las terminalAttributes
+    console.log(`Record: ${JSON.stringify(terminalAttributes, null, 2)}`);
+
+    (response.response as Buffer[]).push(
+      jt808CreateGeneralResponse(
+        j808Packet.header.terminalId,
+        counter,
+        j808Packet.header.msgSerialNumber,
+        j808Packet.header.msgType,
+        "00"
+      )
+    );
+
+    response.imei = padNumberLeft(j808Packet.header.terminalId, 15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
 
-    const bodyString = huabaoPacket.body.toString("hex");
-
-    // TODO: Desconectar el dispositivo (conn.close)
+    const bodyString = j808Packet.body.toString("hex");
 
     updateLastActivity = true;
     printMessage(
-      `[${imeiTemp}] (${remoteAddress}) ✅ Terminal Logout successful ${bodyString}`
+      `[${imeiTemp}] (${remoteAddress}) ✅ Check terminal attribute response successful`
     );
   }
 
