@@ -4,7 +4,7 @@ import jt808CreateFrameData from "./jt808CreateFrameData";
 const jt808CreateTemporaryLocationTrackingPacket = (terminalId : string, counter : number, intervalSec: number, durationSec: number  ) : Buffer => {
 
   const bufInterval = Buffer.alloc(2);
-  bufInterval.writeUInt32BE(intervalSec);
+  bufInterval.writeUInt16BE(intervalSec);
 
   const bufDuration = Buffer.alloc(4);
   bufDuration.writeUInt32BE(durationSec);
