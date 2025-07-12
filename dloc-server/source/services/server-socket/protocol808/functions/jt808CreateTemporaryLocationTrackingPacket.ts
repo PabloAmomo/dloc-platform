@@ -4,10 +4,10 @@ import jt808CreateFrameData from "./jt808CreateFrameData";
 const jt808CreateTemporaryLocationTrackingPacket = (terminalId : string, counter : number, intervalSec: number, durationSec: number  ) : Buffer => {
 
   const bufInterval = Buffer.alloc(2);
-  bufInterval.writeUInt16LE(intervalSec);
+  bufInterval.writeUInt32BE(intervalSec);
 
   const bufDuration = Buffer.alloc(4);
-  bufDuration.writeUInt32LE(durationSec);
+  bufDuration.writeUInt32BE(durationSec);
 
   const paramter1 = Buffer.concat([bufInterval, bufDuration]).toString('hex'); // 00 05 00 00 00 3C
   // const paramter1 = "00 05 00 00 00 3C".replace(/ /g, ""); 

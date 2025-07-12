@@ -103,20 +103,6 @@ const handlePacket: HandlePacket = async (
       )
     );
 
-    (response.response as Buffer[]).push(
-      jt808CreateTerminalAttributesMessage(
-        jt808Packet.header.terminalId,
-        counter + 101
-      )
-    );
-
-    (response.response as Buffer[]).push(
-      jt808CreateParameterSettingPacket(
-        jt808Packet.header.terminalId,
-        counter + 102
-      )
-    );
-
     response.imei = padNumberLeft(jt808Packet.header.terminalId, 15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
 
