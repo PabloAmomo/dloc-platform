@@ -284,17 +284,15 @@ const handlePacket: HandlePacket = async (
       jt808Packet.header.msgType
     )
   ) {
-    if (jt808Packet.header.msgType !== 0x0001) {
-      (response.response as Buffer[]).push(
-        jt808CreateGeneralResponse(
-          jt808Packet.header.terminalId,
-          counter,
-          jt808Packet.header.msgSerialNumber,
-          jt808Packet.header.msgType,
-          "00"
-        )
-      );
-    }
+    (response.response as Buffer[]).push(
+      jt808CreateGeneralResponse(
+        jt808Packet.header.terminalId,
+        counter,
+        jt808Packet.header.msgSerialNumber,
+        jt808Packet.header.msgType,
+        "00"
+      )
+    );
 
     response.imei = padNumberLeft(jt808Packet.header.terminalId, 15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
