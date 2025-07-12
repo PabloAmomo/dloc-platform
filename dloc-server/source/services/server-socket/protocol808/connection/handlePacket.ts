@@ -327,8 +327,10 @@ const handlePacket: HandlePacket = async (
   else if (jt808Packet.header.msgType === 0x0107) {
     const terminalAttributes = jt808ParseTerminalAttributes(jt808Packet.body);
 
-    // TODO: Tratar las terminalAttributes
-    console.log(`Record: ${JSON.stringify(terminalAttributes, null, 2)}`);
+    const terminalData = `[Manufacturer ${terminalAttributes.manufacturerId}] ${terminalAttributes.terminalModel} - simIccid: ${terminalAttributes.simIccid}`;
+    printMessage(
+      `[${imeiTemp}] (${remoteAddress}) 👉 Terminal attributtes: ${terminalData}`
+    );
 
     (response.response as Buffer[]).push(
       jt808CreateGeneralResponse(
