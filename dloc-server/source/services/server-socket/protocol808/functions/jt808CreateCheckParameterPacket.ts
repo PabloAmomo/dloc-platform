@@ -1,5 +1,6 @@
 import jt808CreateFrameData from "./jt808CreateFrameData";
 
+// TODO: No funciona y no se porque
 const jt808CreateCheckParameterPacket = (terminalId : string, counter : number ) : Buffer => {
 
   const parametersCount = "03"; 

@@ -97,32 +97,25 @@ const handlePacket: HandlePacket = async (
       )
     );
 
+    //(response.response as Buffer[]).push(
+    //  jt808CreateQueryLocationMessage(
+    //    jt808Packet.header.terminalId,
+    //    counter + 100
+    //  )
+    //);
+
     (response.response as Buffer[]).push(
-      jt808CreateQueryLocationMessage(
+      jt808CreateTerminalAttributesMessage(
         jt808Packet.header.terminalId,
         counter + 100
       )
     );
 
-    (response.response as Buffer[]).push(
-      jt808CreateTerminalAttributesMessage(
-        jt808Packet.header.terminalId,
-        counter + 101
-      )
-    );
-
     // TODO: Enviar configuración inicial al dispositivo
-    (response.response as Buffer[]).push(
-      jt808CreateParameterSettingPacket(
-        jt808Packet.header.terminalId,
-        counter + 102
-      )
-    );
-
     //(response.response as Buffer[]).push(
-    //  jt808CreateCheckParameterPacket(
+    //  jt808CreateParameterSettingPacket(
     //    jt808Packet.header.terminalId,
-    //    counter + 103
+    //    counter + 102
     //  )
     //);
 
@@ -275,12 +268,13 @@ const handlePacket: HandlePacket = async (
   // Terminal heartbeat（0x0002）
   // Terminal Logout（0x0003）
   // Sleep notification（0x0105）
+  // Check terminal attribute response（0x0107）
   // Sleep wake up notification（0x0108）
   // Unknown command 10 07（0x1007）
   //     response 0x8001
   // ---------------------------------------
   else if (
-    [0x0001, 0x0002, 0x0003, 0x0105, 0x0108, 0x1007].includes(
+    [0x0001, 0x0002, 0x0003, 0x0105, 0x0107, 0x0108, 0x1007].includes(
       jt808Packet.header.msgType
     )
   ) {
@@ -308,7 +302,7 @@ const handlePacket: HandlePacket = async (
         jt808Packet.body
       );
       printMessage(
-        `[${imeiTemp}] (${remoteAddress}) 🌟 Response from terminal to message ${reponseCommon.responseToMsgSerialNumber} -> result: ${reponseCommon.result} (${reponseCommon.msgSerialNumber})`
+        `[${imeiTemp}] (${remoteAddress}) 🧑🏽‍💻 Response from terminal to message ${reponseCommon.responseToMsgSerialNumber} -> result: ${reponseCommon.result} (${reponseCommon.msgSerialNumber})`
       );
     } else if (jt808Packet.header.msgType === 0x0002) {
       messageText = "Terminal heartbeat";
@@ -317,6 +311,13 @@ const handlePacket: HandlePacket = async (
       messageText = "Terminal Logout";
     } else if (jt808Packet.header.msgType === 0x0105) {
       messageText = "Sleep notification";
+    } else if (jt808Packet.header.msgType === 0x0107) {
+      messageText = "Check terminal attribute response";
+      const terminalAttributes = jt808ParseTerminalAttributes(jt808Packet.body);
+      const terminalData = `${terminalAttributes.manufacturerId} Model ${terminalAttributes.terminalModel} - SimIccid ${terminalAttributes.simIccid}`;
+      printMessage(
+        `[${imeiTemp}] (${remoteAddress}) 👉 Terminal attributtes: ${terminalData}`
+      );
     } else if (jt808Packet.header.msgType === 0x0108) {
       messageText = "Sleep wake up notification";
     } else if (jt808Packet.header.msgType === 0x1007) {
@@ -327,39 +328,6 @@ const handlePacket: HandlePacket = async (
       `[${imeiTemp}] (${remoteAddress}) ✅ ${messageText} -> body ${
         bodyString !== "" ? bodyString : "(empty)"
       }`
-    );
-  }
-
-  // ---------------------------------------
-  // Check terminal attribute response（0x0107）
-  //     response 0x8001
-  // ---------------------------------------
-  else if (jt808Packet.header.msgType === 0x0107) {
-    const terminalAttributes = jt808ParseTerminalAttributes(jt808Packet.body);
-
-    const terminalData = `${terminalAttributes.manufacturerId} Model ${terminalAttributes.terminalModel} - SimIccid ${terminalAttributes.simIccid}`;
-    printMessage(
-      `[${imeiTemp}] (${remoteAddress}) 👉 Terminal attributtes: ${terminalData}`
-    );
-
-    (response.response as Buffer[]).push(
-      jt808CreateGeneralResponse(
-        jt808Packet.header.terminalId,
-        counter,
-        jt808Packet.header.msgSerialNumber,
-        jt808Packet.header.msgType,
-        "00"
-      )
-    );
-
-    response.imei = padNumberLeft(jt808Packet.header.terminalId, 15, "0");
-    imeiTemp = getNormalizedIMEI(response.imei);
-
-    const bodyString = jt808Packet.body.toString("hex");
-
-    updateLastActivity = true;
-    printMessage(
-      `[${imeiTemp}] (${remoteAddress}) ✅ Check terminal attribute response successful`
     );
   }
 
