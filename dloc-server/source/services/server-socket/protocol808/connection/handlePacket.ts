@@ -119,6 +119,13 @@ const handlePacket: HandlePacket = async (
       )
     );
 
+    (response.response as Buffer[]).push(
+      jt808CreateCheckParameterPacket(
+        jt808Packet.header.terminalId,
+        counter + 103
+      )
+    );
+
     response.imei = padNumberLeft(jt808Packet.header.terminalId, 15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
 
@@ -304,13 +311,6 @@ const handlePacket: HandlePacket = async (
       );
       printMessage(
         `[${imeiTemp}] (${remoteAddress}) 🌟 Response from terminal to message ${reponseCommon.responseToMsgSerialNumber} -> result: ${reponseCommon.result} (${reponseCommon.msgSerialNumber})`
-      );
-
-      (response.response as Buffer[]).push(
-        jt808CreateCheckParameterPacket(
-          jt808Packet.header.terminalId,
-          counter + 100
-        )
       );
     } else if (jt808Packet.header.msgType === 0x0002) {
       messageText = "Terminal heartbeat";
