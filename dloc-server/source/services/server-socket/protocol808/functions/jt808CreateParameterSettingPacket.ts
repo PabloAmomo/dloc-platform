@@ -3,8 +3,8 @@ import jt808CreateFrameData from "./jt808CreateFrameData";
 const jt808CreateParameterSettingPacket = (terminalId : string, counter : number ) : Buffer => {
 
   // 
-  const parametersCount = "01"; 
-  const paramter1 = "0001 02 001E 0027 02 001E 0028 02 001E 0029 02 001E F117 02 0000 F111 01 01"; 
+  const parametersCount = "06"; 
+  const paramter1 = "00000001 02 001E 00000027 02 001E 00000028 02 001E 00000029 02 001E 0000F117 02 0000 0000F111 01 01"; 
 
   let paramList = parametersCount + paramter1;
 
