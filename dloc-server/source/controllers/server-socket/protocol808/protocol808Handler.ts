@@ -138,12 +138,12 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
               counter + 200,
               powerProfile
             );
-            console.log(`${prefix} 🔋 Power Packet: ${convertStringToHexString(powerPacket)}`);
+            printMessage(`${prefix} 🔋 Power Packet: ${convertStringToHexString(powerPacket)}`);
             (result.response as Buffer[]).push(powerPacket);
 
             // TODO: agregar el paquete que configure el heartbeat
 
-            
+
             newConnection = false;
           }
 
