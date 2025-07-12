@@ -14,7 +14,7 @@ import {
   clearItemInCacheIMEI,
 } from "../../../infraestucture/caches/cacheIMEI";
 import { getNormalizedIMEI } from "../../../functions/getNormalizedIMEI";
-import powerProfileConfigGFxx from "../../../functions/powerProfileConfig";
+import powerProfileConfig from "../../../functions/powerProfileConfig";
 import proto1903CreateConfig from "../../../services/server-socket/protocol1903/functions/proto1903CreateConfig";
 import getPowerProfile from "../../../functions/getPowerProfile";
 
@@ -100,7 +100,7 @@ const protocol1903Handler = (conn: net.Socket, persistence: Persistence) => {
               prefix
             );
           const { heartBeatSec, uploadSec, ledState, forceReportLocInMs } =
-            powerProfileConfigGFxx(powerProfile);
+            powerProfileConfig(powerProfile);
 
           /** Get last position packet */
           const lastPosPacket: PositionPacketWithDatetime | undefined =

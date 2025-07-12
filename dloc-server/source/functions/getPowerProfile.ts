@@ -4,6 +4,7 @@ import getMovementInLastSeconds from "./getMovementInLastSeconds";
 import { printMessage } from "./printMessage";
 import updatePowerProfile from "./updatePowerProfile";
 
+// TODO: el valor de MOVEMENTS_CONTROL_SECONDS es usado en jt808CreatePowerProfilePacket
 const MOVEMENTS_CONTROL_SECONDS: number = 300;
 const MOVEMENTS_MTS_FOR_BALANCED: number = 50;
 const MOVEMENTS_MTS_FOR_MINIMAL: number = 10;

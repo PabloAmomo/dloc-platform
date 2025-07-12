@@ -23,8 +23,6 @@ import jt808ParseTerminalAttributes from "../functions/jt808ParseTerminalAttribu
 import jt808PersistLocation from "../functions/jt808PersistLocation";
 import jt808CreateParameterSettingPacket from "../functions/jt808CreateParameterSettingPacket";
 import jt808ParseCommonResultFromTerminal from "../functions/jt808ParseCommonResultFromTerminal";
-import jt808CreateCheckParameterPacket from "../functions/jt808CreateCheckParameterPacket";
-import jt808CreateTemporaryLocationTrackingPacket from "../functions/jt808CreateTemporaryLocationTrackingPacket";
 
 const noImei: string = "no imei received";
 
@@ -99,33 +97,25 @@ const handlePacket: HandlePacket = async (
     );
 
     (response.response as Buffer[]).push(
-      jt808CreateTemporaryLocationTrackingPacket(
+      jt808CreateQueryLocationMessage(
         jt808Packet.header.terminalId,
         counter + 100
       )
     );
 
-    //(response.response as Buffer[]).push(
-    //  jt808CreateQueryLocationMessage(
-    //    jt808Packet.header.terminalId,
-    //    counter + 100
-    //  )
-    //);
+    (response.response as Buffer[]).push(
+      jt808CreateTerminalAttributesMessage(
+        jt808Packet.header.terminalId,
+        counter + 101
+      )
+    );
 
-    //(response.response as Buffer[]).push(
-    //  jt808CreateTerminalAttributesMessage(
-    //    jt808Packet.header.terminalId,
-    //    counter + 100
-    //  )
-    //);
-
-    // TODO: Enviar configuración inicial al dispositivo
-    //(response.response as Buffer[]).push(
-    //  jt808CreateParameterSettingPacket(
-    //    jt808Packet.header.terminalId,
-    //    counter + 102
-    //  )
-    //);
+    (response.response as Buffer[]).push(
+      jt808CreateParameterSettingPacket(
+        jt808Packet.header.terminalId,
+        counter + 102
+      )
+    );
 
     response.imei = padNumberLeft(jt808Packet.header.terminalId, 15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);

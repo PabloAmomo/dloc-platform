@@ -1,7 +1,8 @@
 import { PowerProfileType } from "../enums/PowerProfileType";
 import { printMessage } from "./printMessage";
 
-function powerProfileConfigGFxx(
+// TODO: Hacer los valores en numbers y no en strings
+function powerProfileConfig(
   profileType: PowerProfileType = PowerProfileType.FULL
 ) {
   if (
@@ -44,4 +45,4 @@ function powerProfileConfigGFxx(
   };
 }
 
-export default powerProfileConfigGFxx;
+export default powerProfileConfig;

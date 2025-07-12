@@ -1,4 +1,4 @@
-import powerProfileConfigGFxx from "../../../../functions/powerProfileConfig";
+import powerProfileConfig from "../../../../functions/powerProfileConfig";
 import { PowerProfileType } from "../../../../enums/PowerProfileType";
 import { uniqueId } from "../../../../functions/uniqueId";
 
@@ -7,7 +7,7 @@ function proto1903CreateConfig(
 ): string {
   let response = "";
   const timestamp: string = uniqueId();
-  const { heartBeatSec, uploadSec, ledState } = powerProfileConfigGFxx(
+  const { heartBeatSec, uploadSec, ledState } = powerProfileConfig(
     powerProfileType
   );
 

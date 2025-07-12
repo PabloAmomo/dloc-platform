@@ -17,10 +17,12 @@ import {
   getNormalizedIMEI,
   NO_IMEI_STRING,
 } from "../../../functions/getNormalizedIMEI";
-import powerProfileConfigGFxx from "../../../functions/powerProfileConfig";
+import powerProfileConfig from "../../../functions/powerProfileConfig";
 import getPowerProfile from "../../../functions/getPowerProfile";
 import convertStringToHexString from "../../../functions/convertStringToHexString";
 import jt808FrameEncode from "../../../services/server-socket/protocol808/functions/jt808FrameEncode";
+import { response } from "express";
+import jt808CreatePowerProfilePacket from "../../../services/server-socket/protocol808/functions/jt808CreatePowerProfilePacket";
 
 const HTTP_200 = `${[
   "HTTP/1.1 200 OK",
@@ -103,7 +105,7 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
               prefix
             );
           const { heartBeatSec, uploadSec, ledState, forceReportLocInMs } =
-            powerProfileConfigGFxx(powerProfile);
+            powerProfileConfig(powerProfile);
 
           /** Get last position packet */
           const lastPosPacket: PositionPacketWithDatetime | undefined =
@@ -131,7 +133,15 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
               } sec]`
             );
 
-            // toSend += createConfigGFxx(powerProfile);
+            const terminalId = imei.slice(-12);
+            console.log(`👉👉👉👉👉👉👉👉👉 Terminal ID: ${terminalId}, Counter: ${counter}`);
+            (result.response as Buffer[]).push(
+              jt808CreatePowerProfilePacket(
+                terminalId,
+                counter + 200,
+                powerProfile
+              )
+            );
 
             newConnection = false;
           }
@@ -139,7 +149,7 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
           /** Send */
           for (const response of result.response) {
             conn.write(jt808FrameEncode(response as Buffer));
-            conn.write(Buffer.alloc(0)); 
+            conn.write(Buffer.alloc(0));
           }
         })
         .catch((err: Error) => {
