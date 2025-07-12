@@ -104,12 +104,12 @@ const handlePacket: HandlePacket = async (
     //  )
     //);
 
-    (response.response as Buffer[]).push(
-      jt808CreateTerminalAttributesMessage(
-        jt808Packet.header.terminalId,
-        counter + 100
-      )
-    );
+    //(response.response as Buffer[]).push(
+    //  jt808CreateTerminalAttributesMessage(
+    //    jt808Packet.header.terminalId,
+    //    counter + 100
+    //  )
+    //);
 
     // TODO: Enviar configuración inicial al dispositivo
     //(response.response as Buffer[]).push(
@@ -138,7 +138,7 @@ const handlePacket: HandlePacket = async (
     let locations;
     if (jt808Packet.header.msgType === 0x0200)
       locations = {
-        count: 0,
+        count: 1,
         locations: [jt808DecodeLocationReport(jt808Packet.body)],
       };
     else
