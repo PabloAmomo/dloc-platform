@@ -22,6 +22,7 @@ import jt808CreateTerminalAttributesMessage from "../functions/jt808CreateTermin
 import jt808ParseTerminalAttributes from "../functions/jt808ParseTerminalAttributesBits";
 import jt808PersistLocation from "../functions/jt808PersistLocation";
 import jt808CreateParameterSettingPacket from "../functions/jt808CreateParameterSettingPacket";
+import jt808ParseCommonResultFromTerminal from "../functions/jt808ParseCommonResultFromTerminal";
 
 const noImei: string = "no imei received";
 
@@ -34,6 +35,7 @@ const handlePacket: HandlePacket = async (
     data,
     persistence,
     counter,
+  
   } = props;
 
   const dataBuffer: Buffer = data as Buffer;
@@ -109,13 +111,13 @@ const handlePacket: HandlePacket = async (
       )
     );
 
+    // TODO: Enviar configuración inicial al dispositivo
     (response.response as Buffer[]).push(
       jt808CreateParameterSettingPacket(
         jt808Packet.header.terminalId,
         counter + 102
       )
     );
-    // TODO: Enviar configuración inicial al dispositivo
 
     response.imei = padNumberLeft(jt808Packet.header.terminalId, 15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
@@ -262,6 +264,7 @@ const handlePacket: HandlePacket = async (
   }
 
   // ---------------------------------------
+  // Terminal general response（0x0001）
   // Terminal heartbeat（0x0002）
   // Terminal Logout（0x0003）
   // Sleep notification（0x0105）
@@ -270,7 +273,7 @@ const handlePacket: HandlePacket = async (
   //     response 0x8001
   // ---------------------------------------
   else if (
-    [0x0002, 0x0003, 0x0105, 0x0108, 0x1007].includes(
+    [0x0001, 0x0002, 0x0003, 0x0105, 0x0108, 0x1007].includes(
       jt808Packet.header.msgType
     )
   ) {
@@ -292,13 +295,19 @@ const handlePacket: HandlePacket = async (
     updateLastActivity = true;
     let messageText = "";
 
-    if (jt808Packet.header.msgType === 0x0002) {
-      //(response.response as Buffer[]).push(
-      //  jt808CreateQueryLocationMessage(
-      //    jt808Packet.header.terminalId,
-      //    counter + 100
-      //  )
-      //);
+    if (jt808Packet.header.msgType === 0x0001) {
+      messageText = "Terminal general response";
+      const reponseCommon = jt808ParseCommonResultFromTerminal(
+        jt808Packet.body
+      );
+      printMessage(
+        `[${imeiTemp}] (${remoteAddress}) 🌟 Response from terminal ${JSON.stringify(
+          reponseCommon,
+          null,
+          2
+        )}`
+      );
+    } else if (jt808Packet.header.msgType === 0x0002) {
       messageText = "Terminal heartbeat";
     } else if (jt808Packet.header.msgType === 0x0003) {
       // TODO: Desconectar el dispositivo (conn.close)
