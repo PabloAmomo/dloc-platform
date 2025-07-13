@@ -124,6 +124,14 @@ const handlePacket: HandlePacket = async (
       )
     );
 
+    (response.response as Buffer[]).push(
+      jt808CreateCheckParameterSettingPacket(
+        jt808Packet.header.terminalId,
+        counter + 103,
+        []
+      )
+    );
+
     response.imei = padNumberLeft(jt808Packet.header.terminalId, 15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
 
