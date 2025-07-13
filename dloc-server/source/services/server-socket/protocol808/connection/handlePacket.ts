@@ -289,10 +289,11 @@ const handlePacket: HandlePacket = async (
   // Check terminal attribute response（0x0107）
   // Sleep wake up notification（0x0108）
   // Unknown command 10 07（0x1007）
+  // Upload the power saving mode modified by SMS to the serve (0x0112)
   //     response 0x8001
   // ---------------------------------------
   else if (
-    [0x0002, 0x0003, 0x0105, 0x0107, 0x0108, 0x1007].includes(
+    [0x0002, 0x0003, 0x0105, 0x0107, 0x0108, 0x0112, 0x1007].includes(
       jt808Packet.header.msgType
     )
   ) {
@@ -330,6 +331,10 @@ const handlePacket: HandlePacket = async (
       );
     } else if (jt808Packet.header.msgType === 0x0108) {
       messageText = "🌟 Sleep wake up notification";
+    } else if (jt808Packet.header.msgType === 0x0112) {
+      // TODO: Crear un parser para los mensajes 0x0112 (Upload the power saving mode modified by SMS to the serve)
+      messageText =
+        "⚡️ Upload the power saving mode modified by SMS to the serve";
     } else if (jt808Packet.header.msgType === 0x1007) {
       messageText = "🔥 Unknown command 10 07";
     }
@@ -354,9 +359,9 @@ const handlePacket: HandlePacket = async (
     printMessage(
       `[${imeiTemp}] (${remoteAddress}) 🧑🏽‍💻 Response from terminal to message ${
         reponseCommon.responseToMsgSerialNumber
-      } [${toHexWith(reponseCommon.responseToMsgSerialNumber,4)}] -> result: ${reponseCommon.result == "success" ? "✅" : "❌"} ${
-        reponseCommon.result
-      } (${reponseCommon.msgSerialNumber})`
+      } [${toHexWith(reponseCommon.responseToMsgSerialNumber, 4)}] -> result: ${
+        reponseCommon.result == "success" ? "✅" : "❌"
+      } ${reponseCommon.result} (${reponseCommon.msgSerialNumber})`
     );
   }
 
