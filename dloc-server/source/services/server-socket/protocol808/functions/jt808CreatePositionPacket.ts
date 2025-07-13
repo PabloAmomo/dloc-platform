@@ -13,27 +13,12 @@ const jt808CreatePositionPacket = (
 ): PositionPacket | undefined => {
   try {
     const dateTimeUtc = new Date(locationPacket.dateTimeUTC);
-
     const now = new Date();
-    const currentTimeUtc = new Date(
-      now.getUTCFullYear(),
-      now.getUTCMonth(),
-      now.getUTCDate(),
-      now.getUTCHours(),
-      now.getUTCMinutes(),
-      now.getUTCSeconds(),
-      now.getUTCMilliseconds()
-    );
-    
-    console.log(`12123 ----> ${dateTimeUtc.toISOString()} ${currentTimeUtc.toISOString()} `);
 
-    const timeDifference = Math.abs(
-      currentTimeUtc.getTime() - dateTimeUtc.getTime()
-    );
-
+    const timeDifference = dateTimeUtc.getTime() - now.getTime();
     if (timeDifference > MAX_TIME_DIFFERENCE_MS) {
       printMessage(
-        `[${imei}] (${remoteAddress}) ❌ Location packet date/time is not within 5 minutes of the current time.`
+        `[${imei}] (${remoteAddress}) ❌ Location packet date/time is 5 minutes or more in the future of the current time.`
       );
       return undefined;
     }
