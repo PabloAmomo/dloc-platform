@@ -10,7 +10,7 @@ const jt808CreateCheckParameterSettingPacket = (
   const paramList =
     padNumberLeft(parameters.length, 2, "0") +
     parameters
-      .map((value) => padNumberLeft(value, 8, "0"))
+      .map((value) => padNumberLeft(value, 4, "0"))
       .join("")
       .replace(/ /g, "");
 
