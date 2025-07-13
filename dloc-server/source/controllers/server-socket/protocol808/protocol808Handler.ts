@@ -157,7 +157,7 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
             const heartBeatPacket = jt808CreateParameterSettingPacket(
               terminalId,
               counter + 201,
-              ["0001 04 " + createHexFromNumberWithNBytes(heartBeatSec, 4)] 
+              ["00000001 04 " + createHexFromNumberWithNBytes(heartBeatSec, 4)] 
             );
             printMessage(
               `${prefix} ❤️  Heart beat config Packet sent: ${convertStringToHexString(
