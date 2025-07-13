@@ -172,9 +172,9 @@ const handlePacket: HandlePacket = async (
     let message = "";
     if (jt808Packet.header.msgType === 0x0200) message = "Location report";
     else if (jt808Packet.header.msgType === 0x0201)
-      message = "Location information query response";
+      message = "🧭 Location information query response";
     else if (jt808Packet.header.msgType === 0x0704)
-      message = "Positioning data batch upload";
+      message = "🧭 Positioning data batch upload";
 
     printMessage(`[${imeiTemp}] (${remoteAddress}) ✅ ${message} successful`);
   }
@@ -291,23 +291,23 @@ const handlePacket: HandlePacket = async (
     let messageText = "";
 
     if (jt808Packet.header.msgType === 0x0002) {
-      messageText = "Terminal heartbeat";
+      messageText = "❤️ Terminal heartbeat";
     } else if (jt808Packet.header.msgType === 0x0003) {
       // TODO: Desconectar el dispositivo (conn.close)
-      messageText = "Terminal Logout";
+      messageText = "🔚 Terminal Logout";
     } else if (jt808Packet.header.msgType === 0x0105) {
-      messageText = "Sleep notification";
+      messageText = "💤 Sleep notification";
     } else if (jt808Packet.header.msgType === 0x0107) {
-      messageText = "Check terminal attribute response";
+      messageText = "✅ Check terminal attribute response";
       const terminalAttributes = jt808ParseTerminalAttributes(jt808Packet.body);
       const terminalData = `${terminalAttributes.manufacturerId} Model ${terminalAttributes.terminalModel} - SimIccid ${terminalAttributes.simIccid}`;
       printMessage(
         `[${imeiTemp}] (${remoteAddress}) 👉 Terminal attributtes: ${terminalData}`
       );
     } else if (jt808Packet.header.msgType === 0x0108) {
-      messageText = "Sleep wake up notification";
+      messageText = "🌟 Sleep wake up notification";
     } else if (jt808Packet.header.msgType === 0x1007) {
-      messageText = "Unknown command 10 07";
+      messageText = "🔥 Unknown command 10 07";
     }
 
     printMessage(
