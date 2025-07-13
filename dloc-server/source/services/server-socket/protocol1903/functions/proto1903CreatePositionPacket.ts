@@ -7,6 +7,8 @@ import { printMessage } from '../../../../functions/printMessage';
 
 const proto1903CreatePositionPacket = (imei: string, remoteAddress: string, values: string[], accuracy: GpsAccuracy, activity: string): PositionPacket | undefined => {
   try {
+    // TODO: DEBUD
+    console.log(`📍 Creating position packet for IMEI: ${imei}, Remote Address: ${remoteAddress}`, values[2], values[9]);
     return {
       imei,
       remoteAddress,
