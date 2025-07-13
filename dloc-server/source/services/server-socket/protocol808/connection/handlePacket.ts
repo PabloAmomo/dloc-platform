@@ -99,17 +99,17 @@ const handlePacket: HandlePacket = async (
       )
     );
 
-    //(response.response as Buffer[]).push(
-    //  jt808CreateParameterSettingPacket(
-    //    jt808Packet.header.terminalId,
-    //    counter + 101,
-    //    [
-    //      // "0000F116 01 00", // Language setting (0x00 = EN)
-    //      // "0000F118 01 00", // Terminal battery level (0-100 only for check)
-    //      // "0000F142 01 00", // Terminal time zone (0x00 = UTC)
-    //    ]
-    //  )
-    //);
+    (response.response as Buffer[]).push(
+      jt808CreateParameterSettingPacket(
+        jt808Packet.header.terminalId,
+        counter + 101,
+        [
+          //      // "0000F116 01 00", // Language setting (0x00 = EN)
+          //      // "0000F118 01 00", // Terminal battery level (0-100 only for check)
+          "0000F142 01 00", // Terminal time zone (0x00 = UTC)
+        ]
+      )
+    );
 
     // TODO: No funciona y no se porque, revisar
     //(response.response as Buffer[]).push(
