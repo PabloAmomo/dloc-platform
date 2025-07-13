@@ -22,7 +22,7 @@ const jt808DecodeLocationReport = (data: Buffer): Jt808LocationPacket => {
     .padStart(2, "0")}`;
 
   // TODO: Solo para pruebas - ELIMINAR
-  printMessage(`📍 (jt808DecodeLocationReport) Location date/time -------> ${timeBCD} - ${time}`);
+  printMessage(`📍 (jt808DecodeLocationReport) Location date/time -------> ${time}`);
 
   const response = {
     dataType: 0,

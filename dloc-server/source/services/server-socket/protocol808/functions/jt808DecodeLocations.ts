@@ -48,7 +48,7 @@ const jt808DecodeLocations = (
 
     // TODO: Solo para pruebas - ELIMINAR
     printMessage(
-      `📍 (jt808DecodeLocations) Location date/time -------> ${timeBCD} - ${time}`
+      `📍 (jt808DecodeLocations) Location date/time -------> ${time}`
     );
 
     let gsmSignal = -1;
