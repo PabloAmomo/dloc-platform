@@ -11,6 +11,7 @@ import mySqlQueryAsync from '../functions/mySqlQueryAsync';
 
 const connectionConfig: ConnectionConfig = mySqlConnectionConfig;
 
+// TODO: No escribir batery -1 o GMS -1
 const handleUpdateDevice = async (positionPacket: PositionPacket): Promise<PersistenceResult> => {
   /** Validate data */
   const { errorMsg, message } = getErrorFromPositionPacket(positionPacket);

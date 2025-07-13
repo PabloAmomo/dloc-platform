@@ -6,6 +6,7 @@ import mySqlQueryAsync from '../functions/mySqlQueryAsync';
 
 const connectionConfig: ConnectionConfig = mySqlConnectionConfig;
 
+// TODO: No escribir batery -1 o GMS -1
 const handleAddBatteryLevel = async (imei: string, batteryLevel: number): Promise<PersistenceResult> => {
   const params = [imei, batteryLevel, batteryLevel];
   const sql = `INSERT INTO device (imei, batteryLevel, lastVisibilityUTC) VALUES (?, ?, UTC_TIMESTAMP())

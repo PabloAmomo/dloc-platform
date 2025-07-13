@@ -9,6 +9,7 @@ import mySqlQueryAsync from '../functions/mySqlQueryAsync';
 
 const connectionConfig: ConnectionConfig = mySqlConnectionConfig;
 
+// TODO: No escribir batery -1 o GMS -1
 const handleAddPosition = async (positionPacket: PositionPacket): Promise<PersistenceResult> => {
   /** validate data */
   const { errorMsg, message } = getErrorFromPositionPacket(positionPacket);
