@@ -1,6 +1,5 @@
 import powerProfileConfig from "../../../../functions/powerProfileConfig";
 import { PowerProfileType } from "../../../../enums/PowerProfileType";
-import { uniqueId } from "../../../../functions/uniqueId";
 import jt808CreateTemporaryLocationTrackingPacket from "./jt808CreateTemporaryLocationTrackingPacket";
 
 function jt808CreatePowerProfilePacket(
@@ -13,10 +12,11 @@ function jt808CreatePowerProfilePacket(
     powerProfileType
   );
 
+  // TODO: Quitar el 600 y traertlo de la constante
   return jt808CreateTemporaryLocationTrackingPacket(
     terminalId,
     counter,
-    parseInt(uploadSec),
+    uploadSec,
     600)
 }
 export default jt808CreatePowerProfilePacket;

@@ -8,7 +8,6 @@ import handleEnd from "../../../services/server-socket/protocol1903/connection/h
 import handleError from "../../../services/server-socket/protocol1903/connection/handleError";
 import net from "node:net";
 import { CACHE_POSITION } from "../../../infraestucture/caches/cachePosition";
-import { PositionPacketWithDatetime } from "../../../models/PositionPacketWithDatetime";
 import {
   CACHE_IMEI,
   clearItemInCacheIMEI,
@@ -17,6 +16,7 @@ import { getNormalizedIMEI } from "../../../functions/getNormalizedIMEI";
 import powerProfileConfig from "../../../functions/powerProfileConfig";
 import proto1903CreateConfig from "../../../services/server-socket/protocol1903/functions/proto1903CreateConfig";
 import getPowerProfile from "../../../functions/getPowerProfile";
+import { CachePosition } from "../../../infraestucture/models/CachePosition";
 
 const HTTP_200 = `${[
   "HTTP/1.1 200 OK",
@@ -93,11 +93,11 @@ const protocol1903Handler = (conn: net.Socket, persistence: Persistence) => {
           const imeiData = CACHE_IMEI.get(imei);
 
           /** Get power profile for the imei */
-          const { powerProfile, lastPowerProfileChange } =
+          const { powerProfile, lastPowerProfileChecked, needProfileRefresh } =
             await getPowerProfile(
               imei,
               persistence,
-              imeiData?.lastPowerProfileChange ?? Date.now(),
+              imeiData?.lastPowerProfileChecked ?? Date.now(),
               prefix,
               newConnection
             );
@@ -105,7 +105,7 @@ const protocol1903Handler = (conn: net.Socket, persistence: Persistence) => {
             powerProfileConfig(powerProfile);
 
           /** Get last position packet */
-          const lastPosPacket: PositionPacketWithDatetime | undefined =
+          const lastPosPacket: CachePosition | undefined =
             CACHE_POSITION.get(imei);
 
           /** Create response to send */
@@ -122,13 +122,19 @@ const protocol1903Handler = (conn: net.Socket, persistence: Persistence) => {
           CACHE_IMEI.updateOrCreate(imei, {
             socketConn: conn,
             powerProfile,
-            lastPowerProfileChange,
+            lastPowerProfileChecked,
           });
           const powerPrfChanged =
             imeiData?.powerProfile && imeiData?.powerProfile !== powerProfile;
 
           /** If new connection send configuration after response */
-          if (newConnection || powerPrfChanged) {
+          if (newConnection || powerPrfChanged || needProfileRefresh) {
+            if (needProfileRefresh) {
+              printMessage(
+                `${prefix} 🔄 power profile refresh needed, current profile [${powerProfile}]`
+              );
+            }
+
             if (powerPrfChanged)
               printMessage(
                 `${prefix} ⚡️ power profile changed from [${imeiData?.powerProfile}] to [${powerProfile}]`

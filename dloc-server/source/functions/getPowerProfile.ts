@@ -12,14 +12,21 @@ const MOVEMENTS_MTS_FOR_MINIMAL: number = 10;
 async function getPowerProfile(
   imei: string,
   persistence: Persistence,
-  lastPowerProfileChange: number,
+  lastPowerProfileChecked: number,
   messagePrefix: string,
   isNewConnection: boolean
-): Promise<{ powerProfile: PowerProfileType; lastPowerProfileChange: number }> {
+): Promise<{ powerProfile: PowerProfileType; lastPowerProfileChecked: number, needProfileRefresh: boolean }> {
   let powerProfile = PowerProfileType.AUTOMATIC_FULL;
-  let newLastPowerProfileChange = lastPowerProfileChange === 0 ? Date.now() : lastPowerProfileChange;
+  let needProfileRefresh = false;
 
-  // TODO: Si es new connection pasar la base de dato a AUTOMATIC_FULL
+  if (lastPowerProfileChecked === 0) lastPowerProfileChecked = Date.now();
+
+  if (isNewConnection) {
+    await updatePowerProfile(imei, powerProfile, persistence, messagePrefix);
+    printMessage(
+      `${messagePrefix} 🆕 new connection, setting power profile to [${powerProfile}]`
+    );
+  }
 
   try {
     const powerPrf = await persistence.getPowerProfile(imei);
@@ -35,15 +42,16 @@ async function getPowerProfile(
 
     /* Check if the power profile must be changed */
     const oldPowerProfile = powerProfile;
-    const lastPowerProfileChangeDiff =
-      Date.now() - lastPowerProfileChange > 1000 * MOVEMENTS_CONTROL_SECONDS;
+    const lastPowerProfileCheckedDiff =
+      Date.now() - lastPowerProfileChecked > 1000 * MOVEMENTS_CONTROL_SECONDS;
 
     const isAutomatic =
       powerProfile === PowerProfileType.AUTOMATIC_FULL ||
       powerProfile === PowerProfileType.AUTOMATIC_BALANCED ||
       powerProfile === PowerProfileType.AUTOMATIC_MINIMAL;
 
-    if (lastPowerProfileChangeDiff && isAutomatic) {
+    if (lastPowerProfileCheckedDiff && isAutomatic) {
+      needProfileRefresh = true;
       /** Get the movement in last seconds */
       const metersMoveInLastSeconds = await getMovementInLastSeconds(
         imei,
@@ -86,6 +94,7 @@ async function getPowerProfile(
       }
 
       /* Save the new power profile (If was changed) */
+      lastPowerProfileChecked = Date.now();
       if (profileChanged) {
         const changed = await updatePowerProfile(
           imei,
@@ -95,7 +104,6 @@ async function getPowerProfile(
         );
         if (!changed) powerProfile = oldPowerProfile;
         else {
-          newLastPowerProfileChange = Date.now();
           printMessage(
             `${messagePrefix} ⚡️ power profile automatically changed from [${oldPowerProfile}] to [${powerProfile}]`
           );
@@ -114,7 +122,7 @@ async function getPowerProfile(
     );
   }
 
-  return { powerProfile, lastPowerProfileChange: newLastPowerProfileChange };
+  return { powerProfile, lastPowerProfileChecked, needProfileRefresh };
 }
 
 export default getPowerProfile;

@@ -8,7 +8,6 @@ import handleEnd from "../../../services/server-socket/protocol808/connection/ha
 import handleError from "../../../services/server-socket/protocol808/connection/handleError";
 import net from "node:net";
 import { CACHE_POSITION } from "../../../infraestucture/caches/cachePosition";
-import { PositionPacketWithDatetime } from "../../../models/PositionPacketWithDatetime";
 import {
   CACHE_IMEI,
   clearItemInCacheIMEI,
@@ -23,6 +22,7 @@ import convertStringToHexString from "../../../functions/convertStringToHexStrin
 import jt808FrameEncode from "../../../services/server-socket/protocol808/functions/jt808FrameEncode";
 import { response } from "express";
 import jt808CreatePowerProfilePacket from "../../../services/server-socket/protocol808/functions/jt808CreatePowerProfilePacket";
+import { CachePosition } from "../../../infraestucture/models/CachePosition";
 
 const HTTP_200 = `${[
   "HTTP/1.1 200 OK",
@@ -97,11 +97,11 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
           const imeiData = CACHE_IMEI.get(imei);
 
           /** Get power profile for the imei */
-          const { powerProfile, lastPowerProfileChange } =
+          const { powerProfile, lastPowerProfileChecked, needProfileRefresh } =
             await getPowerProfile(
               imei,
               persistence,
-              imeiData?.lastPowerProfileChange ??  Date.now(),
+              imeiData?.lastPowerProfileChecked ??  Date.now(),
               prefix,
               newConnection
             );
@@ -109,20 +109,26 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
             powerProfileConfig(powerProfile);
 
           /** Get last position packet */
-          const lastPosPacket: PositionPacketWithDatetime | undefined =
+          const lastPosPacket: CachePosition | undefined =
             CACHE_POSITION.get(imei);
 
           /** create or update socket connection to cache */
           CACHE_IMEI.updateOrCreate(imei, {
             socketConn: conn,
             powerProfile,
-            lastPowerProfileChange,
+            lastPowerProfileChecked,
           });
           const powerPrfChanged =
             imeiData?.powerProfile && imeiData?.powerProfile !== powerProfile;
 
           /** If new connection send configuration after response */
-          if (newConnection || powerPrfChanged) {
+          if (newConnection || powerPrfChanged || needProfileRefresh) {
+            if (needProfileRefresh) {
+              printMessage(
+                `${prefix} 🔄 power profile refresh needed, current profile [${powerProfile}]`
+              );
+            }
+            
             if (powerPrfChanged)
               printMessage(
                 `${prefix} ⚡️ power profile changed from [${imeiData?.powerProfile}] to [${powerProfile}]`

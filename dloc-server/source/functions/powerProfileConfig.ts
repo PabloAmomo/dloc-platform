@@ -1,18 +1,18 @@
 import { PowerProfileType } from "../enums/PowerProfileType";
+import { PowerProfileConfig } from "../models/PowerProfileConfig";
 import { printMessage } from "./printMessage";
 
-// TODO: Hacer los valores en numbers y no en strings
 function powerProfileConfig(
   profileType: PowerProfileType = PowerProfileType.FULL
-) {
+) : PowerProfileConfig {
   if (
     profileType === PowerProfileType.MINIMAL ||
     profileType === PowerProfileType.AUTOMATIC_MINIMAL
   )
     return {
       heartBeatSec: 60,
-      uploadSec: "090",
-      ledState: "0",
+      uploadSec: 90,
+      ledState: false,
       forceReportLocInMs: 110000,
     };
 
@@ -22,8 +22,8 @@ function powerProfileConfig(
   )
     return {
       heartBeatSec: 60,
-      uploadSec: "060",
-      ledState: "0",
+      uploadSec: 60,
+      ledState: false,
       forceReportLocInMs: 80000,
     };
 
@@ -39,8 +39,8 @@ function powerProfileConfig(
   // Full power profile configuration
   return {
     heartBeatSec: 60,
-    uploadSec: "020",
-    ledState: "1",
+    uploadSec: 20,
+    ledState: true,
     forceReportLocInMs: 50000,
   };
 }

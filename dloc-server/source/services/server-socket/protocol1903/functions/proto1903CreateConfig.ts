@@ -1,6 +1,7 @@
 import powerProfileConfig from "../../../../functions/powerProfileConfig";
 import { PowerProfileType } from "../../../../enums/PowerProfileType";
 import { uniqueId } from "../../../../functions/uniqueId";
+import padNumberLeft from "../../../../functions/padNumberLeft";
 
 function proto1903CreateConfig(
   powerProfileType: PowerProfileType
@@ -14,9 +15,9 @@ function proto1903CreateConfig(
   // Set heartbeat packet interval (issue: dp03, reply: cp03)
   response += `TRVDP03${timestamp},${heartBeatSec}#`;
   // Set LED display switch (up: AP92; down: bp92)∫
-  response += `TRVBP92${parseInt(timestamp) + 1}${ledState}#`;
+  response += `TRVBP92${parseInt(timestamp) + 1}${ledState ? "1" : "0"}#`;
   // Set upload interval (downlink protocol No.: wp02, response: xp02)
-  response += `TRVWP02${parseInt(timestamp) + 2}${uploadSec}#`;
+  response += `TRVWP02${parseInt(timestamp) + 2}${padNumberLeft(uploadSec,3,"0")}#`;
   // Add force report location interval
   response += "TRVBP20#";
 
