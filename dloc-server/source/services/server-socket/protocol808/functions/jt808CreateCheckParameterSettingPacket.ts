@@ -7,22 +7,22 @@ const jt808CreateCheckParameterSettingPacket = (
   counter: number,
   parameters: string[]
 ): Buffer => {
-  const paramList =
-    padNumberLeft(parameters.length, 2, "0") +
-    parameters
-      .map((value) => padNumberLeft(value, 4, "0"))
-      .join("")
-      .replace(/ /g, "");
+  let paramList = "";
 
-  if (paramList.length === 0) {
-  }
+  if (parameters.length > 0)
+    paramList =
+      padNumberLeft(parameters.length, 2, "0") +
+      parameters
+        .map((value) => padNumberLeft(value, 4, "0"))
+        .join("")
+        .replace(/ /g, "");
 
   const packet = jt808CreateFrameData({
     msgType: paramList.length === 0 ? 0x8104 : 0x8106,
     terminalId: Buffer.from(terminalId, "hex"),
     msgSerialNumber: counter,
     body:
-      paramList.length === 0 ? Buffer.alloc(0) : Buffer.from(paramList, "hex"),
+      parameters.length === 0 ? Buffer.alloc(0) : Buffer.from(paramList, "hex"),
   });
 
   return packet;
