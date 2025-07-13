@@ -5,18 +5,18 @@ import jt808CreateTemporaryLocationTrackingPacket from "./jt808CreateTemporaryLo
 function jt808CreatePowerProfilePacket(
   terminalId : string,
   counter : number,
-  powerProfileType: PowerProfileType
+  powerProfileType: PowerProfileType,
+  durationSec: number 
 ): Buffer {
 
   const { uploadSec } = powerProfileConfig(
     powerProfileType
   );
 
-  // TODO: Quitar el 600 y traertlo de la constante
   return jt808CreateTemporaryLocationTrackingPacket(
     terminalId,
     counter,
     uploadSec,
-    600)
+    durationSec)
 }
 export default jt808CreatePowerProfilePacket;

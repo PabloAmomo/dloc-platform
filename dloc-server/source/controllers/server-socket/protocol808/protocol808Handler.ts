@@ -20,7 +20,6 @@ import powerProfileConfig from "../../../functions/powerProfileConfig";
 import getPowerProfile from "../../../functions/getPowerProfile";
 import convertStringToHexString from "../../../functions/convertStringToHexString";
 import jt808FrameEncode from "../../../services/server-socket/protocol808/functions/jt808FrameEncode";
-import { response } from "express";
 import jt808CreatePowerProfilePacket from "../../../services/server-socket/protocol808/functions/jt808CreatePowerProfilePacket";
 import { CachePosition } from "../../../infraestucture/models/CachePosition";
 import jt808CreateParameterSettingPacket from "../../../services/server-socket/protocol808/functions/jt808CreateParameterSettingPacket";
@@ -98,7 +97,7 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
           const imeiData = CACHE_IMEI.get(imei);
 
           /** Get power profile for the imei */
-          const { powerProfile, lastPowerProfileChecked, needProfileRefresh } =
+          const { powerProfile, lastPowerProfileChecked, needProfileRefresh, movementsControlSeconds } =
             await getPowerProfile(
               imei,
               persistence,
@@ -144,7 +143,8 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
             const powerPacket = jt808CreatePowerProfilePacket(
               terminalId,
               counter + 200,
-              powerProfile
+              powerProfile,
+              movementsControlSeconds * 2
             );
             printMessage(
               `${prefix} 🔋 Power Packet: ${convertStringToHexString(

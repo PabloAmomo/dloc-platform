@@ -4,7 +4,6 @@ import getMovementInLastSeconds from "./getMovementInLastSeconds";
 import { printMessage } from "./printMessage";
 import updatePowerProfile from "./updatePowerProfile";
 
-// TODO: el valor de MOVEMENTS_CONTROL_SECONDS es usado en jt808CreatePowerProfilePacket
 const MOVEMENTS_CONTROL_SECONDS: number = 300;
 const MOVEMENTS_MTS_FOR_BALANCED: number = 50;
 const MOVEMENTS_MTS_FOR_MINIMAL: number = 10;
@@ -15,7 +14,7 @@ async function getPowerProfile(
   lastPowerProfileChecked: number,
   messagePrefix: string,
   isNewConnection: boolean
-): Promise<{ powerProfile: PowerProfileType; lastPowerProfileChecked: number, needProfileRefresh: boolean }> {
+): Promise<{ powerProfile: PowerProfileType; lastPowerProfileChecked: number, needProfileRefresh: boolean, movementsControlSeconds: number }> {
   let powerProfile = PowerProfileType.AUTOMATIC_FULL;
   let needProfileRefresh = false;
 
@@ -122,7 +121,7 @@ async function getPowerProfile(
     );
   }
 
-  return { powerProfile, lastPowerProfileChecked, needProfileRefresh };
+  return { powerProfile, lastPowerProfileChecked, needProfileRefresh, movementsControlSeconds: MOVEMENTS_CONTROL_SECONDS };
 }
 
 export default getPowerProfile;
