@@ -14,7 +14,17 @@ const jt808CreatePositionPacket = (
   try {
     const dateTimeUtc = new Date(locationPacket.dateTimeUTC);
 
-    const currentTimeUtc = new Date();
+    const now = new Date();
+    const currentTimeUtc = new Date(
+      now.getUTCFullYear(),
+      now.getUTCMonth(),
+      now.getUTCDate(),
+      now.getUTCHours(),
+      now.getUTCMinutes(),
+      now.getUTCSeconds(),
+      now.getUTCMilliseconds()
+    );
+
     const timeDifference = Math.abs(
       currentTimeUtc.getTime() - dateTimeUtc.getTime()
     );

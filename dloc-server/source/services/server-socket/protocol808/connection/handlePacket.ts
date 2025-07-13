@@ -311,7 +311,7 @@ const handlePacket: HandlePacket = async (
       // TODO: Desconectar el dispositivo (conn.close)
       messageText = "🔚 Terminal Logout";
     } else if (jt808Packet.header.msgType === 0x0104) {
-      messageText = "⚙️ Check terminal parameter response";
+      messageText = "⚙️  Check terminal parameter response";
       const parametersSettings = jt808ParseParamentersSettings(
         imeiTemp,
         remoteAddress,

@@ -46,13 +46,13 @@ const jt808DecodeLocations = (
       .toString(16)
       .padStart(2, "0")}:${timeBCD[5].toString(16).padStart(2, "0")}`;
 
-    // TODO: Usando la fecha-hora local del servidor, hay que ver por que no trae la hora correcta el paquete
-    const dateTimeUTC = new Date().toISOString();
-
     // TODO: Solo para pruebas - ELIMINAR
     printMessage(
       `📍 (jt808DecodeLocations) Location date/time -------> ${time}`
     );
+
+    // TODO: Usando la fecha-hora local del servidor, hay que ver por que no trae la hora correcta el paquete
+    const dateTimeUTC = new Date().toISOString();
 
     let gsmSignal = -1;
     let satellites = -1;
