@@ -23,6 +23,9 @@ const jt808DecodeLocationReport = (data: Buffer): Jt808LocationPacket => {
 
   // TODO: Solo para pruebas - ELIMINAR
   printMessage(`📍 (jt808DecodeLocationReport) Location date/time -------> ${time}`);
+  
+  // TODO: Usando la fecha-hora local del servidor, hay que ver por que no trae la hora correcta el paquete
+  const timeServer = new Date().toISOString().replace("T", " ").slice(0, 19);
 
   const response = {
     dataType: 0,
@@ -35,7 +38,7 @@ const jt808DecodeLocationReport = (data: Buffer): Jt808LocationPacket => {
     altitude,
     speed,
     direction,
-    time,
+    time: timeServer,
   };
 
   return response;
