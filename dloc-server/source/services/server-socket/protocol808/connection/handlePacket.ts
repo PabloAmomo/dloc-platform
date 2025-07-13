@@ -18,13 +18,9 @@ import jt808CreateQueryLocationMessage from "../functions/jt808CreateQueryLocati
 import jt808DecodeLocations from "../functions/jt808DecodeLocations";
 import jt808DecodeLocationReport from "../functions/jt808DecodeLocationReport";
 import jt808CreateFrameData from "../functions/jt808CreateFrameData";
-import jt808CreateTerminalAttributesMessage from "../functions/jt808CreateTerminalAttributesMessage";
 import jt808ParseTerminalAttributes from "../functions/jt808ParseTerminalAttributesBits";
 import jt808PersistLocation from "../functions/jt808PersistLocation";
-import jt808CreateParameterSettingPacket from "../functions/jt808CreateParameterSettingPacket";
 import jt808ParseCommonResultFromTerminal from "../functions/jt808ParseCommonResultFromTerminal";
-
-const noImei: string = "no imei received";
 
 const handlePacket: HandlePacket = async (
   props: Omit<HandlePacketProps, 'data'> & { data: Buffer }
@@ -140,7 +136,7 @@ const handlePacket: HandlePacket = async (
     );
 
     // TODO: Descartar paquetes desfazados en tiempo (Aquí o al crear el paqiuete de Location¿?)
-    
+
     // TODO: El paqete 0200 no trae ni bateria ni gsmSignal, por lo que hay que traerlo de otro lado.
 
     response.imei = padNumberLeft(jt808Packet.header.terminalId, 15, "0");
