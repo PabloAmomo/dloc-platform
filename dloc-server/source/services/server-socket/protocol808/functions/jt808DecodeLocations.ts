@@ -1,8 +1,12 @@
+import { printMessage } from "../../../../functions/printMessage";
 import { Jt808LocationPacket } from "../models/Jt808LocationPacket";
 import jt808ParseAlarmBits from "./jt808ParseAlarmBits";
 import jt808ParseStatusBits from "./jt808ParseStatusBits";
 
-const jt808DecodeLocations = (body: Buffer, multiLocations: boolean) : {
+const jt808DecodeLocations = (
+  body: Buffer,
+  multiLocations: boolean
+): {
   count: number;
   locations: Jt808LocationPacket[];
 } => {
@@ -41,6 +45,11 @@ const jt808DecodeLocations = (body: Buffer, multiLocations: boolean) : {
       .padStart(2, "0")}:${timeBCD[4]
       .toString(16)
       .padStart(2, "0")}:${timeBCD[5].toString(16).padStart(2, "0")}`;
+
+    // TODO: Solo para pruebas - ELIMINAR
+    printMessage(
+      `📍 (jt808DecodeLocations) Location date/time -------> ${timeBCD} - ${time}`
+    );
 
     let gsmSignal = -1;
     let satellites = -1;
@@ -92,7 +101,10 @@ type TypedBlock = {
   data: Buffer;
 };
 
-function jt808ParseTypedBlocks(buffer: Buffer, start: number = 0): TypedBlock[] {
+function jt808ParseTypedBlocks(
+  buffer: Buffer,
+  start: number = 0
+): TypedBlock[] {
   const result: TypedBlock[] = [];
   let offset = start;
 

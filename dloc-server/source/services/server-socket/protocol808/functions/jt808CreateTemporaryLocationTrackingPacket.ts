@@ -7,17 +7,9 @@ const jt808CreateTemporaryLocationTrackingPacket = (
   intervalSec: number,
   durationSec: number
 ): Buffer => {
-  // TODO: Quitar los comentarios y usar createHexFromNumberWithNBytes
   const bufInterval = createHexFromNumberWithNBytes(intervalSec, 2);
-  //const bufInterval = Buffer.alloc(2);
-  //bufInterval.writeUInt16BE(intervalSec);
-
   const bufDuration = createHexFromNumberWithNBytes(durationSec, 4);
-  //const bufDuration = Buffer.alloc(4);
-  //bufDuration.writeUInt32BE(durationSec);
-
   const paramter1 = bufInterval + bufDuration;
-  // const paramter1 = Buffer.concat([bufInterval, bufDuration]).toString("hex");
 
   const packet = jt808CreateFrameData({
     msgType: 0x8202,

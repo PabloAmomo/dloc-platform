@@ -1,3 +1,4 @@
+import { printMessage } from "../../../../functions/printMessage";
 import { Jt808LocationPacket } from "../models/Jt808LocationPacket";
 import jt808ParseAlarmBits from "./jt808ParseAlarmBits";
 import jt808ParseStatusBits from "./jt808ParseStatusBits";
@@ -19,6 +20,9 @@ const jt808DecodeLocationReport = (data: Buffer): Jt808LocationPacket => {
     .padStart(2, "0")}:${timeBCD[4].toString(16).padStart(2, "0")}:${timeBCD[5]
     .toString(16)
     .padStart(2, "0")}`;
+
+  // TODO: Solo para pruebas - ELIMINAR
+  printMessage(`📍 (jt808DecodeLocationReport) Location date/time -------> ${timeBCD} - ${time}`);
 
   const response = {
     dataType: 0,
