@@ -4,12 +4,12 @@ import { printMessage } from "../../../../functions/printMessage";
 const jt808TimeSyncBody = (date: Date = new Date()): Buffer => {
   const buffer = Buffer.alloc(7);
 
-  const year = date.getFullYear();
-  const month = date.getMonth() + 1; // getMonth() es 0-indexado
-  const day = date.getDate();
-  const hour = date.getHours();
-  const minute = date.getMinutes();
-  const second = date.getSeconds();
+  const year = date.getUTCFullYear();
+  const month = date.getUTCMonth() + 1; // getMonth() es 0-indexado
+  const day = date.getUTCDate();
+  const hour = date.getUTCHours();
+  const minute = date.getUTCMinutes();
+  const second = date.getUTCSeconds();
 
   buffer.writeUInt16BE(year, 0); // bytes 0–1
   buffer.writeUInt8(month, 2); // byte 2
@@ -20,6 +20,8 @@ const jt808TimeSyncBody = (date: Date = new Date()): Buffer => {
 
   // TODO: Solo por debug
   printMessage(`----> 📅 Time Sync Body: ${convertStringToHexString(buffer)}`);
+  printMessage(
+    `----> 📅 Time Sync Body: ${year}-${month}-${day} ${hour}:${minute}:${second}`); 
 
   return buffer;
 };
