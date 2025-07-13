@@ -105,10 +105,10 @@ const handlePacket: HandlePacket = async (
         jt808Packet.header.terminalId,
         counter + 102,
         [
-          //"0001", // Heartbeat
+          "0001", // Heartbeat
           //"F116", // Language setting (0x00 = EN)
           //"F118", // Terminal battery level (0-100 only for check)
-          "0000F142", // Terminal time zone (0x00 = UTC)
+          "F142", // Terminal time zone (0x00 = UTC)
         ]
       )
     );
