@@ -99,31 +99,19 @@ const handlePacket: HandlePacket = async (
       )
     );
 
+    // TODO: No funciona y no se porque, revisar
     (response.response as Buffer[]).push(
-      jt808CreateParameterSettingPacket(
+      jt808CreateCheckParameterSettingPacket(
         jt808Packet.header.terminalId,
-        counter + 101,
+        counter + 102,
         [
-          "0000F116 01 00", // Language setting (0x00 = EN)
-          "0000F118 01 00", // Terminal battery level (0-100 only for check)
-          // "0000F142 01 00", // Terminal time zone (0x00 = UTC)
+          //"0001", // Heartbeat
+          //"F116", // Language setting (0x00 = EN)
+          //"F118", // Terminal battery level (0-100 only for check)
+          "0000F142", // Terminal time zone (0x00 = UTC)
         ]
       )
     );
-
-    // TODO: No funciona y no se porque, revisar
-    //(response.response as Buffer[]).push(
-    //  jt808CreateCheckParameterSettingPacket(
-    //    jt808Packet.header.terminalId,
-    //    counter + 102,
-    //    [
-    //      "0001", // Heartbeat
-    //      "F116", // Language setting (0x00 = EN)
-    //      "F118", // Terminal battery level (0-100 only for check)
-    //      "F142", // Terminal time zone (0x00 = UTC)
-    //    ]
-    //  )
-    //);
 
     // TODO: No funciona y no se porque, revisar
     //(response.response as Buffer[]).push(
