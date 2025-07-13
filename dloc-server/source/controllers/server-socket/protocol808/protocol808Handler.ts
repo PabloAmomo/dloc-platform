@@ -23,6 +23,7 @@ import jt808FrameEncode from "../../../services/server-socket/protocol808/functi
 import jt808CreatePowerProfilePacket from "../../../services/server-socket/protocol808/functions/jt808CreatePowerProfilePacket";
 import { CachePosition } from "../../../infraestucture/models/CachePosition";
 import jt808CreateParameterSettingPacket from "../../../services/server-socket/protocol808/functions/jt808CreateParameterSettingPacket";
+import createHexFromNumberWithNBytes from "../../../functions/createHexFromNumberWithNBytes";
 
 const HTTP_200 = `${[
   "HTTP/1.1 200 OK",
@@ -105,7 +106,7 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
               prefix,
               newConnection
             );
-          const { uploadSec } = powerProfileConfig(powerProfile);
+          const { uploadSec, heartBeatSec } = powerProfileConfig(powerProfile);
 
           /** Get last position packet */
           const lastPosPacket: CachePosition | undefined =
@@ -133,9 +134,8 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
                 `${prefix} ⚡️ power profile changed from [${imeiData?.powerProfile}] to [${powerProfile}]`
               );
 
-            // TODO: Cuando enviemmos el heartbeat, agregar aquí tambien el dato de heartbeat
             printMessage(
-              `${prefix} 📡 send Upload Interval [${uploadSec} sec]`
+              `${prefix} 📡 send Upload Interval [${uploadSec} sec] - Heartbeat [${heartBeatSec}]`
             );
 
             const terminalId = imei.slice(-12);
@@ -157,10 +157,10 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
             const heartBeatPacket = jt808CreateParameterSettingPacket(
               terminalId,
               counter + 201,
-              ["0001 04 0000001E"] 
+              ["0001 04 " + createHexFromNumberWithNBytes(heartBeatSec, 4)] 
             );
             printMessage(
-              `${prefix} ❤️ Heart beat Packet: ${convertStringToHexString(
+              `${prefix} ❤️  Heart beat Packet: ${convertStringToHexString(
                 heartBeatPacket
               )}`
             );
