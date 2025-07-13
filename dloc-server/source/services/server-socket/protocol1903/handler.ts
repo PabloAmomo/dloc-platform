@@ -1,4 +1,4 @@
-import { HandleDataProps } from "../../../models/HandleDataProps";
+import { HandleHandlerProps } from "../../../models/HandleDataProps";
 import { HandlePacketResult } from "../../../models/HandlePacketResult";
 import { printMessage } from "../../../functions/printMessage";
 import { getNormalizedIMEI } from "../../../functions/getNormalizedIMEI";
@@ -10,7 +10,7 @@ const handler = async ({
   handlePacket,
   persistence,
   counter,
-}: HandleDataProps): Promise<HandlePacketResult[]> => {
+}: HandleHandlerProps & { data: String }): Promise<HandlePacketResult[]> => {
   /** Save results */
   const results: HandlePacketResult[] = [];
 

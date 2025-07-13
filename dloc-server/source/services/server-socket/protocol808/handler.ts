@@ -1,4 +1,4 @@
-import { HandleDataProps } from "../../../models/HandleDataProps";
+import { HandleHandlerProps } from "../../../models/HandleDataProps";
 import { HandlePacketResult } from "../../../models/HandlePacketResult";
 import { printMessage } from "../../../functions/printMessage";
 import { getNormalizedIMEI } from "../../../functions/getNormalizedIMEI";
@@ -12,12 +12,12 @@ const handler = async ({
   handlePacket,
   persistence,
   counter,
-}: HandleDataProps): Promise<HandlePacketResult> => {
+}: HandleHandlerProps & { data: Buffer }): Promise<HandlePacketResult> => {
   /** results */
   let result: HandlePacketResult = {  imei, error: "", response: [] };
 
   // TODO: Unificar handlers para protocolo 808 y 1903
-  
+
   const dataString: string = convertStringToHexString(data);
 
   let inPacket: Buffer | null = jt808FrameDecode(data as Buffer);
