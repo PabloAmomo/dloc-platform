@@ -24,6 +24,8 @@ import jt808ParseCommonResultFromTerminal from "../functions/jt808ParseCommonRes
 import jt808CreateCheckParameterSettingPacket from "../functions/jt808CreateCheckParameterSettingPacket";
 import jt808ParseParamentersSettings from "../functions/jt808ParseParamentersSettings";
 
+  // TODO: Mover parte del codigo a otro lado, o fragmentar su responsabilidad
+  
 const handlePacket: HandlePacket = async (
   props: Omit<HandlePacketProps, "data"> & { data: Buffer }
 ): Promise<HandlePacketResult> => {
@@ -159,8 +161,6 @@ const handlePacket: HandlePacket = async (
       )
     );
 
-    // TODO: Descartar paquetes desfazados en tiempo (Aquí o al crear el paqiuete de Location¿?)
-
     // TODO: El paqete 0200 no trae ni bateria ni gsmSignal, por lo que hay que traerlo de otro lado.
 
     response.imei = padNumberLeft(jt808Packet.header.terminalId, 15, "0");
@@ -280,6 +280,7 @@ const handlePacket: HandlePacket = async (
   // Upload the power saving mode modified by SMS to the serve (0x0112)
   //     response 0x8001
   // ---------------------------------------
+
   else if (
     [0x0002, 0x0003, 0x0104, 0x0105, 0x0107, 0x0108, 0x0112, 0x1007].includes(
       jt808Packet.header.msgType
@@ -317,6 +318,17 @@ const handlePacket: HandlePacket = async (
         remoteAddress,
         jt808Packet.body
       );
+      if (parametersSettings.paramatersSettings.batteryLevel) {
+        await positionUpdateBatteryAndLastActivity(
+          imeiTemp,
+          remoteAddress,
+          persistence,
+          parametersSettings.paramatersSettings.batteryLevel.value as number
+        );
+        printMessage(
+          `[${imeiTemp}] (${remoteAddress}) 🔋 Battery level saved ✅ ${parametersSettings.paramatersSettings.batteryLevel.value}%`
+        );
+      }
       // TODO: Procesar los parametros (Bateria / timezona / heartbeat)
 
       // TODO: Si la timeZone no es 0, enviar un actualización para que se ponga a UTC (OJO QUE RESETEA EL DISPOSITIVO)

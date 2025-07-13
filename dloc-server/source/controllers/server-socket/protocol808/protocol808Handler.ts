@@ -12,10 +12,7 @@ import {
   CACHE_IMEI,
   clearItemInCacheIMEI,
 } from "../../../infraestucture/caches/cacheIMEI";
-import {
-  getNormalizedIMEI,
-  NO_IMEI_STRING,
-} from "../../../functions/getNormalizedIMEI";
+import { getNormalizedIMEI } from "../../../functions/getNormalizedIMEI";
 import powerProfileConfig from "../../../functions/powerProfileConfig";
 import getPowerProfile from "../../../functions/getPowerProfile";
 import convertStringToHexString from "../../../functions/convertStringToHexString";
@@ -24,6 +21,7 @@ import jt808CreatePowerProfilePacket from "../../../services/server-socket/proto
 import { CachePosition } from "../../../infraestucture/models/CachePosition";
 import jt808CreateParameterSettingPacket from "../../../services/server-socket/protocol808/functions/jt808CreateParameterSettingPacket";
 import createHexFromNumberWithNBytes from "../../../functions/createHexFromNumberWithNBytes";
+import jt808CreateCheckParameterSettingPacket from "../../../services/server-socket/protocol808/functions/jt808CreateCheckParameterSettingPacket";
 
 const HTTP_200 = `${[
   "HTTP/1.1 200 OK",
@@ -98,14 +96,18 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
           const imeiData = CACHE_IMEI.get(imei);
 
           /** Get power profile for the imei */
-          const { powerProfile, lastPowerProfileChecked, needProfileRefresh, movementsControlSeconds } =
-            await getPowerProfile(
-              imei,
-              persistence,
-              imeiData?.lastPowerProfileChecked ?? Date.now(),
-              prefix,
-              newConnection
-            );
+          const {
+            powerProfile,
+            lastPowerProfileChecked,
+            needProfileRefresh,
+            movementsControlSeconds,
+          } = await getPowerProfile(
+            imei,
+            persistence,
+            imeiData?.lastPowerProfileChecked ?? Date.now(),
+            prefix,
+            newConnection
+          );
           const { uploadSec, heartBeatSec } = powerProfileConfig(powerProfile);
 
           /** Get last position packet */
@@ -140,6 +142,7 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
 
             const terminalId = imei.slice(-12);
 
+            /** Create Power Profile Packet */
             const powerPacket = jt808CreatePowerProfilePacket(
               terminalId,
               counter + 200,
@@ -153,10 +156,11 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
             );
             (results[0].response as Buffer[]).push(powerPacket);
 
+            /* Create HeartBeat Packet */
             const heartBeatPacket = jt808CreateParameterSettingPacket(
               terminalId,
               counter + 201,
-              ["00000001 04 " + createHexFromNumberWithNBytes(heartBeatSec, 4)] 
+              ["00000001 04 " + createHexFromNumberWithNBytes(heartBeatSec, 4)]
             );
             printMessage(
               `${prefix} ❤️  Heart beat config Packet sent: ${convertStringToHexString(
@@ -164,7 +168,17 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
               )}`
             );
             (results[0].response as Buffer[]).push(heartBeatPacket);
- 
+
+            /* Ask for parameters settings */
+            (results[0].response as Buffer[]).push(
+              jt808CreateCheckParameterSettingPacket(
+                terminalId,
+                counter + 202,
+                []
+              )
+            );
+            printMessage(`${prefix} ⚙️  Parameters setting Packet sent`);
+
             newConnection = false;
           }
 

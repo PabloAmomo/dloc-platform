@@ -33,7 +33,7 @@ async function positionUpdateBatteryAndLastActivity(
       if (result.error) {
         message = result.error.message;
         printMessage(
-          `[${imei}] (${remoteAddress}) error updating last activity (updateLastActivity) [${
+          `[${imei}] (${remoteAddress}) ❌ error updating last activity (updateLastActivity) [${
             result.error?.message || result.error
           }]`
         );
