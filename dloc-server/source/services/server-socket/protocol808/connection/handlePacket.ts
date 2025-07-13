@@ -316,7 +316,7 @@ const handlePacket: HandlePacket = async (
     let messageText = "";
 
     if (jt808Packet.header.msgType === 0x0002) {
-      messageText = "❤️ Terminal heartbeat";
+      messageText = "❤️  Terminal heartbeat";
     } else if (jt808Packet.header.msgType === 0x0003) {
       // TODO: Desconectar el dispositivo (conn.close)
       messageText = "🔚 Terminal Logout";
