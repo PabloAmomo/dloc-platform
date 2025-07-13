@@ -18,11 +18,6 @@ const jt808TimeSyncBody = (date: Date = new Date()): Buffer => {
   buffer.writeUInt8(minute, 5); // byte 5
   buffer.writeUInt8(second, 6); // byte 6
 
-  // TODO: Solo por debug
-  printMessage(`----> 📅 Time Sync Body: ${convertStringToHexString(buffer)}`);
-  printMessage(
-    `----> 📅 Time Sync Body: ${year}-${month}-${day} ${hour}:${minute}:${second}`); 
-
   return buffer;
 };
 
