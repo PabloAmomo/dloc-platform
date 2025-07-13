@@ -22,6 +22,7 @@ import jt808ParseTerminalAttributes from "../functions/jt808ParseTerminalAttribu
 import jt808PersistLocation from "../functions/jt808PersistLocation";
 import jt808ParseCommonResultFromTerminal from "../functions/jt808ParseCommonResultFromTerminal";
 import jt808CreateParameterSettingPacket from "../functions/jt808CreateParameterSettingPacket";
+import jt808CreateCheckParameterSettingPacket from "../functions/jt808CreateCheckParameterSettingPacket";
 
 const handlePacket: HandlePacket = async (
   props: Omit<HandlePacketProps, "data"> & { data: Buffer }
@@ -106,6 +107,19 @@ const handlePacket: HandlePacket = async (
           "F116 01 00", // Language setting (0x00 = EN)
           "F118 01 00", // Terminal battery level (0-100 only for check)
           "F142 01 00", // Terminal time zone (0x00 = UTC)
+        ]
+      )
+    );
+
+    (response.response as Buffer[]).push(
+      jt808CreateCheckParameterSettingPacket(
+        jt808Packet.header.terminalId,
+        counter + 102,
+        [
+          "0001", // Heartbeat
+          "F116", // Language setting (0x00 = EN)
+          "F118", // Terminal battery level (0-100 only for check)
+          "F142", // Terminal time zone (0x00 = UTC)
         ]
       )
     );
