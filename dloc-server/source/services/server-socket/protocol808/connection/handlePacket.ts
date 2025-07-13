@@ -106,21 +106,22 @@ const handlePacket: HandlePacket = async (
         counter + 101,
         [
           "0001", // Heartbeat
+          "0002", // Heartbeat
           //"F116", // Language setting (0x00 = EN)
           //"F118", // Terminal battery level (0-100 only for check)
-          "F142", // Terminal time zone (0x00 = UTC)
+          // "F142", // Terminal time zone (0x00 = UTC)
         ]
       )
     );
 
     // TODO: No funciona y no se porque, revisar
-    //(response.response as Buffer[]).push(
-    //  jt808CreateCheckParameterSettingPacket(
-    //    jt808Packet.header.terminalId,
-    //    counter + 103,
-    //    []
-    //  )
-    //);
+    (response.response as Buffer[]).push(
+      jt808CreateCheckParameterSettingPacket(
+        jt808Packet.header.terminalId,
+        counter + 102,
+        []
+      )
+    );
 
     response.imei = padNumberLeft(jt808Packet.header.terminalId, 15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
