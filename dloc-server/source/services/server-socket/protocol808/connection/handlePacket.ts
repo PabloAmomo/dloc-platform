@@ -25,7 +25,7 @@ import jt808CreateCheckParameterSettingPacket from "../functions/jt808CreateChec
 import jt808ParseParamentersSettings from "../functions/jt808ParseParamentersSettings";
 
   // TODO: Mover parte del codigo a otro lado, o fragmentar su responsabilidad
-  
+
 const handlePacket: HandlePacket = async (
   props: Omit<HandlePacketProps, "data"> & { data: Buffer }
 ): Promise<HandlePacketResult> => {
@@ -326,11 +326,10 @@ const handlePacket: HandlePacket = async (
           parametersSettings.paramatersSettings.batteryLevel.value as number
         );
         printMessage(
-          `[${imeiTemp}] (${remoteAddress}) 🔋 Battery level saved ✅ ${parametersSettings.paramatersSettings.batteryLevel.value}%`
+          `[${imeiTemp}] (${remoteAddress}) 🔋 Battery level ✅ ${parametersSettings.paramatersSettings.batteryLevel.value}% (Updated on device)`
         );
       }
-      // TODO: Procesar los parametros (Bateria / timezona / heartbeat)
-
+      // TODO: Procesar los parametros (timezona)
       // TODO: Si la timeZone no es 0, enviar un actualización para que se ponga a UTC (OJO QUE RESETEA EL DISPOSITIVO)
       //(response.response as Buffer[]).push(
       //  jt808CreateParameterSettingPacket(
