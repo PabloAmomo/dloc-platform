@@ -147,7 +147,7 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
               movementsControlSeconds * 2
             );
             printMessage(
-              `${prefix} 🔋 Power Packet: ${convertStringToHexString(
+              `${prefix} 🔋 Power config Packet sent: ${convertStringToHexString(
                 powerPacket
               )}`
             );
@@ -160,7 +160,7 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
               ["0001 04 " + createHexFromNumberWithNBytes(heartBeatSec, 4)] 
             );
             printMessage(
-              `${prefix} ❤️  Heart beat Packet: ${convertStringToHexString(
+              `${prefix} ❤️  Heart beat config Packet sent: ${convertStringToHexString(
                 heartBeatPacket
               )}`
             );
