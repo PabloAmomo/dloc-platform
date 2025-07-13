@@ -354,7 +354,7 @@ const handlePacket: HandlePacket = async (
     printMessage(
       `[${imeiTemp}] (${remoteAddress}) 🧑🏽‍💻 Response from terminal to message ${
         reponseCommon.responseToMsgSerialNumber
-      } -> result: ${reponseCommon.result == "success" ? "✅" : "❌"} ${
+      } [${toHexWith(reponseCommon.responseToMsgSerialNumber,4)}] -> result: ${reponseCommon.result == "success" ? "✅" : "❌"} ${
         reponseCommon.result
       } (${reponseCommon.msgSerialNumber})`
     );
