@@ -88,8 +88,7 @@ const handlePacket: HandlePacket = async (
       GpsAccuracy.unknown,
       "{}"
     );
-    console.log(`📍 Position packet created:`, positionPacket);
-    
+
     /** Check if position packet was created */
     if (!positionPacket)
       return await discardData(
