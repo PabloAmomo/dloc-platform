@@ -103,7 +103,7 @@ const handlePacket: HandlePacket = async (
     (response.response as Buffer[]).push(
       jt808CreateCheckParameterSettingPacket(
         jt808Packet.header.terminalId,
-        counter + 102,
+        counter + 101,
         [
           "0001", // Heartbeat
           //"F116", // Language setting (0x00 = EN)
