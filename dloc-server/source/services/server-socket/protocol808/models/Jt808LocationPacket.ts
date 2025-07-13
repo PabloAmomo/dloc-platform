@@ -12,7 +12,7 @@ export type Jt808LocationPacket = {
   altitude: number;
   speed: number;
   direction: number;
-  time: string;
+  dateTimeUTC: string;
   gsmSignal?: number;
   batteryLevel?: number;
   satellites?: number;

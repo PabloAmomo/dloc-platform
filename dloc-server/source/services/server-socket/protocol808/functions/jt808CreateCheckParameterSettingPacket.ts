@@ -1,6 +1,7 @@
 import padNumberLeft from "../../../../functions/padNumberLeft";
 import jt808CreateFrameData from "./jt808CreateFrameData";
 
+// TODO: No funciona y no se porque, revisar
 const jt808CreateCheckParameterSettingPacket = (
   terminalId: string,
   counter: number,

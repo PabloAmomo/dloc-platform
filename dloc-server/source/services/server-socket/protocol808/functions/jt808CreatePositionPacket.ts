@@ -9,7 +9,7 @@ const jt808CreatePositionPacket = (imei: string, remoteAddress: string, location
     return {
       imei,
       remoteAddress,
-      dateTimeUtc: parseDateTimeToUtcDateTime(locationPacket.time),
+      dateTimeUtc: new Date(locationPacket.dateTimeUTC),
       valid: locationPacket.lat !== 0 && locationPacket.lng !== 0,
       lat: locationPacket.lat,
       lng: locationPacket.lng,

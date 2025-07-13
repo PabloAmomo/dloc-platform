@@ -111,6 +111,7 @@ const handlePacket: HandlePacket = async (
       )
     );
 
+    // TODO: No funciona y no se porque, revisar
     (response.response as Buffer[]).push(
       jt808CreateCheckParameterSettingPacket(
         jt808Packet.header.terminalId,
@@ -124,6 +125,7 @@ const handlePacket: HandlePacket = async (
       )
     );
 
+    // TODO: No funciona y no se porque, revisar
     (response.response as Buffer[]).push(
       jt808CreateCheckParameterSettingPacket(
         jt808Packet.header.terminalId,
