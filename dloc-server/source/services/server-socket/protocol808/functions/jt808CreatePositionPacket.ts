@@ -25,7 +25,7 @@ const jt808CreatePositionPacket = (
       now.getUTCMilliseconds()
     );
     
-    console.log(`12123 ----> ${dateTimeUtc.toISOString()} ${currentTimeUtc.toDateString()} `);
+    console.log(`12123 ----> ${dateTimeUtc.toISOString()} ${currentTimeUtc.toISOString()} `);
 
     const timeDifference = Math.abs(
       currentTimeUtc.getTime() - dateTimeUtc.getTime()
