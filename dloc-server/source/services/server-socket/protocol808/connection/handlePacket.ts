@@ -21,6 +21,7 @@ import jt808CreateFrameData from "../functions/jt808CreateFrameData";
 import jt808ParseTerminalAttributes from "../functions/jt808ParseTerminalAttributesBits";
 import jt808PersistLocation from "../functions/jt808PersistLocation";
 import jt808ParseCommonResultFromTerminal from "../functions/jt808ParseCommonResultFromTerminal";
+import jt808CreateParameterSettingPacket from "../functions/jt808CreateParameterSettingPacket";
 
 const handlePacket: HandlePacket = async (
   props: Omit<HandlePacketProps, "data"> & { data: Buffer }
@@ -94,6 +95,18 @@ const handlePacket: HandlePacket = async (
       jt808CreateQueryLocationMessage(
         jt808Packet.header.terminalId,
         counter + 100
+      )
+    );
+
+    (response.response as Buffer[]).push(
+      jt808CreateParameterSettingPacket(
+        jt808Packet.header.terminalId,
+        counter + 101,
+        [
+          "F116 01 00", // Language setting (0x00 = EN)
+          "F118 01 00", // Terminal battery level (0-100 only for check)
+          "F142 01 00", // Terminal time zone (0x00 = UTC)
+        ]
       )
     );
 
