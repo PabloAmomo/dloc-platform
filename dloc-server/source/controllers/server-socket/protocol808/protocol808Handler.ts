@@ -151,20 +151,20 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
                 powerPacket
               )}`
             );
-            (results[0].response as Buffer[]).push(powerPacket);
+            // (results[0].response as Buffer[]).push(powerPacket);
 
             // TODO: Parece que la configuracion de Heartbeat no funciona, revisar
-            //const heartBeatPacket = jt808CreateParameterSettingPacket(
-            //  terminalId,
-            //  counter + 201,
-            //  ["00000001 04 " + createHexFromNumberWithNBytes(heartBeatSec, 4)] 
-            //);
-            //printMessage(
-            //  `${prefix} ❤️  Heart beat config Packet sent: ${convertStringToHexString(
-            //    heartBeatPacket
-            //  )}`
-            //);
-            //(results[0].response as Buffer[]).push(heartBeatPacket);
+            const heartBeatPacket = jt808CreateParameterSettingPacket(
+              terminalId,
+              counter + 201,
+              ["00000001 04 " + createHexFromNumberWithNBytes(heartBeatSec, 4)] 
+            );
+            printMessage(
+              `${prefix} ❤️  Heart beat config Packet sent: ${convertStringToHexString(
+                heartBeatPacket
+              )}`
+            );
+            (results[0].response as Buffer[]).push(heartBeatPacket);
  
             newConnection = false;
           }
