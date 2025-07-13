@@ -8,7 +8,7 @@ const jt808CreateQueryLocationMessage = (
     msgType: 0x8201,
     terminalId: Buffer.from(terminalId, "hex"),
     msgSerialNumber: counter,
-    body: Buffer.from("", "hex"),
+    body: Buffer.alloc(0),
   });
 };
 

@@ -2,7 +2,7 @@ const jt808CreateFrameData = (options: {
   msgType: number; // tipo de mensaje (2 bytes)
   terminalId: Buffer; // ID del dispositivo (6 o 7 bytes)
   msgSerialNumber: number; // índice de mensaje (1 o 2 bytes)
-  body: Buffer; // cuerpo del mensaje
+  body: Buffer ; // cuerpo del mensaje
 }): Buffer => {
   const { msgType, terminalId, msgSerialNumber, body } = options;
 
@@ -18,7 +18,7 @@ const jt808CreateFrameData = (options: {
 
   // Calculamos tamaño total: header + body + checksum
   const headerLength = 1 + 2 + 2 + terminalId.length + indexLength;
-  const totalLength = headerLength + body.length + 1 + 1; // (1 byte de checksum + 1 byte de delimitador final)
+  const totalLength = headerLength + bodyLength + 1 + 1; // (1 byte de checksum + 1 byte de delimitador final)
 
   const buffer = Buffer.alloc(totalLength);
   let offset = 0;
@@ -36,7 +36,7 @@ const jt808CreateFrameData = (options: {
 
   if (bodyLength > 0) {
     body.copy(buffer, offset);
-    offset += body.length;
+    offset += bodyLength;
   }
 
   // Calculate checksum excluding the first byte (delimiter) and the last byte (checksum itself)
