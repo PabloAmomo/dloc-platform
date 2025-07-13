@@ -1,3 +1,6 @@
+import convertStringToHexString from "../../../../functions/convertStringToHexString";
+import { printMessage } from "../../../../functions/printMessage";
+
 const jt808TimeSyncBody = (date: Date = new Date()): Buffer => {
   const buffer = Buffer.alloc(7);
 
@@ -8,14 +11,17 @@ const jt808TimeSyncBody = (date: Date = new Date()): Buffer => {
   const minute = date.getMinutes();
   const second = date.getSeconds();
 
-  buffer.writeUInt16BE(year, 0);  // bytes 0–1
-  buffer.writeUInt8(month, 2);    // byte 2
-  buffer.writeUInt8(day, 3);      // byte 3
-  buffer.writeUInt8(hour, 4);     // byte 4
-  buffer.writeUInt8(minute, 5);   // byte 5
-  buffer.writeUInt8(second, 6);   // byte 6
+  buffer.writeUInt16BE(year, 0); // bytes 0–1
+  buffer.writeUInt8(month, 2); // byte 2
+  buffer.writeUInt8(day, 3); // byte 3
+  buffer.writeUInt8(hour, 4); // byte 4
+  buffer.writeUInt8(minute, 5); // byte 5
+  buffer.writeUInt8(second, 6); // byte 6
+
+  // TODO: Solo por debug
+  printMessage(`----> 📅 Time Sync Body: ${convertStringToHexString(buffer)}`);
 
   return buffer;
-}
+};
 
 export default jt808TimeSyncBody;

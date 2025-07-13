@@ -23,7 +23,7 @@ import jt808PersistLocation from "../functions/jt808PersistLocation";
 import jt808ParseCommonResultFromTerminal from "../functions/jt808ParseCommonResultFromTerminal";
 
 const handlePacket: HandlePacket = async (
-  props: Omit<HandlePacketProps, 'data'> & { data: Buffer }
+  props: Omit<HandlePacketProps, "data"> & { data: Buffer }
 ): Promise<HandlePacketResult> => {
   const {
     imei,
@@ -330,6 +330,12 @@ const handlePacket: HandlePacket = async (
           : dataString
       }]`
     );
+
+    // TODO: Eliminar en un futuro. Solo para debug
+    printMessage(
+      `[${imeiTemp}] (${remoteAddress}) 👉👉👉👉👉👉👉👉👉 [${dataString}]`
+    );
+
     return await discardData(
       "commad unknown",
       false,
