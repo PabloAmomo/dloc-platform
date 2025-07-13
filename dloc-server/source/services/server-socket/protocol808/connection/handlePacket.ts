@@ -106,7 +106,7 @@ const handlePacket: HandlePacket = async (
         [
           "0000F116 01 00", // Language setting (0x00 = EN)
           "0000F118 01 00", // Terminal battery level (0-100 only for check)
-          // "0000F142 01 00", // Terminal time zone (0x00 = UTC)
+          "0000F142 01 08", // Terminal time zone (0x00 = UTC)
         ]
       )
     );
