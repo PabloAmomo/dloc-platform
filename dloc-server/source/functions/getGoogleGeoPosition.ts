@@ -93,7 +93,7 @@ async function getGoogleGeoPosition(
         GOOGLE_LBS_MAX_TIME_DIFF_MINUTES * 60 * 1000
     ) {
       printMessage(
-        `[${imei}] (${remoteAddress}) ⚠️ [LBS] Abort request ! Last request was made less than ${GOOGLE_LBS_MAX_TIME_DIFF_MINUTES} minutes ago`
+        `[${imei}] (${remoteAddress}) ⚠️  [LBS] Abort request ! Last request was made less than ${GOOGLE_LBS_MAX_TIME_DIFF_MINUTES} minutes ago`
       );
       return {};
     }

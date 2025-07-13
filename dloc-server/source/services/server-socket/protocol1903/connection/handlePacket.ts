@@ -107,7 +107,7 @@ const handlePacket: HandlePacket = async (
     if (!positionPacket.valid) {
       /** Invalid position, try to get position from LBS */
       printMessage(
-        `[${imeiTemp}] (${remoteAddress}) ⚠️ invalid position (NOT 'A') [${
+        `[${imeiTemp}] (${remoteAddress}) ⚠️  invalid position (NOT 'A') [${
           data.split(",")[0]
         }]`
       );
@@ -344,7 +344,7 @@ const handlePacket: HandlePacket = async (
   /** */
   if (response.response.length === 0) {
     printMessage(
-      `[${imeiTemp}] (${remoteAddress}) ⚠️ no response to send for packet [${data}]`
+      `[${imeiTemp}] (${remoteAddress}) ⚠️  no response to send for packet [${data}]`
     );
   } else {
     for (let i = 0; i < response.response.length; i++) {

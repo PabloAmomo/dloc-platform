@@ -315,7 +315,11 @@ const handlePacket: HandlePacket = async (
 
     const reponseCommon = jt808ParseCommonResultFromTerminal(jt808Packet.body);
     printMessage(
-      `[${imeiTemp}] (${remoteAddress}) 🧑🏽‍💻 Response from terminal to message ${reponseCommon.responseToMsgSerialNumber} -> result: ${reponseCommon.result} (${reponseCommon.msgSerialNumber})`
+      `[${imeiTemp}] (${remoteAddress}) 🧑🏽‍💻 Response from terminal to message ${
+        reponseCommon.responseToMsgSerialNumber
+      } -> result: ${reponseCommon.result == "success" ? "✅" : "❌"} ${
+        reponseCommon.result
+      } (${reponseCommon.msgSerialNumber})`
     );
   }
 
@@ -359,7 +363,7 @@ const handlePacket: HandlePacket = async (
   /** */
   if (response.response.length === 0) {
     printMessage(
-      `[${imeiTemp}] (${remoteAddress}) ⚠️ no response to send for packet [${dataString}]`
+      `[${imeiTemp}] (${remoteAddress}) ⚠️  no response to send for packet [${dataString}]`
     );
   } else {
     for (let i = 0; i < response.response.length; i++) {
