@@ -1,14 +1,11 @@
+import padNumberLeft from "../../../../functions/padNumberLeft";
 import jt808CreateFrameData from "./jt808CreateFrameData";
 
 // TODO: No funciona y no se porque
-const jt808CreateParameterSettingPacket = (terminalId : string, counter : number ) : Buffer => {
-  
-  const parametersCount = "01"; 
-  const paramter1 = "00000001 02 001E"; 
+const jt808CreateParameterSettingPacket = (terminalId : string, counter : number, parameters: string[] ) : Buffer => {
+ 
+  const paramList = padNumberLeft(parameters.length, 2, "0") + parameters.join("").replace(/ /g, "");
 
-  let paramList = parametersCount + paramter1;
-
-  paramList = paramList.replace(/ /g, "");
   const packet =  jt808CreateFrameData({
     msgType: 0x8103,
     terminalId: Buffer.from(terminalId, "hex"),

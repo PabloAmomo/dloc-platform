@@ -23,6 +23,7 @@ import jt808FrameEncode from "../../../services/server-socket/protocol808/functi
 import { response } from "express";
 import jt808CreatePowerProfilePacket from "../../../services/server-socket/protocol808/functions/jt808CreatePowerProfilePacket";
 import { CachePosition } from "../../../infraestucture/models/CachePosition";
+import jt808CreateParameterSettingPacket from "../../../services/server-socket/protocol808/functions/jt808CreateParameterSettingPacket";
 
 const HTTP_200 = `${[
   "HTTP/1.1 200 OK",
@@ -139,6 +140,7 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
             );
 
             const terminalId = imei.slice(-12);
+
             const powerPacket = jt808CreatePowerProfilePacket(
               terminalId,
               counter + 200,
@@ -152,7 +154,18 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
             (results[0].response as Buffer[]).push(powerPacket);
 
             // TODO: agregar el paquete que configure el heartbeat
-
+            const heartBeatPacket = jt808CreateParameterSettingPacket(
+              terminalId,
+              counter + 201,
+              ["0001 04 0000001E"] 
+            );
+            printMessage(
+              `${prefix} ❤️ Heart beat Packet: ${convertStringToHexString(
+                heartBeatPacket
+              )}`
+            );
+            (results[0].response as Buffer[]).push(heartBeatPacket);
+ 
             newConnection = false;
           }
 

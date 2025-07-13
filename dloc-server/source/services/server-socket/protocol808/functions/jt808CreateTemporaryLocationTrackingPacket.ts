@@ -1,6 +1,5 @@
 import jt808CreateFrameData from "./jt808CreateFrameData";
 
-// TODO: No funciona y no se porque
 const jt808CreateTemporaryLocationTrackingPacket = (terminalId : string, counter : number, intervalSec: number, durationSec: number  ) : Buffer => {
 
   const bufInterval = Buffer.alloc(2);

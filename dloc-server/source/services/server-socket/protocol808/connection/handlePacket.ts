@@ -139,6 +139,8 @@ const handlePacket: HandlePacket = async (
       )
     );
 
+    // TODO: Descartar paquetes desfazados en tiempo (Aquí o al crear el paqiuete de Location¿?)
+    
     // TODO: El paqete 0200 no trae ni bateria ni gsmSignal, por lo que hay que traerlo de otro lado.
 
     response.imei = padNumberLeft(jt808Packet.header.terminalId, 15, "0");
