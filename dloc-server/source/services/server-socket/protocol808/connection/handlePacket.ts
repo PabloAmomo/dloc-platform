@@ -21,8 +21,8 @@ import jt808CreateFrameData from "../functions/jt808CreateFrameData";
 import jt808ParseTerminalAttributes from "../functions/jt808ParseTerminalAttributesBits";
 import jt808PersistLocation from "../functions/jt808PersistLocation";
 import jt808ParseCommonResultFromTerminal from "../functions/jt808ParseCommonResultFromTerminal";
-import jt808CreateParameterSettingPacket from "../functions/jt808CreateParameterSettingPacket";
 import jt808CreateCheckParameterSettingPacket from "../functions/jt808CreateCheckParameterSettingPacket";
+import jt808ParseParamentersSettings from "../functions/jt808ParseParamentersSettings";
 
 const handlePacket: HandlePacket = async (
   props: Omit<HandlePacketProps, "data"> & { data: Buffer }
@@ -106,15 +106,13 @@ const handlePacket: HandlePacket = async (
         counter + 101,
         [
           "0001", // Heartbeat
-          "0002", // Heartbeat
           //"F116", // Language setting (0x00 = EN)
           //"F118", // Terminal battery level (0-100 only for check)
-          // "F142", // Terminal time zone (0x00 = UTC)
+          //"F142", // Terminal time zone (0x00 = UTC)
         ]
       )
     );
 
-    // TODO: No funciona y no se porque, revisar
     (response.response as Buffer[]).push(
       jt808CreateCheckParameterSettingPacket(
         jt808Packet.header.terminalId,
@@ -274,6 +272,7 @@ const handlePacket: HandlePacket = async (
   // ---------------------------------------
   // Terminal heartbeat（0x0002）
   // Terminal Logout（0x0003）
+  // Check terminal parameter response（0x0104）
   // Sleep notification（0x0105）
   // Check terminal attribute response（0x0107）
   // Sleep wake up notification（0x0108）
@@ -282,19 +281,21 @@ const handlePacket: HandlePacket = async (
   //     response 0x8001
   // ---------------------------------------
   else if (
-    [0x0002, 0x0003, 0x0105, 0x0107, 0x0108, 0x0112, 0x1007].includes(
+    [0x0002, 0x0003, 0x0104, 0x0105, 0x0107, 0x0108, 0x0112, 0x1007].includes(
       jt808Packet.header.msgType
     )
   ) {
-    (response.response as Buffer[]).push(
-      jt808CreateGeneralResponse(
-        jt808Packet.header.terminalId,
-        counter,
-        jt808Packet.header.msgSerialNumber,
-        jt808Packet.header.msgType,
-        "00"
-      )
-    );
+    if (![0x0104].includes(jt808Packet.header.msgType)) {
+      (response.response as Buffer[]).push(
+        jt808CreateGeneralResponse(
+          jt808Packet.header.terminalId,
+          counter,
+          jt808Packet.header.msgSerialNumber,
+          jt808Packet.header.msgType,
+          "00"
+        )
+      );
+    }
 
     response.imei = padNumberLeft(jt808Packet.header.terminalId, 15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
@@ -309,6 +310,14 @@ const handlePacket: HandlePacket = async (
     } else if (jt808Packet.header.msgType === 0x0003) {
       // TODO: Desconectar el dispositivo (conn.close)
       messageText = "🔚 Terminal Logout";
+    } else if (jt808Packet.header.msgType === 0x0104) {
+      messageText = "⚙️ Check terminal parameter response";
+      const parametersSettings = jt808ParseParamentersSettings(
+        imeiTemp,
+        remoteAddress,
+        jt808Packet.body
+      );
+      // TODO: Procesar los parametros (Bateria / timezona / heartbeat)
     } else if (jt808Packet.header.msgType === 0x0105) {
       messageText = "💤 Sleep notification";
     } else if (jt808Packet.header.msgType === 0x0107) {

@@ -1,7 +1,7 @@
 import padNumberLeft from "../../../../functions/padNumberLeft";
 import jt808CreateFrameData from "./jt808CreateFrameData";
 
-// TODO: No funciona y no se porque, revisar
+// TODO: No funciona y no se porque, revisar (No funciona el unitario, el de todos los parametros si funciona)
 const jt808CreateCheckParameterSettingPacket = (
   terminalId: string,
   counter: number,
