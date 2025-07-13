@@ -27,7 +27,7 @@ import jt808ParseCommonResultFromTerminal from "../functions/jt808ParseCommonRes
 const noImei: string = "no imei received";
 
 const handlePacket: HandlePacket = async (
-  props: HandlePacketProps
+  props: Omit<HandlePacketProps, 'data'> & { data: Buffer }
 ): Promise<HandlePacketResult> => {
   const {
     imei,
@@ -36,8 +36,6 @@ const handlePacket: HandlePacket = async (
     persistence,
     counter,
   } = props;
-
-  const dataBuffer: Buffer = data as Buffer;
 
   let updateLastActivity: boolean = false;
   let response: HandlePacketResult = {
@@ -55,7 +53,7 @@ const handlePacket: HandlePacket = async (
     `[${imeiTemp}] (${remoteAddress}) 📡 PACKET RECEIVED oOo ----> [${dataString}].`
   );
 
-  let jt808Packet = jt808GetFrameData(dataBuffer);
+  let jt808Packet = jt808GetFrameData(data);
 
   // ---------------------------------------
   // Terminal registration（0x0100)
@@ -154,7 +152,7 @@ const handlePacket: HandlePacket = async (
             remoteAddress,
             location,
             persistence,
-            dataBuffer,
+            data,
             response
           );
       }
