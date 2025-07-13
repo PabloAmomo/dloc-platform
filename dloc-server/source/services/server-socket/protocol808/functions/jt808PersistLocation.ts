@@ -20,9 +20,7 @@ const jt808PersistLocation = async (
     location,
     "{}"
   );
-
-  console.log(`📍 Persisting location for IMEI: ${imei}, Remote Address: ${remoteAddress}`, positionPacket);
-  
+ 
   if (!positionPacket) return;
 
   let oldPacket: boolean = false;

@@ -168,9 +168,6 @@ const handlePacket: HandlePacket = async (
 
     if (locations.count > 0) {
       for (const location of locations.locations) {
-            console.log(`.......`, location);
-
-
         if (location.lat !== 0 && location.lng !== 0)
           await jt808PersistLocation(
             imeiTemp,
@@ -321,6 +318,18 @@ const handlePacket: HandlePacket = async (
         jt808Packet.body
       );
       // TODO: Procesar los parametros (Bateria / timezona / heartbeat)
+
+      // TODO: Si la timeZone no es 0, enviar un actualización para que se ponga a UTC (OJO QUE RESETEA EL DISPOSITIVO)
+      //(response.response as Buffer[]).push(
+      //  jt808CreateParameterSettingPacket(
+      //    jt808Packet.header.terminalId,
+      //    counter + 101,
+      //    [
+      //      "0000F142 01 00", // Terminal time zone (0x00 = UTC) - OJO resetea el dispositivo
+      //    ]
+      //  )
+      //);
+      //      for (const param of parametersSettings.parameters) {
     } else if (jt808Packet.header.msgType === 0x0105) {
       messageText = "💤 Sleep notification";
     } else if (jt808Packet.header.msgType === 0x0107) {
