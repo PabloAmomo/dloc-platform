@@ -1,6 +1,6 @@
-const jt808FrameDecode = (buf: Buffer): Buffer | null => {
+const jt808FrameDecode = (buf: Buffer): Buffer  => {
   if (buf.length < 2) {
-    return null;
+    return Buffer.alloc(0);
   }
 
   const startByte = buf[0];
@@ -48,7 +48,7 @@ const jt808FrameDecode = (buf: Buffer): Buffer | null => {
     }
   }
 
-  return null;
+  return Buffer.alloc(0);
 };
 
 export default jt808FrameDecode;

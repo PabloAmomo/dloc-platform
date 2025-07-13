@@ -10,13 +10,22 @@ const handler = async ({
   handlePacket,
   persistence,
   counter,
-}: HandleHandlerProps & { data: String }): Promise<HandlePacketResult[]> => {
+}: Omit<HandleHandlerProps, "data"> & { data: String }): Promise<
+  HandlePacketResult[]
+> => {
   /** Save results */
   const results: HandlePacketResult[] = [];
 
-  /** broke data into packets (Sometimes more than one packet is received) */
-  const dataString: string = data as string;
-  const inPackets: string[] = dataString.split("#");
+  const inPackets: string[] = data.split("#");
+
+  if (inPackets.length === 0) {
+    printMessage(
+      `[${getNormalizedIMEI(
+        imei
+      )}] (${remoteAddress}) ❌ error decoding packet.`
+    );
+    return results;
+  }
 
   /** Process each packet */
   for (let i = 0; i < inPackets.length; i++) {

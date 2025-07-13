@@ -12,52 +12,58 @@ const handler = async ({
   handlePacket,
   persistence,
   counter,
-}: HandleHandlerProps & { data: Buffer }): Promise<HandlePacketResult> => {
+}: Omit<HandleHandlerProps, "data"> & {
+  data: Buffer;
+}): Promise<HandlePacketResult[]> => {
   /** results */
-  let result: HandlePacketResult = {  imei, error: "", response: [] };
+  const results: HandlePacketResult[] = [];
 
   // TODO: Unificar handlers para protocolo 808 y 1903
 
-  const dataString: string = convertStringToHexString(data);
+  const inPackets: Buffer[] = [jt808FrameDecode(data)];
 
-  let inPacket: Buffer | null = jt808FrameDecode(data as Buffer);
-
-  if (!inPacket) {
+  if (inPackets.length === 0) {
     printMessage(
       `[${getNormalizedIMEI(
         imei
       )}] (${remoteAddress}) ❌ error decoding packet.`
     );
-    return result;
+    return results;
   }
 
-  /** Handle packet */
-  try {
-    await handlePacket({
-      imei,
-      remoteAddress,
-      data: inPacket as Buffer,
-      persistence,
-      counter
-    }).then((resultVal: HandlePacketResult) => {
-      /** Save result */
-      result = resultVal;
-      /** Error handling packet */
-      if (resultVal.error !== "") throw new Error(resultVal.error);
-      /** Update imei */
-      if (resultVal.imei !== "") imei = resultVal.imei;
-    });
-  } catch (err: Error | any) {
-    const printImei = getNormalizedIMEI(imei);
-    printMessage(
-      `[${printImei}] (${remoteAddress}) ❌ error handling packet (1) (${
-        err?.message ?? "unknown error"
-      }) packet [${dataString}]`
-    );
+  /** Process each packet */
+  for (let i = 0; i < inPackets.length; i++) {
+    /** Discart empty packets */
+    if (!inPackets[i]) continue;
+
+    /** Handle packet */
+    try {
+      await handlePacket({
+        imei,
+        remoteAddress,
+        data: inPackets[i],
+        persistence,
+        counter,
+      }).then((result: HandlePacketResult) => {
+        /** Save result */
+        results.push(result);
+        /** Error handling packet */
+        if (result.error !== "") throw new Error(result.error);
+        /** Update imei */
+        if (result.imei !== "") imei = result.imei;
+      });
+    } catch (err: Error | any) {
+      const printImei = getNormalizedIMEI(imei);
+      printMessage(
+        `[${printImei}] (${remoteAddress}) ❌ error handling packet (1) (${
+          err?.message ?? "unknown error"
+        }) packet [${convertStringToHexString(inPackets[i])}]`
+      );
+    }
   }
 
   /** Return results */
-  return result;
+  return results;
 };
 
 export default handler;

@@ -48,7 +48,7 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
   /** Handle data */
   conn.on("data", (data: any) => {
     const tempImei: string = getNormalizedIMEI(imei);
-    const dataStringHex: string = convertStringToHexString(data);
+    const dataString: string = convertStringToHexString(data);
 
     counter++;
     if (counter > 32000) counter = 1;
@@ -79,15 +79,15 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
         conn,
         counter,
       })
-        .then(async (result) => {
-          if (!result?.imei) {
+        .then(async (results) => {
+          if (!results[0]?.imei) {
             printMessage(
-              `[${tempImei}] (${remoteAddress}) ❌ IMEI not found in data [${dataStringHex}].`
+              `${tempImei}] (${remoteAddress}) ❌ IMEI not found in data [${dataString}].`
             );
             conn.destroy();
             return;
           }
-          imei = result.imei;
+          imei = results[0].imei;
 
           const prefix = `[${imei}] (${remoteAddress})`;
 
@@ -101,12 +101,11 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
             await getPowerProfile(
               imei,
               persistence,
-              imeiData?.lastPowerProfileChecked ??  Date.now(),
+              imeiData?.lastPowerProfileChecked ?? Date.now(),
               prefix,
               newConnection
             );
-          const { uploadSec } =
-            powerProfileConfig(powerProfile);
+          const { uploadSec } = powerProfileConfig(powerProfile);
 
           /** Get last position packet */
           const lastPosPacket: CachePosition | undefined =
@@ -128,13 +127,13 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
                 `${prefix} 🔄 power profile refresh needed, current profile [${powerProfile}]`
               );
             }
-            
+
             if (powerPrfChanged)
               printMessage(
                 `${prefix} ⚡️ power profile changed from [${imeiData?.powerProfile}] to [${powerProfile}]`
               );
 
-              // TODO: Cuando enviemmos el heartbeat, agregar aquí tambien el dato de heartbeat
+            // TODO: Cuando enviemmos el heartbeat, agregar aquí tambien el dato de heartbeat
             printMessage(
               `${prefix} 📡 send Upload Interval [${uploadSec} sec]`
             );
@@ -145,19 +144,24 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
               counter + 200,
               powerProfile
             );
-            printMessage(`${prefix} 🔋 Power Packet: ${convertStringToHexString(powerPacket)}`);
-            (result.response as Buffer[]).push(powerPacket);
+            printMessage(
+              `${prefix} 🔋 Power Packet: ${convertStringToHexString(
+                powerPacket
+              )}`
+            );
+            (results[0].response as Buffer[]).push(powerPacket);
 
             // TODO: agregar el paquete que configure el heartbeat
-
 
             newConnection = false;
           }
 
           /** Send */
-          for (const response of result.response) {
-            conn.write(jt808FrameEncode(response as Buffer));
-            conn.write(Buffer.alloc(0));
+          for (const result of results) {
+            for (const response of result.response) {
+              conn.write(jt808FrameEncode(response as Buffer));
+              conn.write(Buffer.alloc(0));
+            }
           }
         })
         .catch((err: Error) => {
@@ -172,7 +176,7 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
       printMessage(
         `[${tempImei}] (${remoteAddress}) ❌ error handling data (${
           err?.message ?? "unknown error"
-        }) data [${dataStringHex}].`
+        }) data [${dataString}].`
       );
     }
   });
