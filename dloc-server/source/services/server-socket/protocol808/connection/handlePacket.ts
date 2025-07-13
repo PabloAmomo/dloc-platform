@@ -166,9 +166,11 @@ const handlePacket: HandlePacket = async (
     response.imei = padNumberLeft(jt808Packet.header.terminalId, 15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
 
-    console.log(`📍 (${imeiTemp}) (${remoteAddress}) Locations count: ${locations.count}`)  ;
     if (locations.count > 0) {
       for (const location of locations.locations) {
+            console.log(`.......`, location);
+
+
         if (location.lat !== 0 && location.lng !== 0)
           await jt808PersistLocation(
             imeiTemp,
