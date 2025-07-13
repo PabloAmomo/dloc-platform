@@ -153,7 +153,7 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
             );
             (results[0].response as Buffer[]).push(powerPacket);
 
-            // TODO: agregar el paquete que configure el heartbeat
+            // TODO: Parece que la configuracion de Heartbeat no funciona, revisar
             const heartBeatPacket = jt808CreateParameterSettingPacket(
               terminalId,
               counter + 201,
