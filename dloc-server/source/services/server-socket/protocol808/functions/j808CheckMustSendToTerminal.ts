@@ -32,6 +32,7 @@ const j808CheckMustSendToTerminal = (
     );
 
   /** Create Power Profile Packet */
+  // TODO: [FEATURE] Probar el usar los parametros 0x27, 0x28, 0x29 para el control de intervalos de movimiento
   const powerPacket = jt808CreatePowerProfilePacket(
     terminalId,
     counter + 200,
