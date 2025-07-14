@@ -72,8 +72,17 @@ const protocol1903Handler = (conn: net.Socket, persistence: Persistence) => {
             return;
           }
           imei = results[0].imei;
-
           const prefix = `[${imei}] (${remoteAddress})`;
+
+          for (const result of results) {
+            if (result.mustDisconnect) {
+              printMessage(
+                `[${tempImei}] (${remoteAddress}) ❌ Connection must be closed. (Request by the platform)`
+              );
+              conn.destroy();
+              return;
+            }
+          }
 
           printMessage(`${prefix} 🌟 Current serial counter [${counter}].`);
 

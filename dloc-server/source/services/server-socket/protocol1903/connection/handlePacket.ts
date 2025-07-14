@@ -26,7 +26,7 @@ const handlePacket: Proto1903HandlePacket = async (
   const { imei, remoteAddress: remoteAddress, data, persistence } = props;
 
   let updateLastActivity: boolean = false;
-  let response: HandlePacketResult = { imei, error: "", response: [] };
+  let response: HandlePacketResult = { imei, error: "", response: [], mustDisconnect: false };
 
   /** Temporal imei (Used only for print messages for user) */
   var imeiTemp: string = getNormalizedIMEI(imei);

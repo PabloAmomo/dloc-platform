@@ -41,6 +41,7 @@ const handlePacket: Jt808HandlePacket = async (
     imei,
     error: "",
     response: [],
+    mustDisconnect: false,
   };
 
   /** Temporal imei (Used only for print messages for user) */
@@ -283,7 +284,7 @@ const handlePacket: Jt808HandlePacket = async (
     if (jt808Packet.header.msgType === 0x0002) {
       messageText = "❤️  Terminal heartbeat";
     } else if (jt808Packet.header.msgType === 0x0003) {
-      // TODO: Desconectar el dispositivo (conn.close)
+      response.mustDisconnect = true; 
       messageText = "🔚 Terminal Logout";
     } else if (jt808Packet.header.msgType === 0x0104) {
       messageText = "⚙️  Check terminal parameter response";

@@ -76,10 +76,18 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
             conn.destroy();
             return;
           }
-
           imei = results[0].imei;
-
           const prefix = `[${imei}] (${remoteAddress})`;
+
+          for (const result of results) {
+            if (result.mustDisconnect) {
+              printMessage(
+                `[${tempImei}] (${remoteAddress}) ❌ Connection must be closed. (Request by the platform)`
+              );
+              conn.destroy();
+              return;
+            }
+          }
 
           printMessage(`${prefix} 🌟 Current serial counter [${counter}].`);
 
@@ -127,10 +135,10 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
             responseSend.forEach((response) => {
               (results[0].response as Buffer[]).push(response);
             });
-          }
 
-          /** Is not a new connection */
-          newConnection = false;
+            /** Is not a new connection */
+            newConnection = false;
+          }
 
           /** Send */
           for (const result of results) {
