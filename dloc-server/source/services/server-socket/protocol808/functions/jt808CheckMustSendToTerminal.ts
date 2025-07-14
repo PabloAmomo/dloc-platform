@@ -1,11 +1,11 @@
-import { printMessage } from "../../../../functions/printMessage";
-import jt808CreateCheckParameterSettingPacket from "./jt808CreateCheckParameterSettingPacket";
+import { PowerProfileType } from "../../../../enums/PowerProfileType";
 import convertStringToHexString from "../../../../functions/convertStringToHexString";
 import createHexFromNumberWithNBytes from "../../../../functions/createHexFromNumberWithNBytes";
+import powerProfileConfig from "../../../../functions/powerProfileConfig";
+import { printMessage } from "../../../../functions/printMessage";
+import jt808CreateCheckParameterSettingPacket from "./jt808CreateCheckParameterSettingPacket";
 import jt808CreateParameterSettingPacket from "./jt808CreateParameterSettingPacket";
 import jt808CreatePowerProfilePacket from "./jt808CreatePowerProfilePacket";
-import { PowerProfileType } from "../../../../enums/PowerProfileType";
-import powerProfileConfig from "../../../../functions/powerProfileConfig";
 
 const jt808CheckMustSendToTerminal = (
   imei: string,
@@ -31,67 +31,29 @@ const jt808CheckMustSendToTerminal = (
       `${prefix} ⚡️ power profile changed from [${currentPowerPrfile}] to [${newPowerProfile}]`
     );
 
-  /** Create Power Profile Packet */
-  // TODO: [FEATURE] Probar el usar los parametros 0x27, 0x28, 0x29 para el control de intervalos de movimiento
-  /* Create HeartBeat Packet */
-  const powerPackerSettingsX027 = jt808CreateParameterSettingPacket(
-    terminalId,
-    counter + 201,
-    [
-      "00000027 04 " + createHexFromNumberWithNBytes(uploadSec, 4), // Report time intervals during dormancy, unit second
-      //"00000028 04 " + createHexFromNumberWithNBytes(uploadSec, 4), // Report time intervals during alarm, unit second
-      //"00000029 04 " + createHexFromNumberWithNBytes(uploadSec, 4), // Report time intervals during normal, unit second
-    ]
-  );
-  printMessage(
-    `${prefix} 🔋 Power config Packet sent (0x0027): ${convertStringToHexString(
-      powerPackerSettingsX027
-    )}`
-  );
-  response.push(powerPackerSettingsX027);
-
-  const powerPackerSettingsX028 = jt808CreateParameterSettingPacket(
-    terminalId,
-    counter + 202,
-    [
-      "00000028 04 " + createHexFromNumberWithNBytes(uploadSec, 4), // Report time intervals during alarm, unit second
-    ]
-  );
-  printMessage(
-    `${prefix} 🔋 Power config Packet sent (0x0027): ${convertStringToHexString(
-      powerPackerSettingsX028
-    )}`
-  );
-  response.push(powerPackerSettingsX028);
-
-  const powerPackerSettingsX029 = jt808CreateParameterSettingPacket(
-    terminalId,
-    counter + 203,
-    [
-      "00000029 04 " + createHexFromNumberWithNBytes(uploadSec, 4), // Report time intervals during normal, unit second
-    ]
-  );
-  printMessage(
-    `${prefix} 🔋 Power config Packet sent (0x0029): ${convertStringToHexString(
-      powerPackerSettingsX029
-    )}`
-  );
-  response.push(powerPackerSettingsX029);
-
-  /** Create Power Profile Packet */
-  //const powerPacket = jt808CreatePowerProfilePacket(
+  // Sending power profile packet by configuration parameters don't work
+  //jt808CreateReportIntervalsParameters(
   //  terminalId,
-  //  counter + 200,
-  //  newPowerProfile,
-  //  movementsControlSeconds * 2
+  //  counter,
+  //  uploadSec,
+  //  prefix,
+  //  response
   //);
-  //printMessage(`${prefix} 📡 send Upload Interval [${uploadSec} sec]`);
-  //printMessage(
-  //  `${prefix} 🔋 Power config Packet sent: ${convertStringToHexString(
-  //    powerPacket
-  //  )}`
-  //);
-  //response.push(powerPacket);
+
+  /** Create Power Profile Packet */
+  const powerPacket = jt808CreatePowerProfilePacket(
+    terminalId,
+    counter + 200,
+    newPowerProfile,
+    movementsControlSeconds * 2
+  );
+  printMessage(`${prefix} 📡 send Upload Interval [${uploadSec} sec]`);
+  printMessage(
+    `${prefix} 🔋 Power config Packet sent: ${convertStringToHexString(
+      powerPacket
+    )}`
+  );
+  response.push(powerPacket);
 
   /* Create HeartBeat Packet */
   const heartBeatPacket = jt808CreateParameterSettingPacket(
