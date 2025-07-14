@@ -1,24 +1,23 @@
-import { handlePacket } from "../../../services/server-socket/protocol1903/connection/handlePacket";
-import { Persistence } from "../../../models/Persistence";
-import { printMessage } from "../../../functions/printMessage";
-import { getRemoteAddress } from "../../../functions/remoteAddress";
-import handleClose from "../../../services/server-socket/protocol1903/connection/handleClose";
-import handler from "../../../services/server-socket/protocol1903/handler";
-import handleEnd from "../../../services/server-socket/protocol1903/connection/handleEnd";
-import handleError from "../../../services/server-socket/protocol1903/connection/handleError";
 import net from "node:net";
-import { CACHE_POSITION } from "../../../infraestucture/caches/cachePosition";
+import { PowerProfileType } from "../../../enums/PowerProfileType";
+import convertStringToHexString from "../../../functions/convertStringToHexString";
+import { getNormalizedIMEI } from "../../../functions/getNormalizedIMEI";
+import getPowerProfile from "../../../functions/getPowerProfile";
+import { printMessage } from "../../../functions/printMessage";
+import processPacketHealth from "../../../functions/processPacketHealth";
+import { getRemoteAddress } from "../../../functions/remoteAddress";
 import {
   CACHE_IMEI,
   clearItemInCacheIMEI,
 } from "../../../infraestucture/caches/cacheIMEI";
-import { getNormalizedIMEI } from "../../../functions/getNormalizedIMEI";
-import powerProfileConfig from "../../../functions/powerProfileConfig";
-import proto1903CreateConfig from "../../../services/server-socket/protocol1903/functions/proto1903CreateConfig";
-import getPowerProfile from "../../../functions/getPowerProfile";
-import { CachePosition } from "../../../infraestucture/models/CachePosition";
-import processPacketHealth from "../../../functions/processPacketHealth";
-import convertStringToHexString from "../../../functions/convertStringToHexString";
+import { Persistence } from "../../../models/Persistence";
+import handleClose from "../../../services/server-socket/protocol1903/connection/handleClose";
+import handleEnd from "../../../services/server-socket/protocol1903/connection/handleEnd";
+import handleError from "../../../services/server-socket/protocol1903/connection/handleError";
+import { handlePacket } from "../../../services/server-socket/protocol1903/connection/handlePacket";
+import proto1903CheckMustSendToTerminal from "../../../services/server-socket/protocol1903/functions/proto1903CheckMustSendToTerminal";
+import proto1903MustSendToTerminalRequestReport from "../../../services/server-socket/protocol1903/functions/proto1903MustSendToTerminalRequestReport";
+import handler from "../../../services/server-socket/protocol1903/handler";
 
 // TODO: [REFACTOR] Unificar handlers para protocolo 808 y 1903
 
@@ -87,86 +86,71 @@ const protocol1903Handler = (conn: net.Socket, persistence: Persistence) => {
           printMessage(`${prefix} 🌟 Current serial counter [${counter}].`);
 
           /** Get the las information about the IMEI */
-          const imeiData = CACHE_IMEI.get(imei);
+          const imeiData = CACHE_IMEI.get(imei) ?? {
+            powerProfile: PowerProfileType.AUTOMATIC_MINIMAL,
+            lastPowerProfileChecked: 0,
+          };
 
           /** Get power profile for the imei */
-          const { powerProfile, lastPowerProfileChecked, needProfileRefresh } =
-            await getPowerProfile(
-              imei,
-              persistence,
-              imeiData?.lastPowerProfileChecked ?? Date.now(),
-              prefix,
-              newConnection
-            );
-          const { heartBeatSec, uploadSec, ledState, forceReportLocInMs } =
-            powerProfileConfig(powerProfile);
-
-          /** Get last position packet */
-          const lastPosPacket: CachePosition | undefined =
-            CACHE_POSITION.get(imei);
-
-          /** Create response to send */
-          let toSend: string = "";
-          for (let i = 0; i < results.length; i++) {
-            if (results[i].response.length > 0) {
-              for (const response of results[i].response) {
-                toSend += response;
-              }
-            }
-          }
+          const {
+            powerProfile: newPowerProfile,
+            lastPowerProfileChecked,
+            needProfileRefresh,
+          } = await getPowerProfile(
+            imei,
+            persistence,
+            imeiData.lastPowerProfileChecked,
+            prefix,
+            newConnection
+          );
 
           /** create or update socket connection to cache */
           CACHE_IMEI.updateOrCreate(imei, {
             socketConn: conn,
-            powerProfile,
+            powerProfile: newPowerProfile,
             lastPowerProfileChecked,
           });
-          const powerPrfChanged =
-            imeiData?.powerProfile && imeiData?.powerProfile !== powerProfile;
+          const powerPrfChanged = imeiData.powerProfile !== newPowerProfile;
 
           /** If new connection send configuration after response */
+          let toSendAditional: string = "";
           if (newConnection || powerPrfChanged || needProfileRefresh) {
-            if (needProfileRefresh) {
-              printMessage(
-                `${prefix} 🔄 power profile refresh needed, current profile [${powerProfile}]`
-              );
-            }
-
-            if (powerPrfChanged)
-              printMessage(
-                `${prefix} ⚡️ power profile changed from [${imeiData?.powerProfile}] to [${powerProfile}]`
-              );
-
-            printMessage(
-              `${prefix} 📡 send HeartBeat [${heartBeatSec} sec] - Leds [${ledState}] - Upload Interval [${uploadSec} sec] - forceUpdateLoc [${
-                forceReportLocInMs / 1000
-              } sec]`
+            const responseSend: string = proto1903CheckMustSendToTerminal(
+              imei,
+              prefix,
+              powerPrfChanged,
+              needProfileRefresh,
+              imeiData.powerProfile,
+              newPowerProfile
             );
 
-            toSend += proto1903CreateConfig(powerProfile);
+            toSendAditional += responseSend;
 
             newConnection = false;
           }
 
-          const currentTime = Date.now();
-
-          const lastPosMsSec = !lastPosPacket
-            ? forceReportLocInMs
-            : currentTime - lastPosPacket.datetimeUtc.getTime();
-
+          /** Check if must send to terminal request report */
           if (
-            forceReportLocInMs > 0 &&
-            lastPosMsSec >= forceReportLocInMs &&
-            currentTime - lastTime >= forceReportLocInMs
+            proto1903MustSendToTerminalRequestReport(
+              imei,
+              lastTime,
+              newPowerProfile
+            )
           ) {
-            lastTime = currentTime;
-            toSend += "TRVBP20#";
+            lastTime = Date.now();
+            toSendAditional += "TRVBP20#";
             printMessage(
               `${prefix} 📡 send command TRVBP20 (Force to report Position).`
             );
           }
 
-          /** Send */
+          /** Create response to send */
+          let toSend: string = "";
+          for (let i = 0; i < results.length; i++) {
+            if (results[i].response.length > 0)
+              toSend += results[i].response.join("");
+          }
+          if (toSendAditional) toSend += toSendAditional;
           conn.write(toSend);
         })
         .catch((err: Error) => {
