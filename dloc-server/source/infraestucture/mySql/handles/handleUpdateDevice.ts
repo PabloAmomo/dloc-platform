@@ -62,7 +62,9 @@ const handleUpdateDevice = async (
   const sql = `INSERT INTO device (imei, lastPositionUTC, lat, lng, speed, directionAngle, lastVisibilityUTC, locationAccuracy, activity ${
     hasGsmSignal ? ",gsmSignal" : ""
   } ${hasBattery ? ",batteryLevel" : ""})
-                          VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                          VALUES(?, ?, ?, ?, ?, ?, ?, ?, ? ${
+                            hasGsmSignal ? ",?" : ""
+                          } ${hasBattery ? ",?" : ""})
                 ON DUPLICATE KEY 
                 UPDATE  lastPositionUTC = ?, lat = ?, lng = ?, speed = ?, directionAngle = ?, lastVisibilityUTC = ?, locationAccuracy = ?, activity = ? ${
                   hasGsmSignal ? ",gsmSignal = ?" : ""
