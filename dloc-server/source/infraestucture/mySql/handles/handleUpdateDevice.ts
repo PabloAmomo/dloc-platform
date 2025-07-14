@@ -59,21 +59,16 @@ const handleUpdateDevice = async (
     ...data,
   ];
 
-  const sql = `INSERT INTO device (imei, lastPositionUTC, lat, lng, speed, directionAngle, lastVisibilityUTC, locationAccuracy, activity ${
-    hasGsmSignal ? ",gsmSignal" : ""
-  } ${hasBattery ? ",batteryLevel" : ""})
-                          VALUES(?, ?, ?, ?, ?, ?, ?, ?, ? ${
-                            hasGsmSignal ? ",?" : ""
-                          } ${hasBattery ? ",?" : ""})
+  const sql = `INSERT INTO device (imei, lastPositionUTC, lat, lng, speed, directionAngle, lastVisibilityUTC, locationAccuracy, activity ${hasGsmSignal ? ",gsmSignal" : ""} ${hasBattery ? ",batteryLevel" : ""})
+                VALUES(?, ?, ?, ?, ?, ?, ?, ?, ? ${hasGsmSignal ? ",?" : ""} ${hasBattery ? ",?" : ""})
                 ON DUPLICATE KEY 
-                UPDATE  lastPositionUTC = ?, lat = ?, lng = ?, speed = ?, directionAngle = ?, lastVisibilityUTC = ?, locationAccuracy = ?, activity = ? ${
-                  hasGsmSignal ? ",gsmSignal = ?" : ""
-                } ${hasBattery ? ",batteryLevel = ?" : ""};`;
+                  UPDATE  lastPositionUTC = ?, lat = ?, lng = ?, speed = ?, directionAngle = ?, lastVisibilityUTC = ?, locationAccuracy = ?, activity = ? ${hasGsmSignal ? ",gsmSignal = ?" : ""} ${hasBattery ? ",batteryLevel = ?" : ""};`;
   const response: PersistenceResult = await mySqlQueryAsync(
     connectionConfig,
     sql,
     params
   );
+  console.log(sql);
   if (!response?.error)
     await mySqlClonedImeiUpdate(connectionConfig, positionPacket.imei);
   return response;
