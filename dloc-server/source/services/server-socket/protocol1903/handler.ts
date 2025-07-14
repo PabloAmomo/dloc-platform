@@ -1,7 +1,7 @@
-import { HandleHandlerProps } from "../../../models/HandleDataProps";
 import { HandlePacketResult } from "../../../models/HandlePacketResult";
 import { printMessage } from "../../../functions/printMessage";
 import { getNormalizedIMEI } from "../../../functions/getNormalizedIMEI";
+import { Proto1903HandlerProps } from "./models/Proto1903HandlerProps";
 
 const handler = async ({
   imei,
@@ -10,7 +10,7 @@ const handler = async ({
   handlePacket,
   persistence,
   counter,
-}: Omit<HandleHandlerProps, "data"> & { data: String }): Promise<
+}: Proto1903HandlerProps): Promise<
   HandlePacketResult[]
 > => {
   /** Save results */

@@ -17,14 +17,8 @@ import powerProfileConfig from "../../../functions/powerProfileConfig";
 import proto1903CreateConfig from "../../../services/server-socket/protocol1903/functions/proto1903CreateConfig";
 import getPowerProfile from "../../../functions/getPowerProfile";
 import { CachePosition } from "../../../infraestucture/models/CachePosition";
-
-const HTTP_200 = `${[
-  "HTTP/1.1 200 OK",
-  "Content-Type: text/html; charset=UTF-8",
-  "Content-Encoding: UTF-8",
-  "Accept-Ranges: bytes",
-  "Connection: keep-alive",
-].join("\n")}\n\n`;
+import processPacketHealth from "../../../functions/processPacketHealth";
+import convertStringToHexString from "../../../functions/convertStringToHexString";
 
 const protocol1903Handler = (conn: net.Socket, persistence: Persistence) => {
   const remoteAddress: string = getRemoteAddress(conn);
@@ -41,24 +35,16 @@ const protocol1903Handler = (conn: net.Socket, persistence: Persistence) => {
   /** Handle data */
   conn.on("data", (data: any) => {
     const tempImei: string = getNormalizedIMEI(imei);
+    const dataHexString: string = convertStringToHexString(data);
+    const dataString: string = data.toString();
 
     counter++;
     if (counter > 32000) counter = 1;
 
     try {
-      /** Process data */
-      const dataString: string = data.toString();
-
       /** Check if health packet */
-      if (dataString.indexOf("HEAD /health") !== -1) {
-        if (!remoteAddress.includes("127.0.0.1"))
-          printMessage(
-            `[${tempImei}] (${remoteAddress}) 🩺 health packet received.`
-          );
-        conn.write(HTTP_200);
-        conn.destroy();
+      if (processPacketHealth(conn, data.toString(), remoteAddress, tempImei))
         return;
-      }
 
       /** New socket connection */
       if (newConnection)
@@ -68,7 +54,7 @@ const protocol1903Handler = (conn: net.Socket, persistence: Persistence) => {
       handler({
         imei,
         remoteAddress,
-        data: dataString,
+        data,
         handlePacket,
         persistence,
         conn,
@@ -184,7 +170,7 @@ const protocol1903Handler = (conn: net.Socket, persistence: Persistence) => {
       printMessage(
         `[${tempImei}] (${remoteAddress}) ❌ error handling data (${
           err?.message ?? "unknown error"
-        }) data [${data}].`
+        }) data [${dataString}].`
       );
     }
   });

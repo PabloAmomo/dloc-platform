@@ -1,9 +1,9 @@
-import { HandleHandlerProps } from "../../../models/HandleDataProps";
 import { HandlePacketResult } from "../../../models/HandlePacketResult";
 import { printMessage } from "../../../functions/printMessage";
 import { getNormalizedIMEI } from "../../../functions/getNormalizedIMEI";
 import convertStringToHexString from "../../../functions/convertStringToHexString";
 import jt808FrameDecode from "./functions/jt808FrameDecode";
+import { Jt808HandlerProps } from "./models/Jt808HandlerProps";
 
 const handler = async ({
   imei,
@@ -12,9 +12,7 @@ const handler = async ({
   handlePacket,
   persistence,
   counter,
-}: Omit<HandleHandlerProps, "data"> & {
-  data: Buffer;
-}): Promise<HandlePacketResult[]> => {
+}: Jt808HandlerProps): Promise<HandlePacketResult[]> => {
   /** results */
   const results: HandlePacketResult[] = [];
 

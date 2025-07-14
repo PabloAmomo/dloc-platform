@@ -1,5 +1,3 @@
-import { HandlePacket } from "../../../../models/HandlePacket";
-import { HandlePacketProps } from "../../../../models/HandlePacketProps";
 import { HandlePacketResult } from "../../../../models/HandlePacketResult";
 import { printMessage } from "../../../../functions/printMessage";
 import discardData from "../../../../functions/discardData";
@@ -23,11 +21,13 @@ import jt808PersistLocation from "../functions/jt808PersistLocation";
 import jt808ParseCommonResultFromTerminal from "../functions/jt808ParseCommonResultFromTerminal";
 import jt808CreateCheckParameterSettingPacket from "../functions/jt808CreateCheckParameterSettingPacket";
 import jt808ParseParamentersSettings from "../functions/jt808ParseParamentersSettings";
+import { Jt808HandlePacket } from "../models/Jt808HandlePacket";
+import { Jt808HandlePacketProps } from "../models/Jt808HandlePacketProps";
 
   // TODO: Mover parte del codigo a otro lado, o fragmentar su responsabilidad
 
-const handlePacket: HandlePacket = async (
-  props: Omit<HandlePacketProps, "data"> & { data: Buffer }
+const handlePacket: Jt808HandlePacket = async (
+  props: Jt808HandlePacketProps
 ): Promise<HandlePacketResult> => {
   const {
     imei,

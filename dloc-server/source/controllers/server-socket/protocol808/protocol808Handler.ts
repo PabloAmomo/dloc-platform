@@ -22,16 +22,9 @@ import { CachePosition } from "../../../infraestucture/models/CachePosition";
 import jt808CreateParameterSettingPacket from "../../../services/server-socket/protocol808/functions/jt808CreateParameterSettingPacket";
 import createHexFromNumberWithNBytes from "../../../functions/createHexFromNumberWithNBytes";
 import jt808CreateCheckParameterSettingPacket from "../../../services/server-socket/protocol808/functions/jt808CreateCheckParameterSettingPacket";
+import processPacketHealth from "../../../functions/processPacketHealth";
 
-const HTTP_200 = `${[
-  "HTTP/1.1 200 OK",
-  "Content-Type: text/html; charset=UTF-8",
-  "Content-Encoding: UTF-8",
-  "Accept-Ranges: bytes",
-  "Connection: keep-alive",
-].join("\n")}\n\n`;
-
-// TODO: Unificar handlers para protocolo 808 y 1903 (Funcion protocolXXXHandler.ts)
+// TODO: Unificar handlers para protocolo 808 y 1903
 
 const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
   const remoteAddress: string = getRemoteAddress(conn);
@@ -47,22 +40,16 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
   /** Handle data */
   conn.on("data", (data: any) => {
     const tempImei: string = getNormalizedIMEI(imei);
-    const dataString: string = convertStringToHexString(data);
+    const dataHexString: string = convertStringToHexString(data);
+    const dataString: string = data.toString();
 
     counter++;
     if (counter > 32000) counter = 1;
 
     try {
       /** Check if health packet */
-      if ((data as string).indexOf("HEAD /health") !== -1) {
-        if (!remoteAddress.includes("127.0.0.1"))
-          printMessage(
-            `[${tempImei}] (${remoteAddress}) 🩺 health packet received.`
-          );
-        conn.write(HTTP_200);
-        conn.destroy();
+      if (processPacketHealth(conn, dataString, remoteAddress, tempImei))
         return;
-      }
 
       /** New socket connection */
       if (newConnection)
@@ -81,7 +68,7 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
         .then(async (results) => {
           if (!results[0]?.imei) {
             printMessage(
-              `${tempImei}] (${remoteAddress}) ❌ IMEI not found in data [${dataString}].`
+              `${tempImei}] (${remoteAddress}) ❌ IMEI not found in data [${dataHexString}].`
             );
             conn.destroy();
             return;
@@ -202,7 +189,7 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
       printMessage(
         `[${tempImei}] (${remoteAddress}) ❌ error handling data (${
           err?.message ?? "unknown error"
-        }) data [${dataString}].`
+        }) data [${dataHexString}].`
       );
     }
   });

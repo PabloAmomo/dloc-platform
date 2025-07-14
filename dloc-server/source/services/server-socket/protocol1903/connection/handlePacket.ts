@@ -1,6 +1,4 @@
 import { getUtcDateTime } from "../../../../functions/getUtcDateTime";
-import { HandlePacket } from "../../../../models/HandlePacket";
-import { HandlePacketProps } from "../../../../models/HandlePacketProps";
 import { HandlePacketResult } from "../../../../models/HandlePacketResult";
 import { PositionPacket } from "../../../../models/PositionPacket";
 import { printMessage } from "../../../../functions/printMessage";
@@ -17,11 +15,13 @@ import {
 } from "../../../../functions/getNormalizedIMEI";
 import proto1903CreatePositionPacket from "../functions/proto1903CreatePositionPacket";
 import PROTO1903_REGEX_PACKETS from "../functions/proto1903PacketParseREGEX";
+import { Proto1903HandlePacket } from "../models/Proto1903HandlePacket";
+import { Proto1903HandlePacketProps } from "../models/Proto1903HandlePacketProps";
 
 const noImei: string = "no imei received";
 
-const handlePacket: HandlePacket = async (
-  props: Omit<HandlePacketProps, 'data'> & { data: string }
+const handlePacket: Proto1903HandlePacket = async (
+  props: Proto1903HandlePacketProps
 ): Promise<HandlePacketResult> => {
   const { imei, remoteAddress: remoteAddress, data, persistence } = props;
 
