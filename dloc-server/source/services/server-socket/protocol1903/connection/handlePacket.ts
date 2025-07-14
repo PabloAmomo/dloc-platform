@@ -63,7 +63,7 @@ const handlePacket: Proto1903HandlePacket = async (
     );
     if (regexIndex != -1)
       printMessage(
-        `[${imeiTemp}] (${remoteAddress}) ℹ️ process data (REGEX ${regexIndex}) [${
+        `[${imeiTemp}] (${remoteAddress}) ℹ️  process data (REGEX ${regexIndex}) [${
           data.split(",")[0]
         }]`
       );
