@@ -21,8 +21,7 @@ import { Jt808HandlePacket } from "../models/Jt808HandlePacket";
 import { Jt808HandlePacketProps } from "../models/Jt808HandlePacketProps";
 import jt808CreateMessage from "../functions/jt808CreateMessage";
 import jt808CreateRequestSyncTimePacket from "../functions/jt808CreateRequestSyncTimePacket";
-import j808GetBatteryLevelPacketDateTime from "../functions/j808GetBatteryLevelPacketDateTime";
-import jt808CreateParameterSettingPacket from "../functions/jt808CreateParameterSettingPacket";
+import jt808GetBatteryLevelPacketDateTime from "../functions/jt808GetBatteryLevelPacketDateTime";
 
 // TODO: [REFACTOR] Mover parte del codigo a otro lado, o fragmentar su responsabilidad
 
@@ -229,7 +228,7 @@ const handlePacket: Jt808HandlePacket = async (
   // ---------------------------------------
   else if (jt808Packet.header.msgType === 0x0210) {
     const batteryLevel: number = jt808Packet.body.readUInt8(0);
-    const dateTime = j808GetBatteryLevelPacketDateTime(jt808Packet.body);
+    const dateTime = jt808GetBatteryLevelPacketDateTime(jt808Packet.body);
 
     printMessage(
       `[${imeiTemp}] (${remoteAddress}) ✅ Battery level: ${batteryLevel}% at ${dateTime}`

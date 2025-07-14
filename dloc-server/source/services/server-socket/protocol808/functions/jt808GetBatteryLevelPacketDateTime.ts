@@ -1,6 +1,6 @@
 import padNumberLeft from "../../../../functions/padNumberLeft";
 
-const j808GetBatteryLevelPacketDateTime = (body: Buffer): string => {
+const jt808GetBatteryLevelPacketDateTime = (body: Buffer): string => {
   const year = 2000 + body.readUInt8(1); // asume "25" significa 2025
   const month = padNumberLeft(body.readUInt8(2), 2);
   const day = padNumberLeft(body.readUInt8(3), 2);
@@ -14,4 +14,4 @@ const j808GetBatteryLevelPacketDateTime = (body: Buffer): string => {
   return `${date} ${time}`;
 };
 
-export default j808GetBatteryLevelPacketDateTime;
+export default jt808GetBatteryLevelPacketDateTime;

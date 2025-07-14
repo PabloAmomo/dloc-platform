@@ -7,7 +7,7 @@ import jt808CreatePowerProfilePacket from "./jt808CreatePowerProfilePacket";
 import { PowerProfileType } from "../../../../enums/PowerProfileType";
 import powerProfileConfig from "../../../../functions/powerProfileConfig";
 
-const j808CheckMustSendToTerminal = (
+const jt808CheckMustSendToTerminal = (
   imei: string,
   prefix: string,
   powerPrfChanged: boolean,
@@ -72,4 +72,4 @@ const j808CheckMustSendToTerminal = (
   return response;
 };
 
-export default j808CheckMustSendToTerminal;
+export default jt808CheckMustSendToTerminal;

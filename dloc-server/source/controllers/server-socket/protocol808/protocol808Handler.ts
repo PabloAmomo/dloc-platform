@@ -16,7 +16,7 @@ import getPowerProfile from "../../../functions/getPowerProfile";
 import convertStringToHexString from "../../../functions/convertStringToHexString";
 import jt808FrameEncode from "../../../services/server-socket/protocol808/functions/jt808FrameEncode";
 import processPacketHealth from "../../../functions/processPacketHealth";
-import j808CheckMustSendToTerminal from "../../../services/server-socket/protocol808/functions/j808CheckMustSendToTerminal";
+import jt808CheckMustSendToTerminal from "../../../services/server-socket/protocol808/functions/jt808CheckMustSendToTerminal";
 import { PowerProfileType } from "../../../enums/PowerProfileType";
 
 // TODO: [REFACTOR] Unificar handlers para protocolo 808 y 1903
@@ -113,7 +113,7 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
           const powerPrfChanged = imeiData.powerProfile !== powerProfile;
 
           if (newConnection || powerPrfChanged || needProfileRefresh) {
-            const responseSend: Buffer[] = j808CheckMustSendToTerminal(
+            const responseSend: Buffer[] = jt808CheckMustSendToTerminal(
               imei,
               prefix,
               powerPrfChanged,
