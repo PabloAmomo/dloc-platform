@@ -207,7 +207,7 @@ const handlePacket: Jt808HandlePacket = async (
 
     updateLastActivity = true;
     printMessage(
-      `[${imeiTemp}] (${remoteAddress}) ✅ Request synchronization time successful`
+      `[${imeiTemp}] (${remoteAddress}) ✅ ⏰ Request synchronization time successful`
     );
   }
 
