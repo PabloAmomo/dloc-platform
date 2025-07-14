@@ -70,7 +70,6 @@ const handlePacket: Jt808HandlePacket = async (
       )
     );
 
-    // TODO: [VERIFICATION ]Verificar que funciona bien el cambio de time zone cuando se registra el dispositivo
     (response.response as Buffer[]).push(
       jt808CreateParameterSettingPacket(
         jt808Packet.header.terminalId,

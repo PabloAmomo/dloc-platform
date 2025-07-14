@@ -13,20 +13,17 @@ const jt808DecodeLocationReport = (data: Buffer): Jt808LocationPacket => {
   const direction = data.readUInt16BE(20);
 
   const timeBCD = data.subarray(22, 28);
-  const dateTimePacket = `20${timeBCD[0]
+  const dateTimeUTC = `20${timeBCD[0]
     .toString(16)
     .padStart(2, "0")}-${timeBCD[1].toString(16).padStart(2, "0")}-${timeBCD[2]
     .toString(16)
-    .padStart(2, "0")} ${timeBCD[3].toString(16).padStart(2, "0")}:${timeBCD[4]
+    .padStart(2, "0")}T${timeBCD[3].toString(16).padStart(2, "0")}:${timeBCD[4]
     .toString(16)
-    .padStart(2, "0")}:${timeBCD[5].toString(16).padStart(2, "0")}`;
-
-  // TODO: [FEATURE] Calcular la diferencia de horas entre la fecha del paquete y la del servidor, y con eso, calcular la fecha UTC a aplicat al paquete
-  const dateTimeUTC = new Date().toISOString();
+    .padStart(2, "0")}:${timeBCD[5].toString(16).padStart(2, "0")}.000Z`;
 
   // TODO: [REMOVE DEBUG] Solo para pruebas - ELIMINAR
   printMessage(
-    `📍 (jt808DecodeLocationReport) Location date/time -------> ${dateTimePacket} (Server UTC: ${dateTimeUTC})`
+    `📍 (jt808DecodeLocationReport) Location date/time -------> ${dateTimeUTC} (Server UTC: ${new Date().toISOString()})`
   );
 
   const response = {
