@@ -10,7 +10,7 @@ function powerProfileConfig(
     profileType === PowerProfileType.AUTOMATIC_MINIMAL
   )
     return {
-      heartBeatSec: 60,
+      heartBeatSec: 120,
       uploadSec: 90,
       ledState: false,
       forceReportLocInMs: 110000,
@@ -21,7 +21,7 @@ function powerProfileConfig(
     profileType === PowerProfileType.AUTOMATIC_BALANCED
   )
     return {
-      heartBeatSec: 60,
+      heartBeatSec: 120,
       uploadSec: 60,
       ledState: false,
       forceReportLocInMs: 80000,
@@ -38,7 +38,7 @@ function powerProfileConfig(
 
   // Full power profile configuration
   return {
-    heartBeatSec: 60,
+    heartBeatSec: 120,
     uploadSec: 20,
     ledState: true,
     forceReportLocInMs: 50000,
