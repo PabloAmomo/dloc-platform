@@ -24,8 +24,10 @@ import jt808ParseParamentersSettings from "../functions/jt808ParseParamentersSet
 import { Jt808HandlePacket } from "../models/Jt808HandlePacket";
 import { Jt808HandlePacketProps } from "../models/Jt808HandlePacketProps";
 import jt808CreateMessage from "../functions/jt808CreateMessage";
+import jt808CreateRequestSyncTimePacket from "../functions/jt808CreateRequestSyncTimePacket";
+import j808GetBatteryLevelPacketDateTime from "../functions/j808GetBatteryLevelPacketDateTime";
 
-  // TODO: Mover parte del codigo a otro lado, o fragmentar su responsabilidad
+// TODO: Mover parte del codigo a otro lado, o fragmentar su responsabilidad
 
 const handlePacket: Jt808HandlePacket = async (
   props: Jt808HandlePacketProps
@@ -108,7 +110,7 @@ const handlePacket: Jt808HandlePacket = async (
         jt808Packet.header.terminalId,
         counter + 101,
         0x8106,
-        Buffer.from("0200010002", "hex")
+        Buffer.from("0100000001", "hex")
       )
     );
 
@@ -158,8 +160,6 @@ const handlePacket: Jt808HandlePacket = async (
       )
     );
 
-    // TODO: El paqete 0200 no trae ni bateria ni gsmSignal, por lo que hay que traerlo de otro lado.
-
     response.imei = padNumberLeft(jt808Packet.header.terminalId, 15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
 
@@ -178,13 +178,15 @@ const handlePacket: Jt808HandlePacket = async (
     }
 
     let message = "";
-    if (jt808Packet.header.msgType === 0x0200) message = "Location report";
+    if (jt808Packet.header.msgType === 0x0200) message = "report";
     else if (jt808Packet.header.msgType === 0x0201)
-      message = "🧭 Location information query response";
+      message = "information query response";
     else if (jt808Packet.header.msgType === 0x0704)
-      message = "🧭 Positioning data batch upload";
+      message = "positioning data batch upload";
 
-    printMessage(`[${imeiTemp}] (${remoteAddress}) ✅ ${message} successful`);
+    printMessage(
+      `[${imeiTemp}] (${remoteAddress}) ✅ 🧭 Location ${message} successful`
+    );
   }
 
   // ---------------------------------------
@@ -193,19 +195,11 @@ const handlePacket: Jt808HandlePacket = async (
   // ---------------------------------------
   else if (jt808Packet.header.msgType === 0x0109) {
     (response.response as Buffer[]).push(
-      jt808CreateFrameData({
-        msgType: 0x8109,
-        terminalId: Buffer.from(jt808Packet.header.terminalId, "hex"),
-        msgSerialNumber: counter,
-        body: Buffer.from(
-          byteArrayToHexString(
-            numberToHexByteArray(jt808Packet.header.msgSerialNumber)
-          ) +
-            toHexWith(jt808Packet.header.msgType, 4) +
-            jt808TimeSyncBody().toString("hex"),
-          "hex"
-        ),
-      })
+      jt808CreateRequestSyncTimePacket(
+        jt808Packet.header.terminalId,
+        counter,
+        jt808Packet.header.msgSerialNumber
+      )
     );
 
     response.imei = padNumberLeft(jt808Packet.header.terminalId, 15, "0");
@@ -223,22 +217,10 @@ const handlePacket: Jt808HandlePacket = async (
   // ---------------------------------------
   else if (jt808Packet.header.msgType === 0x0210) {
     const batteryLevel: number = jt808Packet.body.readUInt8(0);
-    const date: string =
-      "20" +
-      jt808Packet.body.readUInt8(1) +
-      "-" +
-      jt808Packet.body.readUInt8(2) +
-      "-" +
-      jt808Packet.body.readUInt8(3);
-    const time: string =
-      jt808Packet.body.readUInt8(4) +
-      ":" +
-      jt808Packet.body.readUInt8(5) +
-      ":" +
-      jt808Packet.body.readUInt8(6);
+    const dateTime = j808GetBatteryLevelPacketDateTime(jt808Packet.body);
 
     printMessage(
-      `[${imeiTemp}] (${remoteAddress}) ✅ Battery level: ${batteryLevel}% at ${date} ${time}`
+      `[${imeiTemp}] (${remoteAddress}) ✅ Battery level: ${batteryLevel}% at ${dateTime}`
     );
 
     (response.response as Buffer[]).push(
@@ -277,7 +259,6 @@ const handlePacket: Jt808HandlePacket = async (
   // Upload the power saving mode modified by SMS to the serve (0x0112)
   //     response 0x8001
   // ---------------------------------------
-
   else if (
     [0x0002, 0x0003, 0x0104, 0x0105, 0x0107, 0x0108, 0x0112, 0x1007].includes(
       jt808Packet.header.msgType
