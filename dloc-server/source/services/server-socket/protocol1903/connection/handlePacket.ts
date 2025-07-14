@@ -288,7 +288,7 @@ const handlePacket: Proto1903HandlePacket = async (
     data.startsWith("TRVAP92")
   ) {
     let message: string = "";
-    const resultVal: string = data.endsWith("0#") ? "OK" : "ERROR";
+    const resultVal: string = data.endsWith("0#") ? "✅ OK" : "❌ ERROR";
 
     if (data.startsWith("TRVCP03"))
       message = "Set heartbeat packet interval";
