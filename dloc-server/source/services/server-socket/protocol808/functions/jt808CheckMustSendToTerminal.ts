@@ -33,19 +33,37 @@ const jt808CheckMustSendToTerminal = (
 
   /** Create Power Profile Packet */
   // TODO: [FEATURE] Probar el usar los parametros 0x27, 0x28, 0x29 para el control de intervalos de movimiento
-  const powerPacket = jt808CreatePowerProfilePacket(
+  /* Create HeartBeat Packet */
+  const powerPackerSettings = jt808CreateParameterSettingPacket(
     terminalId,
     counter + 200,
-    newPowerProfile,
-    movementsControlSeconds * 2
+    [
+      "00000027 04 " + createHexFromNumberWithNBytes(uploadSec, 4), // Report time intervals during dormancy, unit second 
+      "00000028 04 " + createHexFromNumberWithNBytes(uploadSec, 4), // Report time intervals during alarm, unit second
+      "00000029 04 " + createHexFromNumberWithNBytes(uploadSec, 4), // Report time intervals during normal, unit second
+    ]
   );
-  printMessage(`${prefix} 📡 send Upload Interval [${uploadSec} sec]`);
   printMessage(
     `${prefix} 🔋 Power config Packet sent: ${convertStringToHexString(
-      powerPacket
+      powerPackerSettings
     )}`
   );
-  response.push(powerPacket);
+  response.push(powerPackerSettings);
+
+  /** Create Power Profile Packet */
+  //const powerPacket = jt808CreatePowerProfilePacket(
+  //  terminalId,
+  //  counter + 200,
+  //  newPowerProfile,
+  //  movementsControlSeconds * 2
+  //);
+  //printMessage(`${prefix} 📡 send Upload Interval [${uploadSec} sec]`);
+  //printMessage(
+  //  `${prefix} 🔋 Power config Packet sent: ${convertStringToHexString(
+  //    powerPacket
+  //  )}`
+  //);
+  //response.push(powerPacket);
 
   /* Create HeartBeat Packet */
   const heartBeatPacket = jt808CreateParameterSettingPacket(
