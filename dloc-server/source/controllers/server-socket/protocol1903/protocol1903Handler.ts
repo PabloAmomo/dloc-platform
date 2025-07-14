@@ -20,7 +20,7 @@ import { CachePosition } from "../../../infraestucture/models/CachePosition";
 import processPacketHealth from "../../../functions/processPacketHealth";
 import convertStringToHexString from "../../../functions/convertStringToHexString";
 
-// TODO: Unificar handlers para protocolo 808 y 1903
+// TODO: [REFACTOR] Unificar handlers para protocolo 808 y 1903
 
 const protocol1903Handler = (conn: net.Socket, persistence: Persistence) => {
   const remoteAddress: string = getRemoteAddress(conn);

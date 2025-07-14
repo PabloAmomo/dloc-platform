@@ -1,4 +1,3 @@
-import { response } from "express";
 import { handlePacket } from "../../../services/server-socket/protocol808/connection/handlePacket";
 import { Persistence } from "../../../models/Persistence";
 import { printMessage } from "../../../functions/printMessage";
@@ -8,26 +7,19 @@ import handler from "../../../services/server-socket/protocol808/handler";
 import handleEnd from "../../../services/server-socket/protocol808/connection/handleEnd";
 import handleError from "../../../services/server-socket/protocol808/connection/handleError";
 import net from "node:net";
-import { CACHE_POSITION } from "../../../infraestucture/caches/cachePosition";
 import {
   CACHE_IMEI,
   clearItemInCacheIMEI,
 } from "../../../infraestucture/caches/cacheIMEI";
 import { getNormalizedIMEI } from "../../../functions/getNormalizedIMEI";
-import powerProfileConfig from "../../../functions/powerProfileConfig";
 import getPowerProfile from "../../../functions/getPowerProfile";
 import convertStringToHexString from "../../../functions/convertStringToHexString";
 import jt808FrameEncode from "../../../services/server-socket/protocol808/functions/jt808FrameEncode";
-import jt808CreatePowerProfilePacket from "../../../services/server-socket/protocol808/functions/jt808CreatePowerProfilePacket";
-import { CachePosition } from "../../../infraestucture/models/CachePosition";
-import jt808CreateParameterSettingPacket from "../../../services/server-socket/protocol808/functions/jt808CreateParameterSettingPacket";
-import createHexFromNumberWithNBytes from "../../../functions/createHexFromNumberWithNBytes";
-import jt808CreateCheckParameterSettingPacket from "../../../services/server-socket/protocol808/functions/jt808CreateCheckParameterSettingPacket";
 import processPacketHealth from "../../../functions/processPacketHealth";
 import j808CheckMustSendToTerminal from "../../../services/server-socket/protocol808/functions/j808CheckMustSendToTerminal";
 import { PowerProfileType } from "../../../enums/PowerProfileType";
 
-// TODO: Unificar handlers para protocolo 808 y 1903
+// TODO: [REFACTOR] Unificar handlers para protocolo 808 y 1903
 
 const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
   const remoteAddress: string = getRemoteAddress(conn);
