@@ -28,7 +28,6 @@ const handleUpdateDevice = async (
     return { results: [], error: new Error("old packet") };
   }
 
-  /** Update data in device */
   const data = [
     mySqlFormatDateTime(positionPacket.dateTimeUtc),
     positionPacket.lat,
@@ -38,8 +37,6 @@ const handleUpdateDevice = async (
     mySqlFormatDateTime(positionPacket.dateTimeUtc),
     positionPacket.accuracy,
     positionPacket.activity,
-    positionPacket.gsmSignal,
-    positionPacket.batteryLevel,
   ];
 
   const hasGsmSignal =
@@ -68,7 +65,7 @@ const handleUpdateDevice = async (
     sql,
     params
   );
-  console.log(sql, params);
+
   if (!response?.error)
     await mySqlClonedImeiUpdate(connectionConfig, positionPacket.imei);
   return response;
