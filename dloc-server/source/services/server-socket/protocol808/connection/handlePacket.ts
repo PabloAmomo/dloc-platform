@@ -24,7 +24,7 @@ import jt808CreateRequestSyncTimePacket from "../functions/jt808CreateRequestSyn
 import j808GetBatteryLevelPacketDateTime from "../functions/j808GetBatteryLevelPacketDateTime";
 import jt808CreateParameterSettingPacket from "../functions/jt808CreateParameterSettingPacket";
 
-// TODO: Mover parte del codigo a otro lado, o fragmentar su responsabilidad
+// TODO: [REFACTOR] Mover parte del codigo a otro lado, o fragmentar su responsabilidad
 
 const handlePacket: Jt808HandlePacket = async (
   props: Jt808HandlePacketProps
@@ -71,7 +71,7 @@ const handlePacket: Jt808HandlePacket = async (
       )
     );
 
-    // TODO: Verificar que funciona bien el cambio de time zone cuando se registra el dispositivo
+    // TODO: [VERIFICATION ]Verificar que funciona bien el cambio de time zone cuando se registra el dispositivo
     (response.response as Buffer[]).push(
       jt808CreateParameterSettingPacket(
         jt808Packet.header.terminalId,
@@ -116,7 +116,7 @@ const handlePacket: Jt808HandlePacket = async (
       )
     );
 
-    // TODO: No funciona y no se porque, revisar
+    // TODO: [BUG] No funciona y no se porque, revisar (Luego usar jt808CreateCheckParameterSettingPacket)
     (response.response as Buffer[]).push(
       jt808CreateMessage(
         jt808Packet.header.terminalId,
@@ -319,17 +319,8 @@ const handlePacket: Jt808HandlePacket = async (
           `[${imeiTemp}] (${remoteAddress}) 🔋 Battery level ✅ ${parametersSettings.paramatersSettings.batteryLevel.value}% (Updated on device)`
         );
       }
-      // TODO: Procesar los parametros (timezona)
-      // TODO: Si la timeZone no es 0, enviar un actualización para que se ponga a UTC (OJO QUE RESETEA EL DISPOSITIVO)
-      //(response.response as Buffer[]).push(
-      //  jt808CreateParameterSettingPacket(
-      //    jt808Packet.header.terminalId,
-      //    counter + 101,
-      //    [
-      //      "0000F142 01 00", // Terminal time zone (0x00 = UTC) - OJO resetea el dispositivo
-      //    ]
-      //  )
-      //);
+      // TODO: [FEATURE] Procesar los parametros (timezona)
+      // TODO: [FEATURE] Si la timeZone no es 0, enviar un actualización para que se ponga a UTC (OJO QUE RESETEA EL DISPOSITIVO) - Ver registro de device
       //      for (const param of parametersSettings.parameters) {
     } else if (jt808Packet.header.msgType === 0x0105) {
       messageText = "💤 Sleep notification";
@@ -343,7 +334,7 @@ const handlePacket: Jt808HandlePacket = async (
     } else if (jt808Packet.header.msgType === 0x0108) {
       messageText = "🌟 Sleep wake up notification";
     } else if (jt808Packet.header.msgType === 0x0112) {
-      // TODO: Crear un parser para los mensajes 0x0112 (Upload the power saving mode modified by SMS to the serve)
+      // TODO: [FEATURE]  Crear un parser para los mensajes 0x0112 (Upload the power saving mode modified by SMS to the serve)
       // 7E 01 12 00 06 05 62 13 41 76 54 00 09 08 00 00 00 00 00 03 7E
       messageText =
         "⚡️ Upload the power saving mode modified by SMS to the serve";
@@ -389,7 +380,7 @@ const handlePacket: Jt808HandlePacket = async (
       }]`
     );
 
-    // TODO: Eliminar en un futuro. Solo para debug
+    // TODO: [REMOVE DEBUG] Eliminar en un futuro. Solo para debug
     printMessage(
       `[${imeiTemp}] (${remoteAddress}) 👉👉👉👉👉👉👉👉👉 [${dataString}]`
     );

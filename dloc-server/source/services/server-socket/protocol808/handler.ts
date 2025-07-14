@@ -16,7 +16,7 @@ const handler = async ({
   /** results */
   const results: HandlePacketResult[] = [];
 
-  // TODO: Unificar handlers para protocolo 808 y 1903
+  // TODO: [REFACTOR] Unificar handlers para protocolo 808 y 1903
 
   const inPackets: Buffer[] = [jt808FrameDecode(data)];
 

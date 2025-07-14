@@ -1,7 +1,6 @@
 import padNumberLeft from "../../../../functions/padNumberLeft";
 import jt808CreateFrameData from "./jt808CreateFrameData";
 
-// TODO: No funciona y no se porque
 const jt808CreateParameterSettingPacket = (terminalId : string, counter : number, parameters: string[] ) : Buffer => {
  
   const paramList = padNumberLeft(parameters.length, 2, "0") + parameters.join("").replace(/ /g, "");
