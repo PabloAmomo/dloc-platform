@@ -5,17 +5,13 @@ import positionUpdateLastActivityAndAddHistory from "../../../../functions/posit
 import positionUpdateBatteryAndLastActivity from "../../../../functions/positionUpdateBatteryAndLastActivity";
 import { getNormalizedIMEI } from "../../../../functions/getNormalizedIMEI";
 import convertStringToHexString from "../../../../functions/convertStringToHexString";
-import numberToHexByteArray from "../../../../functions/numberToHexByteArray";
-import byteArrayToHexString from "../../../../functions/byteArrayToHexString";
 import padNumberLeft from "../../../../functions/padNumberLeft";
-import jt808TimeSyncBody from "../functions/jt808TimeSyncBody";
 import toHexWith from "../../../../functions/toHexWith";
 import jt808GetFrameData from "../functions/jt808GetFrameData";
 import jt808CreateGeneralResponse from "../functions/jt808CreateGeneralResponse";
 import jt808CreateQueryLocationMessage from "../functions/jt808CreateQueryLocationMessage";
 import jt808DecodeLocations from "../functions/jt808DecodeLocations";
 import jt808DecodeLocationReport from "../functions/jt808DecodeLocationReport";
-import jt808CreateFrameData from "../functions/jt808CreateFrameData";
 import jt808ParseTerminalAttributes from "../functions/jt808ParseTerminalAttributesBits";
 import jt808PersistLocation from "../functions/jt808PersistLocation";
 import jt808ParseCommonResultFromTerminal from "../functions/jt808ParseCommonResultFromTerminal";

@@ -1,3 +1,4 @@
+import { response } from "express";
 import { handlePacket } from "../../../services/server-socket/protocol808/connection/handlePacket";
 import { Persistence } from "../../../models/Persistence";
 import { printMessage } from "../../../functions/printMessage";
@@ -23,6 +24,8 @@ import jt808CreateParameterSettingPacket from "../../../services/server-socket/p
 import createHexFromNumberWithNBytes from "../../../functions/createHexFromNumberWithNBytes";
 import jt808CreateCheckParameterSettingPacket from "../../../services/server-socket/protocol808/functions/jt808CreateCheckParameterSettingPacket";
 import processPacketHealth from "../../../functions/processPacketHealth";
+import j808CheckMustSendToTerminal from "../../../services/server-socket/protocol808/functions/j808CheckMustSendToTerminal";
+import { PowerProfileType } from "../../../enums/PowerProfileType";
 
 // TODO: Unificar handlers para protocolo 808 y 1903
 
@@ -73,6 +76,7 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
             conn.destroy();
             return;
           }
+
           imei = results[0].imei;
 
           const prefix = `[${imei}] (${remoteAddress})`;
@@ -80,7 +84,10 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
           printMessage(`${prefix} 🌟 Current serial counter [${counter}].`);
 
           /** Get the las information about the IMEI */
-          const imeiData = CACHE_IMEI.get(imei);
+          const imeiData = CACHE_IMEI.get(imei) ?? {
+            powerProfile: PowerProfileType.AUTOMATIC_MINIMAL,
+            lastPowerProfileChecked: 0,
+          };
 
           /** Get power profile for the imei */
           const {
@@ -91,15 +98,10 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
           } = await getPowerProfile(
             imei,
             persistence,
-            imeiData?.lastPowerProfileChecked ?? Date.now(),
+            imeiData.lastPowerProfileChecked,
             prefix,
             newConnection
           );
-          const { uploadSec, heartBeatSec } = powerProfileConfig(powerProfile);
-
-          /** Get last position packet */
-          const lastPosPacket: CachePosition | undefined =
-            CACHE_POSITION.get(imei);
 
           /** create or update socket connection to cache */
           CACHE_IMEI.updateOrCreate(imei, {
@@ -107,67 +109,28 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
             powerProfile,
             lastPowerProfileChecked,
           });
-          const powerPrfChanged =
-            imeiData?.powerProfile && imeiData?.powerProfile !== powerProfile;
 
-          /** If new connection send configuration after response */
+          const powerPrfChanged = imeiData.powerProfile !== powerProfile;
+
           if (newConnection || powerPrfChanged || needProfileRefresh) {
-            if (needProfileRefresh) {
-              printMessage(
-                `${prefix} 🔄 power profile refresh needed, current profile [${powerProfile}]`
-              );
-            }
-
-            if (powerPrfChanged)
-              printMessage(
-                `${prefix} ⚡️ power profile changed from [${imeiData?.powerProfile}] to [${powerProfile}]`
-              );
-
-            printMessage(
-              `${prefix} 📡 send Upload Interval [${uploadSec} sec] - Heartbeat [${heartBeatSec}]`
-            );
-
-            const terminalId = imei.slice(-12);
-
-            /** Create Power Profile Packet */
-            const powerPacket = jt808CreatePowerProfilePacket(
-              terminalId,
-              counter + 200,
+            const responseSend: Buffer[] = j808CheckMustSendToTerminal(
+              imei,
+              prefix,
+              powerPrfChanged,
+              needProfileRefresh,
+              counter,
+              imeiData.powerProfile,
               powerProfile,
-              movementsControlSeconds * 2
+              movementsControlSeconds
             );
-            printMessage(
-              `${prefix} 🔋 Power config Packet sent: ${convertStringToHexString(
-                powerPacket
-              )}`
-            );
-            (results[0].response as Buffer[]).push(powerPacket);
 
-            /* Create HeartBeat Packet */
-            const heartBeatPacket = jt808CreateParameterSettingPacket(
-              terminalId,
-              counter + 201,
-              ["00000001 04 " + createHexFromNumberWithNBytes(heartBeatSec, 4)]
-            );
-            printMessage(
-              `${prefix} ❤️  Heart beat config Packet sent: ${convertStringToHexString(
-                heartBeatPacket
-              )}`
-            );
-            (results[0].response as Buffer[]).push(heartBeatPacket);
-
-            /* Ask for parameters settings */
-            (results[0].response as Buffer[]).push(
-              jt808CreateCheckParameterSettingPacket(
-                terminalId,
-                counter + 202,
-                []
-              )
-            );
-            printMessage(`${prefix} ⚙️  Parameters setting Packet sent`);
-
-            newConnection = false;
+            responseSend.forEach((response) => {
+              (results[0].response as Buffer[]).push(response);
+            });
           }
+
+          /** Is not a new connection */
+          newConnection = false;
 
           /** Send */
           for (const result of results) {
