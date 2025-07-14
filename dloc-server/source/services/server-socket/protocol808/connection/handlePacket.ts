@@ -72,18 +72,18 @@ const handlePacket: Jt808HandlePacket = async (
     );
 
     // TODO: [VERIFICATION ]Verificar que funciona bien el cambio de time zone cuando se registra el dispositivo
-    (response.response as Buffer[]).push(
-      jt808CreateParameterSettingPacket(
-        jt808Packet.header.terminalId,
-        counter + 101,
-        [
-          "0000F142 01 00", // Terminal time zone (0x00 = UTC)
-        ]
-      )
-    );
-    printMessage(
-      `[${imeiTemp}] (${remoteAddress}) 🌎 Time zone to 0 packet sent (Device will restar)`
-    );
+    //(response.response as Buffer[]).push(
+    //  jt808CreateParameterSettingPacket(
+    //    jt808Packet.header.terminalId,
+    //    counter + 101,
+    //    [
+    //      "0000F142 01 00", // Terminal time zone (0x00 = UTC)
+    //    ]
+    //  )
+    //);
+    //printMessage(
+    //  `[${imeiTemp}] (${remoteAddress}) 🌎 Time zone to 0 packet sent (Device will restar)`
+    //);
 
     response.imei = padNumberLeft(jt808Packet.header.terminalId, 15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
