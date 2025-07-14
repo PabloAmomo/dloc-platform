@@ -1,7 +1,7 @@
-import { HandlePacketResult } from "../../../models/HandlePacketResult";
-import { printMessage } from "../../../functions/printMessage";
-import { getNormalizedIMEI } from "../../../functions/getNormalizedIMEI";
-import { Proto1903HandlerProps } from "./models/Proto1903HandlerProps";
+import { getNormalizedIMEI } from '../../../functions/getNormalizedIMEI';
+import { printMessage } from '../../../functions/printMessage';
+import { HandlePacketResult } from '../../../models/HandlePacketResult';
+import { Proto1903HandlerProps } from './models/Proto1903HandlerProps';
 
 const handler = async ({
   imei,

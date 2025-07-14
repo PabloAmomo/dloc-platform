@@ -1,17 +1,6 @@
 import { printMessage } from "../../../../functions/printMessage";
-
-type Jt808TerminalPowerSaveConfigPowerSaveMode =
-  | "NormalMode"
-  | "PeriodicPositioningMode"
-  | "SmartPowerSavingMode"
-  | "SuperPowerSavingMode";
-
-type Jt808TerminalPowerSaveConfig = {
-  powerSaveMode: Jt808TerminalPowerSaveConfigPowerSaveMode;
-  shortConnectPeriodicMin: number;
-  flightMode: boolean;
-  connectTimeAfterTrackCarMode: number;
-};
+import { Jt808TerminalPowerSaveConfig } from "../models/Jt808TerminalPowerSaveConfig";
+import { Jt808TerminalPowerSaveConfigPowerSaveMode } from "../models/Jt808TerminalPowerSaveConfigPowerSaveMode";
 
 const jt808CehckUploadPowerSaving = (
   body: Buffer,
@@ -19,8 +8,10 @@ const jt808CehckUploadPowerSaving = (
   remoteAddress: string
 ): Jt808TerminalPowerSaveConfig => {
   if (body.length < 6) {
-        printMessage(
-      `[${imei}] (${remoteAddress}) ❌ Buffer is too short to parse power save config. -> body ${body.toString("hex")}`
+    printMessage(
+      `[${imei}] (${remoteAddress}) ❌ Buffer is too short to parse power save config. -> body ${body.toString(
+        "hex"
+      )}`
     );
     return {
       powerSaveMode: "NormalMode",
@@ -47,7 +38,8 @@ const jt808CehckUploadPowerSaving = (
       break;
     default:
       printMessage(
-      `[${imei}] (${remoteAddress}) ❌ Invalid power save mode value. -> ${powerSaveModeValue}`)
+        `[${imei}] (${remoteAddress}) ❌ Invalid power save mode value. -> ${powerSaveModeValue}`
+      );
   }
 
   const shortConnectPeriodic = body.readUInt16BE(1);
