@@ -34,21 +34,49 @@ const jt808CheckMustSendToTerminal = (
   /** Create Power Profile Packet */
   // TODO: [FEATURE] Probar el usar los parametros 0x27, 0x28, 0x29 para el control de intervalos de movimiento
   /* Create HeartBeat Packet */
-  const powerPackerSettings = jt808CreateParameterSettingPacket(
+  const powerPackerSettingsX027 = jt808CreateParameterSettingPacket(
     terminalId,
-    counter + 200,
+    counter + 201,
     [
-      "00000027 04 " + createHexFromNumberWithNBytes(uploadSec, 4), // Report time intervals during dormancy, unit second 
+      "00000027 04 " + createHexFromNumberWithNBytes(uploadSec, 4), // Report time intervals during dormancy, unit second
+      //"00000028 04 " + createHexFromNumberWithNBytes(uploadSec, 4), // Report time intervals during alarm, unit second
+      //"00000029 04 " + createHexFromNumberWithNBytes(uploadSec, 4), // Report time intervals during normal, unit second
+    ]
+  );
+  printMessage(
+    `${prefix} 🔋 Power config Packet sent (0x0027): ${convertStringToHexString(
+      powerPackerSettingsX027
+    )}`
+  );
+  response.push(powerPackerSettingsX027);
+
+  const powerPackerSettingsX028 = jt808CreateParameterSettingPacket(
+    terminalId,
+    counter + 202,
+    [
       "00000028 04 " + createHexFromNumberWithNBytes(uploadSec, 4), // Report time intervals during alarm, unit second
+    ]
+  );
+  printMessage(
+    `${prefix} 🔋 Power config Packet sent (0x0027): ${convertStringToHexString(
+      powerPackerSettingsX028
+    )}`
+  );
+  response.push(powerPackerSettingsX028);
+
+  const powerPackerSettingsX029 = jt808CreateParameterSettingPacket(
+    terminalId,
+    counter + 203,
+    [
       "00000029 04 " + createHexFromNumberWithNBytes(uploadSec, 4), // Report time intervals during normal, unit second
     ]
   );
   printMessage(
-    `${prefix} 🔋 Power config Packet sent: ${convertStringToHexString(
-      powerPackerSettings
+    `${prefix} 🔋 Power config Packet sent (0x0029): ${convertStringToHexString(
+      powerPackerSettingsX029
     )}`
   );
-  response.push(powerPackerSettings);
+  response.push(powerPackerSettingsX029);
 
   /** Create Power Profile Packet */
   //const powerPacket = jt808CreatePowerProfilePacket(
@@ -68,7 +96,7 @@ const jt808CheckMustSendToTerminal = (
   /* Create HeartBeat Packet */
   const heartBeatPacket = jt808CreateParameterSettingPacket(
     terminalId,
-    counter + 201,
+    counter + 210,
     ["00000001 04 " + createHexFromNumberWithNBytes(heartBeatSec, 4)]
   );
   printMessage(
@@ -81,7 +109,7 @@ const jt808CheckMustSendToTerminal = (
   /* Create parameters settings Packet */
   const parametersSettings = jt808CreateCheckParameterSettingPacket(
     terminalId,
-    counter + 202,
+    counter + 211,
     []
   );
   response.push(parametersSettings);
