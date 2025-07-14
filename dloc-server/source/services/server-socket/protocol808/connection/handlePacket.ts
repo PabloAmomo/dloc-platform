@@ -325,7 +325,7 @@ const handlePacket: Jt808HandlePacket = async (
         remoteAddress
       );
       printMessage(
-        `[${imeiTemp}] (${remoteAddress}) 👉 🔋 powerSaveModeData: ${powerSaveModeData.powerSaveMode}`
+        `[${imeiTemp}] (${remoteAddress}) 👉 🔋 powerSaveModeData: ${JSON.stringify(powerSaveModeData)}`
       );
       messageText =
         "⚡️ Upload the power saving mode modified by SMS to the serve";

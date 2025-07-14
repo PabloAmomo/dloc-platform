@@ -20,7 +20,7 @@ const jt808CehckUploadPowerSaving = (
 ): Jt808TerminalPowerSaveConfig => {
   if (body.length < 6) {
         printMessage(
-      `[${imei}] (${remoteAddress}) ❌ Buffer is too short to parse power save config. -> body ${body.toString("hex")   }`
+      `[${imei}] (${remoteAddress}) ❌ Buffer is too short to parse power save config. -> body ${body.toString("hex")}`
     );
     return {
       powerSaveMode: "NormalMode",
@@ -46,7 +46,8 @@ const jt808CehckUploadPowerSaving = (
       powerSaveMode = "SuperPowerSavingMode";
       break;
     default:
-      throw new Error("Invalid power save mode value.");
+      printMessage(
+      `[${imei}] (${remoteAddress}) ❌ Invalid power save mode value. -> ${powerSaveModeValue}`)
   }
 
   const shortConnectPeriodic = body.readUInt16BE(1);
