@@ -16,7 +16,6 @@ import jt808ParseTerminalAttributes from "../functions/jt808ParseTerminalAttribu
 import jt808PersistLocation from "../functions/jt808PersistLocation";
 import jt808ParseCommonResultFromTerminal from "../functions/jt808ParseCommonResultFromTerminal";
 import jt808CreateCheckParameterSettingPacket from "../functions/jt808CreateCheckParameterSettingPacket";
-import jt808ParseParamentersSettings from "../functions/jt808ParseParamentersSettings";
 import { Jt808HandlePacket } from "../models/Jt808HandlePacket";
 import { Jt808HandlePacketProps } from "../models/Jt808HandlePacketProps";
 import jt808CreateMessage from "../functions/jt808CreateMessage";
@@ -24,6 +23,7 @@ import jt808CreateRequestSyncTimePacket from "../functions/jt808CreateRequestSyn
 import jt808GetBatteryLevelPacketDateTime from "../functions/jt808GetBatteryLevelPacketDateTime";
 import jt808CreateTerminalRegistrationResponsePacket from "../functions/jt808CreateTerminalRegistrationResponsePacket";
 import jt808CreateParameterSettingPacket from "../functions/jt808CreateParameterSettingPacket";
+import jt808CheckTerminalParametersResponse from "../functions/jt808CheckTerminalParametersResponse";
 
 // TODO: [REFACTOR] Mover parte del codigo a otro lado, o fragmentar su responsabilidad
 
@@ -297,37 +297,23 @@ const handlePacket: Jt808HandlePacket = async (
     if (jt808Packet.header.msgType === 0x0002) {
       messageText = "❤️  Terminal heartbeat";
     } else if (jt808Packet.header.msgType === 0x0003) {
-      response.mustDisconnect = true; 
+      response.mustDisconnect = true;
       messageText = "🔚 Terminal Logout";
     } else if (jt808Packet.header.msgType === 0x0104) {
       messageText = "⚙️  Check terminal parameter response";
-      const parametersSettings = jt808ParseParamentersSettings(
+      await jt808CheckTerminalParametersResponse(
         imeiTemp,
         remoteAddress,
-        jt808Packet.body
+        persistence,
+        jt808Packet
       );
-      if (parametersSettings.paramatersSettings.batteryLevel) {
-        await positionUpdateBatteryAndLastActivity(
-          imeiTemp,
-          remoteAddress,
-          persistence,
-          parametersSettings.paramatersSettings.batteryLevel.value as number
-        );
-        printMessage(
-          `[${imeiTemp}] (${remoteAddress}) 🔋 Battery level ✅ ${parametersSettings.paramatersSettings.batteryLevel.value}% (Updated on device)`
-        );
-      }
-      // TODO: [FEATURE] Procesar los parametros (timezona)
-      // TODO: [FEATURE] Si la timeZone no es 0, enviar un actualización para que se ponga a UTC (OJO QUE RESETEA EL DISPOSITIVO) - Ver registro de device
-      //      for (const param of parametersSettings.parameters) {
     } else if (jt808Packet.header.msgType === 0x0105) {
       messageText = "💤 Sleep notification";
     } else if (jt808Packet.header.msgType === 0x0107) {
       messageText = "✅ Check terminal attribute response";
       const terminalAttributes = jt808ParseTerminalAttributes(jt808Packet.body);
-      const terminalData = `${terminalAttributes.manufacturerId} Model ${terminalAttributes.terminalModel} - SimIccid ${terminalAttributes.simIccid}`;
       printMessage(
-        `[${imeiTemp}] (${remoteAddress}) 👉 Terminal attributtes: ${terminalData}`
+        `[${imeiTemp}] (${remoteAddress}) 👉 Terminal attributtes: ${terminalAttributes.manufacturerId} Model ${terminalAttributes.terminalModel} - SimIccid ${terminalAttributes.simIccid}`
       );
     } else if (jt808Packet.header.msgType === 0x0108) {
       messageText = "🌟 Sleep wake up notification";
