@@ -42,18 +42,18 @@ const jt808DecodeLocations = (
       .toString(16)
       .padStart(2, "0")}-${timeBCD[2]
       .toString(16)
-      .padStart(2, "0")}T${timeBCD[3]
+      .padStart(2, "0")} ${timeBCD[3]
       .toString(16)
       .padStart(2, "0")}:${timeBCD[4]
       .toString(16)
-      .padStart(2, "0")}:${timeBCD[5].toString(16).padStart(2, "0")}.000Z`;
+      .padStart(2, "0")}:${timeBCD[5].toString(16).padStart(2, "0")}`;
 
     // TODO: [FEATURE] Calcular la diferencia de horas entre la fecha del paquete y la del servidor, y con eso, calcular la fecha UTC a aplicat al paquete
     const dateTimeUTC = new Date().toISOString();
 
     // TODO: [REMOVE DEBUG] Solo para pruebas - ELIMINAR
     printMessage(
-      `📍 (jt808DecodeLocations) Location date/time -------> ${dateTimePacket} (Server: ${dateTimeUTC})`
+      `📍 (jt808DecodeLocations) Location date/time -------> ${dateTimePacket} (Server UTC: ${dateTimeUTC})`
     );
 
     let gsmSignal = -1;
