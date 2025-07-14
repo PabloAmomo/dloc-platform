@@ -1,23 +1,23 @@
-import { handlePacket } from "../../../services/server-socket/protocol808/connection/handlePacket";
-import { Persistence } from "../../../models/Persistence";
-import { printMessage } from "../../../functions/printMessage";
-import { getRemoteAddress } from "../../../functions/remoteAddress";
-import handleClose from "../../../services/server-socket/protocol808/connection/handleClose";
-import handler from "../../../services/server-socket/protocol808/handler";
-import handleEnd from "../../../services/server-socket/protocol808/connection/handleEnd";
-import handleError from "../../../services/server-socket/protocol808/connection/handleError";
 import net from "node:net";
+import { PowerProfileType } from "../../../enums/PowerProfileType";
+import convertStringToHexString from "../../../functions/convertStringToHexString";
+import { getNormalizedIMEI } from "../../../functions/getNormalizedIMEI";
+import getPowerProfile from "../../../functions/getPowerProfile";
+import { printMessage } from "../../../functions/printMessage";
+import processPacketHealth from "../../../functions/processPacketHealth";
+import { getRemoteAddress } from "../../../functions/remoteAddress";
 import {
   CACHE_IMEI,
   clearItemInCacheIMEI,
 } from "../../../infraestucture/caches/cacheIMEI";
-import { getNormalizedIMEI } from "../../../functions/getNormalizedIMEI";
-import getPowerProfile from "../../../functions/getPowerProfile";
-import convertStringToHexString from "../../../functions/convertStringToHexString";
-import jt808FrameEncode from "../../../services/server-socket/protocol808/functions/jt808FrameEncode";
-import processPacketHealth from "../../../functions/processPacketHealth";
+import { Persistence } from "../../../models/Persistence";
+import handleClose from "../../../services/server-socket/protocol808/connection/handleClose";
+import handleEnd from "../../../services/server-socket/protocol808/connection/handleEnd";
+import handleError from "../../../services/server-socket/protocol808/connection/handleError";
+import { handlePacket } from "../../../services/server-socket/protocol808/connection/handlePacket";
 import jt808CheckMustSendToTerminal from "../../../services/server-socket/protocol808/functions/jt808CheckMustSendToTerminal";
-import { PowerProfileType } from "../../../enums/PowerProfileType";
+import jt808FrameEncode from "../../../services/server-socket/protocol808/functions/jt808FrameEncode";
+import handler from "../../../services/server-socket/protocol808/handler";
 
 // TODO: [REFACTOR] Unificar handlers para protocolo 808 y 1903
 
@@ -91,7 +91,7 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
 
           /** Get power profile for the imei */
           const {
-            powerProfile,
+            powerProfile: newPowerProfile,
             lastPowerProfileChecked,
             needProfileRefresh,
             movementsControlSeconds,
@@ -106,11 +106,11 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
           /** create or update socket connection to cache */
           CACHE_IMEI.updateOrCreate(imei, {
             socketConn: conn,
-            powerProfile,
+            powerProfile: newPowerProfile,
             lastPowerProfileChecked,
           });
 
-          const powerPrfChanged = imeiData.powerProfile !== powerProfile;
+          const powerPrfChanged = imeiData.powerProfile !== newPowerProfile;
 
           if (newConnection || powerPrfChanged || needProfileRefresh) {
             const responseSend: Buffer[] = jt808CheckMustSendToTerminal(
@@ -120,7 +120,7 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
               needProfileRefresh,
               counter,
               imeiData.powerProfile,
-              powerProfile,
+              newPowerProfile,
               movementsControlSeconds
             );
 
