@@ -1,21 +1,22 @@
-import { ConnectionConfig } from 'mysql';
-import { getErrorFromPositionPacket } from '../../functions/getErrorFromPositionPacket';
-import { mySqlClonedImeiUpdate } from '../functions/mySqlClonedImeiUpdate';
-import { mySqlConnectionConfig } from '../functions/mySqlConnectionConfig';
-import { mySqlFormatDateTime } from '../functions/mySqlFormatDateTime';
-import { mySqlGetLastPositionDateTime } from '../functions/mySqlGetLastPositionDateTime';
-import { PersistenceResult } from '../../models/PersistenceResult';
-import { PositionPacket } from '../../../models/PositionPacket';
-import { printMessage } from '../../../functions/printMessage';
-import mySqlQueryAsync from '../functions/mySqlQueryAsync';
+import { ConnectionConfig } from "mysql";
+import { getErrorFromPositionPacket } from "../../functions/getErrorFromPositionPacket";
+import { mySqlClonedImeiUpdate } from "../functions/mySqlClonedImeiUpdate";
+import { mySqlConnectionConfig } from "../functions/mySqlConnectionConfig";
+import { mySqlFormatDateTime } from "../functions/mySqlFormatDateTime";
+import { mySqlGetLastPositionDateTime } from "../functions/mySqlGetLastPositionDateTime";
+import { PersistenceResult } from "../../models/PersistenceResult";
+import { PositionPacket } from "../../../models/PositionPacket";
+import { printMessage } from "../../../functions/printMessage";
+import mySqlQueryAsync from "../functions/mySqlQueryAsync";
 
 const connectionConfig: ConnectionConfig = mySqlConnectionConfig;
 
-// TODO: No escribir batery -1 o GMS -1
-const handleUpdateDevice = async (positionPacket: PositionPacket): Promise<PersistenceResult> => {
+const handleUpdateDevice = async (
+  positionPacket: PositionPacket
+): Promise<PersistenceResult> => {
   /** Validate data */
   const { errorMsg, message } = getErrorFromPositionPacket(positionPacket);
-  if (errorMsg !== '' || positionPacket.dateTimeUtc == null) {
+  if (errorMsg !== "" || positionPacket.dateTimeUtc == null) {
     printMessage(message);
     return { results: [], error: new Error(errorMsg) };
   }
@@ -24,7 +25,7 @@ const handleUpdateDevice = async (positionPacket: PositionPacket): Promise<Persi
   const result = await mySqlGetLastPositionDateTime(positionPacket);
   if (result.error) return result;
   if (result.results.length) {
-    return { results: [], error: new Error('old packet') };
+    return { results: [], error: new Error("old packet") };
   }
 
   /** Update data in device */
@@ -34,12 +35,22 @@ const handleUpdateDevice = async (positionPacket: PositionPacket): Promise<Persi
     positionPacket.lng,
     positionPacket.speed,
     positionPacket.directionAngle,
-    positionPacket.gsmSignal,
-    positionPacket.batteryLevel,
     mySqlFormatDateTime(positionPacket.dateTimeUtc),
     positionPacket.accuracy,
     positionPacket.activity,
+    positionPacket.gsmSignal,
+    positionPacket.batteryLevel,
   ];
+
+  const hasGsmSignal =
+    positionPacket.gsmSignal !== undefined && positionPacket.gsmSignal >= 0;
+  const hasBattery =
+    positionPacket.batteryLevel !== undefined &&
+    positionPacket.batteryLevel >= 0;
+
+  if (hasGsmSignal) data.push(positionPacket.gsmSignal);
+  if (hasBattery) data.push(positionPacket.batteryLevel);
+
   const params = [
     positionPacket.imei,
     /** insert */
@@ -47,12 +58,22 @@ const handleUpdateDevice = async (positionPacket: PositionPacket): Promise<Persi
     /** update */
     ...data,
   ];
-  const sql = `INSERT INTO device (imei, lastPositionUTC, lat, lng, speed, directionAngle, gsmSignal, batteryLevel, lastVisibilityUTC, locationAccuracy, activity)
+
+  const sql = `INSERT INTO device (imei, lastPositionUTC, lat, lng, speed, directionAngle, lastVisibilityUTC, locationAccuracy, activity ${
+    hasGsmSignal ? ",gsmSignal" : ""
+  } ${hasBattery ? ",batteryLevel" : ""})
                           VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ON DUPLICATE KEY 
-                UPDATE  lastPositionUTC = ?, lat = ?, lng = ?, speed = ?, directionAngle = ?, gsmSignal = ?, batteryLevel = ?, lastVisibilityUTC = ?, locationAccuracy = ?, activity = ?;`;
-  const response: PersistenceResult = await mySqlQueryAsync(connectionConfig, sql, params);
-  if (!response?.error) await mySqlClonedImeiUpdate(connectionConfig, positionPacket.imei);
+                UPDATE  lastPositionUTC = ?, lat = ?, lng = ?, speed = ?, directionAngle = ?, lastVisibilityUTC = ?, locationAccuracy = ?, activity = ? ${
+                  hasGsmSignal ? ",gsmSignal = ?" : ""
+                } ${hasBattery ? ",batteryLevel = ?" : ""};`;
+  const response: PersistenceResult = await mySqlQueryAsync(
+    connectionConfig,
+    sql,
+    params
+  );
+  if (!response?.error)
+    await mySqlClonedImeiUpdate(connectionConfig, positionPacket.imei);
   return response;
 };
 
