@@ -18,7 +18,7 @@ const handler = async ({
 
   // TODO: Unificar handlers para protocolo 808 y 1903
   
-  const inPackets: string[] = data.split("#");
+  const inPackets: string[] = data.toString().split("#");
 
   if (inPackets.length === 0) {
     printMessage(
