@@ -24,6 +24,7 @@ import jt808GetBatteryLevelPacketDateTime from "../functions/jt808GetBatteryLeve
 import jt808CreateTerminalRegistrationResponsePacket from "../functions/jt808CreateTerminalRegistrationResponsePacket";
 import jt808CreateParameterSettingPacket from "../functions/jt808CreateParameterSettingPacket";
 import jt808CheckTerminalParametersResponse from "../functions/jt808CheckTerminalParametersResponse";
+import jt808CehckUploadPowerSaving from "../functions/jt808CehckUploadPowerSaving";
 
 // TODO: [REFACTOR] Mover parte del codigo a otro lado, o fragmentar su responsabilidad
 
@@ -310,16 +311,22 @@ const handlePacket: Jt808HandlePacket = async (
     } else if (jt808Packet.header.msgType === 0x0105) {
       messageText = "💤 Sleep notification";
     } else if (jt808Packet.header.msgType === 0x0107) {
-      messageText = "✅ Check terminal attribute response";
       const terminalAttributes = jt808ParseTerminalAttributes(jt808Packet.body);
       printMessage(
-        `[${imeiTemp}] (${remoteAddress}) 👉 Terminal attributtes: ${terminalAttributes.manufacturerId} Model ${terminalAttributes.terminalModel} - SimIccid ${terminalAttributes.simIccid}`
+        `[${imeiTemp}] (${remoteAddress}) 👉 ⚙️  Terminal attributtes: ${terminalAttributes.manufacturerId} Model ${terminalAttributes.terminalModel} - SimIccid ${terminalAttributes.simIccid}`
       );
+      messageText = "✅ Check terminal attribute response";
     } else if (jt808Packet.header.msgType === 0x0108) {
       messageText = "🌟 Sleep wake up notification";
     } else if (jt808Packet.header.msgType === 0x0112) {
-      // TODO: [FEATURE]  Crear un parser para los mensajes 0x0112 (Upload the power saving mode modified by SMS to the serve)
-      // 7E 01 12 00 06 05 62 13 41 76 54 00 09 08 00 00 00 00 00 03 7E
+      const powerSaveModeData = jt808CehckUploadPowerSaving(
+        jt808Packet.body,
+        imeiTemp,
+        remoteAddress
+      );
+      printMessage(
+        `[${imeiTemp}] (${remoteAddress}) 👉 🔋 powerSaveModeData: ${powerSaveModeData.powerSaveMode}`
+      );
       messageText =
         "⚡️ Upload the power saving mode modified by SMS to the serve";
     } else if (jt808Packet.header.msgType === 0x1007) {

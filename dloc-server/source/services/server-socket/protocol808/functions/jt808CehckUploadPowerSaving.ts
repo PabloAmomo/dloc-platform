@@ -1,0 +1,64 @@
+import { printMessage } from "../../../../functions/printMessage";
+
+type Jt808TerminalPowerSaveConfigPowerSaveMode =
+  | "NormalMode"
+  | "PeriodicPositioningMode"
+  | "SmartPowerSavingMode"
+  | "SuperPowerSavingMode";
+
+type Jt808TerminalPowerSaveConfig = {
+  powerSaveMode: Jt808TerminalPowerSaveConfigPowerSaveMode;
+  shortConnectPeriodicMin: number;
+  flightMode: boolean;
+  connectTimeAfterTrackCarMode: number;
+};
+
+const jt808CehckUploadPowerSaving = (
+  body: Buffer,
+  imei: string,
+  remoteAddress: string
+): Jt808TerminalPowerSaveConfig => {
+  if (body.length < 6) {
+        printMessage(
+      `[${imei}] (${remoteAddress}) ❌ Buffer is too short to parse power save config. -> body ${body.toString("hex")   }`
+    );
+    return {
+      powerSaveMode: "NormalMode",
+      shortConnectPeriodicMin: 0,
+      flightMode: false,
+      connectTimeAfterTrackCarMode: 0,
+    };
+  }
+
+  const powerSaveModeValue = body.readUInt8(0);
+  let powerSaveMode: Jt808TerminalPowerSaveConfigPowerSaveMode = "NormalMode";
+  switch (powerSaveModeValue) {
+    case 1:
+      powerSaveMode = "NormalMode";
+      break;
+    case 2:
+      powerSaveMode = "PeriodicPositioningMode";
+      break;
+    case 3:
+      powerSaveMode = "SmartPowerSavingMode";
+      break;
+    case 4:
+      powerSaveMode = "SuperPowerSavingMode";
+      break;
+    default:
+      throw new Error("Invalid power save mode value.");
+  }
+
+  const shortConnectPeriodic = body.readUInt16BE(1);
+  const flightMode = body.readUInt8(3) === 1;
+  const connectTimeAfterTrackCarModeMin = body.readUInt16BE(4);
+
+  return {
+    powerSaveMode,
+    shortConnectPeriodicMin: shortConnectPeriodic,
+    flightMode,
+    connectTimeAfterTrackCarMode: connectTimeAfterTrackCarModeMin,
+  };
+};
+
+export default jt808CehckUploadPowerSaving;
