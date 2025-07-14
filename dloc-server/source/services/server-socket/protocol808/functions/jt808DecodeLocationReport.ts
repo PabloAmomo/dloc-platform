@@ -25,6 +25,9 @@ const jt808DecodeLocationReport = (data: Buffer): Jt808LocationPacket => {
   printMessage(
     `📍 (jt808DecodeLocationReport) Location date/time -------> ${dateTimeUTC} (Server UTC: ${new Date().toISOString()})`
   );
+  printMessage(
+    `🧭 (jt808DecodeLocationReport) Lat/Lng            -------> ${lat} - ${lng}`
+  );
 
   const response = {
     dataType: 0,

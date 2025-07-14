@@ -48,11 +48,14 @@ const jt808DecodeLocations = (
       .toString(16)
       .padStart(2, "0")}:${timeBCD[5].toString(16).padStart(2, "0")}.000Z`;
 
-  // TODO: [REMOVE DEBUG] Solo para pruebas - ELIMINAR
-  printMessage(
-    `📍 (jt808DecodeLocations) Location date/time -------> ${dateTimeUTC} (Server UTC: ${new Date().toISOString()})`
-  );
-
+    // TODO: [REMOVE DEBUG] Solo para pruebas - ELIMINAR
+    printMessage(
+      `📍 (jt808DecodeLocations) Location date/time -------> ${dateTimeUTC} (Server UTC: ${new Date().toISOString()})`
+    );
+    printMessage(
+      `🧭 (jt808DecodeLocations) Lat/Lng            -------> ${lat} - ${lng}`
+    );
+    
     let gsmSignal = -1;
     let satellites = -1;
     let batteryLevel = -1;
