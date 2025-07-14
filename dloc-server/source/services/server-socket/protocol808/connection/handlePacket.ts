@@ -23,6 +23,7 @@ import jt808CreateCheckParameterSettingPacket from "../functions/jt808CreateChec
 import jt808ParseParamentersSettings from "../functions/jt808ParseParamentersSettings";
 import { Jt808HandlePacket } from "../models/Jt808HandlePacket";
 import { Jt808HandlePacketProps } from "../models/Jt808HandlePacketProps";
+import jt808CreateMessage from "../functions/jt808CreateMessage";
 
   // TODO: Mover parte del codigo a otro lado, o fragmentar su responsabilidad
 
@@ -103,15 +104,11 @@ const handlePacket: Jt808HandlePacket = async (
 
     // TODO: No funciona y no se porque, revisar
     (response.response as Buffer[]).push(
-      jt808CreateCheckParameterSettingPacket(
+      jt808CreateMessage(
         jt808Packet.header.terminalId,
         counter + 101,
-        [
-          "0001", // Heartbeat
-          //"F116", // Language setting (0x00 = EN)
-          //"F118", // Terminal battery level (0-100 only for check)
-          //"F142", // Terminal time zone (0x00 = UTC)
-        ]
+        0x8106,
+        Buffer.from("0200010002", "hex")
       )
     );
 
