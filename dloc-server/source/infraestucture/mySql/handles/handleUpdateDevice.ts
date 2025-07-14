@@ -68,7 +68,7 @@ const handleUpdateDevice = async (
     sql,
     params
   );
-  console.log(sql);
+  console.log(sql, params);
   if (!response?.error)
     await mySqlClonedImeiUpdate(connectionConfig, positionPacket.imei);
   return response;
