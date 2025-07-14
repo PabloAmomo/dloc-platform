@@ -332,6 +332,7 @@ const handlePacket: Jt808HandlePacket = async (
       messageText = "🌟 Sleep wake up notification";
     } else if (jt808Packet.header.msgType === 0x0112) {
       // TODO: Crear un parser para los mensajes 0x0112 (Upload the power saving mode modified by SMS to the serve)
+      // 7E 01 12 00 06 05 62 13 41 76 54 00 09 08 00 00 00 00 00 03 7E
       messageText =
         "⚡️ Upload the power saving mode modified by SMS to the serve";
     } else if (jt808Packet.header.msgType === 0x1007) {
