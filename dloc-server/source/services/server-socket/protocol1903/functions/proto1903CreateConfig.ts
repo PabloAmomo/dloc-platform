@@ -13,8 +13,10 @@ function proto1903CreateConfig(
   );
 
   // Set heartbeat packet interval (issue: dp03, reply: cp03)
-  response += `TRVDP03${timestamp}${heartBeatSec}#`;
-  // Set LED display switch (up: AP92; down: bp92)∫
+  response += `TRVDP03${timestamp},${heartBeatSec}#`;
+  // TODO: [REMOVE DEBUG] Remove this console.log when done testing
+  console.log(`--------->   TRVDP03${timestamp},${heartBeatSec}#`)
+  // Set LED display switch (up: AP92; down: bp92)
   response += `TRVBP92${parseInt(timestamp) + 1}${ledState ? "1" : "0"}#`;
   // Set upload interval (downlink protocol No.: wp02, response: xp02)
   response += `TRVWP02${parseInt(timestamp) + 2}${padNumberLeft(uploadSec,3,"0")}#`;
