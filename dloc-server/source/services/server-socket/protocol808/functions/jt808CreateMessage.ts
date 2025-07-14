@@ -1,6 +1,6 @@
 import  jt808CreateFrameData  from "./jt808CreateFrameData";
 
-const jt808CreatePacket = (
+const jt808CreateMessage = (
   terminalId: string,
   counter: number,
   msgType: number,
@@ -19,4 +19,4 @@ const jt808CreatePacket = (
   });
 };
 
-export default jt808CreatePacket;
+export default jt808CreateMessage;
