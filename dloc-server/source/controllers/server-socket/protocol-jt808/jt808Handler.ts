@@ -1,5 +1,6 @@
 import net from "node:net";
 import { PowerProfileType } from "../../../enums/PowerProfileType";
+import convertStringToHexString from "../../../functions/convertStringToHexString";
 import { getNormalizedIMEI } from "../../../functions/getNormalizedIMEI";
 import getPowerProfile from "../../../functions/getPowerProfile";
 import { printMessage } from "../../../functions/printMessage";
@@ -11,16 +12,16 @@ import {
 } from "../../../infraestucture/caches/cacheIMEI";
 import { CacheImei } from "../../../infraestucture/models/CacheImei";
 import { Persistence } from "../../../models/Persistence";
-import handleClose from "../../../services/server-socket/protocol1903/connection/handleClose";
-import handleEnd from "../../../services/server-socket/protocol1903/connection/handleEnd";
-import handleError from "../../../services/server-socket/protocol1903/connection/handleError";
-import { handlePacket } from "../../../services/server-socket/protocol1903/connection/handlePacket";
-import handler from "../../../services/server-socket/protocol1903/handler";
-import { protocol1903HanlderProcess } from "./protocol1903HandletProcess";
+import handleClose from "../../../services/server-socket/protocol808/connection/handleClose";
+import handleEnd from "../../../services/server-socket/protocol808/connection/handleEnd";
+import handleError from "../../../services/server-socket/protocol808/connection/handleError";
+import { handlePacket } from "../../../services/server-socket/protocol808/connection/handlePacket";
+import handler from "../../../services/server-socket/protocol808/handler";
+import { protocol808HanlderProcess } from "./jt808HandlerProcess";
 
 // TODO: [REFACTOR] Unificar handlers para protocolo 808 y 1903
 
-const protocol1903Handler = (conn: net.Socket, persistence: Persistence) => {
+const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
   const remoteAddress: string = getRemoteAddress(conn);
   var imei: string = "";
   var newConnection: boolean = true;
@@ -35,8 +36,8 @@ const protocol1903Handler = (conn: net.Socket, persistence: Persistence) => {
   conn.on("data", (data: Buffer) => {
     const tempImei: string = getNormalizedIMEI(imei);
     const dataString: string = data.toString();
-    const dataShow: string = data.toString();
-    const dataToUse: string = data.toString();
+    const dataShow: string = convertStringToHexString(data);
+    const dataToUse: Buffer = data;
 
     counter++;
     if (counter > 32000) counter = 1;
@@ -115,8 +116,7 @@ const protocol1903Handler = (conn: net.Socket, persistence: Persistence) => {
 
           const powerPrfChanged = imeiData.powerProfile !== newPowerProfile;
 
-          // TODO: [BUG] Solve problem 
-          protocol1903HanlderProcess({
+          protocol808HanlderProcess({
             conn,
             results,
             imei,
@@ -130,42 +130,6 @@ const protocol1903Handler = (conn: net.Socket, persistence: Persistence) => {
             movementsControlSeconds,
           });
           newConnection = false;
-
-          //let toSendAditional: string = "";
-          //if (newConnection || powerPrfChanged || needProfileRefresh) {
-          //  const responseSend: string = proto1903CheckMustSendToTerminal(
-          //    imei,
-          //    prefix,
-          //    powerPrfChanged,
-          //    needProfileRefresh,
-          //    imeiData.powerProfile,
-          //    newPowerProfile
-          //  );
-          //  toSendAditional += responseSend;
-          ////
-          //  newConnection = false;
-          //}
-          ////
-          //if (
-          //  proto1903MustSendToTerminalRequestReport(
-          //    imei,
-          //    newPowerProfile,
-          //    imeiData
-          //  )
-          //) {
-          //  toSendAditional += "TRVBP20#";
-          //  printMessage(
-          //    `${prefix} 📡 send command TRVBP20 (Force to report Position).`
-          //  );
-          //}
-          ////
-          //let toSend: string = "";
-          //for (let i = 0; i < results.length; i++) {
-          //  if (results[i].response.length > 0)
-          //    toSend += results[i].response.join("");
-          //}
-          //if (toSendAditional) toSend += toSendAditional;
-          //conn.write(toSend);
 
           //
         })
@@ -187,4 +151,4 @@ const protocol1903Handler = (conn: net.Socket, persistence: Persistence) => {
   });
 };
 
-export { protocol1903Handler };
+export { protocol808Handler };

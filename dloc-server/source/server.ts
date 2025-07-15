@@ -1,16 +1,16 @@
-import { getPersistence } from "./persistence/persistence";
-import { protocol1903Handler } from "./controllers/server-socket/protocol1903/protocol1903Handler";
-import { protocol808Handler } from "./controllers/server-socket/protocol808/protocol808Handler";
-import { mySqlPersistence } from "./infraestucture/mySql/mySqlPersistence";
+import dotenv from "dotenv";
+import routes from "./controllers/server-http/routes";
+import { protocol1903Handler } from "./controllers/server-socket/protocol-proto1903/proto1903Handler";
+import { protocol808Handler } from "./controllers/server-socket/protocol-jt808/jt808Handler";
 import { printMessage } from "./functions/printMessage";
+import { initCacheIMEI } from "./infraestucture/caches/cacheIMEI";
+import { initCacheLBS } from "./infraestucture/caches/cacheLBS";
+import { initCachePosition } from "./infraestucture/caches/cachePosition";
+import { mySqlPersistence } from "./infraestucture/mySql/mySqlPersistence";
 import { startPersistence } from "./inits/startPersistence";
 import { startServerHTTP } from "./inits/startServerHTTP";
 import { startServerSocket } from "./inits/startServerSocket";
-import dotenv from "dotenv";
-import routes from "./controllers/server-http/routes";
-import { initCacheLBS } from "./infraestucture/caches/cacheLBS";
-import { initCachePosition } from "./infraestucture/caches/cachePosition";
-import { initCacheIMEI } from "./infraestucture/caches/cacheIMEI";
+import { getPersistence } from "./persistence/persistence";
 
 /** Load environment variables */
 dotenv.config();
