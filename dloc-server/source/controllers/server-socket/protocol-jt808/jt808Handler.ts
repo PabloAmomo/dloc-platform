@@ -19,8 +19,6 @@ import { handlePacket } from "../../../services/server-socket/protocol808/connec
 import handler from "../../../services/server-socket/protocol808/handler";
 import { protocol808HanlderProcess } from "./jt808HandlerProcess";
 
-// TODO: [REFACTOR] Unificar handlers para protocolo 808 y 1903
-
 const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
   const remoteAddress: string = getRemoteAddress(conn);
   var imei: string = "";

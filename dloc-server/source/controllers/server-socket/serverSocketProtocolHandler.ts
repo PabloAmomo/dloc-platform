@@ -13,28 +13,30 @@ import {
 import { CacheImei } from "../../infraestucture/models/CacheImei";
 import { Persistence } from "../../models/Persistence";
 import { ServerSocketHandlerProcess } from "../../models/ServerSocketHandlerProcess";
-import { handlePacket } from "../../services/server-socket/protocol1903/connection/handlePacket";
 import { HandlePacketResult } from "../../models/HandlePacketResult";
 import { Proto1903HandlerProps } from "../../services/server-socket/protocol1903/models/Proto1903HandlerProps";
 import { Jt808HandlerProps } from "../../services/server-socket/protocol808/models/Jt808HandlerProps";
 import { Proto1903HandlePacket } from "../../services/server-socket/protocol1903/models/Proto1903HandlePacket";
 import { Jt808HandlePacket } from "../../services/server-socket/protocol808/models/Jt808HandlePacket";
 
+// TODO: [REFACTOR] Unificar handlers para protocolo 808 y 1903
+
 const serverSocketProtocolHandler = (
+  protocol: "PROTO1903" | "JT808",
   conn: net.Socket,
   persistence: Persistence,
   serverSocketHandlerProcess: ServerSocketHandlerProcess,
   handlePacket: Proto1903HandlePacket | Jt808HandlePacket,
-
-        handler: ({
-          imei,
-          remoteAddress,
-          data,
-          handlePacket,
-          persistence,
-          counter,
-        }: Proto1903HandlerProps |  Jt808HandlerProps) => Promise<HandlePacketResult[]>,
-        
+  handler: ({
+    imei,
+    remoteAddress,
+    data,
+    handlePacket,
+    persistence,
+    counter,
+  }: Proto1903HandlerProps | Jt808HandlerProps) => Promise<
+    HandlePacketResult[]
+  >,
   handleClose: (remoteAddress: string, imei: string) => void,
   handleEnd: (remoteAddress: string, imei: string) => void,
   handleError: (remoteAddress: string, imei: string, err: Error) => void
@@ -50,17 +52,19 @@ const serverSocketProtocolHandler = (
   conn.on("error", (err: Error) => handleError(remoteAddress, imei, err));
 
   /** Handle data */
-  conn.on("data", (data: any) => {
+  conn.on("data", (data: Buffer) => {
     const tempImei: string = getNormalizedIMEI(imei);
-    const dataString: string =
-      typeof data === "string" ? data.toString() : convertStringToHexString(data);
+    const dataString: string = data.toString();
+    const dataShow: string =
+      protocol === "PROTO1903" ? dataString : convertStringToHexString(data);
+    const dataToUse = protocol === "PROTO1903" ? dataString : data;
 
     counter++;
     if (counter > 32000) counter = 1;
 
     try {
       /** Check if health packet */
-      if (processPacketHealth(conn, data.toString(), remoteAddress, tempImei))
+      if (processPacketHealth(conn, dataString, remoteAddress, tempImei))
         return;
 
       /** New socket connection */
@@ -71,8 +75,8 @@ const serverSocketProtocolHandler = (
       handler({
         imei,
         remoteAddress,
-        data,
-        handlePacket: (handlePacket as any),
+        data: dataToUse as any,
+        handlePacket: handlePacket as any,
         persistence,
         conn,
         counter,
@@ -80,7 +84,7 @@ const serverSocketProtocolHandler = (
         .then(async (results) => {
           if (!results[0]?.imei) {
             printMessage(
-              `[${tempImei}] (${remoteAddress}) ❌ IMEI not found in data [${dataString}].`
+              `[${tempImei}] (${remoteAddress}) ❌ IMEI not found in data [${dataShow}].`
             );
             conn.destroy();
             return;
@@ -145,6 +149,9 @@ const serverSocketProtocolHandler = (
             newPowerProfile,
             movementsControlSeconds,
           });
+          newConnection = false;
+
+          //
         })
         .catch((err: Error) => {
           throw err;
@@ -158,7 +165,7 @@ const serverSocketProtocolHandler = (
       printMessage(
         `[${tempImei}] (${remoteAddress}) ❌ error handling data (${
           err?.message ?? "unknown error"
-        }) data [${dataString}].`
+        }) data [${dataShow}].`
       );
     }
   });
