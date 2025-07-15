@@ -18,8 +18,6 @@ import handleError from "../../../services/server-socket/protocol808/connection/
 import { handlePacket } from "../../../services/server-socket/protocol808/connection/handlePacket";
 import handler from "../../../services/server-socket/protocol808/handler";
 import { protocol808HanlderProcess } from "./protocol808HandlerProcess";
-import jt808FrameEncode from "../../../services/server-socket/protocol808/functions/jt808FrameEncode";
-import jt808CheckMustSendToTerminal from "../../../services/server-socket/protocol808/functions/jt808CheckMustSendToTerminal";
 
 // TODO: [REFACTOR] Unificar handlers para protocolo 808 y 1903
 
@@ -119,47 +117,46 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
           const powerPrfChanged = imeiData.powerProfile !== newPowerProfile;
 
           // TODO: [BUG] Solve problem
-          //protocol808HanlderProcess({
-          //  conn,
-          //  results,
-          //  imei,
-          //  prefix,
-          //  counter,
-          //  newConnection,
-          //  powerPrfChanged,
-          //  needProfileRefresh,
-          //  imeiData,
-          //  newPowerProfile,
-          //  movementsControlSeconds,
-          //});
+          protocol808HanlderProcess({
+            conn,
+            results,
+            imei,
+            prefix,
+            counter,
+            newConnection,
+            powerPrfChanged,
+            needProfileRefresh,
+            imeiData,
+            newPowerProfile,
+            movementsControlSeconds,
+          });
+          newConnection = false;
 
-          if (newConnection || powerPrfChanged || needProfileRefresh) {
-            const responseSend: Buffer[] = jt808CheckMustSendToTerminal(
-              imei,
-              prefix,
-              powerPrfChanged,
-              needProfileRefresh,
-              counter,
-              imeiData.powerProfile,
-              newPowerProfile,
-              movementsControlSeconds
-            );
-
-            responseSend.forEach((response) => {
-              (results[0].response as Buffer[]).push(response);
-            });
-
-            /** Is not a new connection */
-            newConnection = false;
-          }
-
-          /** Send */
-          for (const result of results) {
-            for (const response of result.response) {
-              conn.write(jt808FrameEncode(response as Buffer));
-              conn.write(Buffer.alloc(0));
-            }
-          }
+          //if (newConnection || powerPrfChanged || needProfileRefresh) {
+          //  const responseSend: Buffer[] = jt808CheckMustSendToTerminal(
+          //    imei,
+          //    prefix,
+          //    powerPrfChanged,
+          //    needProfileRefresh,
+          //    counter,
+          //    imeiData.powerProfile,
+          //    newPowerProfile,
+          //    movementsControlSeconds
+          //  );
+          //  //
+          //  responseSend.forEach((response) => {
+          //    (results[0].response as Buffer[]).push(response);
+          //  });
+          //  //
+          //  newConnection = false;
+          //}
+          ////
+          //for (const result of results) {
+          //  for (const response of result.response) {
+          //    conn.write(jt808FrameEncode(response as Buffer));
+          //    conn.write(Buffer.alloc(0));
+          //  }
+          //}
 
           //
         })

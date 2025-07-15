@@ -31,9 +31,6 @@ const protocol808HandletProcess: ServerSocketHandlerProcess = ({
     responseSend.forEach((response) => {
       (results[0].response as Buffer[]).push(response);
     });
-
-    /** Is not a new connection */
-    newConnection = false;
   }
 
   /** Send */

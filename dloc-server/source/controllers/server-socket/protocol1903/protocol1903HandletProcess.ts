@@ -29,8 +29,6 @@ const protocol1903HandlerProcess: ServerSocketHandlerProcess  = ({
     );
 
     toSendAditional += responseSend;
-
-    newConnection = false;
   }
 
   /** Check if must send to terminal request report */

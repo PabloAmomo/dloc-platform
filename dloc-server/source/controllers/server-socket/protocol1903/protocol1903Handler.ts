@@ -17,8 +17,6 @@ import handleError from "../../../services/server-socket/protocol1903/connection
 import { handlePacket } from "../../../services/server-socket/protocol1903/connection/handlePacket";
 import handler from "../../../services/server-socket/protocol1903/handler";
 import { protocol1903HanlderProcess } from "./protocol1903HandletProcess";
-import proto1903MustSendToTerminalRequestReport from "../../../services/server-socket/protocol1903/functions/proto1903MustSendToTerminalRequestReport";
-import proto1903CheckMustSendToTerminal from "../../../services/server-socket/protocol1903/functions/proto1903CheckMustSendToTerminal";
 
 // TODO: [REFACTOR] Unificar handlers para protocolo 808 y 1903
 
@@ -118,55 +116,56 @@ const protocol1903Handler = (conn: net.Socket, persistence: Persistence) => {
           const powerPrfChanged = imeiData.powerProfile !== newPowerProfile;
 
           // TODO: [BUG] Solve problem 
-          //protocol1903HanlderProcess({
-          //  conn,
-          //  results,
-          //  imei,
-          //  prefix,
-          //  counter,
-          //  newConnection,
-          //  powerPrfChanged,
-          //  needProfileRefresh,
-          //  imeiData,
-          //  newPowerProfile,
-          //  movementsControlSeconds,
-          //});
+          protocol1903HanlderProcess({
+            conn,
+            results,
+            imei,
+            prefix,
+            counter,
+            newConnection,
+            powerPrfChanged,
+            needProfileRefresh,
+            imeiData,
+            newPowerProfile,
+            movementsControlSeconds,
+          });
+          newConnection = false;
 
-          let toSendAditional: string = "";
-          if (newConnection || powerPrfChanged || needProfileRefresh) {
-            const responseSend: string = proto1903CheckMustSendToTerminal(
-              imei,
-              prefix,
-              powerPrfChanged,
-              needProfileRefresh,
-              imeiData.powerProfile,
-              newPowerProfile
-            );
-            toSendAditional += responseSend;
-
-            newConnection = false;
-          }
-          /** Check if must send to terminal request report */
-          if (
-            proto1903MustSendToTerminalRequestReport(
-              imei,
-              newPowerProfile,
-              imeiData
-            )
-          ) {
-            toSendAditional += "TRVBP20#";
-            printMessage(
-              `${prefix} 📡 send command TRVBP20 (Force to report Position).`
-            );
-          }
-          /** Create response to send */
-          let toSend: string = "";
-          for (let i = 0; i < results.length; i++) {
-            if (results[i].response.length > 0)
-              toSend += results[i].response.join("");
-          }
-          if (toSendAditional) toSend += toSendAditional;
-          conn.write(toSend);
+          //let toSendAditional: string = "";
+          //if (newConnection || powerPrfChanged || needProfileRefresh) {
+          //  const responseSend: string = proto1903CheckMustSendToTerminal(
+          //    imei,
+          //    prefix,
+          //    powerPrfChanged,
+          //    needProfileRefresh,
+          //    imeiData.powerProfile,
+          //    newPowerProfile
+          //  );
+          //  toSendAditional += responseSend;
+          ////
+          //  newConnection = false;
+          //}
+          ////
+          //if (
+          //  proto1903MustSendToTerminalRequestReport(
+          //    imei,
+          //    newPowerProfile,
+          //    imeiData
+          //  )
+          //) {
+          //  toSendAditional += "TRVBP20#";
+          //  printMessage(
+          //    `${prefix} 📡 send command TRVBP20 (Force to report Position).`
+          //  );
+          //}
+          ////
+          //let toSend: string = "";
+          //for (let i = 0; i < results.length; i++) {
+          //  if (results[i].response.length > 0)
+          //    toSend += results[i].response.join("");
+          //}
+          //if (toSendAditional) toSend += toSendAditional;
+          //conn.write(toSend);
 
           //
         })
