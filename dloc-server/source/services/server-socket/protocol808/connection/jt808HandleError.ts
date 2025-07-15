@@ -2,14 +2,15 @@ import { getNormalizedIMEI } from "../../../../functions/getNormalizedIMEI";
 import { printMessage } from "../../../../functions/printMessage";
 import { clearItemInCacheIMEI } from "../../../../infraestucture/caches/cacheIMEI";
 
-const handleClose = (remoteAddress: string, imei: string) => {
+const jt808HandleError = (remoteAddress: string, imei: string, err: Error) => {
   const imeiTemp = getNormalizedIMEI(imei);
 
-  if (!remoteAddress.includes("127.0.0.1"))
-    printMessage(`[${imeiTemp}] (${remoteAddress}) 🚫 connection closed.`);
+  printMessage(
+    `[${imeiTemp}] (${remoteAddress}) ❌ connection error: [${err.message}]`
+  );
 
   /** Clear cache for the imei */
   clearItemInCacheIMEI(imei);
 };
 
-export default handleClose;
+export default jt808HandleError;

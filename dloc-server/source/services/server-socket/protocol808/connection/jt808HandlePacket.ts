@@ -28,7 +28,7 @@ import Jt808HandlePacketProps from "../models/Jt808HandlePacketProps";
 
 // TODO: [REFACTOR] Mover parte del codigo a otro lado, o fragmentar su responsabilidad
 
-const handlePacket: Jt808HandlePacket = async (
+const jt808HandlePacket: Jt808HandlePacket = async (
   props: Jt808HandlePacketProps
 ): Promise<HandlePacketResult> => {
   const {
@@ -421,4 +421,4 @@ const handlePacket: Jt808HandlePacket = async (
   return response;
 };
 
-export { handlePacket };
+export default jt808HandlePacket;

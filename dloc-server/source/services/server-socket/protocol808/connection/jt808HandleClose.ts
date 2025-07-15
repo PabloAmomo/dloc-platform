@@ -2,7 +2,7 @@ import { getNormalizedIMEI } from "../../../../functions/getNormalizedIMEI";
 import { printMessage } from "../../../../functions/printMessage";
 import { clearItemInCacheIMEI } from "../../../../infraestucture/caches/cacheIMEI";
 
-const handleClose = (remoteAddress: string, imei: string) => {
+const jt808HandleClose = (remoteAddress: string, imei: string) => {
   const imeiTemp = getNormalizedIMEI(imei);
 
   if (!remoteAddress.includes("127.0.0.1"))
@@ -12,4 +12,4 @@ const handleClose = (remoteAddress: string, imei: string) => {
   clearItemInCacheIMEI(imei);
 };
 
-export default handleClose;
+export default jt808HandleClose;

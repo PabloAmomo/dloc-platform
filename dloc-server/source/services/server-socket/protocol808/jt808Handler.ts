@@ -13,10 +13,10 @@ import {
 } from "../../../infraestucture/caches/cacheIMEI";
 import { CacheImei } from "../../../infraestucture/models/CacheImei";
 import { Persistence } from "../../../models/Persistence";
-import handleClose from "../../../services/server-socket/protocol808/connection/handleClose";
-import handleEnd from "../../../services/server-socket/protocol808/connection/handleEnd";
-import handleError from "../../../services/server-socket/protocol808/connection/handleError";
-import { handlePacket } from "../../../services/server-socket/protocol808/connection/handlePacket";
+import jt808HandleClose from "./connection/jt808HandleClose";
+import jt808HandleEnd from "./connection/jt808HandleEnd";
+import jt808HandleError from "./connection/jt808HandleError";
+import jt808HandlePacket from "./connection/jt808HandlePacket";
 import handler from "../../../services/server-socket/protocol808/handler";
 import jt808HandlerProcess from "./jt808HandlerProcess";
 
@@ -27,9 +27,9 @@ const jt808Handler = (conn: net.Socket, persistence: Persistence) => {
   var counter = 0;
 
   /** Create event listeners for socket connection */
-  conn.once("close", () => handleClose(remoteAddress, imei));
-  conn.on("end", () => handleEnd(remoteAddress, imei));
-  conn.on("error", (err: Error) => handleError(remoteAddress, imei, err));
+  conn.once("close", () => jt808HandleClose(remoteAddress, imei));
+  conn.on("end", () => jt808HandleEnd(remoteAddress, imei));
+  conn.on("error", (err: Error) => jt808HandleError(remoteAddress, imei, err));
 
   /** Handle data */
   conn.on("data", (data: Buffer) => {
@@ -55,7 +55,7 @@ const jt808Handler = (conn: net.Socket, persistence: Persistence) => {
         imei,
         remoteAddress,
         data: dataToUse,
-        handlePacket,
+        handlePacket: jt808HandlePacket,
         persistence,
         conn,
         counter,

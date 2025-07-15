@@ -2,7 +2,7 @@ import { getNormalizedIMEI } from "../../../../functions/getNormalizedIMEI";
 import { printMessage } from "../../../../functions/printMessage";
 import { clearItemInCacheIMEI } from "../../../../infraestucture/caches/cacheIMEI";
 
-const handleEnd = (remoteAddress: string, imei: string) => {
+const jt808HandleEnd = (remoteAddress: string, imei: string) => {
   const imeiTemp = getNormalizedIMEI(imei);
 
   printMessage(`[${imeiTemp}] (${remoteAddress}) 🚫 connection closed.`);
@@ -11,4 +11,4 @@ const handleEnd = (remoteAddress: string, imei: string) => {
   clearItemInCacheIMEI(imei);
 };
 
-export default handleEnd;
+export default jt808HandleEnd;

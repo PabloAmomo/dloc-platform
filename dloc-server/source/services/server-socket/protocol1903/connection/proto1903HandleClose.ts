@@ -2,13 +2,14 @@ import { getNormalizedIMEI } from "../../../../functions/getNormalizedIMEI";
 import { printMessage } from "../../../../functions/printMessage";
 import { clearItemInCacheIMEI } from "../../../../infraestucture/caches/cacheIMEI";
 
-const handleEnd = (remoteAddress: string, imei: string) => {
+const proto1903HandleClose = (remoteAddress: string, imei: string) => {
   const imeiTemp = getNormalizedIMEI(imei);
 
-  printMessage(`[${imeiTemp}] (${remoteAddress}) 🚫 connection closed.`);
+  if (!remoteAddress.includes("127.0.0.1"))
+    printMessage(`[${imeiTemp}] (${remoteAddress}) 🚫 connection closed.`);
 
   /** Clear cache for the imei */
   clearItemInCacheIMEI(imei);
 };
 
-export default handleEnd;
+export default proto1903HandleClose;

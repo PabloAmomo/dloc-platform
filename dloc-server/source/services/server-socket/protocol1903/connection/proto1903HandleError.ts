@@ -2,7 +2,7 @@ import { getNormalizedIMEI } from "../../../../functions/getNormalizedIMEI";
 import { printMessage } from "../../../../functions/printMessage";
 import { clearItemInCacheIMEI } from "../../../../infraestucture/caches/cacheIMEI";
 
-const handleError = (remoteAddress: string, imei: string, err: Error) => {
+const proto1903HandleError = (remoteAddress: string, imei: string, err: Error) => {
   const imeiTemp = getNormalizedIMEI(imei);
 
   printMessage(
@@ -13,4 +13,4 @@ const handleError = (remoteAddress: string, imei: string, err: Error) => {
   clearItemInCacheIMEI(imei);
 };
 
-export default handleError;
+export default proto1903HandleError;

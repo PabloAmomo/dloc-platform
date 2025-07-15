@@ -20,7 +20,7 @@ import Proto1903HandlePacketProps from "../models/Proto1903HandlePacketProps";
 
 const noImei: string = "no imei received";
 
-const handlePacket: Proto1903HandlePacket = async (
+const proto1903HandlePacket: Proto1903HandlePacket = async (
   props: Proto1903HandlePacketProps
 ): Promise<HandlePacketResult> => {
   const { imei, remoteAddress: remoteAddress, data, persistence } = props;
@@ -353,4 +353,4 @@ const handlePacket: Proto1903HandlePacket = async (
   return response;
 };
 
-export { handlePacket };
+export default proto1903HandlePacket;

@@ -1,20 +1,23 @@
-import net from 'node:net';
+import net from "node:net";
 
-import { PowerProfileType } from '../../../enums/PowerProfileType';
-import { getNormalizedIMEI } from '../../../functions/getNormalizedIMEI';
-import getPowerProfile from '../../../functions/getPowerProfile';
-import { printMessage } from '../../../functions/printMessage';
-import processPacketHealth from '../../../functions/processPacketHealth';
-import { getRemoteAddress } from '../../../functions/remoteAddress';
-import { CACHE_IMEI, clearItemInCacheIMEI } from '../../../infraestucture/caches/cacheIMEI';
-import { CacheImei } from '../../../infraestucture/models/CacheImei';
-import { Persistence } from '../../../models/Persistence';
-import handleClose from './connection/handleClose';
-import handleEnd from './connection/handleEnd';
-import handleError from './connection/handleError';
-import { handlePacket } from './connection/handlePacket';
-import handler from './handler';
-import Proto1903HandlerProcess from './proto1903HandlerProcess';
+import { PowerProfileType } from "../../../enums/PowerProfileType";
+import { getNormalizedIMEI } from "../../../functions/getNormalizedIMEI";
+import getPowerProfile from "../../../functions/getPowerProfile";
+import { printMessage } from "../../../functions/printMessage";
+import processPacketHealth from "../../../functions/processPacketHealth";
+import { getRemoteAddress } from "../../../functions/remoteAddress";
+import {
+  CACHE_IMEI,
+  clearItemInCacheIMEI,
+} from "../../../infraestucture/caches/cacheIMEI";
+import { CacheImei } from "../../../infraestucture/models/CacheImei";
+import { Persistence } from "../../../models/Persistence";
+import proto1903HandleClose from "./connection/proto1903HandleClose";
+import proto1903HandleEnd from "./connection/proto1903HandleEnd";
+import proto1903HandleError from "./connection/proto1903HandleError";
+import proto1903HandlePacket from "./connection/proto1903HandlePacket";
+import handler from "./handler";
+import Proto1903HandlerProcess from "./proto1903HandlerProcess";
 
 const proto1903Handler = (conn: net.Socket, persistence: Persistence) => {
   const remoteAddress: string = getRemoteAddress(conn);
@@ -23,9 +26,11 @@ const proto1903Handler = (conn: net.Socket, persistence: Persistence) => {
   var counter = 0;
 
   /** Create event listeners for socket connection */
-  conn.once("close", () => handleClose(remoteAddress, imei));
-  conn.on("end", () => handleEnd(remoteAddress, imei));
-  conn.on("error", (err: Error) => handleError(remoteAddress, imei, err));
+  conn.once("close", () => proto1903HandleClose(remoteAddress, imei));
+  conn.on("end", () => proto1903HandleEnd(remoteAddress, imei));
+  conn.on("error", (err: Error) =>
+    proto1903HandleError(remoteAddress, imei, err)
+  );
 
   /** Handle data */
   conn.on("data", (data: Buffer) => {
@@ -51,7 +56,7 @@ const proto1903Handler = (conn: net.Socket, persistence: Persistence) => {
         imei,
         remoteAddress,
         data: dataToUse,
-        handlePacket,
+        handlePacket: proto1903HandlePacket,
         persistence,
         conn,
         counter,
