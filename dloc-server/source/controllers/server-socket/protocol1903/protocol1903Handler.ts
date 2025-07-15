@@ -118,55 +118,55 @@ const protocol1903Handler = (conn: net.Socket, persistence: Persistence) => {
           const powerPrfChanged = imeiData.powerProfile !== newPowerProfile;
 
           // TODO: [BUG] Solve problem
-          protocol1903HanlderProcess({
-            conn,
-            results,
-            imei,
-            prefix,
-            counter,
-            newConnection,
-            powerPrfChanged,
-            needProfileRefresh,
-            imeiData,
-            newPowerProfile,
-            movementsControlSeconds,
-          });
+          //protocol1903HanlderProcess({
+          //  conn,
+          //  results,
+          //  imei,
+          //  prefix,
+          //  counter,
+          //  newConnection,
+          //  powerPrfChanged,
+          //  needProfileRefresh,
+          //  imeiData,
+          //  newPowerProfile,
+          //  movementsControlSeconds,
+          //});
           /** If new connection send configuration after response */
-          //let toSendAditional: string = "";
-          //if (newConnection || powerPrfChanged || needProfileRefresh) {
-          //  const responseSend: string = proto1903CheckMustSendToTerminal(
-          //    imei,
-          //    prefix,
-          //    powerPrfChanged,
-          //    needProfileRefresh,
-          //    imeiData.powerProfile,
-          //    newPowerProfile
-          //  );
-          //  toSendAditional += responseSend;
-          //
-          //  newConnection = false;
-          //}
-          ///** Check if must send to terminal request report */
-          //if (
-          //  proto1903MustSendToTerminalRequestReport(
-          //    imei,
-          //    newPowerProfile,
-          //    imeiData
-          //  )
-          //) {
-          //  toSendAditional += "TRVBP20#";
-          //  printMessage(
-          //    `${prefix} 📡 send command TRVBP20 (Force to report Position).`
-          //  );
-          //}
-          ///** Create response to send */
-          //let toSend: string = "";
-          //for (let i = 0; i < results.length; i++) {
-          //  if (results[i].response.length > 0)
-          //    toSend += results[i].response.join("");
-          //}
-          //if (toSendAditional) toSend += toSendAditional;
-          //conn.write(toSend);
+          let toSendAditional: string = "";
+          if (newConnection || powerPrfChanged || needProfileRefresh) {
+            const responseSend: string = proto1903CheckMustSendToTerminal(
+              imei,
+              prefix,
+              powerPrfChanged,
+              needProfileRefresh,
+              imeiData.powerProfile,
+              newPowerProfile
+            );
+            toSendAditional += responseSend;
+
+            newConnection = false;
+          }
+          /** Check if must send to terminal request report */
+          if (
+            proto1903MustSendToTerminalRequestReport(
+              imei,
+              newPowerProfile,
+              imeiData
+            )
+          ) {
+            toSendAditional += "TRVBP20#";
+            printMessage(
+              `${prefix} 📡 send command TRVBP20 (Force to report Position).`
+            );
+          }
+          /** Create response to send */
+          let toSend: string = "";
+          for (let i = 0; i < results.length; i++) {
+            if (results[i].response.length > 0)
+              toSend += results[i].response.join("");
+          }
+          if (toSendAditional) toSend += toSendAditional;
+          conn.write(toSend);
         })
         .catch((err: Error) => {
           throw err;
