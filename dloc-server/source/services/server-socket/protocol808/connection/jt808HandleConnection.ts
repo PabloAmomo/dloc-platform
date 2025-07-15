@@ -12,6 +12,7 @@ const jt808HandleConnection = async ({
   handlePacket,
   persistence,
   counter,
+  disconnect
 }: Jt808HandleConnectionProps): Promise<HandlePacketResult[]> => {
   /** results */
   const results: HandlePacketResult[] = [];
@@ -42,6 +43,7 @@ const jt808HandleConnection = async ({
         data: inPackets[i],
         persistence,
         counter,
+        disconnect
       }).then((result: HandlePacketResult) => {
         /** Save result */
         results.push(result);

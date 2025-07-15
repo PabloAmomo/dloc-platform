@@ -10,6 +10,7 @@ const proto1903HandleConnection = async ({
   handlePacket,
   persistence,
   counter,
+  disconnect
 }: Proto1903HandleConnectionProps): Promise<HandlePacketResult[]> => {
   /** Save results */
   const results: HandlePacketResult[] = [];
@@ -40,6 +41,7 @@ const proto1903HandleConnection = async ({
         data: inPackets[i] + "#",
         persistence,
         counter,
+        disconnect
       }).then((result: HandlePacketResult) => {
         /** Save result */
         results.push(result);
