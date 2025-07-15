@@ -1,5 +1,5 @@
 import { PowerProfileType } from "../../../../enums/PowerProfileType";
-import proto1903PowerProfileConfig from "../../../../functions/proto1903PowerProfileConfig";
+import proto1903PowerProfileConfig from "./proto1903PowerProfileConfig";
 import { CACHE_IMEI } from "../../../../infraestucture/caches/cacheIMEI";
 import { CACHE_POSITION } from "../../../../infraestucture/caches/cachePosition";
 import { CacheImei } from "../../../../infraestucture/models/CacheImei";
