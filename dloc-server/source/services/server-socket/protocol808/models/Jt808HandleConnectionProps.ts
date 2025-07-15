@@ -3,7 +3,7 @@ import net from 'node:net';
 import { Persistence } from '../../../../models/Persistence';
 import Jt808HandlePacket from './Jt808HandlePacket';
 
-export default  interface Jt808HandlerProps {
+export default  interface Jt808HandleConnectionProps {
   imei: string;
   remoteAddress: string;
   data: Buffer; 

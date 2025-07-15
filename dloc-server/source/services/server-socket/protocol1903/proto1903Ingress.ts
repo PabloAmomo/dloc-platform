@@ -16,8 +16,8 @@ import proto1903HandleClose from "./connection/proto1903HandleClose";
 import proto1903HandleEnd from "./connection/proto1903HandleEnd";
 import proto1903HandleError from "./connection/proto1903HandleError";
 import proto1903HandlePacket from "./connection/proto1903HandlePacket";
-import handler from "./handler";
-import Proto1903HandlerProcess from "./proto1903HandlerProcess";
+import proto1903HandleConnection from "./connection/proto1903HandleConnection";
+import proto1903Process from "./Proto1903Process";
 
 const proto1903Ingress = (conn: net.Socket, persistence: Persistence) => {
   const remoteAddress: string = getRemoteAddress(conn);
@@ -52,7 +52,7 @@ const proto1903Ingress = (conn: net.Socket, persistence: Persistence) => {
         printMessage(`[${tempImei}] (${remoteAddress}) 🧑‍💻 new connection.`);
 
       /** Handle data */
-      handler({
+      proto1903HandleConnection({
         imei,
         remoteAddress,
         data: dataToUse,
@@ -116,7 +116,7 @@ const proto1903Ingress = (conn: net.Socket, persistence: Persistence) => {
 
           const powerPrfChanged = imeiData.powerProfile !== newPowerProfile;
 
-          Proto1903HandlerProcess({
+          proto1903Process({
             conn,
             results,
             imei,

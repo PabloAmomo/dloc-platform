@@ -17,8 +17,8 @@ import jt808HandleClose from "./connection/jt808HandleClose";
 import jt808HandleEnd from "./connection/jt808HandleEnd";
 import jt808HandleError from "./connection/jt808HandleError";
 import jt808HandlePacket from "./connection/jt808HandlePacket";
-import handler from "./handler";
-import jt808HandlerProcess from "./jt808HandlerProcess";
+import jt808HandleConnection from "./connection/jt808HandleConnection";
+import jt808Process from "./jt808Process";
 
 const jt808Ingress = (conn: net.Socket, persistence: Persistence) => {
   const remoteAddress: string = getRemoteAddress(conn);
@@ -51,7 +51,7 @@ const jt808Ingress = (conn: net.Socket, persistence: Persistence) => {
         printMessage(`[${tempImei}] (${remoteAddress}) 🧑‍💻 new connection.`);
 
       /** Handle data */
-      handler({
+      jt808HandleConnection({
         imei,
         remoteAddress,
         data: dataToUse,
@@ -115,7 +115,7 @@ const jt808Ingress = (conn: net.Socket, persistence: Persistence) => {
 
           const powerPrfChanged = imeiData.powerProfile !== newPowerProfile;
 
-          jt808HandlerProcess({
+          jt808Process({
             conn,
             results,
             imei,

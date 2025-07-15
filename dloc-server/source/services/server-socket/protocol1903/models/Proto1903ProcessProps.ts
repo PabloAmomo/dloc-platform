@@ -3,7 +3,7 @@ import { PowerProfileType } from "../../../../enums/PowerProfileType";
 import { CacheImei } from "../../../../infraestucture/models/CacheImei";
 import { HandlePacketResult } from "../../../../models/HandlePacketResult";
 
-type Proto1903HandlerProcessProps = {
+type Proto1903ProcessProps = {
   conn: net.Socket;
   results: HandlePacketResult[];
   imei: string;
@@ -17,4 +17,4 @@ type Proto1903HandlerProcessProps = {
   movementsControlSeconds: number;
 };
 
-export default Proto1903HandlerProcessProps;
+export default Proto1903ProcessProps;

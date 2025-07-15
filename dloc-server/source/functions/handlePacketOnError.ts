@@ -1,10 +1,24 @@
-import { HandlePacketProps } from "../models/HandlePacketProps";
+import { Persistence } from "../models/Persistence";
 import { printMessage } from "./printMessage";
 
 type onErrorType = 'discarted' | 'position' | 'batteryLevel' | 'update' | 'lastActivity' | 'history';
 
-const handlePacketOnError = (props: Omit<HandlePacketProps, 'counter'> & { name: onErrorType; error: Error }) => {
-  const { imei, remoteAddress: remoteAdd, name, error } = props;
+const handlePacketOnError = ({
+  imei,
+  remoteAddress,
+  data,
+  persistence,
+  name,
+  error
+}: {
+  imei: string,
+  remoteAddress: string,
+  data: Buffer | string,
+  persistence: Persistence,
+  name: onErrorType,
+  error: Error
+}) => {
+  const remoteAdd = remoteAddress;
   printMessage(`[${imei}] (${remoteAdd}) error persisting ${name} [${error?.message || error}]`);
 };
 

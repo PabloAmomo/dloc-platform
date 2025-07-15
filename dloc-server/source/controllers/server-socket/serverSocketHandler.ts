@@ -12,27 +12,21 @@ import {
   clearItemInCacheIMEI,
 } from "../../infraestucture/caches/cacheIMEI";
 import { CacheImei } from "../../infraestucture/models/CacheImei";
-import { HandlePacketResult } from "../../models/HandlePacketResult";
 import { Persistence } from "../../models/Persistence";
-import Proto1903HandlerProcess from "../../services/server-socket/protocol1903/models/Proto1903HandlerProcess";
+import Proto1903Process from "../../services/server-socket/protocol1903/models/Proto1903Process";
 import Proto1903HandlePacket from "../../services/server-socket/protocol1903/models/Proto1903HandlePacket";
-import Proto1903HandlerProps from "../../services/server-socket/protocol1903/models/Proto1903HandlerProps";
 import Jt808HandlePacket from "../../services/server-socket/protocol808/models/Jt808HandlePacket";
-import Jt808HandlerProps from "../../services/server-socket/protocol808/models/Jt808HandlerProps";
-import Jt808HandlerProcess from "../../services/server-socket/protocol808/models/Jt808HandlerProcess";
+import Jt808Process from "../../services/server-socket/protocol808/models/Jt808Process";
+import HandleConnection from "../../models/HandleConnection";
 
 // TODO: [REFACTOR] Unificar handlers para protocolo 808 y 1903
-
-type ProtoHandler = (
-  props: Proto1903HandlerProps | Jt808HandlerProps
-) => Promise<HandlePacketResult[]>;
 
 const serverSocketHandler = (
   protocol: "PROTO1903" | "JT808",
   conn: net.Socket,
   persistence: Persistence,
-  handlerProcess: Proto1903HandlerProcess | Jt808HandlerProcess,
-  handler: ProtoHandler,
+  handlerProcess: Proto1903Process | Jt808Process,
+  handleConnection: HandleConnection,
   handlePacket: Proto1903HandlePacket | Jt808HandlePacket,
   handleClose: (remoteAddress: string, imei: string) => void,
   handleEnd: (remoteAddress: string, imei: string) => void,
@@ -69,7 +63,7 @@ const serverSocketHandler = (
         printMessage(`[${tempImei}] (${remoteAddress}) 🧑‍💻 new connection.`);
 
       /** Handle data */
-      handler({
+      handleConnection({
         imei,
         remoteAddress,
         data: dataToUse as any,

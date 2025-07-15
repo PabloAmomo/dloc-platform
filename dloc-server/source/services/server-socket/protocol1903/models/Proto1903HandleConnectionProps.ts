@@ -2,7 +2,7 @@ import { Persistence } from "../../../../models/Persistence";
 import net from "node:net";
 import Proto1903HandlePacket from "./Proto1903HandlePacket";
 
-export default interface Proto1903HandlerProps {
+export default interface Proto1903HandleConnectionProps {
   imei: string;
   remoteAddress: string;
   data: String;

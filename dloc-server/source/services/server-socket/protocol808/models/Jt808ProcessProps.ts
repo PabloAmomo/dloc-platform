@@ -3,7 +3,7 @@ import { HandlePacketResult } from "../../../../models/HandlePacketResult";
 import { CacheImei } from "../../../../infraestucture/models/CacheImei";
 import { PowerProfileType } from "../../../../enums/PowerProfileType";
 
-type Jt808HandlerProcessProps = {
+type Jt808ProcessProps = {
   conn: net.Socket;
   results: HandlePacketResult[];
   imei: string;
@@ -17,4 +17,4 @@ type Jt808HandlerProcessProps = {
   movementsControlSeconds: number;
 };
 
-export default Jt808HandlerProcessProps;
+export default Jt808ProcessProps;

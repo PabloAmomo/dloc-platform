@@ -1,22 +1,24 @@
-import { getNormalizedIMEI } from "../../../functions/getNormalizedIMEI";
-import { printMessage } from "../../../functions/printMessage";
-import { HandlePacketResult } from "../../../models/HandlePacketResult";
-import Proto1903HandlerProps from "./models/Proto1903HandlerProps";
+import { HandlePacketResult } from "../../../../models/HandlePacketResult";
+import { printMessage } from "../../../../functions/printMessage";
+import { getNormalizedIMEI } from "../../../../functions/getNormalizedIMEI";
+import convertStringToHexString from "../../../../functions/convertStringToHexString";
+import jt808FrameDecode from "../functions/jt808FrameDecode";
+import Jt808HandleConnectionProps from "../models/Jt808HandleConnectionProps";
 
-const handler = async ({
+const jt808HandleConnection = async ({
   imei,
   remoteAddress,
   data,
   handlePacket,
   persistence,
   counter,
-}: Proto1903HandlerProps): Promise<HandlePacketResult[]> => {
-  /** Save results */
+}: Jt808HandleConnectionProps): Promise<HandlePacketResult[]> => {
+  /** results */
   const results: HandlePacketResult[] = [];
 
   // TODO: [REFACTOR] Unificar handlers para protocolo 808 y 1903
 
-  const inPackets: string[] = data.toString().split("#");
+  const inPackets: Buffer[] = [jt808FrameDecode(data)];
 
   if (inPackets.length === 0) {
     printMessage(
@@ -30,14 +32,14 @@ const handler = async ({
   /** Process each packet */
   for (let i = 0; i < inPackets.length; i++) {
     /** Discart empty packets */
-    if (inPackets[i] == "") continue;
+    if (!inPackets[i]) continue;
 
     /** Handle packet */
     try {
       await handlePacket({
         imei,
         remoteAddress,
-        data: inPackets[i] + "#",
+        data: inPackets[i],
         persistence,
         counter,
       }).then((result: HandlePacketResult) => {
@@ -53,9 +55,8 @@ const handler = async ({
       printMessage(
         `[${printImei}] (${remoteAddress}) ❌ error handling packet (1) (${
           err?.message ?? "unknown error"
-        }) packet [${inPackets[i]?.split(",")?.[0] ?? inPackets[i]}]`
+        }) packet [${convertStringToHexString(inPackets[i])}]`
       );
-      // throw err;
     }
   }
 
@@ -63,4 +64,4 @@ const handler = async ({
   return results;
 };
 
-export default handler;
+export default jt808HandleConnection;
