@@ -1,9 +1,9 @@
-import { HandlePacketResult } from "../../../../models/HandlePacketResult";
-import { printMessage } from "../../../../functions/printMessage";
-import { getNormalizedIMEI } from "../../../../functions/getNormalizedIMEI";
-import convertStringToHexString from "../../../../functions/convertStringToHexString";
-import jt808FrameDecode from "../functions/jt808FrameDecode";
-import Jt808HandleConnectionProps from "../models/Jt808HandleConnectionProps";
+import convertStringToHexString from '../../../../functions/convertStringToHexString';
+import { getNormalizedIMEI } from '../../../../functions/getNormalizedIMEI';
+import { printMessage } from '../../../../functions/printMessage';
+import HandlePacketResult from '../../models/HandlePacketResult';
+import jt808FrameDecode from '../functions/jt808FrameDecode';
+import Jt808HandleConnectionProps from '../models/Jt808HandleConnectionProps';
 
 const jt808HandleConnection = async ({
   imei,

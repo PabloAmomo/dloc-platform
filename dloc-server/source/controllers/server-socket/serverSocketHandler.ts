@@ -17,7 +17,10 @@ import Proto1903Process from "../../services/server-socket/protocol1903/models/P
 import Proto1903HandlePacket from "../../services/server-socket/protocol1903/models/Proto1903HandlePacket";
 import Jt808HandlePacket from "../../services/server-socket/protocol808/models/Jt808HandlePacket";
 import Jt808Process from "../../services/server-socket/protocol808/models/Jt808Process";
-import HandleConnection from "../../models/HandleConnection";
+import HandleConnection from "../../services/server-socket/models/HandleConnection";
+import HandleClose from "../../services/server-socket/models/HandleClose";
+import HandleError from "../../services/server-socket/models/HandleError";
+import HandleEnd from "../../services/server-socket/models/HandleEnd";
 
 // TODO: [REFACTOR] Unificar handlers para protocolo 808 y 1903
 
@@ -28,9 +31,9 @@ const serverSocketHandler = (
   handlerProcess: Proto1903Process | Jt808Process,
   handleConnection: HandleConnection,
   handlePacket: Proto1903HandlePacket | Jt808HandlePacket,
-  handleClose: (remoteAddress: string, imei: string) => void,
-  handleEnd: (remoteAddress: string, imei: string) => void,
-  handleError: (remoteAddress: string, imei: string, err: Error) => void
+  handleClose: HandleClose,
+  handleEnd: HandleEnd,
+  handleError: HandleError
 ) => {
   const remoteAddress: string = getRemoteAddress(conn);
   var imei: string = "";

@@ -1,10 +1,10 @@
-import discardData from "../../../../functions/discardData";
-import positionAddPositionAndUpdateDevice from "../../../../functions/positionAddPositionAndUpdateDevice";
-import { HandlePacketResult } from "../../../../models/HandlePacketResult";
-import { Persistence } from "../../../../models/Persistence";
-import { PositionPacket } from "../../../../models/PositionPacket";
-import { Jt808LocationPacket } from "../models/Jt808LocationPacket";
-import jt808CreatePositionPacket from "./jt808CreatePositionPacket";
+import positionAddPositionAndUpdateDevice from '../../../../functions/positionAddPositionAndUpdateDevice';
+import { Persistence } from '../../../../models/Persistence';
+import { PositionPacket } from '../../../../models/PositionPacket';
+import discardData from '../../functions/discardData';
+import HandlePacketResult from '../../models/HandlePacketResult';
+import { Jt808LocationPacket } from '../models/Jt808LocationPacket';
+import jt808CreatePositionPacket from './jt808CreatePositionPacket';
 
 const jt808PersistLocation = async (
   imei: string,

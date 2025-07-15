@@ -1,7 +1,8 @@
-import net from "node:net";
-import { HandlePacketResult } from "../../../../models/HandlePacketResult";
-import { CacheImei } from "../../../../infraestucture/models/CacheImei";
-import { PowerProfileType } from "../../../../enums/PowerProfileType";
+import net from 'node:net';
+
+import { PowerProfileType } from '../../../../enums/PowerProfileType';
+import { CacheImei } from '../../../../infraestucture/models/CacheImei';
+import HandlePacketResult from '../../models/HandlePacketResult';
 
 type Jt808ProcessProps = {
   conn: net.Socket;

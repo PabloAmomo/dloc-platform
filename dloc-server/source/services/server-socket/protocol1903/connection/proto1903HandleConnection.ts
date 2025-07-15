@@ -1,6 +1,6 @@
 import { getNormalizedIMEI } from "../../../../functions/getNormalizedIMEI";
 import { printMessage } from "../../../../functions/printMessage";
-import { HandlePacketResult } from "../../../../models/HandlePacketResult";
+import HandlePacketResult from "../../models/HandlePacketResult";
 import Proto1903HandleConnectionProps from "../models/Proto1903HandleConnectionProps";
 
 const proto1903HandleConnection = async ({

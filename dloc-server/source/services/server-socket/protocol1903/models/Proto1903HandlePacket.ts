@@ -1,5 +1,5 @@
-import { HandlePacketResult } from "../../../../models/HandlePacketResult";
-import Proto1903HandlePacketProps from "./Proto1903HandlePacketProps";
+import HandlePacketResult from '../../models/HandlePacketResult';
+import Proto1903HandlePacketProps from './Proto1903HandlePacketProps';
 
 type Proto1903HandlePacket = (
   props: Proto1903HandlePacketProps

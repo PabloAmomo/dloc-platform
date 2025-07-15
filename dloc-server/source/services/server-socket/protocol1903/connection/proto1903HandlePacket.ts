@@ -1,22 +1,19 @@
-import { getUtcDateTime } from "../../../../functions/getUtcDateTime";
-import { HandlePacketResult } from "../../../../models/HandlePacketResult";
-import { PositionPacket } from "../../../../models/PositionPacket";
-import { printMessage } from "../../../../functions/printMessage";
-import { GpsAccuracy } from "../../../../models/GpsAccuracy";
-import getValuesFromStringByRegexs from "../../../../functions/getValuesFromStringByRegex";
-import discardData from "../../../../functions/discardData";
-import getLbsPosition from "../../../../functions/getLbsPosition";
-import positionUpdateLastActivityAndAddHistory from "../../../../functions/positionUpdateLastActivityAndAddHistory";
-import positionAddPositionAndUpdateDevice from "../../../../functions/positionAddPositionAndUpdateDevice";
-import positionUpdateBatteryAndLastActivity from "../../../../functions/positionUpdateBatteryAndLastActivity";
-import {
-  getNormalizedIMEI,
-  NO_IMEI_STRING,
-} from "../../../../functions/getNormalizedIMEI";
-import proto1903CreatePositionPacket from "../functions/proto1903CreatePositionPacket";
-import PROTO1903_REGEX_PACKETS from "../functions/proto1903PacketParseREGEX";
-import Proto1903HandlePacket from "../models/Proto1903HandlePacket";
-import Proto1903HandlePacketProps from "../models/Proto1903HandlePacketProps";
+import { getNormalizedIMEI, NO_IMEI_STRING } from '../../../../functions/getNormalizedIMEI';
+import { getUtcDateTime } from '../../../../functions/getUtcDateTime';
+import getValuesFromStringByRegexs from '../../../../functions/getValuesFromStringByRegex';
+import positionAddPositionAndUpdateDevice from '../../../../functions/positionAddPositionAndUpdateDevice';
+import positionUpdateBatteryAndLastActivity from '../../../../functions/positionUpdateBatteryAndLastActivity';
+import positionUpdateLastActivityAndAddHistory from '../../../../functions/positionUpdateLastActivityAndAddHistory';
+import { printMessage } from '../../../../functions/printMessage';
+import { GpsAccuracy } from '../../../../models/GpsAccuracy';
+import { PositionPacket } from '../../../../models/PositionPacket';
+import discardData from '../../functions/discardData';
+import getLbsPosition from '../../functions/getLbsPosition';
+import HandlePacketResult from '../../models/HandlePacketResult';
+import proto1903CreatePositionPacket from '../functions/proto1903CreatePositionPacket';
+import PROTO1903_REGEX_PACKETS from '../functions/proto1903PacketParseREGEX';
+import Proto1903HandlePacket from '../models/Proto1903HandlePacket';
+import Proto1903HandlePacketProps from '../models/Proto1903HandlePacketProps';
 
 const noImei: string = "no imei received";
 

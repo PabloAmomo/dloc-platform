@@ -1,8 +1,8 @@
-import { PersistenceResult } from "../infraestucture/models/PersistenceResult";
-import { HandlePacketResult } from "../models/HandlePacketResult";
-import { Persistence } from "../models/Persistence";
-import { handlePacketOnError } from "./handlePacketOnError";
-import { printMessage } from "./printMessage";
+import { handlePacketOnError } from '../../../functions/handlePacketOnError';
+import { printMessage } from '../../../functions/printMessage';
+import { PersistenceResult } from '../../../infraestucture/models/PersistenceResult';
+import { Persistence } from '../../../models/Persistence';
+import HandlePacketResult from '../models/HandlePacketResult';
 
 async function discardData(
   message: string,
