@@ -1,7 +1,7 @@
 import { PowerProfileType } from "../../../../enums/PowerProfileType";
 import convertStringToHexString from "../../../../functions/convertStringToHexString";
 import createHexFromNumberWithNBytes from "../../../../functions/createHexFromNumberWithNBytes";
-import jt808PowerProfileConfig from "../../../../functions/jt808PowerProfileConfig1";
+import jt808PowerProfileConfig from "./jt808PowerProfileConfig";
 import { printMessage } from "../../../../functions/printMessage";
 import jt808CreateCheckParameterSettingPacket from "./jt808CreateCheckParameterSettingPacket";
 import jt808CreateParameterSettingPacket from "./jt808CreateParameterSettingPacket";

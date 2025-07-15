@@ -1,4 +1,4 @@
-import jt808PowerProfileConfig from "../../../../functions/jt808PowerProfileConfig1";
+import jt808PowerProfileConfig from "./jt808PowerProfileConfig";
 import { PowerProfileType } from "../../../../enums/PowerProfileType";
 import jt808CreateTemporaryLocationTrackingPacket from "./jt808CreateTemporaryLocationTrackingPacket";
 

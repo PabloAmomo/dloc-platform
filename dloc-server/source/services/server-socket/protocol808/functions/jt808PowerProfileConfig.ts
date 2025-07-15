@@ -1,6 +1,6 @@
-import { PowerProfileType } from "../enums/PowerProfileType";
-import { PowerProfileConfig } from "../models/PowerProfileConfig";
-import { printMessage } from "./printMessage";
+import { PowerProfileType } from "../../../../enums/PowerProfileType";
+import { PowerProfileConfig } from "../../../../models/PowerProfileConfig";
+import { printMessage } from "../../../../functions/printMessage";
 
 function jt808PowerProfileConfig(
   profileType: PowerProfileType = PowerProfileType.FULL
