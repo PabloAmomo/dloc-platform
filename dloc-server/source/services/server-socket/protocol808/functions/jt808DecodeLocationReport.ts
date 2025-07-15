@@ -21,14 +21,6 @@ const jt808DecodeLocationReport = (data: Buffer): Jt808LocationPacket => {
     .toString(16)
     .padStart(2, "0")}:${timeBCD[5].toString(16).padStart(2, "0")}.000Z`;
 
-  // TODO: [REMOVE DEBUG] Solo para pruebas - ELIMINAR
-  printMessage(
-    `📍 (jt808DecodeLocationReport) Location date/time -------> ${dateTimeUTC} (Server UTC: ${new Date().toISOString()})`
-  );
-  printMessage(
-    `🧭 (jt808DecodeLocationReport) Lat/Lng            -------> ${lat} - ${lng}`
-  );
-
   const response = {
     dataType: 0,
     alarm,

@@ -174,17 +174,21 @@ const handlePacket: Jt808HandlePacket = async (
     response.imei = padNumberLeft(jt808Packet.header.terminalId, 15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
 
-    if (locations.count > 0) {
+    let lastLatLng = "";
+      if (locations.count > 0) {
       for (const location of locations.locations) {
         if (location.lat !== 0 && location.lng !== 0)
-          await jt808PersistLocation(
-            imeiTemp,
-            remoteAddress,
-            location,
-            persistence,
-            data,
-            response
-          );
+          if (location.lat !== 0 && location.lng !== 0)
+            lastLatLng = `📍 [(${location.dateTimeUTC}) ${location.lat}, ${location.lng}]`;
+
+        await jt808PersistLocation(
+          imeiTemp,
+          remoteAddress,
+          location,
+          persistence,
+          data,
+          response
+        );
       }
     }
 
@@ -196,7 +200,7 @@ const handlePacket: Jt808HandlePacket = async (
       message = "positioning data batch upload";
 
     printMessage(
-      `[${imeiTemp}] (${remoteAddress}) ✅ 🧭 Location ${message} successful`
+      `[${imeiTemp}] (${remoteAddress}) ✅ 🧭 Location ${message} successful ${lastLatLng}`
     );
   }
 
@@ -325,7 +329,9 @@ const handlePacket: Jt808HandlePacket = async (
         remoteAddress
       );
       printMessage(
-        `[${imeiTemp}] (${remoteAddress}) 👉 🔋 powerSaveModeData: ${JSON.stringify(powerSaveModeData)}`
+        `[${imeiTemp}] (${remoteAddress}) 👉 🔋 powerSaveModeData: ${JSON.stringify(
+          powerSaveModeData
+        )}`
       );
       messageText =
         "⚡️ Upload the power saving mode modified by SMS to the serve";
