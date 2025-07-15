@@ -15,7 +15,8 @@ const processPacketHealth = (
   remoteAddress: string,
   imei: string
 ): boolean => {
-  if (data.indexOf("HEAD /HEALTH".toUpperCase()) === -1) return false;
+
+  if (data.toUpperCase().indexOf("HEAD /HEALTH") === -1) return false;
 
   if (!remoteAddress.includes("127.0.0.1"))
     printMessage(`[${imei}] (${remoteAddress}) 🩺 health packet received.`);
