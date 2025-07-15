@@ -1,30 +1,16 @@
-import net from "node:net";
+import { PowerProfileType } from '../../enums/PowerProfileType';
+import convertStringToHexString from '../../functions/convertStringToHexString';
+import { getNormalizedIMEI } from '../../functions/getNormalizedIMEI';
+import getPowerProfile from '../../functions/getPowerProfile';
+import { printMessage } from '../../functions/printMessage';
+import processPacketHealth from '../../functions/processPacketHealth';
+import { getRemoteAddress } from '../../functions/remoteAddress';
+import { CACHE_IMEI, clearItemInCacheIMEI } from '../../infraestucture/caches/cacheIMEI';
+import { CacheImei } from '../../infraestucture/models/CacheImei';
+import { ServerSocketHandler } from '../../infraestucture/models/ServerSocketHandler';
+import ServerSocketHandlerProps from '../../infraestucture/models/ServerSocketHandlerProps';
 
-import { PowerProfileType } from "../../enums/PowerProfileType";
-import convertStringToHexString from "../../functions/convertStringToHexString";
-import { getNormalizedIMEI } from "../../functions/getNormalizedIMEI";
-import getPowerProfile from "../../functions/getPowerProfile";
-import { printMessage } from "../../functions/printMessage";
-import processPacketHealth from "../../functions/processPacketHealth";
-import { getRemoteAddress } from "../../functions/remoteAddress";
-import {
-  CACHE_IMEI,
-  clearItemInCacheIMEI,
-} from "../../infraestucture/caches/cacheIMEI";
-import { CacheImei } from "../../infraestucture/models/CacheImei";
-import { Persistence } from "../../models/Persistence";
-import Proto1903HandleProcess from "../../services/server-socket/protocol1903/models/Proto1903HandleProcess";
-import Proto1903HandlePacket from "../../services/server-socket/protocol1903/models/Proto1903HandlePacket";
-import Jt808HandlePacket from "../../services/server-socket/protocol808/models/Jt808HandlePacket";
-import Jt808HandleProcess from "../../services/server-socket/protocol808/models/Jt808HandleProcess";
-import HandleConnection from "../../services/server-socket/models/HandleConnection";
-import HandleClose from "../../services/server-socket/models/HandleClose";
-import HandleError from "../../services/server-socket/models/HandleError";
-import HandleEnd from "../../services/server-socket/models/HandleEnd";
-
-// TODO: [REFACTOR] Mover la definiciion de serverSocketHandler a un archivo separado en models
-
-const serverSocketHandler = ({
+const serverSocketHandler : ServerSocketHandler= ({
   protocol,
   conn,
   persistence,
@@ -34,17 +20,7 @@ const serverSocketHandler = ({
   handleClose,
   handleEnd,
   handleError,
-}: {
-  protocol: "PROTO1903" | "JT808";
-  conn: net.Socket;
-  persistence: Persistence;
-  handleConnection: HandleConnection;
-  handleProcess: Proto1903HandleProcess | Jt808HandleProcess;
-  handlePacket: Proto1903HandlePacket | Jt808HandlePacket;
-  handleClose: HandleClose;
-  handleEnd: HandleEnd;
-  handleError: HandleError;
-}) => {
+}: ServerSocketHandlerProps) => {
   const remoteAddress: string = getRemoteAddress(conn);
   var imei: string = "";
   var newConnection: boolean = true;
