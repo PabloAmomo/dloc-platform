@@ -4,7 +4,6 @@ import Jt808HandleProcess from '../models/Jt808HandleProcess';
 import Jt808ProcessProps from '../models/Jt808ProcessProps';
 
 const jt808HandleProcess: Jt808HandleProcess = ({
-  conn,
   results,
   imei,
   prefix,
@@ -15,6 +14,7 @@ const jt808HandleProcess: Jt808HandleProcess = ({
   imeiData,
   newPowerProfile,
   movementsControlSeconds,
+  sendData,
 }: Jt808ProcessProps): void => {
   if (newConnection || powerPrfChanged || needProfileRefresh) {
     const responseSend: Buffer[] = jt808CheckMustSendToTerminal(
@@ -34,12 +34,15 @@ const jt808HandleProcess: Jt808HandleProcess = ({
   }
 
   /** Send */
+  const toSend: Buffer[] = [];
   for (const result of results) {
     for (const response of result.response) {
-      conn.write(jt808FrameEncode(response as Buffer));
-      conn.write(Buffer.alloc(0));
+      toSend.push(jt808FrameEncode(response as Buffer));
+       
     }
   }
+
+  sendData(toSend);
 };
 
 export default jt808HandleProcess;

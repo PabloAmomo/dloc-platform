@@ -5,7 +5,6 @@ import proto1903MustSendToTerminalRequestReport from '../functions/proto1903Must
 import Proto1903HandleProcess from '../models/Proto1903HandleProcess';
 
 const proto1903HandleProcess: Proto1903HandleProcess = ({
-  conn,
   results,
   imei,
   prefix,
@@ -16,6 +15,7 @@ const proto1903HandleProcess: Proto1903HandleProcess = ({
   imeiData,
   newPowerProfile,
   movementsControlSeconds,
+  sendData
 }: Proto1903ProcessProps): void => {
   let toSendAditional: string = "";
   if (newConnection || powerPrfChanged || needProfileRefresh) {
@@ -47,7 +47,8 @@ const proto1903HandleProcess: Proto1903HandleProcess = ({
     if (results[i].response.length > 0) toSend += results[i].response.join("");
   }
   if (toSendAditional) toSend += toSendAditional;
-  conn.write(toSend);
+
+  sendData([toSend]); 
 };
 
 export default proto1903HandleProcess;
