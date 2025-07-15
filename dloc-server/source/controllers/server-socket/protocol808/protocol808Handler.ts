@@ -63,7 +63,7 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
         .then(async (results) => {
           if (!results[0]?.imei) {
             printMessage(
-              `${tempImei}] (${remoteAddress}) ❌ IMEI not found in data [${dataString}].`
+              `[${tempImei}] (${remoteAddress}) ❌ IMEI not found in data [${dataString}].`
             );
             conn.destroy();
             return;
