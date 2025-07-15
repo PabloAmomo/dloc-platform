@@ -13,10 +13,10 @@ import {
 } from "../../infraestucture/caches/cacheIMEI";
 import { CacheImei } from "../../infraestucture/models/CacheImei";
 import { Persistence } from "../../models/Persistence";
-import Proto1903Process from "../../services/server-socket/protocol1903/models/Proto1903Process";
+import Proto1903HandleProcess from "../../services/server-socket/protocol1903/models/Proto1903HandleProcess";
 import Proto1903HandlePacket from "../../services/server-socket/protocol1903/models/Proto1903HandlePacket";
 import Jt808HandlePacket from "../../services/server-socket/protocol808/models/Jt808HandlePacket";
-import Jt808Process from "../../services/server-socket/protocol808/models/Jt808Process";
+import Jt808HandleProcess from "../../services/server-socket/protocol808/models/Jt808HandleProcess";
 import HandleConnection from "../../services/server-socket/models/HandleConnection";
 import HandleClose from "../../services/server-socket/models/HandleClose";
 import HandleError from "../../services/server-socket/models/HandleError";
@@ -28,8 +28,8 @@ const serverSocketHandler = (
   protocol: "PROTO1903" | "JT808",
   conn: net.Socket,
   persistence: Persistence,
-  handlerProcess: Proto1903Process | Jt808Process,
   handleConnection: HandleConnection,
+  handleProcess: Proto1903HandleProcess | Jt808HandleProcess,
   handlePacket: Proto1903HandlePacket | Jt808HandlePacket,
   handleClose: HandleClose,
   handleEnd: HandleEnd,
@@ -65,7 +65,6 @@ const serverSocketHandler = (
       if (newConnection)
         printMessage(`[${tempImei}] (${remoteAddress}) 🧑‍💻 new connection.`);
 
-      /** Handle data */
       handleConnection({
         imei,
         remoteAddress,
@@ -130,7 +129,7 @@ const serverSocketHandler = (
 
           const powerPrfChanged = imeiData.powerProfile !== newPowerProfile;
 
-          handlerProcess({
+          handleProcess({
             conn,
             results,
             imei,

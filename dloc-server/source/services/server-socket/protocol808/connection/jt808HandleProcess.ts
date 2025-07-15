@@ -1,9 +1,9 @@
-import jt808CheckMustSendToTerminal from './functions/jt808CheckMustSendToTerminal';
-import jt808FrameEncode from './functions/jt808FrameEncode';
-import Jt808Process from './models/Jt808Process';
-import Jt808ProcessProps from './models/Jt808ProcessProps';
+import jt808CheckMustSendToTerminal from '../functions/jt808CheckMustSendToTerminal';
+import jt808FrameEncode from '../functions/jt808FrameEncode';
+import Jt808HandleProcess from '../models/Jt808HandleProcess';
+import Jt808ProcessProps from '../models/Jt808ProcessProps';
 
-const jt808Process: Jt808Process = ({
+const jt808HandleProcess: Jt808HandleProcess = ({
   conn,
   results,
   imei,
@@ -42,4 +42,4 @@ const jt808Process: Jt808Process = ({
   }
 };
 
-export default jt808Process;
+export default jt808HandleProcess;

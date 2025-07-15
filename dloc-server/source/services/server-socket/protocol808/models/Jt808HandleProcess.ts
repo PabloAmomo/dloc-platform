@@ -1,6 +1,6 @@
 import Jt808ProcessProps from "./Jt808ProcessProps";
 
-type Jt808Process = ({
+type Jt808HandleProcess = ({
   conn,
   results,
   imei,
@@ -14,4 +14,4 @@ type Jt808Process = ({
   movementsControlSeconds,
 }: Jt808ProcessProps) => void;
 
-export default Jt808Process;
+export default Jt808HandleProcess;

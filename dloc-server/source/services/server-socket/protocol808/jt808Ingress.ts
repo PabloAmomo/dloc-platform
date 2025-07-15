@@ -18,7 +18,7 @@ import jt808HandleEnd from "./connection/jt808HandleEnd";
 import jt808HandleError from "./connection/jt808HandleError";
 import jt808HandlePacket from "./connection/jt808HandlePacket";
 import jt808HandleConnection from "./connection/jt808HandleConnection";
-import jt808Process from "./jt808Process";
+import jt808HandleProcess from "./connection/jt808HandleProcess";
 
 const jt808Ingress = (conn: net.Socket, persistence: Persistence) => {
   const remoteAddress: string = getRemoteAddress(conn);
@@ -115,7 +115,7 @@ const jt808Ingress = (conn: net.Socket, persistence: Persistence) => {
 
           const powerPrfChanged = imeiData.powerProfile !== newPowerProfile;
 
-          jt808Process({
+          jt808HandleProcess({
             conn,
             results,
             imei,

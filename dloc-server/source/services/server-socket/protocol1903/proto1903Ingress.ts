@@ -17,7 +17,7 @@ import proto1903HandleEnd from "./connection/proto1903HandleEnd";
 import proto1903HandleError from "./connection/proto1903HandleError";
 import proto1903HandlePacket from "./connection/proto1903HandlePacket";
 import proto1903HandleConnection from "./connection/proto1903HandleConnection";
-import proto1903Process from "./Proto1903Process";
+import proto1903HandleProcess from "./connection/proto1903HandleProcess";
 
 const proto1903Ingress = (conn: net.Socket, persistence: Persistence) => {
   const remoteAddress: string = getRemoteAddress(conn);
@@ -116,7 +116,7 @@ const proto1903Ingress = (conn: net.Socket, persistence: Persistence) => {
 
           const powerPrfChanged = imeiData.powerProfile !== newPowerProfile;
 
-          proto1903Process({
+          proto1903HandleProcess({
             conn,
             results,
             imei,

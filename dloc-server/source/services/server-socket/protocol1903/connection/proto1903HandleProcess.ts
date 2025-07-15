@@ -1,10 +1,10 @@
-import { printMessage } from '../../../functions/printMessage';
-import Proto1903ProcessProps from './models/Proto1903ProcessProps';
-import proto1903CheckMustSendToTerminal from './functions/proto1903CheckMustSendToTerminal';
-import proto1903MustSendToTerminalRequestReport from './functions/proto1903MustSendToTerminalRequestReport';
-import Proto1903Process from './models/Proto1903Process';
+import { printMessage } from '../../../../functions/printMessage';
+import Proto1903ProcessProps from '../models/Proto1903ProcessProps';
+import proto1903CheckMustSendToTerminal from '../functions/proto1903CheckMustSendToTerminal';
+import proto1903MustSendToTerminalRequestReport from '../functions/proto1903MustSendToTerminalRequestReport';
+import Proto1903HandleProcess from '../models/Proto1903HandleProcess';
 
-const proto1903Process: Proto1903Process = ({
+const proto1903HandleProcess: Proto1903HandleProcess = ({
   conn,
   results,
   imei,
@@ -50,4 +50,4 @@ const proto1903Process: Proto1903Process = ({
   conn.write(toSend);
 };
 
-export default proto1903Process;
+export default proto1903HandleProcess;
