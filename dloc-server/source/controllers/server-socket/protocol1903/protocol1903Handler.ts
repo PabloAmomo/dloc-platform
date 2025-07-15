@@ -64,7 +64,7 @@ const protocol1903Handler = (conn: net.Socket, persistence: Persistence) => {
           /** Check if IMEI is valid */
           if (!results[0]?.imei) {
             printMessage(
-              `${tempImei}] (${remoteAddress}) ❌ IMEI not found in data [${dataString}].`
+              `[${tempImei}] (${remoteAddress}) ❌ IMEI not found in data [${dataString}].`
             );
             conn.destroy();
             return;
