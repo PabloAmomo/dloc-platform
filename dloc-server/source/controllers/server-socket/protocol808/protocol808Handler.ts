@@ -43,7 +43,7 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
 
     try {
       /** Check if health packet */
-      if (processPacketHealth(conn, dataString, remoteAddress, tempImei))
+      if (processPacketHealth(conn, data.toString(), remoteAddress, tempImei))
         return;
 
       /** New socket connection */
