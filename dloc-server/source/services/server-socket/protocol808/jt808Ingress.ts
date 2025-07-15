@@ -17,10 +17,10 @@ import jt808HandleClose from "./connection/jt808HandleClose";
 import jt808HandleEnd from "./connection/jt808HandleEnd";
 import jt808HandleError from "./connection/jt808HandleError";
 import jt808HandlePacket from "./connection/jt808HandlePacket";
-import handler from "../../../services/server-socket/protocol808/handler";
+import handler from "./handler";
 import jt808HandlerProcess from "./jt808HandlerProcess";
 
-const jt808Handler = (conn: net.Socket, persistence: Persistence) => {
+const jt808Ingress = (conn: net.Socket, persistence: Persistence) => {
   const remoteAddress: string = getRemoteAddress(conn);
   var imei: string = "";
   var newConnection: boolean = true;
@@ -150,4 +150,4 @@ const jt808Handler = (conn: net.Socket, persistence: Persistence) => {
   });
 };
 
-export default jt808Handler;
+export default jt808Ingress;

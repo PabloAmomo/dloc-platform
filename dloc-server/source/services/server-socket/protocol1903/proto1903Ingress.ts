@@ -19,7 +19,7 @@ import proto1903HandlePacket from "./connection/proto1903HandlePacket";
 import handler from "./handler";
 import Proto1903HandlerProcess from "./proto1903HandlerProcess";
 
-const proto1903Handler = (conn: net.Socket, persistence: Persistence) => {
+const proto1903Ingress = (conn: net.Socket, persistence: Persistence) => {
   const remoteAddress: string = getRemoteAddress(conn);
   var imei: string = "";
   var newConnection: boolean = true;
@@ -151,4 +151,4 @@ const proto1903Handler = (conn: net.Socket, persistence: Persistence) => {
   });
 };
 
-export default proto1903Handler;
+export default proto1903Ingress;

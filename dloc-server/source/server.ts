@@ -9,8 +9,8 @@ import { startPersistence } from "./inits/startPersistence";
 import { startServerHTTP } from "./inits/startServerHTTP";
 import { startServerSocket } from "./inits/startServerSocket";
 import { getPersistence } from "./persistence/persistence";
-import proto1903Handler from "./services/server-socket/protocol1903/proto1903Handler";
-import jt808Handler from "./services/server-socket/protocol808/jt808Handler";
+import proto1903Ingress from "./services/server-socket/protocol1903/proto1903Ingress";
+import jt808Ingress from "./services/server-socket/protocol808/jt808Ingress";
 
 /** Load environment variables */
 dotenv.config();
@@ -66,7 +66,7 @@ startPersistence(new mySqlPersistence());
 if (SOCKET_PROTOCOL == "1903") {
   printMessage(`✅ Using protocol ${SOCKET_PROTOCOL}.`);
   startServerSocket(
-    (conn) => proto1903Handler(conn, getPersistence()),
+    (conn) => proto1903Ingress(conn, getPersistence()),
     PORT_SOCKET
   );
 } else if (SOCKET_PROTOCOL == "808") {
@@ -74,7 +74,7 @@ if (SOCKET_PROTOCOL == "1903") {
   /** Start Socket server (Protocol 808) */
   printMessage(`✅ Using protocol ${SOCKET_PROTOCOL}.`);
   startServerSocket(
-    (conn) => jt808Handler(conn, getPersistence()),
+    (conn) => jt808Ingress(conn, getPersistence()),
     PORT_SOCKET
   );
   //

@@ -23,23 +23,17 @@ import Jt808HandlerProcess from "../../services/server-socket/protocol808/models
 
 // TODO: [REFACTOR] Unificar handlers para protocolo 808 y 1903
 
+type ProtoHandler = (
+  props: Proto1903HandlerProps | Jt808HandlerProps
+) => Promise<HandlePacketResult[]>;
+
 const serverSocketHandler = (
   protocol: "PROTO1903" | "JT808",
   conn: net.Socket,
   persistence: Persistence,
-  handlerProcess: Proto1903HandlerProcess | Jt808HandlerProcess ,
+  handlerProcess: Proto1903HandlerProcess | Jt808HandlerProcess,
+  handler: ProtoHandler,
   handlePacket: Proto1903HandlePacket | Jt808HandlePacket,
-  handler: ({
-    imei,
-    remoteAddress,
-    data,
-    // TODO: (handlePacket) Si lo paso arrivam aqui hace falta?
-    handlePacket,
-    persistence,
-    counter,
-  }: Proto1903HandlerProps | Jt808HandlerProps) => Promise<
-    HandlePacketResult[]
-  >,
   handleClose: (remoteAddress: string, imei: string) => void,
   handleEnd: (remoteAddress: string, imei: string) => void,
   handleError: (remoteAddress: string, imei: string, err: Error) => void
