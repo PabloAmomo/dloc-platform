@@ -1,7 +1,7 @@
 import { PowerProfileType } from "../../../../enums/PowerProfileType";
 import convertStringToHexString from "../../../../functions/convertStringToHexString";
 import createHexFromNumberWithNBytes from "../../../../functions/createHexFromNumberWithNBytes";
-import powerProfileConfig from "../../../../functions/powerProfileConfig";
+import jt808PowerProfileConfig from "../../../../functions/jt808PowerProfileConfig1";
 import { printMessage } from "../../../../functions/printMessage";
 import jt808CreateCheckParameterSettingPacket from "./jt808CreateCheckParameterSettingPacket";
 import jt808CreateParameterSettingPacket from "./jt808CreateParameterSettingPacket";
@@ -19,7 +19,7 @@ const jt808CheckMustSendToTerminal = (
 ): Buffer[] => {
   const response: Buffer[] = [];
   const terminalId = imei.slice(-12);
-  const { uploadSec, heartBeatSec } = powerProfileConfig(newPowerProfile);
+  const { uploadSec, heartBeatSec } = jt808PowerProfileConfig(newPowerProfile);
 
   if (needProfileRefresh)
     printMessage(

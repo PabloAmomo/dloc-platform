@@ -1,4 +1,4 @@
-import powerProfileConfig from "../../../../functions/powerProfileConfig";
+import jt808PowerProfileConfig from "../../../../functions/jt808PowerProfileConfig1";
 import { PowerProfileType } from "../../../../enums/PowerProfileType";
 import jt808CreateTemporaryLocationTrackingPacket from "./jt808CreateTemporaryLocationTrackingPacket";
 
@@ -9,7 +9,7 @@ function jt808CreatePowerProfilePacket(
   durationSec: number 
 ): Buffer {
 
-  const { uploadSec } = powerProfileConfig(
+  const { uploadSec } = jt808PowerProfileConfig(
     powerProfileType
   );
 

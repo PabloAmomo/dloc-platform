@@ -1,5 +1,5 @@
 import { PowerProfileType } from '../../../../enums/PowerProfileType';
-import powerProfileConfig from '../../../../functions/powerProfileConfig';
+import proto1903PowerProfileConfig from '../../../../functions/proto1903PowerProfileConfig';
 import { CACHE_POSITION } from '../../../../infraestucture/caches/cachePosition';
 import { CachePosition } from '../../../../infraestucture/models/CachePosition';
 
@@ -7,7 +7,7 @@ const proto1903MustSendToTerminalRequestReport = (
   imei: string,
   newPowerProfile: PowerProfileType
 ): boolean => {
-  const { forceReportLocInMs } = powerProfileConfig(newPowerProfile);
+  const { forceReportLocInMs } = proto1903PowerProfileConfig(newPowerProfile);
 
   const lastPosPacket: CachePosition | undefined = CACHE_POSITION.get(imei);
 
