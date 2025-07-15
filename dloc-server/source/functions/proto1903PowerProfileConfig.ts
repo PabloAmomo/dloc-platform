@@ -2,7 +2,6 @@ import { PowerProfileType } from "../enums/PowerProfileType";
 import { PowerProfileConfig } from "../models/PowerProfileConfig";
 import { printMessage } from "./printMessage";
 
-// TODO: [REFACTOR] Create powerProfileConfig.ts for each protocol (808 and 1903) to allow different configurations
 function proto1903PowerProfileConfig(
   profileType: PowerProfileType = PowerProfileType.FULL
 ) : PowerProfileConfig {
