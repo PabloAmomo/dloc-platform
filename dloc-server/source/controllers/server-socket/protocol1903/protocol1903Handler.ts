@@ -86,6 +86,7 @@ const protocol1903Handler = (conn: net.Socket, persistence: Persistence) => {
             lastPowerProfileChecked: 0,
             lastLBSRequestTimestamp: 0,
             socketConn: conn,
+            lastReportRequestTimestamp: 0,
           };
 
           /** Get power profile for the imei */

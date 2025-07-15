@@ -106,6 +106,7 @@ const serverSocketProtocolHandler = (
             lastPowerProfileChecked: 0,
             lastLBSRequestTimestamp: 0,
             socketConn: conn,
+            lastReportRequestTimestamp: 0,
           };
 
           /** Get power profile for the imei */

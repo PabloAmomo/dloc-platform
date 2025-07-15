@@ -34,7 +34,7 @@ const protocol1903HandlerProcess: ServerSocketHandlerProcess  = ({
   }
 
   /** Check if must send to terminal request report */
-  if (proto1903MustSendToTerminalRequestReport(imei, newPowerProfile)) {
+  if (proto1903MustSendToTerminalRequestReport(imei, newPowerProfile, imeiData)) {
     toSendAditional += "TRVBP20#";
     printMessage(
       `${prefix} 📡 send command TRVBP20 (Force to report Position).`

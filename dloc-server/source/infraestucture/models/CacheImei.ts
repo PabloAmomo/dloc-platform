@@ -6,4 +6,5 @@ export type CacheImei = {
   socketConn: net.Socket;
   powerProfile: PowerProfileType;
   lastPowerProfileChecked: number;
+  lastReportRequestTimestamp: number;
 }

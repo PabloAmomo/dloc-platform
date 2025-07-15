@@ -1,11 +1,14 @@
-import { PowerProfileType } from '../../../../enums/PowerProfileType';
-import proto1903PowerProfileConfig from '../../../../functions/proto1903PowerProfileConfig';
-import { CACHE_POSITION } from '../../../../infraestucture/caches/cachePosition';
-import { CachePosition } from '../../../../infraestucture/models/CachePosition';
+import { PowerProfileType } from "../../../../enums/PowerProfileType";
+import proto1903PowerProfileConfig from "../../../../functions/proto1903PowerProfileConfig";
+import { CACHE_IMEI } from "../../../../infraestucture/caches/cacheIMEI";
+import { CACHE_POSITION } from "../../../../infraestucture/caches/cachePosition";
+import { CacheImei } from "../../../../infraestucture/models/CacheImei";
+import { CachePosition } from "../../../../infraestucture/models/CachePosition";
 
 const proto1903MustSendToTerminalRequestReport = (
   imei: string,
-  newPowerProfile: PowerProfileType
+  newPowerProfile: PowerProfileType,
+  imeiData: CacheImei
 ): boolean => {
   const { forceReportLocInMs } = proto1903PowerProfileConfig(newPowerProfile);
 
@@ -17,10 +20,20 @@ const proto1903MustSendToTerminalRequestReport = (
     ? forceReportLocInMs
     : currentTime - lastPosPacket.datetimeUtc.getTime();
 
-  return (
+  const needSendToTerminal =
     forceReportLocInMs > 0 &&
-    lastPosMs >= forceReportLocInMs
-  );
+    lastPosMs >= forceReportLocInMs &&
+    currentTime - (imeiData.lastReportRequestTimestamp) >=
+      forceReportLocInMs;
+
+  if (needSendToTerminal) {
+    imeiData.lastReportRequestTimestamp = currentTime;
+    CACHE_IMEI.updateOrCreate(imei, {
+      lastReportRequestTimestamp: Date.now(),
+    });
+  }
+
+  return needSendToTerminal;
 };
 
 export default proto1903MustSendToTerminalRequestReport;
