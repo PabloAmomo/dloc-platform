@@ -32,7 +32,8 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
   /** Handle data */
   conn.on("data", (data: any) => {
     const tempImei: string = getNormalizedIMEI(imei);
-    const dataString: string =
+    const dataString: string = data.toString();
+    const dataShow: string =
       typeof data === "string" ? data.toString() : convertStringToHexString(data);
 
     counter++;
@@ -40,7 +41,7 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
 
     try {
       /** Check if health packet */
-      if (processPacketHealth(conn, data.toString(), remoteAddress, tempImei))
+      if (processPacketHealth(conn, dataString, remoteAddress, tempImei))
         return;
 
       /** New socket connection */
@@ -60,7 +61,7 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
         .then(async (results) => {
           if (!results[0]?.imei) {
             printMessage(
-              `[${tempImei}] (${remoteAddress}) ❌ IMEI not found in data [${dataString}].`
+              `[${tempImei}] (${remoteAddress}) ❌ IMEI not found in data [${dataShow}].`
             );
             conn.destroy();
             return;
@@ -166,7 +167,7 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
       printMessage(
         `[${tempImei}] (${remoteAddress}) ❌ error handling data (${
           err?.message ?? "unknown error"
-        }) data [${dataString}].`
+        }) data [${dataShow}].`
       );
     }
   });
