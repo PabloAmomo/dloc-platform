@@ -9,8 +9,6 @@ import { startPersistence } from "./inits/startPersistence";
 import { startServerHTTP } from "./inits/startServerHTTP";
 import { startServerSocket } from "./inits/startServerSocket";
 import { getPersistence } from "./persistence/persistence";
-import proto1903Ingress from "./services/server-socket/protocol1903/proto1903Ingress";
-import jt808Ingress from "./services/server-socket/protocol808/jt808Ingress";
 import serverSocketHandler from "./controllers/server-socket/serverSocketHandler";
 import proto1903HandleConnection from "./services/server-socket/protocol1903/connection/proto1903HandleConnection";
 import proto1903HandleProcess from "./services/server-socket/protocol1903/connection/proto1903HandleProcess";
@@ -18,6 +16,12 @@ import proto1903HandlePacket from "./services/server-socket/protocol1903/connect
 import proto1903HandleClose from "./services/server-socket/protocol1903/connection/proto1903HandleClose";
 import proto1903HandleEnd from "./services/server-socket/protocol1903/connection/proto1903HandleEnd";
 import proto1903HandleError from "./services/server-socket/protocol1903/connection/proto1903HandleError";
+import jt808HandleConnection from "./services/server-socket/protocol808/connection/jt808HandleConnection";
+import jt808HandlePacket from "./services/server-socket/protocol808/connection/jt808HandlePacket";
+import jt808HandleClose from "./services/server-socket/protocol808/connection/jt808HandleClose";
+import jt808HandleEnd from "./services/server-socket/protocol808/connection/jt808HandleEnd";
+import jt808HandleProcess from "./services/server-socket/protocol808/connection/jt808HandleProcess";
+import jt808HandleError from "./services/server-socket/protocol808/connection/jt808HandleError";
 
 /** Load environment variables */
 dotenv.config();
@@ -73,7 +77,6 @@ startPersistence(new mySqlPersistence());
 if (SOCKET_PROTOCOL == "1903") {
   printMessage(`✅ Using protocol ${SOCKET_PROTOCOL}.`);
   startServerSocket(
-    //(conn) => proto1903Ingress(conn, getPersistence()),
     (conn) =>
       serverSocketHandler({
         conn,
@@ -86,7 +89,6 @@ if (SOCKET_PROTOCOL == "1903") {
         handleEnd: proto1903HandleEnd,
         handleError: proto1903HandleError,
       }),
-
     PORT_SOCKET
   );
 } else if (SOCKET_PROTOCOL == "808") {
@@ -94,7 +96,18 @@ if (SOCKET_PROTOCOL == "1903") {
   /** Start Socket server (Protocol 808) */
   printMessage(`✅ Using protocol ${SOCKET_PROTOCOL}.`);
   startServerSocket(
-    (conn) => jt808Ingress(conn, getPersistence()),
+        (conn) =>
+      serverSocketHandler({
+        conn,
+        persistence: getPersistence(),
+        protocol: "JT808",
+        handleConnection: jt808HandleConnection,
+        handleProcess: jt808HandleProcess,
+        handlePacket: jt808HandlePacket,
+        handleClose: jt808HandleClose,
+        handleEnd: jt808HandleEnd,
+        handleError: jt808HandleError,
+      }),
     PORT_SOCKET
   );
   //

@@ -20,6 +20,8 @@ import jt808HandlePacket from "./connection/jt808HandlePacket";
 import jt808HandleConnection from "./connection/jt808HandleConnection";
 import jt808HandleProcess from "./connection/jt808HandleProcess";
 
+// DEPRECATED: Use serverSocketHandler instead
+
 const jt808Ingress = (conn: net.Socket, persistence: Persistence) => {
   const remoteAddress: string = getRemoteAddress(conn);
   var imei: string = "";

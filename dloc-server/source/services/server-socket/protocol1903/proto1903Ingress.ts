@@ -19,6 +19,8 @@ import proto1903HandlePacket from "./connection/proto1903HandlePacket";
 import proto1903HandleConnection from "./connection/proto1903HandleConnection";
 import proto1903HandleProcess from "./connection/proto1903HandleProcess";
 
+// DEPRECATED: Use serverSocketHandler instead
+
 const proto1903Ingress = (conn: net.Socket, persistence: Persistence) => {
   const remoteAddress: string = getRemoteAddress(conn);
   var imei: string = "";
