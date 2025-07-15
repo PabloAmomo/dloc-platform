@@ -9,6 +9,6 @@ export default  interface Jt808HandleConnectionProps {
   data: Buffer; 
   handlePacket: Jt808HandlePacket;
   persistence: Persistence;
-  conn: net.Socket | { write: (arg0: string) => void; destroy: () => void };
   counter: number; 
+  disconnect: () => void;
 }

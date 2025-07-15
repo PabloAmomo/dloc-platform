@@ -5,7 +5,6 @@ import { CacheImei } from '../../../../infraestucture/models/CacheImei';
 import HandlePacketResult from '../../models/HandlePacketResult';
 
 type Jt808ProcessProps = {
-  conn: net.Socket;
   results: HandlePacketResult[];
   imei: string;
   prefix: string;
@@ -16,6 +15,7 @@ type Jt808ProcessProps = {
   imeiData: CacheImei;
   newPowerProfile: PowerProfileType;
   movementsControlSeconds: number;
+  sendData: (data: Buffer[]) => void; // Function to send data, if needed
 };
 
 export default Jt808ProcessProps;

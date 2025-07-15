@@ -1,7 +1,6 @@
 import Proto1903ProcessProps from "./Proto1903ProcessProps";
 
 type Proto1903HandleProcess = ({
-  conn,
   results,
   imei,
   prefix,
@@ -12,6 +11,7 @@ type Proto1903HandleProcess = ({
   imeiData,
   newPowerProfile,
   movementsControlSeconds,
+  sendData
 }: Proto1903ProcessProps) => void;
 
 export default Proto1903HandleProcess;

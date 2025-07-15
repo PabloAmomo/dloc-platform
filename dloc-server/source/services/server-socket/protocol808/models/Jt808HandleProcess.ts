@@ -1,7 +1,6 @@
 import Jt808ProcessProps from "./Jt808ProcessProps";
 
 type Jt808HandleProcess = ({
-  conn,
   results,
   imei,
   prefix,
@@ -12,6 +11,7 @@ type Jt808HandleProcess = ({
   imeiData,
   newPowerProfile,
   movementsControlSeconds,
+  sendData
 }: Jt808ProcessProps) => void;
 
 export default Jt808HandleProcess;

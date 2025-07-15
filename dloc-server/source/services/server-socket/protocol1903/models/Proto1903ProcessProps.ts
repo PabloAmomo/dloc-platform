@@ -5,7 +5,6 @@ import { CacheImei } from '../../../../infraestucture/models/CacheImei';
 import HandlePacketResult from '../../models/HandlePacketResult';
 
 type Proto1903ProcessProps = {
-  conn: net.Socket;
   results: HandlePacketResult[];
   imei: string;
   prefix: string;
@@ -16,6 +15,7 @@ type Proto1903ProcessProps = {
   imeiData: CacheImei;
   newPowerProfile: PowerProfileType;
   movementsControlSeconds: number;
+  sendData: (data: string[]) => void; 
 };
 
 export default Proto1903ProcessProps;

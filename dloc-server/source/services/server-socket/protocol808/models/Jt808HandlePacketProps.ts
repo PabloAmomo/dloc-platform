@@ -6,4 +6,5 @@ export default interface Jt808HandlePacketProps {
   data: Buffer;
   persistence: Persistence;
   counter: number;
+  disconnect: () => void;
 }

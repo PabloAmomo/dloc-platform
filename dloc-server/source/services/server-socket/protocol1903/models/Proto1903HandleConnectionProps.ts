@@ -8,4 +8,5 @@ export default interface Proto1903HandleConnectionProps {
   handlePacket: Proto1903HandlePacket;
   persistence: Persistence;
   counter: number;
+  disconnect: () => void;
 }

@@ -6,5 +6,6 @@ export default interface Proto1903HandlePacketProps {
   data: string;
   persistence: Persistence;
   counter: number;
+  disconnect: () => void;
 }
 
