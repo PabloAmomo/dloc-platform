@@ -14,7 +14,7 @@ import handleEnd from './connection/handleEnd';
 import handleError from './connection/handleError';
 import { handlePacket } from './connection/handlePacket';
 import handler from './handler';
-import proto1903HandlerProcess from './proto1903HandlerProcess';
+import Proto1903HandlerProcess from './proto1903HandlerProcess';
 
 const proto1903Handler = (conn: net.Socket, persistence: Persistence) => {
   const remoteAddress: string = getRemoteAddress(conn);
@@ -111,7 +111,7 @@ const proto1903Handler = (conn: net.Socket, persistence: Persistence) => {
 
           const powerPrfChanged = imeiData.powerProfile !== newPowerProfile;
 
-          proto1903HandlerProcess({
+          Proto1903HandlerProcess({
             conn,
             results,
             imei,

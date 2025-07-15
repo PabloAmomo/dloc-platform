@@ -14,7 +14,7 @@ import {
 import { CacheImei } from "../../infraestucture/models/CacheImei";
 import { HandlePacketResult } from "../../models/HandlePacketResult";
 import { Persistence } from "../../models/Persistence";
-import ServerSocketHandlerProcess from "../../models/ServerSocketHandlerProcess";
+import Proto1903HandlerProcess from "../../services/server-socket/protocol1903/models/Proto1903HandlerProcess";
 import Proto1903HandlePacket from "../../services/server-socket/protocol1903/models/Proto1903HandlePacket";
 import Proto1903HandlerProps from "../../services/server-socket/protocol1903/models/Proto1903HandlerProps";
 import Jt808HandlePacket from "../../services/server-socket/protocol808/models/Jt808HandlePacket";
@@ -26,7 +26,7 @@ const serverSocketHandler = (
   protocol: "PROTO1903" | "JT808",
   conn: net.Socket,
   persistence: Persistence,
-  serverSocketHandlerProcess: ServerSocketHandlerProcess,
+  serverSocketHandlerProcess: Proto1903HandlerProcess,
   handlePacket: Proto1903HandlePacket | Jt808HandlePacket,
   handler: ({
     imei,

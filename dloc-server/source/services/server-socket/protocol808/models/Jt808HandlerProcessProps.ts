@@ -1,9 +1,9 @@
 import net from "node:net";
-import { PowerProfileType } from "../enums/PowerProfileType";
-import { CacheImei } from "../infraestucture/models/CacheImei";
-import { HandlePacketResult } from "./HandlePacketResult";
+import { HandlePacketResult } from "../../../../models/HandlePacketResult";
+import { CacheImei } from "../../../../infraestucture/models/CacheImei";
+import { PowerProfileType } from "../../../../enums/PowerProfileType";
 
-type ServerSocketHandlerProcessProps = {
+type Jt808HandlerProcessProps = {
   conn: net.Socket;
   results: HandlePacketResult[];
   imei: string;
@@ -17,4 +17,4 @@ type ServerSocketHandlerProcessProps = {
   movementsControlSeconds: number;
 };
 
-export default ServerSocketHandlerProcessProps;
+export default Jt808HandlerProcessProps;

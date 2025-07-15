@@ -1,10 +1,10 @@
 import { printMessage } from '../../../functions/printMessage';
-import ServerSocketHandlerProcess from '../../../models/ServerSocketHandlerProcess';
-import ServerSocketHandlerProcessProps from '../../../models/ServerSocketHandlerProcessProps';
+import Proto1903HandlerProcess from './models/Proto1903HandlerProcess';
+import Proto1903HandlerProcessProps from './models/Proto1903HandlerProcessProps';
 import proto1903CheckMustSendToTerminal from '../../../services/server-socket/protocol1903/functions/proto1903CheckMustSendToTerminal';
 import proto1903MustSendToTerminalRequestReport from '../../../services/server-socket/protocol1903/functions/proto1903MustSendToTerminalRequestReport';
 
-const proto1903HandlerProcess: ServerSocketHandlerProcess = ({
+const Proto1903HandlerProcess: Proto1903HandlerProcess = ({
   conn,
   results,
   imei,
@@ -16,7 +16,7 @@ const proto1903HandlerProcess: ServerSocketHandlerProcess = ({
   imeiData,
   newPowerProfile,
   movementsControlSeconds,
-}: ServerSocketHandlerProcessProps): void => {
+}: Proto1903HandlerProcessProps): void => {
   let toSendAditional: string = "";
   if (newConnection || powerPrfChanged || needProfileRefresh) {
     const responseSend: string = proto1903CheckMustSendToTerminal(
@@ -50,4 +50,4 @@ const proto1903HandlerProcess: ServerSocketHandlerProcess = ({
   conn.write(toSend);
 };
 
-export default proto1903HandlerProcess;
+export default Proto1903HandlerProcess;
