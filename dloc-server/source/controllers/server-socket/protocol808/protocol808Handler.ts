@@ -33,7 +33,7 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
   conn.on("data", (data: any) => {
     const tempImei: string = getNormalizedIMEI(imei);
     const dataString: string =
-      typeof data === "string" ? data : convertStringToHexString(data);
+      typeof data === "string" ? data.toString() : convertStringToHexString(data);
 
     counter++;
     if (counter > 32000) counter = 1;
