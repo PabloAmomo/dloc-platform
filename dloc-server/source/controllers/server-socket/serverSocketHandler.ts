@@ -19,6 +19,7 @@ import Proto1903HandlePacket from "../../services/server-socket/protocol1903/mod
 import Proto1903HandlerProps from "../../services/server-socket/protocol1903/models/Proto1903HandlerProps";
 import Jt808HandlePacket from "../../services/server-socket/protocol808/models/Jt808HandlePacket";
 import Jt808HandlerProps from "../../services/server-socket/protocol808/models/Jt808HandlerProps";
+import Jt808HandlerProcess from "../../services/server-socket/protocol808/models/Jt808HandlerProcess";
 
 // TODO: [REFACTOR] Unificar handlers para protocolo 808 y 1903
 
@@ -26,12 +27,13 @@ const serverSocketHandler = (
   protocol: "PROTO1903" | "JT808",
   conn: net.Socket,
   persistence: Persistence,
-  serverSocketHandlerProcess: Proto1903HandlerProcess,
+  handlerProcess: Proto1903HandlerProcess | Jt808HandlerProcess ,
   handlePacket: Proto1903HandlePacket | Jt808HandlePacket,
   handler: ({
     imei,
     remoteAddress,
     data,
+    // TODO: (handlePacket) Si lo paso arrivam aqui hace falta?
     handlePacket,
     persistence,
     counter,
@@ -137,7 +139,7 @@ const serverSocketHandler = (
 
           const powerPrfChanged = imeiData.powerProfile !== newPowerProfile;
 
-          serverSocketHandlerProcess({
+          handlerProcess({
             conn,
             results,
             imei,
