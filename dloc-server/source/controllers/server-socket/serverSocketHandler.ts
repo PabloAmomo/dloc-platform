@@ -1,22 +1,47 @@
-import net from 'node:net';
+import net from "node:net";
 
-import { PowerProfileType } from '../../../enums/PowerProfileType';
-import { getNormalizedIMEI } from '../../../functions/getNormalizedIMEI';
-import getPowerProfile from '../../../functions/getPowerProfile';
-import { printMessage } from '../../../functions/printMessage';
-import processPacketHealth from '../../../functions/processPacketHealth';
-import { getRemoteAddress } from '../../../functions/remoteAddress';
-import { CACHE_IMEI, clearItemInCacheIMEI } from '../../../infraestucture/caches/cacheIMEI';
-import { CacheImei } from '../../../infraestucture/models/CacheImei';
-import { Persistence } from '../../../models/Persistence';
-import handleClose from '../../../services/server-socket/protocol1903/connection/handleClose';
-import handleEnd from '../../../services/server-socket/protocol1903/connection/handleEnd';
-import handleError from '../../../services/server-socket/protocol1903/connection/handleError';
-import { handlePacket } from '../../../services/server-socket/protocol1903/connection/handlePacket';
-import handler from '../../../services/server-socket/protocol1903/handler';
-import proto1903HandlerProcess from './proto1903HandlerProcess';
+import { PowerProfileType } from "../../enums/PowerProfileType";
+import convertStringToHexString from "../../functions/convertStringToHexString";
+import { getNormalizedIMEI } from "../../functions/getNormalizedIMEI";
+import getPowerProfile from "../../functions/getPowerProfile";
+import { printMessage } from "../../functions/printMessage";
+import processPacketHealth from "../../functions/processPacketHealth";
+import { getRemoteAddress } from "../../functions/remoteAddress";
+import {
+  CACHE_IMEI,
+  clearItemInCacheIMEI,
+} from "../../infraestucture/caches/cacheIMEI";
+import { CacheImei } from "../../infraestucture/models/CacheImei";
+import { HandlePacketResult } from "../../models/HandlePacketResult";
+import { Persistence } from "../../models/Persistence";
+import ServerSocketHandlerProcess from "../../models/ServerSocketHandlerProcess";
+import Proto1903HandlePacket from "../../services/server-socket/protocol1903/models/Proto1903HandlePacket";
+import Proto1903HandlerProps from "../../services/server-socket/protocol1903/models/Proto1903HandlerProps";
+import Jt808HandlePacket from "../../services/server-socket/protocol808/models/Jt808HandlePacket";
+import Jt808HandlerProps from "../../services/server-socket/protocol808/models/Jt808HandlerProps";
 
-const proto1903Handler = (conn: net.Socket, persistence: Persistence) => {
+// TODO: [REFACTOR] Unificar handlers para protocolo 808 y 1903
+
+const serverSocketHandler = (
+  protocol: "PROTO1903" | "JT808",
+  conn: net.Socket,
+  persistence: Persistence,
+  serverSocketHandlerProcess: ServerSocketHandlerProcess,
+  handlePacket: Proto1903HandlePacket | Jt808HandlePacket,
+  handler: ({
+    imei,
+    remoteAddress,
+    data,
+    handlePacket,
+    persistence,
+    counter,
+  }: Proto1903HandlerProps | Jt808HandlerProps) => Promise<
+    HandlePacketResult[]
+  >,
+  handleClose: (remoteAddress: string, imei: string) => void,
+  handleEnd: (remoteAddress: string, imei: string) => void,
+  handleError: (remoteAddress: string, imei: string, err: Error) => void
+) => {
   const remoteAddress: string = getRemoteAddress(conn);
   var imei: string = "";
   var newConnection: boolean = true;
@@ -31,8 +56,9 @@ const proto1903Handler = (conn: net.Socket, persistence: Persistence) => {
   conn.on("data", (data: Buffer) => {
     const tempImei: string = getNormalizedIMEI(imei);
     const dataString: string = data.toString();
-    const dataShow: string = data.toString();
-    const dataToUse: string = data.toString();
+    const dataShow: string =
+      protocol === "PROTO1903" ? dataString : convertStringToHexString(data);
+    const dataToUse = protocol === "PROTO1903" ? dataString : data;
 
     counter++;
     if (counter > 32000) counter = 1;
@@ -50,8 +76,8 @@ const proto1903Handler = (conn: net.Socket, persistence: Persistence) => {
       handler({
         imei,
         remoteAddress,
-        data: dataToUse,
-        handlePacket,
+        data: dataToUse as any,
+        handlePacket: handlePacket as any,
         persistence,
         conn,
         counter,
@@ -111,7 +137,7 @@ const proto1903Handler = (conn: net.Socket, persistence: Persistence) => {
 
           const powerPrfChanged = imeiData.powerProfile !== newPowerProfile;
 
-          proto1903HandlerProcess({
+          serverSocketHandlerProcess({
             conn,
             results,
             imei,
@@ -146,4 +172,4 @@ const proto1903Handler = (conn: net.Socket, persistence: Persistence) => {
   });
 };
 
-export default proto1903Handler;
+export default serverSocketHandler;

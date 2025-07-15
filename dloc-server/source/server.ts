@@ -9,8 +9,8 @@ import { startPersistence } from "./inits/startPersistence";
 import { startServerHTTP } from "./inits/startServerHTTP";
 import { startServerSocket } from "./inits/startServerSocket";
 import { getPersistence } from "./persistence/persistence";
-import proto1903Handler from "./controllers/server-socket/protocol-proto1903/proto1903Handler";
-import jt808Handler from "./controllers/server-socket/protocol-jt808/jt808Handler";
+import proto1903Handler from "./services/server-socket/protocol1903/proto1903Handler";
+import jt808Handler from "./services/server-socket/protocol808/jt808Handler";
 
 /** Load environment variables */
 dotenv.config();
