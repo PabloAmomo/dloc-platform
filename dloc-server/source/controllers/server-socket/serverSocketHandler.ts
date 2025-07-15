@@ -1,16 +1,19 @@
-import { PowerProfileType } from '../../enums/PowerProfileType';
-import convertStringToHexString from '../../functions/convertStringToHexString';
-import { getNormalizedIMEI } from '../../functions/getNormalizedIMEI';
-import getPowerProfile from '../../functions/getPowerProfile';
-import { printMessage } from '../../functions/printMessage';
-import processPacketHealth from '../../functions/processPacketHealth';
-import { getRemoteAddress } from '../../functions/remoteAddress';
-import { CACHE_IMEI, clearItemInCacheIMEI } from '../../infraestucture/caches/cacheIMEI';
-import { CacheImei } from '../../infraestucture/models/CacheImei';
-import { ServerSocketHandler } from '../../infraestucture/models/ServerSocketHandler';
-import ServerSocketHandlerProps from '../../infraestucture/models/ServerSocketHandlerProps';
+import { PowerProfileType } from "../../enums/PowerProfileType";
+import convertStringToHexString from "../../functions/convertStringToHexString";
+import { getNormalizedIMEI } from "../../functions/getNormalizedIMEI";
+import getPowerProfile from "../../functions/getPowerProfile";
+import { printMessage } from "../../functions/printMessage";
+import processPacketHealth from "../../functions/processPacketHealth";
+import { getRemoteAddress } from "../../functions/remoteAddress";
+import {
+  CACHE_IMEI,
+  clearItemInCacheIMEI,
+} from "../../infraestucture/caches/cacheIMEI";
+import { CacheImei } from "../../infraestucture/models/CacheImei";
+import { ServerSocketHandler } from "../../infraestucture/models/ServerSocketHandler";
+import ServerSocketHandlerProps from "../../infraestucture/models/ServerSocketHandlerProps";
 
-const serverSocketHandler : ServerSocketHandler= ({
+const serverSocketHandler: ServerSocketHandler = ({
   protocol,
   conn,
   persistence,
@@ -34,15 +37,18 @@ const serverSocketHandler : ServerSocketHandler= ({
   const disconnect = () => {
     conn.destroy();
     clearItemInCacheIMEI(imei);
-    printMessage(
-      `[${getNormalizedIMEI(imei)}] (${remoteAddress}) ❌ Connection closed.`
-    );
+    if (!remoteAddress.includes("127.0.0.1"))
+      printMessage(
+        `[${getNormalizedIMEI(imei)}] (${remoteAddress}) ❌ Connection closed.`
+      );
   };
 
   const sendData = (data: Buffer[] | String[]) => {
     if (!conn || conn.destroyed) {
       printMessage(
-        `[${getNormalizedIMEI(imei)}] (${remoteAddress}) ❌ Connection is already closed.`
+        `[${getNormalizedIMEI(
+          imei
+        )}] (${remoteAddress}) ❌ Connection is already closed.`
       );
       return;
     }
@@ -82,7 +88,15 @@ const serverSocketHandler : ServerSocketHandler= ({
 
     try {
       /** Check if health packet */
-      if (processPacketHealth(dataString, remoteAddress, tempImei, sendData, disconnect))
+      if (
+        processPacketHealth(
+          dataString,
+          remoteAddress,
+          tempImei,
+          sendData,
+          disconnect
+        )
+      )
         return;
 
       /** New socket connection */
@@ -96,7 +110,7 @@ const serverSocketHandler : ServerSocketHandler= ({
         handlePacket: handlePacket as any,
         persistence,
         counter,
-        disconnect
+        disconnect,
       })
         .then(async (results) => {
           if (!results[0]?.imei) {
@@ -110,7 +124,7 @@ const serverSocketHandler : ServerSocketHandler= ({
           const prefix = `[${imei}] (${remoteAddress})`;
 
           /* If disconnected then return */
-          if (!conn || conn.destroyed) return
+          if (!conn || conn.destroyed) return;
 
           printMessage(`${prefix} 🌟 Current serial counter [${counter}].`);
 
@@ -155,7 +169,7 @@ const serverSocketHandler : ServerSocketHandler= ({
             imeiData,
             newPowerProfile,
             movementsControlSeconds,
-            sendData
+            sendData,
           });
           newConnection = false;
 
