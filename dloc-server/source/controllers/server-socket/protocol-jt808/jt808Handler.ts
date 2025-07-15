@@ -1,4 +1,5 @@
 import net from "node:net";
+
 import { PowerProfileType } from "../../../enums/PowerProfileType";
 import convertStringToHexString from "../../../functions/convertStringToHexString";
 import { getNormalizedIMEI } from "../../../functions/getNormalizedIMEI";
@@ -17,7 +18,7 @@ import handleEnd from "../../../services/server-socket/protocol808/connection/ha
 import handleError from "../../../services/server-socket/protocol808/connection/handleError";
 import { handlePacket } from "../../../services/server-socket/protocol808/connection/handlePacket";
 import handler from "../../../services/server-socket/protocol808/handler";
-import { protocol808HanlderProcess } from "./jt808HandlerProcess";
+import jt808HandlerProcess from "./jt808HandlerProcess";
 
 const jt808Handler = (conn: net.Socket, persistence: Persistence) => {
   const remoteAddress: string = getRemoteAddress(conn);
@@ -114,7 +115,7 @@ const jt808Handler = (conn: net.Socket, persistence: Persistence) => {
 
           const powerPrfChanged = imeiData.powerProfile !== newPowerProfile;
 
-          protocol808HanlderProcess({
+          jt808HandlerProcess({
             conn,
             results,
             imei,

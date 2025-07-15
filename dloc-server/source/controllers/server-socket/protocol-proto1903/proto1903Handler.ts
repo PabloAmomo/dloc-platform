@@ -1,22 +1,20 @@
-import net from "node:net";
-import { PowerProfileType } from "../../../enums/PowerProfileType";
-import { getNormalizedIMEI } from "../../../functions/getNormalizedIMEI";
-import getPowerProfile from "../../../functions/getPowerProfile";
-import { printMessage } from "../../../functions/printMessage";
-import processPacketHealth from "../../../functions/processPacketHealth";
-import { getRemoteAddress } from "../../../functions/remoteAddress";
-import {
-  CACHE_IMEI,
-  clearItemInCacheIMEI,
-} from "../../../infraestucture/caches/cacheIMEI";
-import { CacheImei } from "../../../infraestucture/models/CacheImei";
-import { Persistence } from "../../../models/Persistence";
-import handleClose from "../../../services/server-socket/protocol1903/connection/handleClose";
-import handleEnd from "../../../services/server-socket/protocol1903/connection/handleEnd";
-import handleError from "../../../services/server-socket/protocol1903/connection/handleError";
-import { handlePacket } from "../../../services/server-socket/protocol1903/connection/handlePacket";
-import handler from "../../../services/server-socket/protocol1903/handler";
-import { protocol1903HanlderProcess } from "./proto1903HandlerProcess";
+import net from 'node:net';
+
+import { PowerProfileType } from '../../../enums/PowerProfileType';
+import { getNormalizedIMEI } from '../../../functions/getNormalizedIMEI';
+import getPowerProfile from '../../../functions/getPowerProfile';
+import { printMessage } from '../../../functions/printMessage';
+import processPacketHealth from '../../../functions/processPacketHealth';
+import { getRemoteAddress } from '../../../functions/remoteAddress';
+import { CACHE_IMEI, clearItemInCacheIMEI } from '../../../infraestucture/caches/cacheIMEI';
+import { CacheImei } from '../../../infraestucture/models/CacheImei';
+import { Persistence } from '../../../models/Persistence';
+import handleClose from '../../../services/server-socket/protocol1903/connection/handleClose';
+import handleEnd from '../../../services/server-socket/protocol1903/connection/handleEnd';
+import handleError from '../../../services/server-socket/protocol1903/connection/handleError';
+import { handlePacket } from '../../../services/server-socket/protocol1903/connection/handlePacket';
+import handler from '../../../services/server-socket/protocol1903/handler';
+import proto1903HandlerProcess from './proto1903HandlerProcess';
 
 const proto1903Handler = (conn: net.Socket, persistence: Persistence) => {
   const remoteAddress: string = getRemoteAddress(conn);
@@ -113,7 +111,7 @@ const proto1903Handler = (conn: net.Socket, persistence: Persistence) => {
 
           const powerPrfChanged = imeiData.powerProfile !== newPowerProfile;
 
-          protocol1903HanlderProcess({
+          proto1903HandlerProcess({
             conn,
             results,
             imei,

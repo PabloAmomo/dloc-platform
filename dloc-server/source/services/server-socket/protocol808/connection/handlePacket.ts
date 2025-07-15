@@ -1,30 +1,30 @@
-import { HandlePacketResult } from "../../../../models/HandlePacketResult";
-import { printMessage } from "../../../../functions/printMessage";
-import discardData from "../../../../functions/discardData";
-import positionUpdateLastActivityAndAddHistory from "../../../../functions/positionUpdateLastActivityAndAddHistory";
-import positionUpdateBatteryAndLastActivity from "../../../../functions/positionUpdateBatteryAndLastActivity";
-import { getNormalizedIMEI } from "../../../../functions/getNormalizedIMEI";
 import convertStringToHexString from "../../../../functions/convertStringToHexString";
+import discardData from "../../../../functions/discardData";
+import { getNormalizedIMEI } from "../../../../functions/getNormalizedIMEI";
 import padNumberLeft from "../../../../functions/padNumberLeft";
+import positionUpdateBatteryAndLastActivity from "../../../../functions/positionUpdateBatteryAndLastActivity";
+import positionUpdateLastActivityAndAddHistory from "../../../../functions/positionUpdateLastActivityAndAddHistory";
+import { printMessage } from "../../../../functions/printMessage";
 import toHexWith from "../../../../functions/toHexWith";
-import jt808GetFrameData from "../functions/jt808GetFrameData";
+import { HandlePacketResult } from "../../../../models/HandlePacketResult";
+import jt808CehckUploadPowerSaving from "../functions/jt808CehckUploadPowerSaving";
+import jt808CheckTerminalParametersResponse from "../functions/jt808CheckTerminalParametersResponse";
+import jt808CreateCheckParameterSettingPacket from "../functions/jt808CreateCheckParameterSettingPacket";
 import jt808CreateGeneralResponse from "../functions/jt808CreateGeneralResponse";
+import jt808CreateMessage from "../functions/jt808CreateMessage";
+import jt808CreateParameterSettingPacket from "../functions/jt808CreateParameterSettingPacket";
 import jt808CreateQueryLocationMessage from "../functions/jt808CreateQueryLocationMessage";
-import jt808DecodeLocations from "../functions/jt808DecodeLocations";
+import jt808CreateRequestSyncTimePacket from "../functions/jt808CreateRequestSyncTimePacket";
+import jt808CreateTerminalRegistrationResponsePacket from "../functions/jt808CreateTerminalRegistrationResponsePacket";
 import jt808DecodeLocationReport from "../functions/jt808DecodeLocationReport";
+import jt808DecodeLocations from "../functions/jt808DecodeLocations";
+import jt808GetBatteryLevelPacketDateTime from "../functions/jt808GetBatteryLevelPacketDateTime";
+import jt808GetFrameData from "../functions/jt808GetFrameData";
+import jt808ParseCommonResultFromTerminal from "../functions/jt808ParseCommonResultFromTerminal";
 import jt808ParseTerminalAttributes from "../functions/jt808ParseTerminalAttributesBits";
 import jt808PersistLocation from "../functions/jt808PersistLocation";
-import jt808ParseCommonResultFromTerminal from "../functions/jt808ParseCommonResultFromTerminal";
-import jt808CreateCheckParameterSettingPacket from "../functions/jt808CreateCheckParameterSettingPacket";
-import { Jt808HandlePacket } from "../models/Jt808HandlePacket";
-import { Jt808HandlePacketProps } from "../models/Jt808HandlePacketProps";
-import jt808CreateMessage from "../functions/jt808CreateMessage";
-import jt808CreateRequestSyncTimePacket from "../functions/jt808CreateRequestSyncTimePacket";
-import jt808GetBatteryLevelPacketDateTime from "../functions/jt808GetBatteryLevelPacketDateTime";
-import jt808CreateTerminalRegistrationResponsePacket from "../functions/jt808CreateTerminalRegistrationResponsePacket";
-import jt808CreateParameterSettingPacket from "../functions/jt808CreateParameterSettingPacket";
-import jt808CheckTerminalParametersResponse from "../functions/jt808CheckTerminalParametersResponse";
-import jt808CehckUploadPowerSaving from "../functions/jt808CehckUploadPowerSaving";
+import Jt808HandlePacket from "../models/Jt808HandlePacket";
+import Jt808HandlePacketProps from "../models/Jt808HandlePacketProps";
 
 // TODO: [REFACTOR] Mover parte del codigo a otro lado, o fragmentar su responsabilidad
 
@@ -175,7 +175,7 @@ const handlePacket: Jt808HandlePacket = async (
     imeiTemp = getNormalizedIMEI(response.imei);
 
     let lastLatLng = "";
-      if (locations.count > 0) {
+    if (locations.count > 0) {
       for (const location of locations.locations) {
         if (location.lat !== 0 && location.lng !== 0)
           if (location.lat !== 0 && location.lng !== 0)

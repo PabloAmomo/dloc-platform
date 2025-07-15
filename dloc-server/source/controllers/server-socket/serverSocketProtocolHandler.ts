@@ -1,4 +1,5 @@
 import net from "node:net";
+
 import { PowerProfileType } from "../../enums/PowerProfileType";
 import convertStringToHexString from "../../functions/convertStringToHexString";
 import { getNormalizedIMEI } from "../../functions/getNormalizedIMEI";
@@ -11,13 +12,13 @@ import {
   clearItemInCacheIMEI,
 } from "../../infraestucture/caches/cacheIMEI";
 import { CacheImei } from "../../infraestucture/models/CacheImei";
-import { Persistence } from "../../models/Persistence";
-import { ServerSocketHandlerProcess } from "../../models/ServerSocketHandlerProcess";
 import { HandlePacketResult } from "../../models/HandlePacketResult";
-import { Proto1903HandlerProps } from "../../services/server-socket/protocol1903/models/Proto1903HandlerProps";
-import { Jt808HandlerProps } from "../../services/server-socket/protocol808/models/Jt808HandlerProps";
-import { Proto1903HandlePacket } from "../../services/server-socket/protocol1903/models/Proto1903HandlePacket";
-import { Jt808HandlePacket } from "../../services/server-socket/protocol808/models/Jt808HandlePacket";
+import { Persistence } from "../../models/Persistence";
+import ServerSocketHandlerProcess from "../../models/ServerSocketHandlerProcess";
+import Proto1903HandlePacket from "../../services/server-socket/protocol1903/models/Proto1903HandlePacket";
+import Proto1903HandlerProps from "../../services/server-socket/protocol1903/models/Proto1903HandlerProps";
+import Jt808HandlePacket from "../../services/server-socket/protocol808/models/Jt808HandlePacket";
+import Jt808HandlerProps from "../../services/server-socket/protocol808/models/Jt808HandlerProps";
 
 // TODO: [REFACTOR] Unificar handlers para protocolo 808 y 1903
 
@@ -171,4 +172,4 @@ const serverSocketProtocolHandler = (
   });
 };
 
-export { serverSocketProtocolHandler };
+export default serverSocketProtocolHandler;

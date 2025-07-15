@@ -15,8 +15,8 @@ import {
 } from "../../../../functions/getNormalizedIMEI";
 import proto1903CreatePositionPacket from "../functions/proto1903CreatePositionPacket";
 import PROTO1903_REGEX_PACKETS from "../functions/proto1903PacketParseREGEX";
-import { Proto1903HandlePacket } from "../models/Proto1903HandlePacket";
-import { Proto1903HandlePacketProps } from "../models/Proto1903HandlePacketProps";
+import Proto1903HandlePacket from "../models/Proto1903HandlePacket";
+import Proto1903HandlePacketProps from "../models/Proto1903HandlePacketProps";
 
 const noImei: string = "no imei received";
 
@@ -26,7 +26,12 @@ const handlePacket: Proto1903HandlePacket = async (
   const { imei, remoteAddress: remoteAddress, data, persistence } = props;
 
   let updateLastActivity: boolean = false;
-  let response: HandlePacketResult = { imei, error: "", response: [], mustDisconnect: false };
+  let response: HandlePacketResult = {
+    imei,
+    error: "",
+    response: [],
+    mustDisconnect: false,
+  };
 
   /** Temporal imei (Used only for print messages for user) */
   var imeiTemp: string = getNormalizedIMEI(imei);
@@ -50,10 +55,7 @@ const handlePacket: Proto1903HandlePacket = async (
   // ---------------------------------------
   // GPS DATA (14 or REPLY 15)
   // ---------------------------------------
-  else if (
-    data.startsWith("TRVYP14") ||
-    data.startsWith("TRVYP15")
-  ) {
+  else if (data.startsWith("TRVYP14") || data.startsWith("TRVYP15")) {
     const packetType = data.startsWith("TRVYP14") ? "TRVYP14" : "TRVYP15";
 
     /** Process GPS data */
@@ -81,13 +83,14 @@ const handlePacket: Proto1903HandlePacket = async (
       );
 
     /** Create position packet and persist */
-    const positionPacket: PositionPacket | undefined = proto1903CreatePositionPacket(
-      response.imei,
-      remoteAddress,
-      values,
-      GpsAccuracy.unknown,
-      "{}"
-    );
+    const positionPacket: PositionPacket | undefined =
+      proto1903CreatePositionPacket(
+        response.imei,
+        remoteAddress,
+        values,
+        GpsAccuracy.unknown,
+        "{}"
+      );
 
     /** Check if position packet was created */
     if (!positionPacket)
@@ -200,9 +203,7 @@ const handlePacket: Proto1903HandlePacket = async (
         `TRVBP14,${lat.toFixed(5)},${lng.toFixed(5)}#`
       );
     } else {
-      (response.response as string[]).push(
-        `TRVBP${data.substring(5, 7)}#`
-      );
+      (response.response as string[]).push(`TRVBP${data.substring(5, 7)}#`);
     }
   }
 
@@ -231,9 +232,7 @@ const handlePacket: Proto1903HandlePacket = async (
     if (data.startsWith("TRVYP16")) {
       if (data.length < 18) updateLastActivity = true;
       else {
-        const batteryLevel: number = parseInt(
-          data.substring(14, 17) ?? "-1"
-        );
+        const batteryLevel: number = parseInt(data.substring(14, 17) ?? "-1");
         await positionUpdateBatteryAndLastActivity(
           imeiTemp,
           remoteAddress,
@@ -267,10 +266,7 @@ const handlePacket: Proto1903HandlePacket = async (
   // ------------------------------------------------
   // Packets with not response needed
   // ------------------------------------------------
-  else if (
-    data.startsWith("TRVAP20") ||
-    data.startsWith("TRVAP61")
-  ) {
+  else if (data.startsWith("TRVAP20") || data.startsWith("TRVAP61")) {
     printMessage(
       `[${imeiTemp}] (${remoteAddress}) 🥷 received no response needed [${data}]`
     );
@@ -290,8 +286,7 @@ const handlePacket: Proto1903HandlePacket = async (
     let message: string = "";
     const resultVal: string = data.endsWith("0#") ? "✅ OK" : "❌ ERROR";
 
-    if (data.startsWith("TRVCP03"))
-      message = "Set heartbeat packet interval";
+    if (data.startsWith("TRVCP03")) message = "Set heartbeat packet interval";
     if (data.startsWith("TRVXP02")) message = "Set Upload interval";
     if (data.startsWith("TRVAP92")) message = "Set Led display switch";
 
@@ -348,7 +343,9 @@ const handlePacket: Proto1903HandlePacket = async (
     );
   } else {
     for (let i = 0; i < response.response.length; i++) {
-      printMessage(`[${imeiTemp}] (${remoteAddress}) ✅ response [${response.response[i]}].`);
+      printMessage(
+        `[${imeiTemp}] (${remoteAddress}) ✅ response [${response.response[i]}].`
+      );
     }
   }
 

@@ -3,7 +3,7 @@ import { PowerProfileType } from "../enums/PowerProfileType";
 import { CacheImei } from "../infraestucture/models/CacheImei";
 import { HandlePacketResult } from "./HandlePacketResult";
 
-export type ServerSocketHandlerProcessProps = {
+type ServerSocketHandlerProcessProps = {
   conn: net.Socket;
   results: HandlePacketResult[];
   imei: string;
@@ -16,3 +16,5 @@ export type ServerSocketHandlerProcessProps = {
   newPowerProfile: PowerProfileType;
   movementsControlSeconds: number;
 };
+
+export default ServerSocketHandlerProcessProps;

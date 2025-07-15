@@ -1,9 +1,9 @@
-import jt808FrameEncode from "../../../services/server-socket/protocol808/functions/jt808FrameEncode";
-import jt808CheckMustSendToTerminal from "../../../services/server-socket/protocol808/functions/jt808CheckMustSendToTerminal";
-import { ServerSocketHandlerProcessProps } from "../../../models/ServerSocketHandlerProcessProps";
-import { ServerSocketHandlerProcess } from "../../../models/ServerSocketHandlerProcess";
+import ServerSocketHandlerProcess from '../../../models/ServerSocketHandlerProcess';
+import ServerSocketHandlerProcessProps from '../../../models/ServerSocketHandlerProcessProps';
+import jt808CheckMustSendToTerminal from '../../../services/server-socket/protocol808/functions/jt808CheckMustSendToTerminal';
+import jt808FrameEncode from '../../../services/server-socket/protocol808/functions/jt808FrameEncode';
 
-const protocol808HandletProcess: ServerSocketHandlerProcess = ({
+const jt808HandlerProcess: ServerSocketHandlerProcess = ({
   conn,
   results,
   imei,
@@ -42,4 +42,4 @@ const protocol808HandletProcess: ServerSocketHandlerProcess = ({
   }
 };
 
-export { protocol808HandletProcess as protocol808HanlderProcess };
+export default jt808HandlerProcess;

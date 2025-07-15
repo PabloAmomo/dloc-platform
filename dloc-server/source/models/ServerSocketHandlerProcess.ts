@@ -1,6 +1,6 @@
-import { ServerSocketHandlerProcessProps } from "./ServerSocketHandlerProcessProps";
+import ServerSocketHandlerProcessProps from "./ServerSocketHandlerProcessProps";
 
-export type ServerSocketHandlerProcess = ({
+type ServerSocketHandlerProcess = ({
   conn,
   results,
   imei,
@@ -11,5 +11,7 @@ export type ServerSocketHandlerProcess = ({
   needProfileRefresh,
   imeiData,
   newPowerProfile,
-  movementsControlSeconds
+  movementsControlSeconds,
 }: ServerSocketHandlerProcessProps) => void;
+
+export default ServerSocketHandlerProcess;

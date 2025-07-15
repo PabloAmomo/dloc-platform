@@ -3,7 +3,7 @@ import { printMessage } from "../../../functions/printMessage";
 import { getNormalizedIMEI } from "../../../functions/getNormalizedIMEI";
 import convertStringToHexString from "../../../functions/convertStringToHexString";
 import jt808FrameDecode from "./functions/jt808FrameDecode";
-import { Jt808HandlerProps } from "./models/Jt808HandlerProps";
+import Jt808HandlerProps from "./models/Jt808HandlerProps";
 
 const handler = async ({
   imei,

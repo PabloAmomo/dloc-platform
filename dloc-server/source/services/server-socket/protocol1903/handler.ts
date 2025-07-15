@@ -1,7 +1,7 @@
-import { getNormalizedIMEI } from '../../../functions/getNormalizedIMEI';
-import { printMessage } from '../../../functions/printMessage';
-import { HandlePacketResult } from '../../../models/HandlePacketResult';
-import { Proto1903HandlerProps } from './models/Proto1903HandlerProps';
+import { getNormalizedIMEI } from "../../../functions/getNormalizedIMEI";
+import { printMessage } from "../../../functions/printMessage";
+import { HandlePacketResult } from "../../../models/HandlePacketResult";
+import Proto1903HandlerProps from "./models/Proto1903HandlerProps";
 
 const handler = async ({
   imei,
@@ -10,14 +10,12 @@ const handler = async ({
   handlePacket,
   persistence,
   counter,
-}: Proto1903HandlerProps): Promise<
-  HandlePacketResult[]
-> => {
+}: Proto1903HandlerProps): Promise<HandlePacketResult[]> => {
   /** Save results */
   const results: HandlePacketResult[] = [];
 
   // TODO: [REFACTOR] Unificar handlers para protocolo 808 y 1903
-  
+
   const inPackets: string[] = data.toString().split("#");
 
   if (inPackets.length === 0) {

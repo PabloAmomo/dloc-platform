@@ -1,8 +1,9 @@
-import { Persistence } from "../../../../models/Persistence";
 import net from 'node:net';
-import { Jt808HandlePacket } from "./Jt808HandlePacket";
 
-export interface Jt808HandlerProps {
+import { Persistence } from '../../../../models/Persistence';
+import Jt808HandlePacket from './Jt808HandlePacket';
+
+export default  interface Jt808HandlerProps {
   imei: string;
   remoteAddress: string;
   data: Buffer; 

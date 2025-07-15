@@ -1,10 +1,10 @@
-import { printMessage } from "../../../functions/printMessage";
-import proto1903CheckMustSendToTerminal from "../../../services/server-socket/protocol1903/functions/proto1903CheckMustSendToTerminal";
-import proto1903MustSendToTerminalRequestReport from "../../../services/server-socket/protocol1903/functions/proto1903MustSendToTerminalRequestReport";
-import { ServerSocketHandlerProcessProps } from "../../../models/ServerSocketHandlerProcessProps";
-import { ServerSocketHandlerProcess } from "../../../models/ServerSocketHandlerProcess";
+import { printMessage } from '../../../functions/printMessage';
+import ServerSocketHandlerProcess from '../../../models/ServerSocketHandlerProcess';
+import ServerSocketHandlerProcessProps from '../../../models/ServerSocketHandlerProcessProps';
+import proto1903CheckMustSendToTerminal from '../../../services/server-socket/protocol1903/functions/proto1903CheckMustSendToTerminal';
+import proto1903MustSendToTerminalRequestReport from '../../../services/server-socket/protocol1903/functions/proto1903MustSendToTerminalRequestReport';
 
-const protocol1903HandlerProcess: ServerSocketHandlerProcess  = ({ 
+const proto1903HandlerProcess: ServerSocketHandlerProcess = ({
   conn,
   results,
   imei,
@@ -15,8 +15,8 @@ const protocol1903HandlerProcess: ServerSocketHandlerProcess  = ({
   needProfileRefresh,
   imeiData,
   newPowerProfile,
-  movementsControlSeconds
-} : ServerSocketHandlerProcessProps) : void =>  {
+  movementsControlSeconds,
+}: ServerSocketHandlerProcessProps): void => {
   let toSendAditional: string = "";
   if (newConnection || powerPrfChanged || needProfileRefresh) {
     const responseSend: string = proto1903CheckMustSendToTerminal(
@@ -32,7 +32,9 @@ const protocol1903HandlerProcess: ServerSocketHandlerProcess  = ({
   }
 
   /** Check if must send to terminal request report */
-  if (proto1903MustSendToTerminalRequestReport(imei, newPowerProfile, imeiData)) {
+  if (
+    proto1903MustSendToTerminalRequestReport(imei, newPowerProfile, imeiData)
+  ) {
     toSendAditional += "TRVBP20#";
     printMessage(
       `${prefix} 📡 send command TRVBP20 (Force to report Position).`
@@ -48,4 +50,4 @@ const protocol1903HandlerProcess: ServerSocketHandlerProcess  = ({
   conn.write(toSend);
 };
 
-export { protocol1903HandlerProcess as protocol1903HanlderProcess };
+export default proto1903HandlerProcess;
