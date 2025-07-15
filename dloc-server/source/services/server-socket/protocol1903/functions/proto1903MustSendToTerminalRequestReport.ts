@@ -27,12 +27,11 @@ const proto1903MustSendToTerminalRequestReport = (
       forceReportLocInMs;
 
   if (needSendToTerminal) {
-    CACHE_IMEI.updateOrCreate(imei, {
-      lastReportRequestTimestamp: Date.now(),
+    CACHE_IMEI.updateOrCreate(imei, { ...imeiData,
+      lastReportRequestTimestamp: currentTime,
     });
   }
 
-  return false;
   return needSendToTerminal;
 };
 
