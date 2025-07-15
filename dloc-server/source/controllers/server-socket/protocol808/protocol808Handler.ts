@@ -1,23 +1,20 @@
-import net from "node:net";
-import { PowerProfileType } from "../../../enums/PowerProfileType";
-import convertStringToHexString from "../../../functions/convertStringToHexString";
-import { getNormalizedIMEI } from "../../../functions/getNormalizedIMEI";
-import getPowerProfile from "../../../functions/getPowerProfile";
-import { printMessage } from "../../../functions/printMessage";
-import processPacketHealth from "../../../functions/processPacketHealth";
-import { getRemoteAddress } from "../../../functions/remoteAddress";
-import {
-  CACHE_IMEI,
-  clearItemInCacheIMEI,
-} from "../../../infraestucture/caches/cacheIMEI";
-import { Persistence } from "../../../models/Persistence";
-import handleClose from "../../../services/server-socket/protocol808/connection/handleClose";
-import handleEnd from "../../../services/server-socket/protocol808/connection/handleEnd";
-import handleError from "../../../services/server-socket/protocol808/connection/handleError";
-import { handlePacket } from "../../../services/server-socket/protocol808/connection/handlePacket";
-import jt808CheckMustSendToTerminal from "../../../services/server-socket/protocol808/functions/jt808CheckMustSendToTerminal";
-import jt808FrameEncode from "../../../services/server-socket/protocol808/functions/jt808FrameEncode";
-import handler from "../../../services/server-socket/protocol808/handler";
+import net from 'node:net';
+import { PowerProfileType } from '../../../enums/PowerProfileType';
+import convertStringToHexString from '../../../functions/convertStringToHexString';
+import { getNormalizedIMEI } from '../../../functions/getNormalizedIMEI';
+import getPowerProfile from '../../../functions/getPowerProfile';
+import { printMessage } from '../../../functions/printMessage';
+import processPacketHealth from '../../../functions/processPacketHealth';
+import { getRemoteAddress } from '../../../functions/remoteAddress';
+import { CACHE_IMEI, clearItemInCacheIMEI } from '../../../infraestucture/caches/cacheIMEI';
+import { CacheImei } from '../../../infraestucture/models/CacheImei';
+import { Persistence } from '../../../models/Persistence';
+import handleClose from '../../../services/server-socket/protocol808/connection/handleClose';
+import handleEnd from '../../../services/server-socket/protocol808/connection/handleEnd';
+import handleError from '../../../services/server-socket/protocol808/connection/handleError';
+import { handlePacket } from '../../../services/server-socket/protocol808/connection/handlePacket';
+import handler from '../../../services/server-socket/protocol808/handler';
+import { protocol808HanlderProcess } from './protocol808HandlerProcess';
 
 // TODO: [REFACTOR] Unificar handlers para protocolo 808 y 1903
 
@@ -84,9 +81,11 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
           printMessage(`${prefix} 🌟 Current serial counter [${counter}].`);
 
           /** Get the las information about the IMEI */
-          const imeiData = CACHE_IMEI.get(imei) ?? {
+          const imeiData: CacheImei = CACHE_IMEI.get(imei) ?? {
             powerProfile: PowerProfileType.AUTOMATIC_MINIMAL,
             lastPowerProfileChecked: 0,
+            lastLBSRequestTimestamp: 0,
+            socketConn: conn,
           };
 
           /** Get power profile for the imei */
@@ -112,33 +111,47 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
 
           const powerPrfChanged = imeiData.powerProfile !== newPowerProfile;
 
-          if (newConnection || powerPrfChanged || needProfileRefresh) {
-            const responseSend: Buffer[] = jt808CheckMustSendToTerminal(
-              imei,
-              prefix,
-              powerPrfChanged,
-              needProfileRefresh,
-              counter,
-              imeiData.powerProfile,
-              newPowerProfile,
-              movementsControlSeconds
-            );
+          protocol808HanlderProcess({
+            conn,
+            results,
+            imei,
+            prefix,
+            counter,
+            newConnection,
+            powerPrfChanged,
+            needProfileRefresh,
+            imeiData,
+            newPowerProfile,
+            movementsControlSeconds,
+          });
 
-            responseSend.forEach((response) => {
-              (results[0].response as Buffer[]).push(response);
-            });
-
-            /** Is not a new connection */
-            newConnection = false;
-          }
-
-          /** Send */
-          for (const result of results) {
-            for (const response of result.response) {
-              conn.write(jt808FrameEncode(response as Buffer));
-              conn.write(Buffer.alloc(0));
-            }
-          }
+          //if (newConnection || powerPrfChanged || needProfileRefresh) {
+          //  const responseSend: Buffer[] = jt808CheckMustSendToTerminal(
+          //    imei,
+          //    prefix,
+          //    powerPrfChanged,
+          //    needProfileRefresh,
+          //    counter,
+          //    imeiData.powerProfile,
+          //    newPowerProfile,
+          //    movementsControlSeconds
+          //  );
+          //
+          //  responseSend.forEach((response) => {
+          //    (results[0].response as Buffer[]).push(response);
+          //  });
+          //
+          //  /** Is not a new connection */
+          //  newConnection = false;
+          //}
+          //
+          ///** Send */
+          //for (const result of results) {
+          //  for (const response of result.response) {
+          //    conn.write(jt808FrameEncode(response as Buffer));
+          //    conn.write(Buffer.alloc(0));
+          //  }
+          //}
         })
         .catch((err: Error) => {
           throw err;
