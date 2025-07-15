@@ -18,7 +18,7 @@ import { handlePacket } from "../../../services/server-socket/protocol1903/conne
 import handler from "../../../services/server-socket/protocol1903/handler";
 import { protocol1903HanlderProcess } from "./proto1903HandlerProcess";
 
-const protocol1903Handler = (conn: net.Socket, persistence: Persistence) => {
+const proto1903Handler = (conn: net.Socket, persistence: Persistence) => {
   const remoteAddress: string = getRemoteAddress(conn);
   var imei: string = "";
   var newConnection: boolean = true;
@@ -148,4 +148,4 @@ const protocol1903Handler = (conn: net.Socket, persistence: Persistence) => {
   });
 };
 
-export { protocol1903Handler };
+export { proto1903Handler  };

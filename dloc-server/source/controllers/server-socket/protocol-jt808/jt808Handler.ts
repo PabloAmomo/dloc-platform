@@ -19,7 +19,7 @@ import { handlePacket } from "../../../services/server-socket/protocol808/connec
 import handler from "../../../services/server-socket/protocol808/handler";
 import { protocol808HanlderProcess } from "./jt808HandlerProcess";
 
-const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
+const jt808Handler = (conn: net.Socket, persistence: Persistence) => {
   const remoteAddress: string = getRemoteAddress(conn);
   var imei: string = "";
   var newConnection: boolean = true;
@@ -149,4 +149,4 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
   });
 };
 
-export { protocol808Handler };
+export { jt808Handler };
