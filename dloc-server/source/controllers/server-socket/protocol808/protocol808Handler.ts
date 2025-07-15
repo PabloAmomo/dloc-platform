@@ -1,22 +1,25 @@
-import net from 'node:net';
-import { PowerProfileType } from '../../../enums/PowerProfileType';
-import convertStringToHexString from '../../../functions/convertStringToHexString';
-import { getNormalizedIMEI } from '../../../functions/getNormalizedIMEI';
-import getPowerProfile from '../../../functions/getPowerProfile';
-import { printMessage } from '../../../functions/printMessage';
-import processPacketHealth from '../../../functions/processPacketHealth';
-import { getRemoteAddress } from '../../../functions/remoteAddress';
-import { CACHE_IMEI, clearItemInCacheIMEI } from '../../../infraestucture/caches/cacheIMEI';
-import { CacheImei } from '../../../infraestucture/models/CacheImei';
-import { Persistence } from '../../../models/Persistence';
-import handleClose from '../../../services/server-socket/protocol808/connection/handleClose';
-import handleEnd from '../../../services/server-socket/protocol808/connection/handleEnd';
-import handleError from '../../../services/server-socket/protocol808/connection/handleError';
-import { handlePacket } from '../../../services/server-socket/protocol808/connection/handlePacket';
-import handler from '../../../services/server-socket/protocol808/handler';
-import { protocol808HanlderProcess } from './protocol808HandlerProcess';
-import jt808FrameEncode from '../../../services/server-socket/protocol808/functions/jt808FrameEncode';
-import jt808CheckMustSendToTerminal from '../../../services/server-socket/protocol808/functions/jt808CheckMustSendToTerminal';
+import net from "node:net";
+import { PowerProfileType } from "../../../enums/PowerProfileType";
+import convertStringToHexString from "../../../functions/convertStringToHexString";
+import { getNormalizedIMEI } from "../../../functions/getNormalizedIMEI";
+import getPowerProfile from "../../../functions/getPowerProfile";
+import { printMessage } from "../../../functions/printMessage";
+import processPacketHealth from "../../../functions/processPacketHealth";
+import { getRemoteAddress } from "../../../functions/remoteAddress";
+import {
+  CACHE_IMEI,
+  clearItemInCacheIMEI,
+} from "../../../infraestucture/caches/cacheIMEI";
+import { CacheImei } from "../../../infraestucture/models/CacheImei";
+import { Persistence } from "../../../models/Persistence";
+import handleClose from "../../../services/server-socket/protocol808/connection/handleClose";
+import handleEnd from "../../../services/server-socket/protocol808/connection/handleEnd";
+import handleError from "../../../services/server-socket/protocol808/connection/handleError";
+import { handlePacket } from "../../../services/server-socket/protocol808/connection/handlePacket";
+import handler from "../../../services/server-socket/protocol808/handler";
+import { protocol808HanlderProcess } from "./protocol808HandlerProcess";
+import jt808FrameEncode from "../../../services/server-socket/protocol808/functions/jt808FrameEncode";
+import jt808CheckMustSendToTerminal from "../../../services/server-socket/protocol808/functions/jt808CheckMustSendToTerminal";
 
 // TODO: [REFACTOR] Unificar handlers para protocolo 808 y 1903
 
@@ -32,11 +35,11 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
   conn.on("error", (err: Error) => handleError(remoteAddress, imei, err));
 
   /** Handle data */
-  conn.on("data", (data: any) => {
+  conn.on("data", (data: Buffer) => {
     const tempImei: string = getNormalizedIMEI(imei);
     const dataString: string = data.toString();
-    const dataShow: string =
-      typeof data === "string" ? data.toString() : convertStringToHexString(data);
+    const dataShow: string = convertStringToHexString(data);
+    const dataToUse : Buffer = data;
 
     counter++;
     if (counter > 32000) counter = 1;
@@ -54,7 +57,7 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
       handler({
         imei,
         remoteAddress,
-        data,
+        data: dataToUse,
         handlePacket,
         persistence,
         conn,
@@ -115,6 +118,7 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
 
           const powerPrfChanged = imeiData.powerProfile !== newPowerProfile;
 
+          // TODO: [BUG] Solve problem
           //protocol808HanlderProcess({
           //  conn,
           //  results,
@@ -140,15 +144,15 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
               newPowerProfile,
               movementsControlSeconds
             );
-          
+
             responseSend.forEach((response) => {
               (results[0].response as Buffer[]).push(response);
             });
-          
+
             /** Is not a new connection */
             newConnection = false;
           }
-          
+
           /** Send */
           for (const result of results) {
             for (const response of result.response) {
@@ -156,6 +160,8 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
               conn.write(Buffer.alloc(0));
             }
           }
+
+          //
         })
         .catch((err: Error) => {
           throw err;

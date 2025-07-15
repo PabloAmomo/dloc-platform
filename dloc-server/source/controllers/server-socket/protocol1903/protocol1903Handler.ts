@@ -1,6 +1,5 @@
 import net from "node:net";
 import { PowerProfileType } from "../../../enums/PowerProfileType";
-import convertStringToHexString from "../../../functions/convertStringToHexString";
 import { getNormalizedIMEI } from "../../../functions/getNormalizedIMEI";
 import getPowerProfile from "../../../functions/getPowerProfile";
 import { printMessage } from "../../../functions/printMessage";
@@ -39,6 +38,7 @@ const protocol1903Handler = (conn: net.Socket, persistence: Persistence) => {
     const tempImei: string = getNormalizedIMEI(imei);
     const dataString: string = data.toString();
     const dataShow: string = data.toString();
+    const dataToUse: string = data.toString();
 
     counter++;
     if (counter > 32000) counter = 1;
@@ -56,7 +56,7 @@ const protocol1903Handler = (conn: net.Socket, persistence: Persistence) => {
       handler({
         imei,
         remoteAddress,
-        data: dataString,
+        data: dataToUse,
         handlePacket,
         persistence,
         conn,
@@ -65,7 +65,7 @@ const protocol1903Handler = (conn: net.Socket, persistence: Persistence) => {
         .then(async (results) => {
           if (!results[0]?.imei) {
             printMessage(
-              `[${tempImei}] (${remoteAddress}) ❌ IMEI not found in data [${dataString}].`
+              `[${tempImei}] (${remoteAddress}) ❌ IMEI not found in data [${dataShow}].`
             );
             conn.destroy();
             return;
@@ -117,7 +117,7 @@ const protocol1903Handler = (conn: net.Socket, persistence: Persistence) => {
 
           const powerPrfChanged = imeiData.powerProfile !== newPowerProfile;
 
-          // TODO: [BUG] Solve problem
+          // TODO: [BUG] Solve problem 
           //protocol1903HanlderProcess({
           //  conn,
           //  results,
@@ -131,7 +131,7 @@ const protocol1903Handler = (conn: net.Socket, persistence: Persistence) => {
           //  newPowerProfile,
           //  movementsControlSeconds,
           //});
-          /** If new connection send configuration after response */
+
           let toSendAditional: string = "";
           if (newConnection || powerPrfChanged || needProfileRefresh) {
             const responseSend: string = proto1903CheckMustSendToTerminal(
@@ -167,6 +167,8 @@ const protocol1903Handler = (conn: net.Socket, persistence: Persistence) => {
           }
           if (toSendAditional) toSend += toSendAditional;
           conn.write(toSend);
+
+          //
         })
         .catch((err: Error) => {
           throw err;
