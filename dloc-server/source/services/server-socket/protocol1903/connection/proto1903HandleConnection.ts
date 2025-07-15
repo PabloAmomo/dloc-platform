@@ -12,7 +12,7 @@ const proto1903HandleConnection = async ({
   counter,
   disconnect
 }: Proto1903HandleConnectionProps): Promise<HandlePacketResult[]> => {
-  /** Save results */
+  /** results */
   const results: HandlePacketResult[] = [];
 
   // TODO: [REFACTOR] Unificar handlers para protocolo 808 y 1903
@@ -31,7 +31,7 @@ const proto1903HandleConnection = async ({
   /** Process each packet */
   for (let i = 0; i < inPackets.length; i++) {
     /** Discart empty packets */
-    if (inPackets[i] == "") continue;
+    if (!inPackets[i] || inPackets[i].length === 0) continue;
 
     /** Handle packet */
     try {

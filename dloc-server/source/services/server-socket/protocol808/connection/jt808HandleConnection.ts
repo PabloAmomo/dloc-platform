@@ -33,7 +33,7 @@ const jt808HandleConnection = async ({
   /** Process each packet */
   for (let i = 0; i < inPackets.length; i++) {
     /** Discart empty packets */
-    if (!inPackets[i]) continue;
+    if (!inPackets[i] || inPackets[i].length === 0) continue;
 
     /** Handle packet */
     try {

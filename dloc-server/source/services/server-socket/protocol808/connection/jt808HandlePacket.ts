@@ -26,7 +26,7 @@ import jt808PersistLocation from "../functions/jt808PersistLocation";
 import Jt808HandlePacket from "../models/Jt808HandlePacket";
 import Jt808HandlePacketProps from "../models/Jt808HandlePacketProps";
 
-// TODO: [REFACTOR] Mover parte del codigo a otro lado, o fragmentar su responsabilidad
+// TODO: [REFACTOR] Move code and split functionaility to keep this file clean
 
 const jt808HandlePacket: Jt808HandlePacket = async (
   props: Jt808HandlePacketProps
@@ -108,7 +108,7 @@ const jt808HandlePacket: Jt808HandlePacket = async (
       )
     );
 
-    // TODO: [BUG] No funciona y no se porque, revisar (Luego usar jt808CreateCheckParameterSettingPacket)
+    // TODO: [BUG] Not working and I don't know why. In the future use jt808CreateCheckParameterSettingPacket
     (response.response as Buffer[]).push(
       jt808CreateMessage(
         jt808Packet.header.terminalId,
@@ -373,7 +373,7 @@ const jt808HandlePacket: Jt808HandlePacket = async (
       }]`
     );
 
-    // TODO: [REMOVE DEBUG] Eliminar en un futuro. Solo para debug
+    // TODO: [REMOVE] Remove this log in production. Only for debug porpose
     printMessage(
       `[${imeiTemp}] (${remoteAddress}) 👉👉👉👉👉👉👉👉👉 [${dataString}]`
     );
