@@ -24,17 +24,28 @@ import HandleEnd from "../../services/server-socket/models/HandleEnd";
 
 // TODO: [REFACTOR] Unificar handlers para protocolo 808 y 1903
 
-const serverSocketHandler = (
-  protocol: "PROTO1903" | "JT808",
-  conn: net.Socket,
-  persistence: Persistence,
-  handleConnection: HandleConnection,
-  handleProcess: Proto1903HandleProcess | Jt808HandleProcess,
-  handlePacket: Proto1903HandlePacket | Jt808HandlePacket,
-  handleClose: HandleClose,
-  handleEnd: HandleEnd,
-  handleError: HandleError
-) => {
+// TODO: [REFACTOR] Mover la definiciion de serverSocketHandler a un archivo separado en models
+const serverSocketHandler = ({
+  protocol,
+  conn,
+  persistence,
+  handleConnection,
+  handleProcess,
+  handlePacket,
+  handleClose,
+  handleEnd,
+  handleError,
+}: {
+  protocol: "PROTO1903" | "JT808";
+  conn: net.Socket;
+  persistence: Persistence;
+  handleConnection: HandleConnection;
+  handleProcess: Proto1903HandleProcess | Jt808HandleProcess;
+  handlePacket: Proto1903HandlePacket | Jt808HandlePacket;
+  handleClose: HandleClose;
+  handleEnd: HandleEnd;
+  handleError: HandleError;
+}) => {
   const remoteAddress: string = getRemoteAddress(conn);
   var imei: string = "";
   var newConnection: boolean = true;
