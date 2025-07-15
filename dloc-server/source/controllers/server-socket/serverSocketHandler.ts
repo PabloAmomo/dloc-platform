@@ -22,9 +22,8 @@ import HandleClose from "../../services/server-socket/models/HandleClose";
 import HandleError from "../../services/server-socket/models/HandleError";
 import HandleEnd from "../../services/server-socket/models/HandleEnd";
 
-// TODO: [REFACTOR] Unificar handlers para protocolo 808 y 1903
-
 // TODO: [REFACTOR] Mover la definiciion de serverSocketHandler a un archivo separado en models
+
 const serverSocketHandler = ({
   protocol,
   conn,
