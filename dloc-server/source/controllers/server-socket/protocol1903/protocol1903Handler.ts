@@ -24,7 +24,6 @@ import handler from "../../../services/server-socket/protocol1903/handler";
 const protocol1903Handler = (conn: net.Socket, persistence: Persistence) => {
   const remoteAddress: string = getRemoteAddress(conn);
   var imei: string = "";
-  var lastTime: number = Date.now();
   var newConnection: boolean = true;
   var counter = 0;
 
@@ -36,8 +35,8 @@ const protocol1903Handler = (conn: net.Socket, persistence: Persistence) => {
   /** Handle data */
   conn.on("data", (data: any) => {
     const tempImei: string = getNormalizedIMEI(imei);
-    const dataHexString: string = convertStringToHexString(data);
-    const dataString: string = data.toString();
+    const dataString: string =
+      typeof data === "string" ? data : convertStringToHexString(data);
 
     counter++;
     if (counter > 32000) counter = 1;
@@ -130,14 +129,7 @@ const protocol1903Handler = (conn: net.Socket, persistence: Persistence) => {
           }
 
           /** Check if must send to terminal request report */
-          if (
-            proto1903MustSendToTerminalRequestReport(
-              imei,
-              lastTime,
-              newPowerProfile
-            )
-          ) {
-            lastTime = Date.now();
+          if (proto1903MustSendToTerminalRequestReport(imei, newPowerProfile)) {
             toSendAditional += "TRVBP20#";
             printMessage(
               `${prefix} 📡 send command TRVBP20 (Force to report Position).`

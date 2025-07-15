@@ -35,8 +35,8 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
   /** Handle data */
   conn.on("data", (data: any) => {
     const tempImei: string = getNormalizedIMEI(imei);
-    const dataHexString: string = convertStringToHexString(data);
-    const dataString: string = data.toString();
+    const dataString: string =
+      typeof data === "string" ? data : convertStringToHexString(data);
 
     counter++;
     if (counter > 32000) counter = 1;
@@ -63,7 +63,7 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
         .then(async (results) => {
           if (!results[0]?.imei) {
             printMessage(
-              `${tempImei}] (${remoteAddress}) ❌ IMEI not found in data [${dataHexString}].`
+              `${tempImei}] (${remoteAddress}) ❌ IMEI not found in data [${dataString}].`
             );
             conn.destroy();
             return;
@@ -152,7 +152,7 @@ const protocol808Handler = (conn: net.Socket, persistence: Persistence) => {
       printMessage(
         `[${tempImei}] (${remoteAddress}) ❌ error handling data (${
           err?.message ?? "unknown error"
-        }) data [${dataHexString}].`
+        }) data [${dataString}].`
       );
     }
   });

@@ -5,7 +5,6 @@ import { CachePosition } from '../../../../infraestucture/models/CachePosition';
 
 const proto1903MustSendToTerminalRequestReport = (
   imei: string,
-  lastTime: number,
   newPowerProfile: PowerProfileType
 ): boolean => {
   const { forceReportLocInMs } = powerProfileConfig(newPowerProfile);
@@ -14,14 +13,13 @@ const proto1903MustSendToTerminalRequestReport = (
 
   const currentTime = Date.now();
 
-  const lastPosMsSec = !lastPosPacket
+  const lastPosMs = !lastPosPacket
     ? forceReportLocInMs
     : currentTime - lastPosPacket.datetimeUtc.getTime();
 
   return (
     forceReportLocInMs > 0 &&
-    lastPosMsSec >= forceReportLocInMs &&
-    currentTime - lastTime >= forceReportLocInMs
+    lastPosMs >= forceReportLocInMs
   );
 };
 
