@@ -10,18 +10,19 @@ const HTTP_200 = `${[
 ].join("\n")}\n\n`;
 
 const processPacketHealth = (
-  conn: net.Socket,
   data: string,
   remoteAddress: string,
-  imei: string
+  imei: string,
+  sendData: (data: string[]) => void,
+  disconnect: () => void
 ): boolean => {
 
   if (data.toUpperCase().indexOf("HEAD /HEALTH") === -1) return false;
 
   if (!remoteAddress.includes("127.0.0.1"))
     printMessage(`[${imei}] (${remoteAddress}) 🩺 health packet received.`);
-  conn.write(HTTP_200);
-  conn.destroy();
+  sendData([HTTP_200]);
+  disconnect();
   return true;
 };
 
