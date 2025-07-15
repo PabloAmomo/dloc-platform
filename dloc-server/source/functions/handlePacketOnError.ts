@@ -6,15 +6,11 @@ type onErrorType = 'discarted' | 'position' | 'batteryLevel' | 'update' | 'lastA
 const handlePacketOnError = ({
   imei,
   remoteAddress,
-  data,
-  persistence,
   name,
   error
 }: {
   imei: string,
   remoteAddress: string,
-  data: Buffer | string,
-  persistence: Persistence,
   name: onErrorType,
   error: Error
 }) => {

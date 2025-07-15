@@ -31,8 +31,6 @@ async function discardData(
         handlePacketOnError({
           imei: imeiTemp,
           remoteAddress,
-          data,
-          persistence,
           name: "discarted",
           error: result.error,
         });
