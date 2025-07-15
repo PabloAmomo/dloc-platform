@@ -149,4 +149,4 @@ const jt808Handler = (conn: net.Socket, persistence: Persistence) => {
   });
 };
 
-export { jt808Handler };
+export default jt808Handler;

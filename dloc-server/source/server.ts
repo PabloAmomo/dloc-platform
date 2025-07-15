@@ -1,7 +1,5 @@
 import dotenv from "dotenv";
 import routes from "./controllers/server-http/routes";
-import { proto1903Handler } from "./controllers/server-socket/protocol-proto1903/proto1903Handler";
-import { jt808Handler } from "./controllers/server-socket/protocol-jt808/jt808Handler";
 import { printMessage } from "./functions/printMessage";
 import { initCacheIMEI } from "./infraestucture/caches/cacheIMEI";
 import { initCacheLBS } from "./infraestucture/caches/cacheLBS";
@@ -11,6 +9,8 @@ import { startPersistence } from "./inits/startPersistence";
 import { startServerHTTP } from "./inits/startServerHTTP";
 import { startServerSocket } from "./inits/startServerSocket";
 import { getPersistence } from "./persistence/persistence";
+import proto1903Handler from "./controllers/server-socket/protocol-proto1903/proto1903Handler";
+import jt808Handler from "./controllers/server-socket/protocol-jt808/jt808Handler";
 
 /** Load environment variables */
 dotenv.config();

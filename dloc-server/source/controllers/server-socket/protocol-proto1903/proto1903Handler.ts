@@ -148,4 +148,4 @@ const proto1903Handler = (conn: net.Socket, persistence: Persistence) => {
   });
 };
 
-export { proto1903Handler  };
+export default proto1903Handler;
