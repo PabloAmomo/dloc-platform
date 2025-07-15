@@ -55,6 +55,44 @@ const serverSocketHandler = ({
   conn.on("end", () => handleEnd(remoteAddress, imei));
   conn.on("error", (err: Error) => handleError(remoteAddress, imei, err));
 
+  const disconnect = () => {
+    conn.destroy();
+    clearItemInCacheIMEI(imei);
+    printMessage(
+      `[${getNormalizedIMEI(imei)}] (${remoteAddress}) ❌ Connection closed.`
+    );
+  };
+
+  const sendData = (data: Buffer[] | String[]) => {
+    if (!conn || conn.destroyed) {
+      printMessage(
+        `[${getNormalizedIMEI(imei)}] (${remoteAddress}) ❌ Connection is already closed.`
+      );
+      return;
+    }
+
+    const showError = (err: Error) => {
+      printMessage(
+        `[${getNormalizedIMEI(
+          imei
+        )}] (${remoteAddress}) ❌ Error sending data: ${err.message}`
+      );
+    };
+
+    for (const dataItem of data) {
+      if (typeof dataItem === "string") {
+        conn.write(dataItem, (err) => {
+          if (err) showError(err);
+        });
+      } else if (dataItem instanceof Buffer) {
+        conn.write(dataItem, (err) => {
+          if (err) showError(err);
+        });
+        conn.write(Buffer.alloc(0)); // Send an empty buffer to indicate end of packet
+      }
+    }
+  };
+
   /** Handle data */
   conn.on("data", (data: Buffer) => {
     const tempImei: string = getNormalizedIMEI(imei);
@@ -68,7 +106,7 @@ const serverSocketHandler = ({
 
     try {
       /** Check if health packet */
-      if (processPacketHealth(conn, dataString, remoteAddress, tempImei))
+      if (processPacketHealth(dataString, remoteAddress, tempImei, sendData, disconnect))
         return;
 
       /** New socket connection */
@@ -81,29 +119,22 @@ const serverSocketHandler = ({
         data: dataToUse as any,
         handlePacket: handlePacket as any,
         persistence,
-        conn,
         counter,
+        disconnect
       })
         .then(async (results) => {
           if (!results[0]?.imei) {
             printMessage(
               `[${tempImei}] (${remoteAddress}) ❌ IMEI not found in data [${dataShow}].`
             );
-            conn.destroy();
+            disconnect();
             return;
           }
           imei = results[0].imei;
           const prefix = `[${imei}] (${remoteAddress})`;
 
-          for (const result of results) {
-            if (result.mustDisconnect) {
-              printMessage(
-                `[${tempImei}] (${remoteAddress}) ❌ Connection must be closed. (Request by the platform)`
-              );
-              conn.destroy();
-              return;
-            }
-          }
+          /* If disconnected then return */
+          if (!conn || conn.destroyed) return
 
           printMessage(`${prefix} 🌟 Current serial counter [${counter}].`);
 
@@ -112,7 +143,6 @@ const serverSocketHandler = ({
             powerProfile: PowerProfileType.AUTOMATIC_MINIMAL,
             lastPowerProfileChecked: 0,
             lastLBSRequestTimestamp: 0,
-            socketConn: conn,
             lastReportRequestTimestamp: 0,
           };
 
@@ -132,7 +162,6 @@ const serverSocketHandler = ({
 
           /** create or update socket connection to cache */
           CACHE_IMEI.updateOrCreate(imei, {
-            socketConn: conn,
             powerProfile: newPowerProfile,
             lastPowerProfileChecked,
           });
@@ -140,7 +169,6 @@ const serverSocketHandler = ({
           const powerPrfChanged = imeiData.powerProfile !== newPowerProfile;
 
           handleProcess({
-            conn,
             results,
             imei,
             prefix,
@@ -151,6 +179,7 @@ const serverSocketHandler = ({
             imeiData,
             newPowerProfile,
             movementsControlSeconds,
+            sendData
           });
           newConnection = false;
 
@@ -160,16 +189,13 @@ const serverSocketHandler = ({
           throw err;
         });
     } catch (err: Error | any) {
-      conn.destroy();
-
-      /** Clear cache for the imei */
-      clearItemInCacheIMEI(imei);
-
       printMessage(
         `[${tempImei}] (${remoteAddress}) ❌ error handling data (${
           err?.message ?? "unknown error"
         }) data [${dataShow}].`
       );
+
+      disconnect();
     }
   });
 };
