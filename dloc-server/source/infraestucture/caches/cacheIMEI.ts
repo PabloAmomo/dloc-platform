@@ -19,7 +19,6 @@ function clearItemInCacheIMEI(imei: string) {
   if (imei === "") return;
 
   CACHE_IMEI.updateOrCreate(imei, {
-      socketConn: undefined,
       powerProfile: PowerProfileType.AUTOMATIC_FULL,
       lastPowerProfileChecked: 0
     });
