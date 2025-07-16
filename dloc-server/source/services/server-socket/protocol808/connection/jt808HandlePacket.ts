@@ -128,14 +128,14 @@ const jt808HandlePacket: Jt808HandlePacket = async (
     );
 
     // TODO: [BUG] Not working and I don't know why. In the future use jt808CreateCheckParameterSettingPacket
-    (response.response as Buffer[]).push(
-      jt808CreateMessage(
-        jt808Packet.header.terminalId,
-        counter + 101,
-        0x8106,
-        Buffer.from("0100000001", "hex")
-      )
-    );
+    //(response.response as Buffer[]).push(
+    //  jt808CreateMessage(
+    //    jt808Packet.header.terminalId,
+    //    counter + 101,
+    //    0x8106,
+    //    Buffer.from("0100000001", "hex")
+    //  )
+    //);
 
     (response.response as Buffer[]).push(
       jt808CreateCheckParameterSettingPacket(
