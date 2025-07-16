@@ -10,7 +10,7 @@ import { CacheImei } from "../../infraestucture/models/CacheImei";
 import { ServerSocketHandler } from "../../infraestucture/models/ServerSocketHandler";
 import ServerSocketHandlerProps from "../../infraestucture/models/ServerSocketHandlerProps";
 
-// TODO: Refactor this file to use a more modular approach, separating concerns and improving readability.
+// TODO: [REFACTOR] Refactor this file to use a more modular approach, separating concerns and improving readability.
 
 const serverSocketHandler: ServerSocketHandler = ({
   protocol,
