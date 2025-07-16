@@ -1,50 +1,31 @@
-import convertStringToHexString from '../../../../functions/convertStringToHexString';
-import { getNormalizedIMEI } from '../../../../functions/getNormalizedIMEI';
-import padNumberLeft from '../../../../functions/padNumberLeft';
-import positionUpdateBatteryAndLastActivity from '../../../../functions/positionUpdateBatteryAndLastActivity';
-import positionUpdateLastActivityAndAddHistory from '../../../../functions/positionUpdateLastActivityAndAddHistory';
-import { printMessage } from '../../../../functions/printMessage';
-import toHexWith from '../../../../functions/toHexWith';
-import discardData from '../../functions/discardData';
-import HandlePacketResult from '../../models/HandlePacketResult';
-import jt808CehckUploadPowerSaving from '../functions/jt808CehckUploadPowerSaving';
-import jt808CheckTerminalParametersResponse from '../functions/jt808CheckTerminalParametersResponse';
-import jt808CreateCheckParameterSettingPacket from '../functions/jt808CreateCheckParameterSettingPacket';
-import jt808CreateGeneralResponse from '../functions/jt808CreateGeneralResponse';
-import jt808CreateMessage from '../functions/jt808CreateMessage';
-import jt808CreateParameterSettingPacket from '../functions/jt808CreateParameterSettingPacket';
-import jt808CreateQueryLocationMessage from '../functions/jt808CreateQueryLocationMessage';
-import jt808CreateRequestSyncTimePacket from '../functions/jt808CreateRequestSyncTimePacket';
-import jt808CreateTerminalRegistrationResponsePacket from '../functions/jt808CreateTerminalRegistrationResponsePacket';
-import jt808DecodeLocationReport from '../functions/jt808DecodeLocationReport';
-import jt808DecodeLocations from '../functions/jt808DecodeLocations';
-import jt808GetBatteryLevelPacketDateTime from '../functions/jt808GetBatteryLevelPacketDateTime';
-import jt808GetFrameData from '../functions/jt808GetFrameData';
-import jt808ParseCommonResultFromTerminal from '../functions/jt808ParseCommonResultFromTerminal';
-import jt808ParseTerminalAttributes from '../functions/jt808ParseTerminalAttributesBits';
-import jt808PersistLocation from '../functions/jt808PersistLocation';
-import Jt808HandlePacket from '../models/Jt808HandlePacket';
-import Jt808HandlePacketProps from '../models/Jt808HandlePacketProps';
+import convertStringToHexString from "../../../../functions/convertStringToHexString";
+import { getNormalizedIMEI } from "../../../../functions/getNormalizedIMEI";
+import padNumberLeft from "../../../../functions/padNumberLeft";
+import positionUpdateBatteryAndLastActivity from "../../../../functions/positionUpdateBatteryAndLastActivity";
+import positionUpdateLastActivityAndAddHistory from "../../../../functions/positionUpdateLastActivityAndAddHistory";
+import { printMessage } from "../../../../functions/printMessage";
+import toHexWith from "../../../../functions/toHexWith";
+import discardData from "../../functions/discardData";
+import HandlePacketResult from "../../models/HandlePacketResult";
+import jt808CehckUploadPowerSaving from "../functions/jt808CehckUploadPowerSaving";
+import jt808CheckTerminalParametersResponse from "../functions/jt808CheckTerminalParametersResponse";
+import jt808CreateGeneralResponse from "../functions/jt808CreateGeneralResponse";
+import jt808CreateParameterSettingPacket from "../functions/jt808CreateParameterSettingPacket";
+import jt808CreateRequestSyncTimePacket from "../functions/jt808CreateRequestSyncTimePacket";
+import jt808CreateTerminalRegistrationResponsePacket from "../functions/jt808CreateTerminalRegistrationResponsePacket";
+import jt808DecodeLocationReport from "../functions/jt808DecodeLocationReport";
+import jt808DecodeLocations from "../functions/jt808DecodeLocations";
+import jt808GetBatteryLevelPacketDateTime from "../functions/jt808GetBatteryLevelPacketDateTime";
+import jt808GetFrameData from "../functions/jt808GetFrameData";
+import jt808ParseCommonResultFromTerminal from "../functions/jt808ParseCommonResultFromTerminal";
+import jt808ParseTerminalAttributes from "../functions/jt808ParseTerminalAttributesBits";
+import jt808PersistLocation from "../functions/jt808PersistLocation";
+import jt808PrintMessage from "../functions/jt808PrintMessage";
+import jt808ProcessPacket0x0102 from "../functions/jt808ProcessPacket0x0102";
+import Jt808HandlePacket from "../models/Jt808HandlePacket";
+import Jt808HandlePacketProps from "../models/Jt808HandlePacketProps";
 
 // TODO: [REFACTOR] Move code and split functionaility to keep this file clean
-
-const messages = {
-  0x0002: "❤️  Terminal heartbeat",
-  0x0003: "🔚 Terminal Logout",
-  0x0104: "⚙️  Check terminal parameter response",
-  0x0105: "💤 Sleep notificationSleep notification",
-  0x0107: "✅ Check terminal attribute response",
-  0x0108: "🌟 Sleep wake up notification",
-  0x0112: "⚡️ Upload the power saving mode modified by SMS to the server",
-  0x1007: "🔥 Unknown command 10 07",
-  0x0100: "📋 Terminal registration",
-  0x0102: "🔐 Terminal authentication",
-  0x0704: "📦 Positioning data batch upload",
-  0x0201: "📍 Location information query response",
-  0x0200: "📍 Location report",
-  0x0109: "⏰ Request synchronization time",
-  0x0210: "🔋 Battery level update when sleep",
-};
 
 const jt808HandlePacket: Jt808HandlePacket = async (
   props: Jt808HandlePacketProps
@@ -99,10 +80,7 @@ const jt808HandlePacket: Jt808HandlePacket = async (
     response.imei = padNumberLeft(jt808Packet.header.terminalId, 15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
     updateLastActivity = true;
-
-    printMessage(
-      `[${imeiTemp}] (${remoteAddress}) ✅ Terminal registration successful`
-    );
+    jt808PrintMessage(imeiTemp, remoteAddress, jt808Packet.header.msgType);
   }
 
   // ---------------------------------------
@@ -110,6 +88,17 @@ const jt808HandlePacket: Jt808HandlePacket = async (
   //     response 0x8001
   // ---------------------------------------
   else if (jt808Packet.header.msgType === 0x0102) {
+
+    const respProcess = jt808ProcessPacket0x0102(
+      { remoteAddress,
+      response,
+      jt808Packet,
+      counter }
+    );
+    updateLastActivity = respProcess.updateLastActivity;
+    imeiTemp = respProcess.imei;  
+
+    /*
     (response.response as Buffer[]).push(
       jt808CreateGeneralResponse(
         jt808Packet.header.terminalId,
@@ -127,16 +116,6 @@ const jt808HandlePacket: Jt808HandlePacket = async (
       )
     );
 
-    // TODO: [BUG] Not working and I don't know why. In the future use jt808CreateCheckParameterSettingPacket
-    //(response.response as Buffer[]).push(
-    //  jt808CreateMessage(
-    //    jt808Packet.header.terminalId,
-    //    counter + 101,
-    //    0x8106,
-    //    Buffer.from("0100000001", "hex")
-    //  )
-    //);
-
     (response.response as Buffer[]).push(
       jt808CreateCheckParameterSettingPacket(
         jt808Packet.header.terminalId,
@@ -148,10 +127,8 @@ const jt808HandlePacket: Jt808HandlePacket = async (
     response.imei = padNumberLeft(jt808Packet.header.terminalId, 15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
     updateLastActivity = true;
-
-    printMessage(
-      `[${imeiTemp}] (${remoteAddress}) ✅ Terminal authentication successful`
-    );
+    jt808PrintMessage(imeiTemp, remoteAddress, jt808Packet.header.msgType);
+    */
   }
 
   // ---------------------------------------
@@ -190,7 +167,6 @@ const jt808HandlePacket: Jt808HandlePacket = async (
     if (locations.count > 0) {
       for (const location of locations.locations) {
         if (location.lat !== 0 && location.lng !== 0)
-          if (location.lat !== 0 && location.lng !== 0)
             lastLatLng = `📍 [(${location.dateTimeUTC}) ${location.lat}, ${location.lng}]`;
 
         await jt808PersistLocation(
@@ -204,10 +180,11 @@ const jt808HandlePacket: Jt808HandlePacket = async (
       }
     }
 
-    printMessage(
-      `[${imeiTemp}] (${remoteAddress}) ✅ 🧭 Location ${
-        messages[jt808Packet.header.msgType as keyof typeof messages]
-      } successful ${lastLatLng}`
+    jt808PrintMessage(
+      imeiTemp,
+      remoteAddress,
+      jt808Packet.header.msgType,
+      lastLatLng
     );
   }
 
@@ -227,10 +204,7 @@ const jt808HandlePacket: Jt808HandlePacket = async (
     response.imei = padNumberLeft(jt808Packet.header.terminalId, 15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
     updateLastActivity = true;
-
-    printMessage(
-      `[${imeiTemp}] (${remoteAddress}) ✅ ⏰ Request synchronization time successful`
-    );
+    jt808PrintMessage(imeiTemp, remoteAddress, jt808Packet.header.msgType);
   }
 
   // ---------------------------------------
@@ -265,9 +239,7 @@ const jt808HandlePacket: Jt808HandlePacket = async (
       batteryLevel
     );
 
-    printMessage(
-      `[${imeiTemp}] (${remoteAddress}) ✅ Battery level update when sleep successful`
-    );
+    jt808PrintMessage(imeiTemp, remoteAddress, jt808Packet.header.msgType);
   }
 
   // ---------------------------------------
@@ -328,11 +300,12 @@ const jt808HandlePacket: Jt808HandlePacket = async (
       );
     }
 
-    const bodyString = jt808Packet.body.toString("hex");
-    printMessage(
-      `[${imeiTemp}] (${remoteAddress}) ✅ ${
-        messages[jt808Packet.header.msgType as keyof typeof messages]
-      } -> body ${bodyString !== "" ? bodyString : "(empty)"}`
+    const bodyStringHex = jt808Packet.body.toString("hex");
+    jt808PrintMessage(
+      imeiTemp,
+      remoteAddress,
+      jt808Packet.header.msgType,
+      bodyStringHex === "" ? "" : `body ${bodyStringHex}`
     );
   }
 
@@ -346,13 +319,12 @@ const jt808HandlePacket: Jt808HandlePacket = async (
 
     const reponseCommon = jt808ParseCommonResultFromTerminal(jt808Packet.body);
 
-    printMessage(
-      `[${imeiTemp}] (${remoteAddress}) 🧑🏽‍💻 Response from terminal to message ${
-        reponseCommon.responseToMsgSerialNumber
+    const extraData = `reponseCommon.responseToMsgSerialNumber
       } [${toHexWith(reponseCommon.responseToMsgSerialNumber, 4)}] -> result: ${
-        reponseCommon.result == "success" ? "✅" : "❌"
-      } ${reponseCommon.result} (${reponseCommon.msgSerialNumber})`
-    );
+      reponseCommon.result == "success" ? "✅" : "❌"
+    } ${reponseCommon.result} (${reponseCommon.msgSerialNumber})`;
+
+    jt808PrintMessage(imeiTemp, remoteAddress, jt808Packet.header.msgType, extraData);
   }
 
   // ---------------------------------------------
@@ -360,16 +332,7 @@ const jt808HandlePacket: Jt808HandlePacket = async (
   // ---------------------------------------------
   else {
     printMessage(
-      `[${imeiTemp}] (${remoteAddress}) 🤷‍♂️ command unknown in data [${
-        dataString.length > 20
-          ? dataString.substring(0, 20) + "..."
-          : dataString
-      }]`
-    );
-
-    // TODO: [REMOVE] Remove this log in production. Only for debug porpose
-    printMessage(
-      `[${imeiTemp}] (${remoteAddress}) 👉👉👉👉👉👉👉👉👉 [${dataString}]`
+      `[${imeiTemp}] (${remoteAddress}) 🤷‍♂️ command unknown in data ⚠️  [${dataString}]  ⚠️`
     );
 
     return await discardData(
