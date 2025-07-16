@@ -33,15 +33,8 @@ async function getPowerProfile(
   if (lastPowerProfileChecked === 0) lastPowerProfileChecked = Date.now();
 
   if (isNewConnection) {
-    await updatePowerProfile(
-      imei,
-      newPowerProfileType,
-      persistence,
-      messagePrefix
-    );
-    printMessage(
-      `${messagePrefix} 🆕 new connection, setting power profile to [${newPowerProfileType}]`
-    );
+    await updatePowerProfile(imei, newPowerProfileType, persistence, messagePrefix);
+    printMessage(`${messagePrefix} 🆕 new connection, setting power profile to [${newPowerProfileType}]`);
   }
 
   try {
@@ -52,17 +45,16 @@ async function getPowerProfile(
 
     /* Set the power profile */
     if (powerProfile?.results[0]?.powerProfile)
-      newPowerProfileType =
-        powerProfile.results[0].powerProfile.toLowerCase() as PowerProfileType;
+      newPowerProfileType = powerProfile.results[0].powerProfile.toLowerCase() as PowerProfileType;
 
     /* Check if the power profile must be changed */
-    const lastPowerProfileCheckedDiff =
-      Date.now() - lastPowerProfileChecked > 1000 * MOVEMENTS_CONTROL_SECONDS;
+    const lastPowerProfileCheckedDiff = Date.now() - lastPowerProfileChecked > 1000 * MOVEMENTS_CONTROL_SECONDS;
 
-    const isAutomatic =
-      newPowerProfileType === PowerProfileType.AUTOMATIC_FULL ||
-      newPowerProfileType === PowerProfileType.AUTOMATIC_BALANCED ||
-      newPowerProfileType === PowerProfileType.AUTOMATIC_MINIMAL;
+    const isAutomatic = [
+      PowerProfileType.AUTOMATIC_FULL,
+      PowerProfileType.AUTOMATIC_BALANCED,
+      PowerProfileType.AUTOMATIC_MINIMAL,
+    ].includes(newPowerProfileType);
 
     /* Power upgrade to full requested by user (FULL profile in database, minimal or balanced in local cache) */
     if (
@@ -129,12 +121,7 @@ async function getPowerProfile(
     /* Save the new power profile (If was changed) */
     let message = "";
     if (powerProfileChanged) {
-      const changed = await updatePowerProfile(
-        imei,
-        newPowerProfileType,
-        persistence,
-        messagePrefix
-      );
+      const changed = await updatePowerProfile(imei, newPowerProfileType, persistence, messagePrefix);
       if (!changed) {
         lastPowerProfileChecked = Date.now() - 1000 * 120; // Force to check again in 2 minutes
         newPowerProfileType = currentPowerProfileType;
@@ -149,9 +136,7 @@ async function getPowerProfile(
     //
   } catch (error: any) {
     const errorMsg = error?.message ?? error;
-    printMessage(
-      `${messagePrefix} ❌ error getting power profile [${errorMsg}]`
-    );
+    printMessage(`${messagePrefix} ❌ error getting power profile [${errorMsg}]`);
   }
 
   return {
