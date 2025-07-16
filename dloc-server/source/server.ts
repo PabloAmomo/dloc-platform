@@ -89,7 +89,7 @@ if (SOCKET_PROTOCOL == "1903") {
         handleClose: proto1903HandleClose,
         handleEnd: proto1903HandleEnd,
         handleError: proto1903HandleError,
-        decoder: proto1903Decoder as (data: any) => string,
+        decoder: proto1903Decoder as (data: Buffer) => string[],
       }),
     PORT_SOCKET
   );
@@ -109,7 +109,7 @@ if (SOCKET_PROTOCOL == "1903") {
         handleClose: jt808HandleClose,
         handleEnd: jt808HandleEnd,
         handleError: jt808HandleError,
-        decoder: jt808Decoder as (data: any) => Buffer,
+        decoder: jt808Decoder as (data: Buffer) => Buffer[],
       }),
     PORT_SOCKET
   );
