@@ -8,8 +8,6 @@ import jt808CreateGeneralResponse from "./jt808CreateGeneralResponse";
 import jt808ParseTerminalAttributes from "./jt808ParseTerminalAttributesBits";
 import jt808PrintMessage from "./jt808PrintMessage";
 
-// TODO: [REFACTOR] Clean up this code
-
 const jt808ProcessPacket0x0xxx: Jt808ProcessPacket = async ({
   remoteAddress,
   response,
@@ -17,61 +15,50 @@ const jt808ProcessPacket0x0xxx: Jt808ProcessPacket = async ({
   counter,
   persistence,
 }) => {
-  if (![0x0104].includes(jt808Packet.header.msgType)) {
+  const {
+    body,
+    header: { terminalId, msgSerialNumber, msgType },
+  } = jt808Packet;
+
+  if (![0x0104].includes(msgType)) {
     (response.response as Buffer[]).push(
-      jt808CreateGeneralResponse(
-        jt808Packet.header.terminalId,
-        counter,
-        jt808Packet.header.msgSerialNumber,
-        jt808Packet.header.msgType,
-        "00"
-      )
+      jt808CreateGeneralResponse(terminalId, counter, msgSerialNumber, msgType, "00")
     );
   }
 
-  response.imei = padNumberLeft(jt808Packet.header.terminalId, 15, "0");
+  response.imei = padNumberLeft(terminalId, 15, "0");
   const imei = getNormalizedIMEI(response.imei);
   const updateLastActivity = true;
 
   let extraMessage = "";
+  switch (msgType) {
+    case 0x0104: {
+      await jt808CheckTerminalParametersResponse(imei, remoteAddress, persistence, jt808Packet);
+      break;
+    }
 
-  if (jt808Packet.header.msgType === 0x0104)
-    await jt808CheckTerminalParametersResponse(
-      imei,
-      remoteAddress,
-      persistence,
-      jt808Packet
-    );
+    case 0x0107: {
+      const { manufacturerId, terminalModel, simIccid } = jt808ParseTerminalAttributes(jt808Packet.body);
+      extraMessage = `⚙️  Terminal attributes: ${manufacturerId} Model ${terminalModel} - SimICCID ${simIccid}`;
+      break;
+    }
 
-  if (jt808Packet.header.msgType === 0x0107) {
-    const terminalAttributes = jt808ParseTerminalAttributes(jt808Packet.body);
-    extraMessage = `⚙️  Terminal attributtes: ${terminalAttributes.manufacturerId} Model ${terminalAttributes.terminalModel} - SimIccid ${terminalAttributes.simIccid}`;
+    case 0x0112: {
+      const powerSaveModeData = jt808CehckUploadPowerSaving(body, imei, remoteAddress);
+      extraMessage = `🔋 powerSaveModeData: ${JSON.stringify(powerSaveModeData)}`;
+      break;
+    }
   }
 
-  if (jt808Packet.header.msgType === 0x0112) {
-    const powerSaveModeData = jt808CehckUploadPowerSaving(
-      jt808Packet.body,
-      imei,
-      remoteAddress
-    );
-    extraMessage = `🔋 powerSaveModeData: ${JSON.stringify(powerSaveModeData)}`;
-  }
+  if (extraMessage !== "") printMessage(`[${imei}] (${remoteAddress}) 👉 ${extraMessage}`);
 
-  if (extraMessage !== "")
-    printMessage(`[${imei}] (${remoteAddress}) 👉 ${extraMessage}`);
-
-  const bodyStringHex = jt808Packet.body.toString("hex");
-  jt808PrintMessage(
-    imei,
-    remoteAddress,
-    jt808Packet.header.msgType,
-    bodyStringHex.length === 0 ? "" : `body ${bodyStringHex}`
-  );
+  const bodyStringHex = body.toString("hex");
+  jt808PrintMessage(imei, remoteAddress, msgType, bodyStringHex.length === 0 ? "" : `body ${bodyStringHex}`);
 
   return {
     updateLastActivity,
     imei,
-    mustDisconnect: jt808Packet.header.msgType === 0x0003,
+    mustDisconnect: msgType === 0x0003,
   };
 };
 

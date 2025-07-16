@@ -11,20 +11,19 @@ const jt808ProcessPacket0x0109: Jt808ProcessPacket = async ({
   counter,
   persistence,
 }) => {
-  (response.response as Buffer[]).push(
-    jt808CreateRequestSyncTimePacket(
-      jt808Packet.header.terminalId,
-      counter,
-      jt808Packet.header.msgSerialNumber
-    )
-  );
+  const {
+    body,
+    header: { terminalId, msgSerialNumber, msgType },
+  } = jt808Packet;
 
-  response.imei = padNumberLeft(jt808Packet.header.terminalId, 15, "0");
+  (response.response as Buffer[]).push(jt808CreateRequestSyncTimePacket(terminalId, counter, msgSerialNumber));
+
+  response.imei = padNumberLeft(terminalId, 15, "0");
 
   const imei = getNormalizedIMEI(response.imei);
   const updateLastActivity = true;
 
-  jt808PrintMessage(imei, remoteAddress, jt808Packet.header.msgType);
+  jt808PrintMessage(imei, remoteAddress, msgType);
 
   return {
     updateLastActivity,
