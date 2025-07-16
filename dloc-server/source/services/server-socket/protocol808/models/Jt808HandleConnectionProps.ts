@@ -1,5 +1,3 @@
-import net from 'node:net';
-
 import { Persistence } from '../../../../models/Persistence';
 import Jt808HandlePacket from './Jt808HandlePacket';
 
