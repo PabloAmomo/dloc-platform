@@ -7,10 +7,10 @@ import { CachePosition } from "../../../../infraestucture/models/CachePosition";
 
 const proto1903MustSendToTerminalRequestReport = (
   imei: string,
-  newPowerProfile: PowerProfileType,
+  newPowerProfileType: PowerProfileType,
   imeiData: CacheImei
 ): boolean => {
-  const { forceReportLocInMs } = proto1903PowerProfileConfig(newPowerProfile);
+  const { forceReportLocInMs } = proto1903PowerProfileConfig(newPowerProfileType);
 
   const lastPosPacket: CachePosition | undefined = CACHE_POSITION.get(imei);
 

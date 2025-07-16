@@ -10,22 +10,22 @@ const proto1903HandleProcess: Proto1903HandleProcess = ({
   prefix,
   counter,
   newConnection,
-  powerPrfChanged,
+  powerProfileChanged,
   needProfileRefresh,
   imeiData,
-  newPowerProfile,
+  newPowerProfileType,
   movementsControlSeconds,
   sendData
 }: Proto1903ProcessProps): void => {
   let toSendAditional: string = "";
-  if (newConnection || powerPrfChanged || needProfileRefresh) {
+  if (newConnection || powerProfileChanged || needProfileRefresh) {
     const responseSend: string = proto1903CheckMustSendToTerminal(
       imei,
       prefix,
-      powerPrfChanged,
+      powerProfileChanged,
       needProfileRefresh,
       imeiData.powerProfile,
-      newPowerProfile
+      newPowerProfileType
     );
 
     toSendAditional += responseSend;
@@ -33,7 +33,7 @@ const proto1903HandleProcess: Proto1903HandleProcess = ({
 
   /** Check if must send to terminal request report */
   if (
-    proto1903MustSendToTerminalRequestReport(imei, newPowerProfile, imeiData)
+    proto1903MustSendToTerminalRequestReport(imei, newPowerProfileType, imeiData)
   ) {
     toSendAditional += "TRVBP20#";
     printMessage(

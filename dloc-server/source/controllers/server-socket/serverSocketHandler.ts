@@ -156,7 +156,8 @@ const serverSocketHandler: ServerSocketHandler = ({
 
           /** Get power profile for the imei */
           const {
-            powerProfile: newPowerProfile,
+            newPowerProfileType,
+            powerProfileChanged,
             lastPowerProfileChecked,
             needProfileRefresh,
             movementsControlSeconds,
@@ -165,16 +166,15 @@ const serverSocketHandler: ServerSocketHandler = ({
             persistence,
             imeiData.lastPowerProfileChecked,
             prefix,
-            newConnection
+            newConnection,
+            imeiData.powerProfile
           );
 
           /** create or update socket connection to cache */
           CACHE_IMEI.updateOrCreate(imei, {
-            powerProfile: newPowerProfile,
+            powerProfile: newPowerProfileType,
             lastPowerProfileChecked,
           });
-
-          const powerPrfChanged = imeiData.powerProfile !== newPowerProfile;
 
           handleProcess({
             results,
@@ -182,10 +182,10 @@ const serverSocketHandler: ServerSocketHandler = ({
             prefix,
             counter,
             newConnection,
-            powerPrfChanged,
+            powerProfileChanged,
             needProfileRefresh,
             imeiData,
-            newPowerProfile,
+            newPowerProfileType,
             movementsControlSeconds,
             sendData,
           });

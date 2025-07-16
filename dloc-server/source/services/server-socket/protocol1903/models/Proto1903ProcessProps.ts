@@ -10,10 +10,10 @@ type Proto1903ProcessProps = {
   prefix: string;
   counter: number;
   newConnection: boolean;
-  powerPrfChanged: boolean;
+  powerProfileChanged: boolean;
   needProfileRefresh: boolean;
   imeiData: CacheImei;
-  newPowerProfile: PowerProfileType;
+  newPowerProfileType: PowerProfileType;
   movementsControlSeconds: number;
   sendData: (data: string[]) => void; 
 };

@@ -10,10 +10,10 @@ type Jt808ProcessProps = {
   prefix: string;
   counter: number;
   newConnection: boolean;
-  powerPrfChanged: boolean;
+  powerProfileChanged: boolean;
   needProfileRefresh: boolean;
   imeiData: CacheImei;
-  newPowerProfile: PowerProfileType;
+  newPowerProfileType: PowerProfileType;
   movementsControlSeconds: number;
   sendData: (data: Buffer[]) => void; // Function to send data, if needed
 };

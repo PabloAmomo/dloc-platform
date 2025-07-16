@@ -6,10 +6,10 @@ type Jt808HandleProcess = ({
   prefix,
   counter,
   newConnection,
-  powerPrfChanged,
+  powerProfileChanged,
   needProfileRefresh,
   imeiData,
-  newPowerProfile,
+  newPowerProfileType,
   movementsControlSeconds,
   sendData
 }: Jt808ProcessProps) => void;

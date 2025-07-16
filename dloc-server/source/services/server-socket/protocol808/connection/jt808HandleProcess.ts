@@ -9,22 +9,22 @@ const jt808HandleProcess: Jt808HandleProcess = ({
   prefix,
   counter,
   newConnection,
-  powerPrfChanged,
+  powerProfileChanged,
   needProfileRefresh,
   imeiData,
-  newPowerProfile,
+  newPowerProfileType,
   movementsControlSeconds,
   sendData,
 }: Jt808ProcessProps): void => {
-  if (newConnection || powerPrfChanged || needProfileRefresh) {
+  if (newConnection || powerProfileChanged || needProfileRefresh) {
     const responseSend: Buffer[] = jt808CheckMustSendToTerminal(
       imei,
       prefix,
-      powerPrfChanged,
+      powerProfileChanged,
       needProfileRefresh,
       counter,
       imeiData.powerProfile,
-      newPowerProfile,
+      newPowerProfileType,
       movementsControlSeconds
     );
 
