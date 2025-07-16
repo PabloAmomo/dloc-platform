@@ -73,14 +73,15 @@ const jt808HandlePacket: Jt808HandlePacket = async (
         ]
       )
     );
+
     printMessage(
       `[${imeiTemp}] (${remoteAddress}) 🌎 Time zone to 0 packet sent (Device will restar)`
     );
 
     response.imei = padNumberLeft(jt808Packet.header.terminalId, 15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
-
     updateLastActivity = true;
+
     printMessage(
       `[${imeiTemp}] (${remoteAddress}) ✅ Terminal registration successful`
     );
@@ -128,8 +129,8 @@ const jt808HandlePacket: Jt808HandlePacket = async (
 
     response.imei = padNumberLeft(jt808Packet.header.terminalId, 15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
-
     updateLastActivity = true;
+
     printMessage(
       `[${imeiTemp}] (${remoteAddress}) ✅ Terminal authentication successful`
     );
@@ -212,8 +213,8 @@ const jt808HandlePacket: Jt808HandlePacket = async (
 
     response.imei = padNumberLeft(jt808Packet.header.terminalId, 15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
-
     updateLastActivity = true;
+
     printMessage(
       `[${imeiTemp}] (${remoteAddress}) ✅ ⏰ Request synchronization time successful`
     );
@@ -228,7 +229,7 @@ const jt808HandlePacket: Jt808HandlePacket = async (
     const dateTime = jt808GetBatteryLevelPacketDateTime(jt808Packet.body);
 
     printMessage(
-      `[${imeiTemp}] (${remoteAddress}) ✅ Battery level: ${batteryLevel}% at ${dateTime}`
+      `[${imeiTemp}] (${remoteAddress}) 🔋 Battery level: ${batteryLevel}% at ${dateTime}`
     );
 
     (response.response as Buffer[]).push(
@@ -286,38 +287,32 @@ const jt808HandlePacket: Jt808HandlePacket = async (
 
     response.imei = padNumberLeft(jt808Packet.header.terminalId, 15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
-
-    const bodyString = jt808Packet.body.toString("hex");
-
     updateLastActivity = true;
-    let messageText = "";
 
-    if (jt808Packet.header.msgType === 0x0002) {
-      messageText = "❤️  Terminal heartbeat";
-    } else if (jt808Packet.header.msgType === 0x0003) {
-      printMessage(
-        `[${imeiTemp}] (${remoteAddress}) ❌ Connection must be closed. (Request by terminal)`
-      );
-      disconnect();
-      messageText = "🔚 Terminal Logout";
-    } else if (jt808Packet.header.msgType === 0x0104) {
-      messageText = "⚙️  Check terminal parameter response";
+    const messages = {
+      0x0002: "❤️ Terminal heartbeat",
+      0x0003: "🔚 Terminal Logout",
+      0x0104: "⚙️  Check terminal parameter response",
+      0x0105: "💤 Sleep notificationSleep notification",
+      0x0107: "✅ Check terminal attribute response",
+      0x0108: "🌟 Sleep wake up notification",
+      0x0112: "⚡️ Upload the power saving mode modified by SMS to the server",
+      0x1007: "🔥 Unknown command 10 07",
+    };
+
+    if (jt808Packet.header.msgType === 0x0003) disconnect();
+    else if (jt808Packet.header.msgType === 0x0104)
       await jt808CheckTerminalParametersResponse(
         imeiTemp,
         remoteAddress,
         persistence,
         jt808Packet
       );
-    } else if (jt808Packet.header.msgType === 0x0105) {
-      messageText = "💤 Sleep notification";
-    } else if (jt808Packet.header.msgType === 0x0107) {
+    else if (jt808Packet.header.msgType === 0x0107) {
       const terminalAttributes = jt808ParseTerminalAttributes(jt808Packet.body);
       printMessage(
         `[${imeiTemp}] (${remoteAddress}) 👉 ⚙️  Terminal attributtes: ${terminalAttributes.manufacturerId} Model ${terminalAttributes.terminalModel} - SimIccid ${terminalAttributes.simIccid}`
       );
-      messageText = "✅ Check terminal attribute response";
-    } else if (jt808Packet.header.msgType === 0x0108) {
-      messageText = "🌟 Sleep wake up notification";
     } else if (jt808Packet.header.msgType === 0x0112) {
       const powerSaveModeData = jt808CehckUploadPowerSaving(
         jt808Packet.body,
@@ -329,16 +324,13 @@ const jt808HandlePacket: Jt808HandlePacket = async (
           powerSaveModeData
         )}`
       );
-      messageText =
-        "⚡️ Upload the power saving mode modified by SMS to the serve";
-    } else if (jt808Packet.header.msgType === 0x1007) {
-      messageText = "🔥 Unknown command 10 07";
     }
 
+    const bodyString = jt808Packet.body.toString("hex");
     printMessage(
-      `[${imeiTemp}] (${remoteAddress}) ✅ ${messageText} -> body ${
-        bodyString !== "" ? bodyString : "(empty)"
-      }`
+      `[${imeiTemp}] (${remoteAddress}) ✅ ${
+        messages[jt808Packet.header.msgType as keyof typeof messages]
+      } -> body ${bodyString !== "" ? bodyString : "(empty)"}`
     );
   }
 
@@ -348,10 +340,10 @@ const jt808HandlePacket: Jt808HandlePacket = async (
   else if ([0x0001].includes(jt808Packet.header.msgType)) {
     response.imei = padNumberLeft(jt808Packet.header.terminalId, 15, "0");
     imeiTemp = getNormalizedIMEI(response.imei);
-
     updateLastActivity = true;
 
     const reponseCommon = jt808ParseCommonResultFromTerminal(jt808Packet.body);
+
     printMessage(
       `[${imeiTemp}] (${remoteAddress}) 🧑🏽‍💻 Response from terminal to message ${
         reponseCommon.responseToMsgSerialNumber
