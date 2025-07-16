@@ -167,7 +167,7 @@ const jt808HandlePacket: Jt808HandlePacket = async (
     if (locations.count > 0) {
       for (const location of locations.locations) {
         if (location.lat !== 0 && location.lng !== 0)
-            lastLatLng = `📍 [(${location.dateTimeUTC}) ${location.lat}, ${location.lng}]`;
+            lastLatLng = `[(${location.dateTimeUTC}) ${location.lat}, ${location.lng}]`;
 
         await jt808PersistLocation(
           imeiTemp,
