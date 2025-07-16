@@ -8,50 +8,76 @@ const MOVEMENTS_CONTROL_SECONDS: number = 300;
 const MOVEMENTS_MTS_FOR_BALANCED: number = 50;
 const MOVEMENTS_MTS_FOR_MINIMAL: number = 10;
 
-// TODO: [BUG] When the user switches to the maximum power profile, we don't know that the change was made by the user, and the duration lasts only one minute.
+// TODO: [FEATURE] When the user switches to the maximum power profile, we don't know that the change was made by the user, and the duration lasts only one minute.
+
+// TODO: [FEATURE] Check if the movement exceeds X meters from the first position [Modify or create new getMovementInLastSeconds] (currently, it sums up all movements).
 
 async function getPowerProfile(
   imei: string,
   persistence: Persistence,
   lastPowerProfileChecked: number,
   messagePrefix: string,
-  isNewConnection: boolean
-): Promise<{ powerProfile: PowerProfileType; lastPowerProfileChecked: number, needProfileRefresh: boolean, movementsControlSeconds: number }> {
-  let powerProfile = PowerProfileType.AUTOMATIC_FULL;
+  isNewConnection: boolean,
+  currentPowerProfileType: PowerProfileType
+): Promise<{
+  newPowerProfileType: PowerProfileType;
+  powerProfileChanged: boolean;
+  lastPowerProfileChecked: number;
+  needProfileRefresh: boolean;
+  movementsControlSeconds: number;
+}> {
+  let newPowerProfileType = PowerProfileType.AUTOMATIC_FULL;
+  let powerProfileChanged = false;
   let needProfileRefresh = false;
 
   if (lastPowerProfileChecked === 0) lastPowerProfileChecked = Date.now();
 
   if (isNewConnection) {
-    await updatePowerProfile(imei, powerProfile, persistence, messagePrefix);
+    await updatePowerProfile(
+      imei,
+      newPowerProfileType,
+      persistence,
+      messagePrefix
+    );
     printMessage(
-      `${messagePrefix} 🆕 new connection, setting power profile to [${powerProfile}]`
+      `${messagePrefix} 🆕 new connection, setting power profile to [${newPowerProfileType}]`
     );
   }
 
   try {
-    const powerPrf = await persistence.getPowerProfile(imei);
-    let profileChanged = false;
+    const powerProfile = await persistence.getPowerProfile(imei);
 
     /* Check if the response is valid */
-    if (powerPrf.error) throw powerPrf.error;
+    if (powerProfile.error) throw powerProfile.error;
 
     /* Set the power profile */
-    if (powerPrf?.results[0]?.powerProfile)
-      powerProfile =
-        powerPrf.results[0].powerProfile.toLowerCase() as PowerProfileType;
+    if (powerProfile?.results[0]?.powerProfile)
+      newPowerProfileType =
+        powerProfile.results[0].powerProfile.toLowerCase() as PowerProfileType;
 
     /* Check if the power profile must be changed */
-    const oldPowerProfile = powerProfile;
     const lastPowerProfileCheckedDiff =
       Date.now() - lastPowerProfileChecked > 1000 * MOVEMENTS_CONTROL_SECONDS;
 
     const isAutomatic =
-      powerProfile === PowerProfileType.AUTOMATIC_FULL ||
-      powerProfile === PowerProfileType.AUTOMATIC_BALANCED ||
-      powerProfile === PowerProfileType.AUTOMATIC_MINIMAL;
+      newPowerProfileType === PowerProfileType.AUTOMATIC_FULL ||
+      newPowerProfileType === PowerProfileType.AUTOMATIC_BALANCED ||
+      newPowerProfileType === PowerProfileType.AUTOMATIC_MINIMAL;
 
-    if (lastPowerProfileCheckedDiff && isAutomatic) {
+    /* Power upgrade to full requested by user (FULL profile in database, minimal or balanced in local cache) */
+    if (
+      !isNewConnection &&
+      isAutomatic &&
+      currentPowerProfileType !== newPowerProfileType &&
+      newPowerProfileType !== PowerProfileType.AUTOMATIC_FULL
+    ) {
+      powerProfileChanged = true;
+      printMessage(
+        `${messagePrefix} ⚡️ ⚠️ power profile changed by user from [${currentPowerProfileType}] to [${newPowerProfileType}]`
+      );
+    }
+
+    if (isAutomatic && !powerProfileChanged && lastPowerProfileCheckedDiff) {
       needProfileRefresh = true;
       /** Get the movement in last seconds */
       const metersMoveInLastSeconds = await getMovementInLastSeconds(
@@ -66,64 +92,69 @@ async function getPowerProfile(
 
       /** Change to balanced power profile */
       if (
-        powerProfile === PowerProfileType.AUTOMATIC_FULL &&
+        newPowerProfileType === PowerProfileType.AUTOMATIC_FULL &&
         metersMoveInLastSeconds < MOVEMENTS_MTS_FOR_BALANCED
       ) {
-        powerProfile = PowerProfileType.AUTOMATIC_BALANCED;
-        profileChanged = true;
+        newPowerProfileType = PowerProfileType.AUTOMATIC_BALANCED;
+        powerProfileChanged = true;
       } else if (
         /** Change to minimal power profile */
-        powerProfile === PowerProfileType.AUTOMATIC_BALANCED &&
+        newPowerProfileType === PowerProfileType.AUTOMATIC_BALANCED &&
         metersMoveInLastSeconds < MOVEMENTS_MTS_FOR_MINIMAL
       ) {
-        powerProfile = PowerProfileType.AUTOMATIC_MINIMAL;
-        profileChanged = true;
+        newPowerProfileType = PowerProfileType.AUTOMATIC_MINIMAL;
+        powerProfileChanged = true;
       } else if (
         /** Change to balanced power profile */
-        powerProfile === PowerProfileType.AUTOMATIC_MINIMAL &&
+        newPowerProfileType === PowerProfileType.AUTOMATIC_MINIMAL &&
         metersMoveInLastSeconds > MOVEMENTS_MTS_FOR_MINIMAL
       ) {
-        powerProfile = PowerProfileType.AUTOMATIC_BALANCED;
-        profileChanged = true;
+        newPowerProfileType = PowerProfileType.AUTOMATIC_BALANCED;
+        powerProfileChanged = true;
       } else if (
         /** Change to full power profile */
-        powerProfile === PowerProfileType.AUTOMATIC_BALANCED &&
+        newPowerProfileType === PowerProfileType.AUTOMATIC_BALANCED &&
         metersMoveInLastSeconds > MOVEMENTS_MTS_FOR_BALANCED
       ) {
-        powerProfile = PowerProfileType.AUTOMATIC_FULL;
-        profileChanged = true;
-      }
-
-      /* Save the new power profile (If was changed) */
-      lastPowerProfileChecked = Date.now();
-      if (profileChanged) {
-        const changed = await updatePowerProfile(
-          imei,
-          powerProfile,
-          persistence,
-          messagePrefix
-        );
-        if (!changed) powerProfile = oldPowerProfile;
-        else {
-          printMessage(
-            `${messagePrefix} ⚡️ power profile automatically changed from [${oldPowerProfile}] to [${powerProfile}]`
-          );
-        }
+        newPowerProfileType = PowerProfileType.AUTOMATIC_FULL;
+        powerProfileChanged = true;
       }
     }
 
-    printMessage(
-      `${messagePrefix} ⚡️ power profile for device [${powerProfile}]`
-    );
+    /* Save the new power profile (If was changed) */
+    let message = "";
+    if (powerProfileChanged) {
+      const changed = await updatePowerProfile(
+        imei,
+        newPowerProfileType,
+        persistence,
+        messagePrefix
+      );
+      if (!changed) newPowerProfileType = currentPowerProfileType;
+      else {
+        lastPowerProfileChecked = Date.now();
+        message = `power profile automatically changed from [${currentPowerProfileType}] to [${newPowerProfileType}]`;
+      }
+    } else {
+      message = `power profile for device [${newPowerProfileType}]`;
+    }
+    printMessage(`${messagePrefix} ⚡️ ${message}`);
+
+    //
   } catch (error: any) {
+    const errorMsg = error?.message ?? error;
     printMessage(
-      `${messagePrefix} ❌ error getting power profile [${
-        error?.message ?? error
-      }]`
+      `${messagePrefix} ❌ error getting power profile [${errorMsg}]`
     );
   }
 
-  return { powerProfile, lastPowerProfileChecked, needProfileRefresh, movementsControlSeconds: MOVEMENTS_CONTROL_SECONDS };
+  return {
+    newPowerProfileType,
+    powerProfileChanged,
+    lastPowerProfileChecked,
+    needProfileRefresh,
+    movementsControlSeconds: MOVEMENTS_CONTROL_SECONDS,
+  };
 }
 
 export default getPowerProfile;
