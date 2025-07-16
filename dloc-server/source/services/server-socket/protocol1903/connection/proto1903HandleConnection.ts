@@ -10,12 +10,12 @@ const proto1903HandleConnection = async ({
   handlePacket,
   persistence,
   counter,
-  disconnect
+  disconnect,
 }: Proto1903HandleConnectionProps): Promise<HandlePacketResult[]> => {
   /** results */
   const results: HandlePacketResult[] = [];
 
-  // TODO: [REFACTOR] Unificar handlers para protocolo 808 y 1903
+  // TODO: [REFACTOR] Create a common handler for protocols 808 and 1903
 
   const inPackets: string[] = data.toString().split("#");
 
@@ -41,7 +41,7 @@ const proto1903HandleConnection = async ({
         data: inPackets[i] + "#",
         persistence,
         counter,
-        disconnect
+        disconnect,
       }).then((result: HandlePacketResult) => {
         /** Save result */
         results.push(result);
@@ -57,7 +57,6 @@ const proto1903HandleConnection = async ({
           err?.message ?? "unknown error"
         }) packet [${inPackets[i]?.split(",")?.[0] ?? inPackets[i]}]`
       );
-      // throw err;
     }
   }
 

@@ -1,9 +1,9 @@
-import convertStringToHexString from '../../../../functions/convertStringToHexString';
-import { getNormalizedIMEI } from '../../../../functions/getNormalizedIMEI';
-import { printMessage } from '../../../../functions/printMessage';
-import HandlePacketResult from '../../models/HandlePacketResult';
-import jt808FrameDecode from '../functions/jt808FrameDecode';
-import Jt808HandleConnectionProps from '../models/Jt808HandleConnectionProps';
+import convertStringToHexString from "../../../../functions/convertStringToHexString";
+import { getNormalizedIMEI } from "../../../../functions/getNormalizedIMEI";
+import { printMessage } from "../../../../functions/printMessage";
+import HandlePacketResult from "../../models/HandlePacketResult";
+import jt808FrameDecode from "../functions/jt808FrameDecode";
+import Jt808HandleConnectionProps from "../models/Jt808HandleConnectionProps";
 
 const jt808HandleConnection = async ({
   imei,
@@ -12,12 +12,12 @@ const jt808HandleConnection = async ({
   handlePacket,
   persistence,
   counter,
-  disconnect
+  disconnect,
 }: Jt808HandleConnectionProps): Promise<HandlePacketResult[]> => {
   /** results */
   const results: HandlePacketResult[] = [];
 
-  // TODO: [REFACTOR] Unificar handlers para protocolo 808 y 1903
+  // TODO: [REFACTOR] Create a common handler for protocols 808 and 1903
 
   const inPackets: Buffer[] = [jt808FrameDecode(data)];
 
@@ -43,7 +43,7 @@ const jt808HandleConnection = async ({
         data: inPackets[i],
         persistence,
         counter,
-        disconnect
+        disconnect,
       }).then((result: HandlePacketResult) => {
         /** Save result */
         results.push(result);
