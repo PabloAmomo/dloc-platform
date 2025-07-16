@@ -3,7 +3,7 @@ import { Colors } from "enums/Colors";
 import { configApp } from "config/configApp";
 import { Device } from "models/Device";
 import { useTranslation } from "react-i18next";
-import { Bolt, EnergySavingsLeaf, WifiOff } from "@mui/icons-material";
+import { EnergySavingsLeaf, VisibilityOff } from "@mui/icons-material";
 import BatteryIcon from "components/BatteryIcon/BatteryIcon";
 import calculateTime from "functions/calculateTime";
 import convertUTCDateToLocalDate from "functions/convertUTCDateToLocalDate";
@@ -117,11 +117,10 @@ const MapMarkerLabel = (props: MapMarkerLabelProps) => {
       {/* Out of position */}
       {outOffVisibility && (
         <Box
-          {...(!hideTooltip
-            ? style.deviceOutOffVisibilityProps
-            : style.deviceOutOffVisibilityTooltipHiddenProps)}
+          {...(style.deviceOutOffVisibilityProps)}
         >
-          <WifiOff {...style.deviceOutOffVisibilityIconProps} />
+        <Box {...style.deviceOutOffVisibilityIconBackProps}></Box>
+        <VisibilityOff {...style.deviceOutOffVisibilityIconProps} />
         </Box>
       )}
     </Box>

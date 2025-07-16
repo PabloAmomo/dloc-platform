@@ -201,7 +201,7 @@
   "termsAndConditions": "Terms and conditions",
   "thePet": "La mascota",
   "yes": "Yes",
-  "powerProfileUpdated": "Power profile modified",
+  "powerProfileUpdated": "Power profile modified. Changes can take a little bit",
   "errorPowerProfileUpdated": "Error modifying power profile",
   "powerProfile.balanced": "Balanced",
   "powerProfile.full": "Maximum performance",
