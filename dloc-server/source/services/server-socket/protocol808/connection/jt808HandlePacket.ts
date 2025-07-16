@@ -1,31 +1,20 @@
 import convertStringToHexString from "../../../../functions/convertStringToHexString";
 import { getNormalizedIMEI } from "../../../../functions/getNormalizedIMEI";
-import padNumberLeft from "../../../../functions/padNumberLeft";
-import positionUpdateBatteryAndLastActivity from "../../../../functions/positionUpdateBatteryAndLastActivity";
 import positionUpdateLastActivityAndAddHistory from "../../../../functions/positionUpdateLastActivityAndAddHistory";
 import { printMessage } from "../../../../functions/printMessage";
-import toHexWith from "../../../../functions/toHexWith";
 import discardData from "../../functions/discardData";
 import HandlePacketResult from "../../models/HandlePacketResult";
-import jt808CehckUploadPowerSaving from "../functions/jt808CehckUploadPowerSaving";
-import jt808CheckTerminalParametersResponse from "../functions/jt808CheckTerminalParametersResponse";
-import jt808CreateGeneralResponse from "../functions/jt808CreateGeneralResponse";
-import jt808CreateParameterSettingPacket from "../functions/jt808CreateParameterSettingPacket";
-import jt808CreateTerminalRegistrationResponsePacket from "../functions/jt808CreateTerminalRegistrationResponsePacket";
-import jt808DecodeLocationReport from "../functions/jt808DecodeLocationReport";
-import jt808DecodeLocations from "../functions/jt808DecodeLocations";
 import jt808GetFrameData from "../functions/jt808GetFrameData";
-import jt808ParseTerminalAttributes from "../functions/jt808ParseTerminalAttributesBits";
-import jt808PersistLocation from "../functions/jt808PersistLocation";
-import jt808PrintMessage from "../functions/jt808PrintMessage";
 import jt808ProcessPacket0x0001 from "../functions/jt808ProcessPacket0x0001";
+import jt808ProcessPacket0x0100 from "../functions/jt808ProcessPacket0x0100";
 import jt808ProcessPacket0x0102 from "../functions/jt808ProcessPacket0x0102";
 import jt808ProcessPacket0x0109 from "../functions/jt808ProcessPacket0x0109";
 import jt808ProcessPacket0x0210 from "../functions/jt808ProcessPacket0x0210";
+import jt808ProcessPacket0x0xxx from "../functions/jt808ProcessPacket0x0xxx";
+import jt808ProcessPacket0x0xxxLocations from "../functions/jt808ProcessPacket0x0xxxLocations";
 import Jt808HandlePacket from "../models/Jt808HandlePacket";
 import Jt808HandlePacketProps from "../models/Jt808HandlePacketProps";
-
-// TODO: [REFACTOR] Move code and split functionaility to keep this file clean
+import Jt808ProcessPacketProps from "../models/Jt808ProcessPacketPropss";
 
 const jt808HandlePacket: Jt808HandlePacket = async (
   props: Jt808HandlePacketProps
@@ -40,47 +29,32 @@ const jt808HandlePacket: Jt808HandlePacket = async (
   };
 
   /** Temporal imei (Used only for print messages for user) */
-  var imeiTemp: string = getNormalizedIMEI(imei);
+  let imeiToPrint: string = getNormalizedIMEI(imei);
 
   /* convert data to hex string */
   const dataString: string = convertStringToHexString(data);
   printMessage(
-    `[${imeiTemp}] (${remoteAddress}) 📡 PACKET RECEIVED oOo ----> [${dataString}].`
+    `[${imeiToPrint}] (${remoteAddress}) 📡 RECEIVED 👉 [${dataString}].`
   );
 
-  let jt808Packet = jt808GetFrameData(data);
+  const jt808Packet = jt808GetFrameData(data);
+
+  const functionData: Jt808ProcessPacketProps = {
+    remoteAddress,
+    response,
+    jt808Packet,
+    counter,
+    persistence,
+  };
 
   // ---------------------------------------
   // Terminal registration（0x0100)
   //     response 0x8100
   // ---------------------------------------
   if (jt808Packet.header.msgType === 0x0100) {
-    (response.response as Buffer[]).push(
-      jt808CreateTerminalRegistrationResponsePacket(
-        jt808Packet.header.terminalId,
-        counter,
-        jt808Packet.header.msgSerialNumber
-      )
-    );
-
-    (response.response as Buffer[]).push(
-      jt808CreateParameterSettingPacket(
-        jt808Packet.header.terminalId,
-        counter + 101,
-        [
-          "0000F142 01 00", // Terminal time zone (0x00 = UTC)
-        ]
-      )
-    );
-
-    printMessage(
-      `[${imeiTemp}] (${remoteAddress}) 🌎 Time zone to 0 packet sent (Device will restar)`
-    );
-
-    response.imei = padNumberLeft(jt808Packet.header.terminalId, 15, "0");
-    imeiTemp = getNormalizedIMEI(response.imei);
-    updateLastActivity = true;
-    jt808PrintMessage(imeiTemp, remoteAddress, jt808Packet.header.msgType);
+    const respProcess = await jt808ProcessPacket0x0100(functionData);
+    updateLastActivity = respProcess.updateLastActivity;
+    imeiToPrint = respProcess.imei;
   }
 
   // ---------------------------------------
@@ -88,88 +62,31 @@ const jt808HandlePacket: Jt808HandlePacket = async (
   //     response 0x8001
   // ---------------------------------------
   else if (jt808Packet.header.msgType === 0x0102) {
-    const respProcess = await jt808ProcessPacket0x0102({
-      remoteAddress,
-      response,
-      jt808Packet,
-      counter,
-      persistence,
-    });
+    const respProcess = await jt808ProcessPacket0x0102(functionData);
     updateLastActivity = respProcess.updateLastActivity;
-    imeiTemp = respProcess.imei;
+    imeiToPrint = respProcess.imei;
   }
 
   // ---------------------------------------
   // Positioning data batch upload（0x0704）
-  // Location information query response（0x0201）
+  // Location information query 0x0201）
   // Location report（0x0200）
   //     response 0x8001
   // ---------------------------------------
   else if ([0x0704, 0x0201, 0x0200].includes(jt808Packet.header.msgType)) {
-    let locations;
-    if (jt808Packet.header.msgType === 0x0200)
-      locations = {
-        count: 1,
-        locations: [jt808DecodeLocationReport(jt808Packet.body)],
-      };
-    else
-      locations = jt808DecodeLocations(
-        jt808Packet.body,
-        jt808Packet.header.msgType === 0x0704
-      );
-
-    (response.response as Buffer[]).push(
-      jt808CreateGeneralResponse(
-        jt808Packet.header.terminalId,
-        counter,
-        jt808Packet.header.msgSerialNumber,
-        jt808Packet.header.msgType,
-        "00"
-      )
-    );
-
-    response.imei = padNumberLeft(jt808Packet.header.terminalId, 15, "0");
-    imeiTemp = getNormalizedIMEI(response.imei);
-
-    let lastLatLng = "";
-    if (locations.count > 0) {
-      for (const location of locations.locations) {
-        if (location.lat !== 0 && location.lng !== 0)
-          lastLatLng = `[(${location.dateTimeUTC}) ${location.lat}, ${location.lng}]`;
-
-        await jt808PersistLocation(
-          imeiTemp,
-          remoteAddress,
-          location,
-          persistence,
-          data,
-          response
-        );
-      }
-    }
-
-    jt808PrintMessage(
-      imeiTemp,
-      remoteAddress,
-      jt808Packet.header.msgType,
-      lastLatLng
-    );
+    const respProcess = await jt808ProcessPacket0x0xxxLocations(functionData);
+    updateLastActivity = respProcess.updateLastActivity;
+    imeiToPrint = respProcess.imei;
   }
 
   // ---------------------------------------
   // Request synchronization time（0x0109）
-  //     response 0x8109 (With time sync body)
+  //     response 0x8109
   // ---------------------------------------
   else if (jt808Packet.header.msgType === 0x0109) {
-    const respProcess = await jt808ProcessPacket0x0109({
-      remoteAddress,
-      response,
-      jt808Packet,
-      counter,
-      persistence,
-    });
+    const respProcess = await jt808ProcessPacket0x0109(functionData);
     updateLastActivity = respProcess.updateLastActivity;
-    imeiTemp = respProcess.imei;
+    imeiToPrint = respProcess.imei;
   }
 
   // ---------------------------------------
@@ -177,26 +94,20 @@ const jt808HandlePacket: Jt808HandlePacket = async (
   //     response 0x8001
   // ---------------------------------------
   else if (jt808Packet.header.msgType === 0x0210) {
-    const respProcess = await jt808ProcessPacket0x0210({
-      remoteAddress,
-      response,
-      jt808Packet,
-      counter,
-      persistence,
-    });
+    const respProcess = await jt808ProcessPacket0x0210(functionData);
     updateLastActivity = respProcess.updateLastActivity;
-    imeiTemp = respProcess.imei;
+    imeiToPrint = respProcess.imei;
   }
 
   // ---------------------------------------
   // Terminal heartbeat（0x0002）
   // Terminal Logout（0x0003）
-  // Check terminal parameter response（0x0104）
+  // Check terminal parameter（0x0104）
   // Sleep notification（0x0105）
-  // Check terminal attribute response（0x0107）
+  // Check terminal attribute（0x0107）
   // Sleep wake up notification（0x0108）
   // Unknown command 10 07（0x1007）
-  // Upload the power saving mode modified by SMS to the serve (0x0112)
+  // Upload the power saving (0x0112)
   //     response 0x8001
   // ---------------------------------------
   else if (
@@ -204,70 +115,19 @@ const jt808HandlePacket: Jt808HandlePacket = async (
       jt808Packet.header.msgType
     )
   ) {
-    if (![0x0104].includes(jt808Packet.header.msgType)) {
-      (response.response as Buffer[]).push(
-        jt808CreateGeneralResponse(
-          jt808Packet.header.terminalId,
-          counter,
-          jt808Packet.header.msgSerialNumber,
-          jt808Packet.header.msgType,
-          "00"
-        )
-      );
-    }
-
-    response.imei = padNumberLeft(jt808Packet.header.terminalId, 15, "0");
-    imeiTemp = getNormalizedIMEI(response.imei);
-    updateLastActivity = true;
-
-    if (jt808Packet.header.msgType === 0x0003) disconnect();
-    else if (jt808Packet.header.msgType === 0x0104)
-      await jt808CheckTerminalParametersResponse(
-        imeiTemp,
-        remoteAddress,
-        persistence,
-        jt808Packet
-      );
-    else if (jt808Packet.header.msgType === 0x0107) {
-      const terminalAttributes = jt808ParseTerminalAttributes(jt808Packet.body);
-      printMessage(
-        `[${imeiTemp}] (${remoteAddress}) 👉 ⚙️  Terminal attributtes: ${terminalAttributes.manufacturerId} Model ${terminalAttributes.terminalModel} - SimIccid ${terminalAttributes.simIccid}`
-      );
-    } else if (jt808Packet.header.msgType === 0x0112) {
-      const powerSaveModeData = jt808CehckUploadPowerSaving(
-        jt808Packet.body,
-        imeiTemp,
-        remoteAddress
-      );
-      printMessage(
-        `[${imeiTemp}] (${remoteAddress}) 👉 🔋 powerSaveModeData: ${JSON.stringify(
-          powerSaveModeData
-        )}`
-      );
-    }
-
-    const bodyStringHex = jt808Packet.body.toString("hex");
-    jt808PrintMessage(
-      imeiTemp,
-      remoteAddress,
-      jt808Packet.header.msgType,
-      bodyStringHex === "" ? "" : `body ${bodyStringHex}`
-    );
+    const respProcess = await jt808ProcessPacket0x0xxx(functionData);
+    updateLastActivity = respProcess.updateLastActivity;
+    imeiToPrint = respProcess.imei;
+    if (respProcess.mustDisconnect) disconnect();
   }
 
   // ---------------------------------------
   // Terminal general response（0x0001）
   // ---------------------------------------
   else if ([0x0001].includes(jt808Packet.header.msgType)) {
-    const respProcess = await jt808ProcessPacket0x0001({
-      remoteAddress,
-      response,
-      jt808Packet,
-      counter,
-      persistence,
-    });
+    const respProcess = await jt808ProcessPacket0x0001(functionData);
     updateLastActivity = respProcess.updateLastActivity;
-    imeiTemp = respProcess.imei;
+    imeiToPrint = respProcess.imei;
   }
 
   // ---------------------------------------------
@@ -275,14 +135,14 @@ const jt808HandlePacket: Jt808HandlePacket = async (
   // ---------------------------------------------
   else {
     printMessage(
-      `[${imeiTemp}] (${remoteAddress}) 🤷‍♂️ command unknown in data ⚠️  [${dataString}]  ⚠️`
+      `[${imeiToPrint}] (${remoteAddress}) 🤷‍♂️ command unknown in data ⚠️  [${dataString}]  ⚠️`
     );
 
     return await discardData(
       "commad unknown",
       false,
       persistence,
-      imeiTemp,
+      imeiToPrint,
       remoteAddress,
       dataString,
       response
@@ -291,7 +151,7 @@ const jt808HandlePacket: Jt808HandlePacket = async (
 
   /** Update last activity and add history */
   await positionUpdateLastActivityAndAddHistory(
-    imeiTemp,
+    imeiToPrint,
     remoteAddress,
     dataString,
     persistence,
@@ -301,12 +161,12 @@ const jt808HandlePacket: Jt808HandlePacket = async (
   /** */
   if (response.response.length === 0)
     printMessage(
-      `[${imeiTemp}] (${remoteAddress}) ⚠️  no response to send for packet [${dataString}]`
+      `[${imeiToPrint}] (${remoteAddress}) ⚠️  no response to send for packet [${dataString}]`
     );
   else {
     for (let i = 0; i < response.response.length; i++) {
       printMessage(
-        `[${imeiTemp}] (${remoteAddress}) ✅ response [${convertStringToHexString(
+        `[${imeiToPrint}] (${remoteAddress}) ✅ response [${convertStringToHexString(
           response.response[i]
         )}].`
       );

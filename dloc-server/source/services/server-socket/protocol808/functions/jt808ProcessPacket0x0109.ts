@@ -29,6 +29,7 @@ const jt808ProcessPacket0x0109: Jt808ProcessPacket = async ({
   return {
     updateLastActivity,
     imei,
+    mustDisconnect: false,
   };
 };
 
