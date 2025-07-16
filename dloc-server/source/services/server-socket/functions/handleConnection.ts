@@ -32,7 +32,7 @@ const handleConnection = async ({
     /** Discart empty packets */
     if (!data[i] || data[i].length === 0) continue;
 
-    if (!isBuffer) data[i] = data[i] + "#";
+    if (!isBuffer) data[i] = data[i];
 
     /** Handle packet */
     try {
