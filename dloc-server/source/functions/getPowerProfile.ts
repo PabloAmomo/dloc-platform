@@ -10,9 +10,7 @@ const MOVEMENTS_MTS_FOR_MINIMAL: number = 10;
 
 const MOVEMENT_MESURE: "distance" | "perimeter" = "perimeter";
 
-// TODO: [VERIFY] When the user switches to the maximum power profile, we don't know that the change was made by the user, and the duration lasts only one minute.
-
-// TODO: [VERIFY] Check if the movement exceeds X meters from the first position [Modify or create new getMovementInLastSeconds] (currently, it sums up all movements).
+// TODO: [VERIFY] Check movement type parameter working correctly
 
 async function getPowerProfile(
   imei: string,
