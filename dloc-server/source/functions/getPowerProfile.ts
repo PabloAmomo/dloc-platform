@@ -78,7 +78,10 @@ async function getPowerProfile(
     }
 
     if (isAutomatic && !powerProfileChanged && lastPowerProfileCheckedDiff) {
+      
       needProfileRefresh = true;
+      lastPowerProfileChecked = Date.now();
+
       /** Get the movement in last seconds */
       const metersMoveInLastSeconds = await getMovementInLastSeconds(
         imei,
@@ -130,9 +133,11 @@ async function getPowerProfile(
         persistence,
         messagePrefix
       );
-      if (!changed) newPowerProfileType = currentPowerProfileType;
+      if (!changed) {
+        lastPowerProfileChecked = Date.now() - 1000 * 120; // Force to check again in 2 minutes
+        newPowerProfileType = currentPowerProfileType;
+      }
       else {
-        lastPowerProfileChecked = Date.now();
         message = `power profile automatically changed from [${currentPowerProfileType}] to [${newPowerProfileType}]`;
       }
     } else {

@@ -11,18 +11,17 @@ import jt808CehckUploadPowerSaving from "../functions/jt808CehckUploadPowerSavin
 import jt808CheckTerminalParametersResponse from "../functions/jt808CheckTerminalParametersResponse";
 import jt808CreateGeneralResponse from "../functions/jt808CreateGeneralResponse";
 import jt808CreateParameterSettingPacket from "../functions/jt808CreateParameterSettingPacket";
-import jt808CreateRequestSyncTimePacket from "../functions/jt808CreateRequestSyncTimePacket";
 import jt808CreateTerminalRegistrationResponsePacket from "../functions/jt808CreateTerminalRegistrationResponsePacket";
 import jt808DecodeLocationReport from "../functions/jt808DecodeLocationReport";
 import jt808DecodeLocations from "../functions/jt808DecodeLocations";
-import jt808GetBatteryLevelPacketDateTime from "../functions/jt808GetBatteryLevelPacketDateTime";
 import jt808GetFrameData from "../functions/jt808GetFrameData";
-import jt808ParseCommonResultFromTerminal from "../functions/jt808ParseCommonResultFromTerminal";
 import jt808ParseTerminalAttributes from "../functions/jt808ParseTerminalAttributesBits";
 import jt808PersistLocation from "../functions/jt808PersistLocation";
 import jt808PrintMessage from "../functions/jt808PrintMessage";
+import jt808ProcessPacket0x0001 from "../functions/jt808ProcessPacket0x0001";
 import jt808ProcessPacket0x0102 from "../functions/jt808ProcessPacket0x0102";
 import jt808ProcessPacket0x0109 from "../functions/jt808ProcessPacket0x0109";
+import jt808ProcessPacket0x0210 from "../functions/jt808ProcessPacket0x0210";
 import Jt808HandlePacket from "../models/Jt808HandlePacket";
 import Jt808HandlePacketProps from "../models/Jt808HandlePacketProps";
 
@@ -89,11 +88,12 @@ const jt808HandlePacket: Jt808HandlePacket = async (
   //     response 0x8001
   // ---------------------------------------
   else if (jt808Packet.header.msgType === 0x0102) {
-    const respProcess = jt808ProcessPacket0x0102({
+    const respProcess = await jt808ProcessPacket0x0102({
       remoteAddress,
       response,
       jt808Packet,
       counter,
+      persistence,
     });
     updateLastActivity = respProcess.updateLastActivity;
     imeiTemp = respProcess.imei;
@@ -161,11 +161,12 @@ const jt808HandlePacket: Jt808HandlePacket = async (
   //     response 0x8109 (With time sync body)
   // ---------------------------------------
   else if (jt808Packet.header.msgType === 0x0109) {
-    const respProcess = jt808ProcessPacket0x0109({
+    const respProcess = await jt808ProcessPacket0x0109({
       remoteAddress,
       response,
       jt808Packet,
       counter,
+      persistence,
     });
     updateLastActivity = respProcess.updateLastActivity;
     imeiTemp = respProcess.imei;
@@ -176,34 +177,15 @@ const jt808HandlePacket: Jt808HandlePacket = async (
   //     response 0x8001
   // ---------------------------------------
   else if (jt808Packet.header.msgType === 0x0210) {
-    const batteryLevel: number = jt808Packet.body.readUInt8(0);
-    const dateTime = jt808GetBatteryLevelPacketDateTime(jt808Packet.body);
-
-    printMessage(
-      `[${imeiTemp}] (${remoteAddress}) 🔋 Battery level: ${batteryLevel}% at ${dateTime}`
-    );
-
-    (response.response as Buffer[]).push(
-      jt808CreateGeneralResponse(
-        jt808Packet.header.terminalId,
-        counter,
-        jt808Packet.header.msgSerialNumber,
-        jt808Packet.header.msgType,
-        "00"
-      )
-    );
-
-    response.imei = padNumberLeft(jt808Packet.header.terminalId, 15, "0");
-    imeiTemp = getNormalizedIMEI(response.imei);
-
-    await positionUpdateBatteryAndLastActivity(
-      imeiTemp,
+    const respProcess = await jt808ProcessPacket0x0210({
       remoteAddress,
+      response,
+      jt808Packet,
+      counter,
       persistence,
-      batteryLevel
-    );
-
-    jt808PrintMessage(imeiTemp, remoteAddress, jt808Packet.header.msgType);
+    });
+    updateLastActivity = respProcess.updateLastActivity;
+    imeiTemp = respProcess.imei;
   }
 
   // ---------------------------------------
@@ -277,25 +259,15 @@ const jt808HandlePacket: Jt808HandlePacket = async (
   // Terminal general response（0x0001）
   // ---------------------------------------
   else if ([0x0001].includes(jt808Packet.header.msgType)) {
-    response.imei = padNumberLeft(jt808Packet.header.terminalId, 15, "0");
-    imeiTemp = getNormalizedIMEI(response.imei);
-    updateLastActivity = true;
-
-    const reponseCommon = jt808ParseCommonResultFromTerminal(jt808Packet.body);
-
-    const extraData = `${reponseCommon.responseToMsgSerialNumber} [${toHexWith(
-      reponseCommon.responseToMsgSerialNumber,
-      4
-    )}] -> result: ${reponseCommon.result == "success" ? "✅" : "❌"} ${
-      reponseCommon.result
-    } (${reponseCommon.msgSerialNumber})`;
-
-    jt808PrintMessage(
-      imeiTemp,
+    const respProcess = await jt808ProcessPacket0x0001({
       remoteAddress,
-      jt808Packet.header.msgType,
-      extraData
-    );
+      response,
+      jt808Packet,
+      counter,
+      persistence,
+    });
+    updateLastActivity = respProcess.updateLastActivity;
+    imeiTemp = respProcess.imei;
   }
 
   // ---------------------------------------------

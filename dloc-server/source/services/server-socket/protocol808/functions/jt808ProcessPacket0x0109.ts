@@ -4,11 +4,12 @@ import { Jt808ProcessPacket } from "../models/Jt808ProcessPacket";
 import jt808CreateRequestSyncTimePacket from "./jt808CreateRequestSyncTimePacket";
 import jt808PrintMessage from "./jt808PrintMessage";
 
-const jt808ProcessPacket0x0109: Jt808ProcessPacket = ({
+const jt808ProcessPacket0x0109: Jt808ProcessPacket = async ({
   remoteAddress,
   response,
   jt808Packet,
   counter,
+  persistence,
 }) => {
   (response.response as Buffer[]).push(
     jt808CreateRequestSyncTimePacket(
