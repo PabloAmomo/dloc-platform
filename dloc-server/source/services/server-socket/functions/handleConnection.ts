@@ -16,8 +16,6 @@ const handleConnection = async ({
   /** results */
   const results: HandlePacketResult[] = [];
 
-  // TODO: [REFACTOR] Create a common handler for protocols 808 and 1903
-
   if (data.length === 0) {
     printMessage(
       `[${getNormalizedIMEI(

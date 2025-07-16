@@ -16,11 +16,13 @@ import proto1903HandleEnd from './services/server-socket/protocol1903/connection
 import proto1903HandleError from './services/server-socket/protocol1903/connection/proto1903HandleError';
 import proto1903HandlePacket from './services/server-socket/protocol1903/connection/proto1903HandlePacket';
 import proto1903HandleProcess from './services/server-socket/protocol1903/connection/proto1903HandleProcess';
+import proto1903Decoder from './services/server-socket/protocol1903/functions/proto1903Decoder';
 import jt808HandleClose from './services/server-socket/protocol808/connection/jt808HandleClose';
 import jt808HandleEnd from './services/server-socket/protocol808/connection/jt808HandleEnd';
 import jt808HandleError from './services/server-socket/protocol808/connection/jt808HandleError';
 import jt808HandlePacket from './services/server-socket/protocol808/connection/jt808HandlePacket';
 import jt808HandleProcess from './services/server-socket/protocol808/connection/jt808HandleProcess';
+import jt808Decoder from './services/server-socket/protocol808/functions/jt808Decoder';
 
 /** Load environment variables */
 dotenv.config();
@@ -87,6 +89,7 @@ if (SOCKET_PROTOCOL == "1903") {
         handleClose: proto1903HandleClose,
         handleEnd: proto1903HandleEnd,
         handleError: proto1903HandleError,
+        decoder: proto1903Decoder as (data: any) => string,
       }),
     PORT_SOCKET
   );
@@ -106,6 +109,7 @@ if (SOCKET_PROTOCOL == "1903") {
         handleClose: jt808HandleClose,
         handleEnd: jt808HandleEnd,
         handleError: jt808HandleError,
+        decoder: jt808Decoder as (data: any) => Buffer,
       }),
     PORT_SOCKET
   );

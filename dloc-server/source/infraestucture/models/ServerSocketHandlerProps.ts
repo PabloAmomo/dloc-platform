@@ -20,4 +20,5 @@ export default interface  ServerSocketHandlerProps {
   handleClose: HandleClose;
   handleEnd: HandleEnd;
   handleError: HandleError;
+  decoder: (data: Buffer | string) => Buffer | string;
 }

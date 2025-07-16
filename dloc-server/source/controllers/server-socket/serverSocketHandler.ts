@@ -23,6 +23,7 @@ const serverSocketHandler: ServerSocketHandler = ({
   handleClose,
   handleEnd,
   handleError,
+  decoder,
 }: ServerSocketHandlerProps) => {
   const remoteAddress: string = getRemoteAddress(conn);
   var imei: string = "";
@@ -71,6 +72,10 @@ const serverSocketHandler: ServerSocketHandler = ({
           if (err) showError(err);
         });
         conn.write(Buffer.alloc(0)); // Send an empty buffer to indicate end of packet
+      } else {
+        printMessage(
+          `[${getNormalizedIMEI(imei)}] (${remoteAddress}) ❌ Unsupported data type: ${typeof dataItem}.`
+        );
       }
     }
   };
@@ -79,9 +84,22 @@ const serverSocketHandler: ServerSocketHandler = ({
   conn.on("data", (data: Buffer) => {
     const tempImei: string = getNormalizedIMEI(imei);
     const dataString: string = data.toString();
-    const dataShow: string =
-      protocol === "PROTO1903" ? dataString : convertStringToHexString(data);
-    const dataToUse = protocol === "PROTO1903" ? dataString : data;
+    let dataShow: string;
+    let dataToUse;
+
+    if (protocol === "PROTO1903") {
+      dataShow = dataString;
+      dataToUse = [decoder(dataString)];
+    } else if (protocol === "JT808") {
+      dataShow = convertStringToHexString(data);
+      dataToUse = [decoder(data)];
+    } else {
+      printMessage(
+        `[${tempImei}] (${remoteAddress}) ❌ Unsupported protocol: ${protocol}.`
+      );
+      disconnect();
+      return;
+    }
 
     counter++;
     if (counter > 32000) counter = 1;
