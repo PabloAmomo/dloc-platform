@@ -65,6 +65,8 @@ async function getPowerProfile(
       newPowerProfileType === PowerProfileType.AUTOMATIC_MINIMAL;
 
     /* Power upgrade to full requested by user (FULL profile in database, minimal or balanced in local cache) */
+    // TODO: [DEBUG] Check if the user has changed the power profile to FULL, and if so, do not change it automatically.
+    console.log("--->", isNewConnection, isAutomatic, currentPowerProfileType, newPowerProfileType);
     if (
       !isNewConnection &&
       isAutomatic &&
