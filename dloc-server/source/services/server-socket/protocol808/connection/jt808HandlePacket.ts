@@ -88,47 +88,14 @@ const jt808HandlePacket: Jt808HandlePacket = async (
   //     response 0x8001
   // ---------------------------------------
   else if (jt808Packet.header.msgType === 0x0102) {
-
-    const respProcess = jt808ProcessPacket0x0102(
-      { remoteAddress,
+    const respProcess = jt808ProcessPacket0x0102({
+      remoteAddress,
       response,
       jt808Packet,
-      counter }
-    );
+      counter,
+    });
     updateLastActivity = respProcess.updateLastActivity;
-    imeiTemp = respProcess.imei;  
-
-    /*
-    (response.response as Buffer[]).push(
-      jt808CreateGeneralResponse(
-        jt808Packet.header.terminalId,
-        counter,
-        jt808Packet.header.msgSerialNumber,
-        jt808Packet.header.msgType,
-        "00"
-      )
-    );
-
-    (response.response as Buffer[]).push(
-      jt808CreateQueryLocationMessage(
-        jt808Packet.header.terminalId,
-        counter + 100
-      )
-    );
-
-    (response.response as Buffer[]).push(
-      jt808CreateCheckParameterSettingPacket(
-        jt808Packet.header.terminalId,
-        counter + 102,
-        []
-      )
-    );
-
-    response.imei = padNumberLeft(jt808Packet.header.terminalId, 15, "0");
-    imeiTemp = getNormalizedIMEI(response.imei);
-    updateLastActivity = true;
-    jt808PrintMessage(imeiTemp, remoteAddress, jt808Packet.header.msgType);
-    */
+    imeiTemp = respProcess.imei;
   }
 
   // ---------------------------------------
@@ -167,7 +134,7 @@ const jt808HandlePacket: Jt808HandlePacket = async (
     if (locations.count > 0) {
       for (const location of locations.locations) {
         if (location.lat !== 0 && location.lng !== 0)
-            lastLatLng = `[(${location.dateTimeUTC}) ${location.lat}, ${location.lng}]`;
+          lastLatLng = `[(${location.dateTimeUTC}) ${location.lat}, ${location.lng}]`;
 
         await jt808PersistLocation(
           imeiTemp,
@@ -324,7 +291,12 @@ const jt808HandlePacket: Jt808HandlePacket = async (
       reponseCommon.result == "success" ? "✅" : "❌"
     } ${reponseCommon.result} (${reponseCommon.msgSerialNumber})`;
 
-    jt808PrintMessage(imeiTemp, remoteAddress, jt808Packet.header.msgType, extraData);
+    jt808PrintMessage(
+      imeiTemp,
+      remoteAddress,
+      jt808Packet.header.msgType,
+      extraData
+    );
   }
 
   // ---------------------------------------------
