@@ -1,27 +1,26 @@
-import dotenv from "dotenv";
-import routes from "./controllers/server-http/routes";
-import { printMessage } from "./functions/printMessage";
-import { initCacheIMEI } from "./infraestucture/caches/cacheIMEI";
-import { initCacheLBS } from "./infraestucture/caches/cacheLBS";
-import { initCachePosition } from "./infraestucture/caches/cachePosition";
-import { mySqlPersistence } from "./infraestucture/mySql/mySqlPersistence";
-import { startPersistence } from "./inits/startPersistence";
-import { startServerHTTP } from "./inits/startServerHTTP";
-import { startServerSocket } from "./inits/startServerSocket";
-import { getPersistence } from "./persistence/persistence";
-import serverSocketHandler from "./controllers/server-socket/serverSocketHandler";
-import proto1903HandleConnection from "./services/server-socket/protocol1903/connection/proto1903HandleConnection";
-import proto1903HandleProcess from "./services/server-socket/protocol1903/connection/proto1903HandleProcess";
-import proto1903HandlePacket from "./services/server-socket/protocol1903/connection/proto1903HandlePacket";
-import proto1903HandleClose from "./services/server-socket/protocol1903/connection/proto1903HandleClose";
-import proto1903HandleEnd from "./services/server-socket/protocol1903/connection/proto1903HandleEnd";
-import proto1903HandleError from "./services/server-socket/protocol1903/connection/proto1903HandleError";
-import jt808HandleConnection from "./services/server-socket/protocol808/connection/jt808HandleConnection";
-import jt808HandlePacket from "./services/server-socket/protocol808/connection/jt808HandlePacket";
-import jt808HandleClose from "./services/server-socket/protocol808/connection/jt808HandleClose";
-import jt808HandleEnd from "./services/server-socket/protocol808/connection/jt808HandleEnd";
-import jt808HandleProcess from "./services/server-socket/protocol808/connection/jt808HandleProcess";
-import jt808HandleError from "./services/server-socket/protocol808/connection/jt808HandleError";
+import dotenv from 'dotenv';
+import routes from './controllers/server-http/routes';
+import serverSocketHandler from './controllers/server-socket/serverSocketHandler';
+import { printMessage } from './functions/printMessage';
+import { initCacheIMEI } from './infraestucture/caches/cacheIMEI';
+import { initCacheLBS } from './infraestucture/caches/cacheLBS';
+import { initCachePosition } from './infraestucture/caches/cachePosition';
+import { mySqlPersistence } from './infraestucture/mySql/mySqlPersistence';
+import { startPersistence } from './inits/startPersistence';
+import { startServerHTTP } from './inits/startServerHTTP';
+import { startServerSocket } from './inits/startServerSocket';
+import { getPersistence } from './persistence/persistence';
+import handleConnection from './services/server-socket/functions/handleConnection';
+import proto1903HandleClose from './services/server-socket/protocol1903/connection/proto1903HandleClose';
+import proto1903HandleEnd from './services/server-socket/protocol1903/connection/proto1903HandleEnd';
+import proto1903HandleError from './services/server-socket/protocol1903/connection/proto1903HandleError';
+import proto1903HandlePacket from './services/server-socket/protocol1903/connection/proto1903HandlePacket';
+import proto1903HandleProcess from './services/server-socket/protocol1903/connection/proto1903HandleProcess';
+import jt808HandleClose from './services/server-socket/protocol808/connection/jt808HandleClose';
+import jt808HandleEnd from './services/server-socket/protocol808/connection/jt808HandleEnd';
+import jt808HandleError from './services/server-socket/protocol808/connection/jt808HandleError';
+import jt808HandlePacket from './services/server-socket/protocol808/connection/jt808HandlePacket';
+import jt808HandleProcess from './services/server-socket/protocol808/connection/jt808HandleProcess';
 
 /** Load environment variables */
 dotenv.config();
@@ -82,7 +81,7 @@ if (SOCKET_PROTOCOL == "1903") {
         conn,
         persistence: getPersistence(),
         protocol: "PROTO1903",
-        handleConnection: proto1903HandleConnection,
+        handleConnection,
         handleProcess: proto1903HandleProcess,
         handlePacket: proto1903HandlePacket,
         handleClose: proto1903HandleClose,
@@ -96,12 +95,12 @@ if (SOCKET_PROTOCOL == "1903") {
   /** Start Socket server (Protocol 808) */
   printMessage(`✅ Using protocol ${SOCKET_PROTOCOL}.`);
   startServerSocket(
-        (conn) =>
+    (conn) =>
       serverSocketHandler({
         conn,
         persistence: getPersistence(),
         protocol: "JT808",
-        handleConnection: jt808HandleConnection,
+        handleConnection,
         handleProcess: jt808HandleProcess,
         handlePacket: jt808HandlePacket,
         handleClose: jt808HandleClose,
