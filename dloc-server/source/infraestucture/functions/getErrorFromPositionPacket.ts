@@ -10,13 +10,13 @@ const getErrorFromPositionPacket = (positionPacket: PositionPacket): getErrorFro
 
   /** validate data */
   if (positionPacket.dateTimeUtc == null) {
-    message = `[${imei}] (${positionPacket.remoteAddress}) ❌ invalid date time (Is null)`;
+    message = `[${imei}] (${positionPacket.remoteAddress}) 🧭 invalid date time ❌ [Is null]`;
     errorMsg = 'invalid date time';
   } else if (!positionPacket || !positionPacket.valid || !positionPacket.imei) {
-    message = `[${imei}] (${positionPacket.remoteAddress}) ❌ position without valid data [valid ${positionPacket.valid}]`;
+    message = `[${imei}] (${positionPacket.remoteAddress}) 🧭 position without valid data ❌ [valid ${positionPacket.valid}]`;
     errorMsg = 'position without valid data';
   } else if (positionPacket.lat == null || positionPacket.lng == null) {
-    message = `[${imei}] (${positionPacket.remoteAddress}) ❌ position without coordinates [lat: ${positionPacket.lat ?? 'ND'} lng: ${positionPacket.lng ?? 'ND'} ]`;
+    message = `[${imei}] (${positionPacket.remoteAddress}) 🧭 position without coordinates ❌ [lat: ${positionPacket.lat ?? 'ND'} lng: ${positionPacket.lng ?? 'ND'} ]`;
     errorMsg = 'position without coordinates';
   }
 
