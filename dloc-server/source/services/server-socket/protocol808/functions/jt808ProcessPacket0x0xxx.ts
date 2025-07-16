@@ -42,10 +42,13 @@ const jt808ProcessPacket0x0xxx: Jt808ProcessPacket = async ({
       persistence,
       jt808Packet
     );
-  else if (jt808Packet.header.msgType === 0x0107) {
+
+  if (jt808Packet.header.msgType === 0x0107) {
     const terminalAttributes = jt808ParseTerminalAttributes(jt808Packet.body);
-    extraMessage = `Terminal attributes:  ⚙️  Terminal attributtes: ${terminalAttributes.manufacturerId} Model ${terminalAttributes.terminalModel} - SimIccid ${terminalAttributes.simIccid}`;
-  } else if (jt808Packet.header.msgType === 0x0112) {
+    extraMessage = `⚙️  Terminal attributtes: ${terminalAttributes.manufacturerId} Model ${terminalAttributes.terminalModel} - SimIccid ${terminalAttributes.simIccid}`;
+  }
+
+  if (jt808Packet.header.msgType === 0x0112) {
     const powerSaveModeData = jt808CehckUploadPowerSaving(
       jt808Packet.body,
       imei,
@@ -62,7 +65,7 @@ const jt808ProcessPacket0x0xxx: Jt808ProcessPacket = async ({
     imei,
     remoteAddress,
     jt808Packet.header.msgType,
-    bodyStringHex === "" ? "" : `body ${bodyStringHex}`
+    bodyStringHex.length === 0 ? "" : `body ${bodyStringHex}`
   );
 
   return {
