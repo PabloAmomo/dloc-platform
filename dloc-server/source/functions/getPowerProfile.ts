@@ -8,7 +8,7 @@ const MOVEMENTS_CONTROL_SECONDS: number = 300;
 const MOVEMENTS_MTS_FOR_BALANCED: number = 50;
 const MOVEMENTS_MTS_FOR_MINIMAL: number = 10;
 
-// TODO: [FEATURE] When the user switches to the maximum power profile, we don't know that the change was made by the user, and the duration lasts only one minute.
+// TODO: [VERIFY] When the user switches to the maximum power profile, we don't know that the change was made by the user, and the duration lasts only one minute.
 
 // TODO: [FEATURE] Check if the movement exceeds X meters from the first position [Modify or create new getMovementInLastSeconds] (currently, it sums up all movements).
 
