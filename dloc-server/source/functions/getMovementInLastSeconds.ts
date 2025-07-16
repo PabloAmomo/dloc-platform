@@ -5,19 +5,30 @@ async function getMovementInLastSeconds(
   imei: string,
   timeInSec: number,
   persistence: Persistence,
-  errorPrefix: string
+  errorPrefix: string,
+  movementType: "distance" | "perimeter"
 ): Promise<number> {
-  let movementInMts = 0;
+  let totalMovementInMts = 0;
 
   try {
     const response = await persistence.getLastPositions(imei, timeInSec);
     if (response.error) throw response.error;
 
     const positions = response.results;
-    if (positions.length < 2) return movementInMts;
+    if (positions.length < 2) return totalMovementInMts;
 
     for (let i = 1; i < positions.length; i++) {
-      movementInMts += distanceFromLatLngInMeters(positions[i - 1].lat, positions[i - 1].lng, positions[i].lat, positions[i].lng);
+      const movementInMts = distanceFromLatLngInMeters(
+        positions[movementType === "perimeter" ? 0 : i - 1].lat,
+        positions[movementType === "perimeter" ? 0 : i - 1].lng,
+        positions[i].lat,
+        positions[i].lng
+      );
+
+      if (movementType === "perimeter" && movementInMts > totalMovementInMts)
+        totalMovementInMts = movementInMts;
+
+      if (movementType === "distance") totalMovementInMts += movementInMts;
     }
   } catch (error: any) {
     console.error(
@@ -27,7 +38,7 @@ async function getMovementInLastSeconds(
     );
   }
 
-  return movementInMts
+  return totalMovementInMts;
 }
 
 export default getMovementInLastSeconds;

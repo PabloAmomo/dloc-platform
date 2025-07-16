@@ -8,9 +8,11 @@ const MOVEMENTS_CONTROL_SECONDS: number = 300;
 const MOVEMENTS_MTS_FOR_BALANCED: number = 50;
 const MOVEMENTS_MTS_FOR_MINIMAL: number = 10;
 
+const MOVEMENT_MESURE: "distance" | "perimeter" = "perimeter";
+
 // TODO: [VERIFY] When the user switches to the maximum power profile, we don't know that the change was made by the user, and the duration lasts only one minute.
 
-// TODO: [FEATURE] Check if the movement exceeds X meters from the first position [Modify or create new getMovementInLastSeconds] (currently, it sums up all movements).
+// TODO: [VERIFY] Check if the movement exceeds X meters from the first position [Modify or create new getMovementInLastSeconds] (currently, it sums up all movements).
 
 async function getPowerProfile(
   imei: string,
@@ -72,14 +74,14 @@ async function getPowerProfile(
       newPowerProfileType === PowerProfileType.AUTOMATIC_FULL
     ) {
       powerProfileChanged = true;
+      lastPowerProfileChecked = Date.now();
       printMessage(
         `${messagePrefix} ⚡️ ⚠️ power profile changed by user from [${currentPowerProfileType}] to [${newPowerProfileType}]`
       );
     }
 
     if (isAutomatic && !powerProfileChanged && lastPowerProfileCheckedDiff) {
-      
-      needProfileRefresh = true;
+      needProfileRefresh = lastPowerProfileCheckedDiff;
       lastPowerProfileChecked = Date.now();
 
       /** Get the movement in last seconds */
@@ -87,10 +89,12 @@ async function getPowerProfile(
         imei,
         MOVEMENTS_CONTROL_SECONDS,
         persistence,
-        messagePrefix
+        messagePrefix,
+        MOVEMENT_MESURE
       );
+
       printMessage(
-        `${messagePrefix} 🚶‍♂️ movement in last ${MOVEMENTS_CONTROL_SECONDS} seconds [${metersMoveInLastSeconds} meters]`
+        `${messagePrefix} 🚶‍♂️ movement (${MOVEMENT_MESURE}) in last ${MOVEMENTS_CONTROL_SECONDS} seconds [${metersMoveInLastSeconds} meters]`
       );
 
       /** Change to balanced power profile */
@@ -136,8 +140,7 @@ async function getPowerProfile(
       if (!changed) {
         lastPowerProfileChecked = Date.now() - 1000 * 120; // Force to check again in 2 minutes
         newPowerProfileType = currentPowerProfileType;
-      }
-      else {
+      } else {
         message = `power profile automatically changed from [${currentPowerProfileType}] to [${newPowerProfileType}]`;
       }
     } else {
