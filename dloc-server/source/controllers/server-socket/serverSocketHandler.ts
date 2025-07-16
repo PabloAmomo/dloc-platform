@@ -5,13 +5,12 @@ import getPowerProfile from "../../functions/getPowerProfile";
 import { printMessage } from "../../functions/printMessage";
 import processPacketHealth from "../../functions/processPacketHealth";
 import { getRemoteAddress } from "../../functions/remoteAddress";
-import {
-  CACHE_IMEI,
-  clearItemInCacheIMEI,
-} from "../../infraestucture/caches/cacheIMEI";
+import { CACHE_IMEI, clearItemInCacheIMEI } from "../../infraestucture/caches/cacheIMEI";
 import { CacheImei } from "../../infraestucture/models/CacheImei";
 import { ServerSocketHandler } from "../../infraestucture/models/ServerSocketHandler";
 import ServerSocketHandlerProps from "../../infraestucture/models/ServerSocketHandlerProps";
+
+// TODO: Refactor this file to use a more modular approach, separating concerns and improving readability.
 
 const serverSocketHandler: ServerSocketHandler = ({
   protocol,
@@ -39,27 +38,17 @@ const serverSocketHandler: ServerSocketHandler = ({
     conn.destroy();
     clearItemInCacheIMEI(imei);
     if (!remoteAddress.includes("127.0.0.1"))
-      printMessage(
-        `[${getNormalizedIMEI(imei)}] (${remoteAddress}) ❌ Connection closed.`
-      );
+      printMessage(`[${getNormalizedIMEI(imei)}] (${remoteAddress}) ❌ Connection closed.`);
   };
 
   const sendData = (data: Buffer[] | String[]) => {
     if (!conn || conn.destroyed) {
-      printMessage(
-        `[${getNormalizedIMEI(
-          imei
-        )}] (${remoteAddress}) ❌ Connection is already closed.`
-      );
+      printMessage(`[${getNormalizedIMEI(imei)}] (${remoteAddress}) ❌ Connection is already closed.`);
       return;
     }
 
     const showError = (err: Error) => {
-      printMessage(
-        `[${getNormalizedIMEI(
-          imei
-        )}] (${remoteAddress}) ❌ Error sending data: ${err.message}`
-      );
+      printMessage(`[${getNormalizedIMEI(imei)}] (${remoteAddress}) ❌ Error sending data: ${err.message}`);
     };
 
     for (const dataItem of data) {
@@ -73,11 +62,7 @@ const serverSocketHandler: ServerSocketHandler = ({
         });
         conn.write(Buffer.alloc(0)); // Send an empty buffer to indicate end of packet
       } else {
-        printMessage(
-          `[${getNormalizedIMEI(
-            imei
-          )}] (${remoteAddress}) ❌ Unsupported data type: ${typeof dataItem}.`
-        );
+        printMessage(`[${getNormalizedIMEI(imei)}] (${remoteAddress}) ❌ Unsupported data type: ${typeof dataItem}.`);
       }
     }
   };
@@ -92,9 +77,7 @@ const serverSocketHandler: ServerSocketHandler = ({
     if (protocol === "PROTO1903") dataShow = dataString;
     else if (protocol === "JT808") dataShow = convertStringToHexString(data);
     else {
-      printMessage(
-        `[${tempImei}] (${remoteAddress}) ❌ Unsupported protocol: ${protocol}.`
-      );
+      printMessage(`[${tempImei}] (${remoteAddress}) ❌ Unsupported protocol: ${protocol}.`);
       disconnect();
       return;
     }
@@ -106,20 +89,10 @@ const serverSocketHandler: ServerSocketHandler = ({
 
     try {
       /** Check if health packet */
-      if (
-        processPacketHealth(
-          dataString,
-          remoteAddress,
-          tempImei,
-          sendData,
-          disconnect
-        )
-      )
-        return;
+      if (processPacketHealth(dataString, remoteAddress, tempImei, sendData, disconnect)) return;
 
       /** New socket connection */
-      if (newConnection)
-        printMessage(`[${tempImei}] (${remoteAddress}) 🧑‍💻 new connection.`);
+      if (newConnection) printMessage(`[${tempImei}] (${remoteAddress}) 🧑‍💻 new connection.`);
 
       handleConnection({
         imei,
@@ -132,9 +105,7 @@ const serverSocketHandler: ServerSocketHandler = ({
       })
         .then(async (results) => {
           if (!results[0]?.imei) {
-            printMessage(
-              `[${tempImei}] (${remoteAddress}) ❌ IMEI not found in data [${dataShow}].`
-            );
+            printMessage(`[${tempImei}] (${remoteAddress}) ❌ IMEI not found in data [${dataShow}].`);
             disconnect();
             return;
           }
