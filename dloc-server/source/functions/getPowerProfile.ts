@@ -8,6 +8,8 @@ const MOVEMENTS_CONTROL_SECONDS: number = 300;
 const MOVEMENTS_MTS_FOR_BALANCED: number = 50;
 const MOVEMENTS_MTS_FOR_MINIMAL: number = 10;
 
+// TODO: [BUG] When the user switches to the maximum power profile, we don't know that the change was made by the user, and the duration lasts only one minute.
+
 async function getPowerProfile(
   imei: string,
   persistence: Persistence,
