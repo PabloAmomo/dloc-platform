@@ -17,6 +17,17 @@ import jt808CreateGeneralResponse from "./services/server-socket/protocol808/fun
 import jt808CreateTerminalRegistrationResponsePacket from "./services/server-socket/protocol808/functions/jt808CreateTerminalRegistrationResponsePacket";
 import jt808CehckUploadPowerSaving from "./services/server-socket/protocol808/functions/jt808CehckUploadPowerSaving";
 
+
+// TODO: [BUG] Not working and I don't know why. In the future use jt808CreateCheckParameterSettingPacket
+//(response.response as Buffer[]).push(
+//  jt808CreateMessage(
+//    jt808Packet.header.terminalId,
+//    counter + 101,
+//    0x8106,
+//    Buffer.from("0100000001", "hex")
+//  )
+//);
+
 // 7e8106000033333333300100210200010002967e
 // 7E810600050562134176540066010001F142407E
 
