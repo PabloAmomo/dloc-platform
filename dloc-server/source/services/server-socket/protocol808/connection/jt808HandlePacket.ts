@@ -1,30 +1,30 @@
-import convertStringToHexString from '../../../../functions/convertStringToHexString';
-import { getNormalizedIMEI } from '../../../../functions/getNormalizedIMEI';
-import padNumberLeft from '../../../../functions/padNumberLeft';
-import positionUpdateBatteryAndLastActivity from '../../../../functions/positionUpdateBatteryAndLastActivity';
-import positionUpdateLastActivityAndAddHistory from '../../../../functions/positionUpdateLastActivityAndAddHistory';
-import { printMessage } from '../../../../functions/printMessage';
-import toHexWith from '../../../../functions/toHexWith';
-import discardData from '../../functions/discardData';
-import HandlePacketResult from '../../models/HandlePacketResult';
-import jt808CehckUploadPowerSaving from '../functions/jt808CehckUploadPowerSaving';
-import jt808CheckTerminalParametersResponse from '../functions/jt808CheckTerminalParametersResponse';
-import jt808CreateGeneralResponse from '../functions/jt808CreateGeneralResponse';
-import jt808CreateParameterSettingPacket from '../functions/jt808CreateParameterSettingPacket';
-import jt808CreateRequestSyncTimePacket from '../functions/jt808CreateRequestSyncTimePacket';
-import jt808CreateTerminalRegistrationResponsePacket from '../functions/jt808CreateTerminalRegistrationResponsePacket';
-import jt808DecodeLocationReport from '../functions/jt808DecodeLocationReport';
-import jt808DecodeLocations from '../functions/jt808DecodeLocations';
-import jt808GetBatteryLevelPacketDateTime from '../functions/jt808GetBatteryLevelPacketDateTime';
-import jt808GetFrameData from '../functions/jt808GetFrameData';
-import jt808ParseCommonResultFromTerminal from '../functions/jt808ParseCommonResultFromTerminal';
-import jt808ParseTerminalAttributes from '../functions/jt808ParseTerminalAttributesBits';
-import jt808PersistLocation from '../functions/jt808PersistLocation';
-import jt808PrintMessage from '../functions/jt808PrintMessage';
-import jt808ProcessPacket0x0102 from '../functions/jt808ProcessPacket0x0102';
-import jt808ProcessPacket0x0109 from '../functions/jt808ProcessPacket0x0109';
-import Jt808HandlePacket from '../models/Jt808HandlePacket';
-import Jt808HandlePacketProps from '../models/Jt808HandlePacketProps';
+import convertStringToHexString from "../../../../functions/convertStringToHexString";
+import { getNormalizedIMEI } from "../../../../functions/getNormalizedIMEI";
+import padNumberLeft from "../../../../functions/padNumberLeft";
+import positionUpdateBatteryAndLastActivity from "../../../../functions/positionUpdateBatteryAndLastActivity";
+import positionUpdateLastActivityAndAddHistory from "../../../../functions/positionUpdateLastActivityAndAddHistory";
+import { printMessage } from "../../../../functions/printMessage";
+import toHexWith from "../../../../functions/toHexWith";
+import discardData from "../../functions/discardData";
+import HandlePacketResult from "../../models/HandlePacketResult";
+import jt808CehckUploadPowerSaving from "../functions/jt808CehckUploadPowerSaving";
+import jt808CheckTerminalParametersResponse from "../functions/jt808CheckTerminalParametersResponse";
+import jt808CreateGeneralResponse from "../functions/jt808CreateGeneralResponse";
+import jt808CreateParameterSettingPacket from "../functions/jt808CreateParameterSettingPacket";
+import jt808CreateRequestSyncTimePacket from "../functions/jt808CreateRequestSyncTimePacket";
+import jt808CreateTerminalRegistrationResponsePacket from "../functions/jt808CreateTerminalRegistrationResponsePacket";
+import jt808DecodeLocationReport from "../functions/jt808DecodeLocationReport";
+import jt808DecodeLocations from "../functions/jt808DecodeLocations";
+import jt808GetBatteryLevelPacketDateTime from "../functions/jt808GetBatteryLevelPacketDateTime";
+import jt808GetFrameData from "../functions/jt808GetFrameData";
+import jt808ParseCommonResultFromTerminal from "../functions/jt808ParseCommonResultFromTerminal";
+import jt808ParseTerminalAttributes from "../functions/jt808ParseTerminalAttributesBits";
+import jt808PersistLocation from "../functions/jt808PersistLocation";
+import jt808PrintMessage from "../functions/jt808PrintMessage";
+import jt808ProcessPacket0x0102 from "../functions/jt808ProcessPacket0x0102";
+import jt808ProcessPacket0x0109 from "../functions/jt808ProcessPacket0x0109";
+import Jt808HandlePacket from "../models/Jt808HandlePacket";
+import Jt808HandlePacketProps from "../models/Jt808HandlePacketProps";
 
 // TODO: [REFACTOR] Move code and split functionaility to keep this file clean
 
@@ -283,10 +283,12 @@ const jt808HandlePacket: Jt808HandlePacket = async (
 
     const reponseCommon = jt808ParseCommonResultFromTerminal(jt808Packet.body);
 
-    const extraData = `reponseCommon.responseToMsgSerialNumber
-      } [${toHexWith(reponseCommon.responseToMsgSerialNumber, 4)}] -> result: ${
-      reponseCommon.result == "success" ? "✅" : "❌"
-    } ${reponseCommon.result} (${reponseCommon.msgSerialNumber})`;
+    const extraData = `${reponseCommon.responseToMsgSerialNumber} [${toHexWith(
+      reponseCommon.responseToMsgSerialNumber,
+      4
+    )}] -> result: ${reponseCommon.result == "success" ? "✅" : "❌"} ${
+      reponseCommon.result
+    } (${reponseCommon.msgSerialNumber})`;
 
     jt808PrintMessage(
       imeiTemp,
