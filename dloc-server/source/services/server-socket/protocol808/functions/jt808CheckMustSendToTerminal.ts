@@ -8,6 +8,9 @@ import jt808CreateParameterSettingPacket from './jt808CreateParameterSettingPack
 import jt808CreatePowerProfilePacket from './jt808CreatePowerProfilePacket';
 import jt808PowerProfileConfig from './jt808PowerProfileConfig';
 
+// TODO: [CONFIGURATION] Move this to a configuration file
+const REPORT_CONFIGURATION = Jt808ReportConfiguration.intervalReport;
+
 const jt808CheckMustSendToTerminal = (
   imei: string,
   prefix: string,
@@ -28,8 +31,9 @@ const jt808CheckMustSendToTerminal = (
     counter + 200,
     newPowerProfile,
     movementsControlSeconds,
-    Jt808ReportConfiguration.temporaryTracking
+    REPORT_CONFIGURATION
   );
+  printMessage(`${prefix} 🎛️ Using report configuration [${REPORT_CONFIGURATION}]`);
   printMessage(`${prefix} 📡 send Upload Interval [${uploadSec} sec]`);
   printMessage(
     `${prefix} 🔋 Power config Packet sent: ${convertStringToHexString(
