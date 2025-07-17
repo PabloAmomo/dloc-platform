@@ -1,11 +1,12 @@
-import { PowerProfileType } from "../../../../enums/PowerProfileType";
-import convertStringToHexString from "../../../../functions/convertStringToHexString";
-import createHexFromNumberWithNBytes from "../../../../functions/createHexFromNumberWithNBytes";
-import jt808PowerProfileConfig from "./jt808PowerProfileConfig";
-import { printMessage } from "../../../../functions/printMessage";
-import jt808CreateCheckParameterSettingPacket from "./jt808CreateCheckParameterSettingPacket";
-import jt808CreateParameterSettingPacket from "./jt808CreateParameterSettingPacket";
-import jt808CreatePowerProfilePacket from "./jt808CreatePowerProfilePacket";
+import { PowerProfileType } from '../../../../enums/PowerProfileType';
+import convertStringToHexString from '../../../../functions/convertStringToHexString';
+import createHexFromNumberWithNBytes from '../../../../functions/createHexFromNumberWithNBytes';
+import { printMessage } from '../../../../functions/printMessage';
+import Jt808ReportConfiguration from '../enums/Jt808reportConfiguration';
+import jt808CreateCheckParameterSettingPacket from './jt808CreateCheckParameterSettingPacket';
+import jt808CreateParameterSettingPacket from './jt808CreateParameterSettingPacket';
+import jt808CreatePowerProfilePacket from './jt808CreatePowerProfilePacket';
+import jt808PowerProfileConfig from './jt808PowerProfileConfig';
 
 const jt808CheckMustSendToTerminal = (
   imei: string,
@@ -26,7 +27,8 @@ const jt808CheckMustSendToTerminal = (
     terminalId,
     counter + 200,
     newPowerProfile,
-    movementsControlSeconds
+    movementsControlSeconds,
+    Jt808ReportConfiguration.temporaryTracking
   );
   printMessage(`${prefix} 📡 send Upload Interval [${uploadSec} sec]`);
   printMessage(
