@@ -6,12 +6,14 @@ import updatePowerProfile from "./updatePowerProfile";
 
 // TODO: [VERIFY] Check movement type parameter working correctly
 
+
 const MOVEMENTS_CONTROL_SECONDS: number = 300;
 // Duración del tiempo en que se estará enviando la posicion desde el dispositivo. Este valor sirve para configurar el periodo de duracion del active tracking.
 const REFRESH_POWER_PROFILE_EXTEND_SECONDS: number = MOVEMENTS_CONTROL_SECONDS * 2;
 
+// TODO: [FEATURE] Use MOVEMENTS_MTS_FOR_ from %PROTO%PowerProfileConfig
 const MOVEMENTS_MTS_FOR_BALANCED: number = 50;
-const MOVEMENTS_MTS_FOR_MINIMAL: number = 10;
+const MOVEMENTS_MTS_FOR_MINIMAL: number = 25;
 
 const MOVEMENT_MESURE: "distance" | "perimeter" = "perimeter";
 
