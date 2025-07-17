@@ -14,6 +14,7 @@ function jt808PowerProfileConfig(
       uploadSec: 90,
       ledState: false,
       forceReportLocInMs: 110000,
+      movementMeters: 25,
     };
 
   if (
@@ -25,6 +26,7 @@ function jt808PowerProfileConfig(
       uploadSec: 60,
       ledState: false,
       forceReportLocInMs: 80000,
+      movementMeters: 50,
     };
 
   // Full power profile configuration
@@ -42,6 +44,7 @@ function jt808PowerProfileConfig(
     uploadSec: 20,
     ledState: true,
     forceReportLocInMs: 50000,
+    movementMeters: 50,
   };
 }
 

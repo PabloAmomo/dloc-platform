@@ -3,4 +3,5 @@ export type PowerProfileConfig = {
   uploadSec: number; // Upload interval 
   ledState: boolean; // LED state
   forceReportLocInMs: number; // Force report location in milliseconds
+  movementMeters: number; // Movement distance in meters
 }
