@@ -34,15 +34,18 @@ const jt808ProcessPacket0x0xxxLocations: Jt808ProcessPacket = async ({
   const updateLastActivity = false;
 
   let extraMessage = "";
+  let gpsConstellation = "";
   if (locations.count > 0) {
     for (const location of locations.locations) {
-      let gpsConstellation = location.statusFlags.gpsPositioning ? "GPS" : "";
+      location.statusFlags.positioning
+      gpsConstellation = ` ${location.statusFlags.positioning ? "✅" : "❌"} positioning`;
+      gpsConstellation += ` ${location.statusFlags.gpsPositioning ? "✅" : "❌"} GPS`;
       gpsConstellation += ` ${location.statusFlags.beidouPositioning ? "✅" : "❌"} Beidou`;
       gpsConstellation += ` ${location.statusFlags.glonassPositioning ? "✅" : "❌"} Glonass`;
       gpsConstellation += ` ${location.statusFlags.galileoPositioning ? "✅" : "❌"} Galileo`;
 
       if (location.lat !== 0 && location.lng !== 0)
-        extraMessage = `[(${location.dateTimeUTC}) ${location.lat}, ${location.lng} ${gpsConstellation}]`;
+        extraMessage = `[(${location.dateTimeUTC}) ${location.lat}, ${location.lng} ${gpsConstellation.trim()}]`;
 
       location.statusFlags.beidouPositioning
 
