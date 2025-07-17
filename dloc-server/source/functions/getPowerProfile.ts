@@ -7,10 +7,8 @@ import updatePowerProfile from "./updatePowerProfile";
 // TODO: [VERIFY] Check movement type parameter working correctly
 
 const MOVEMENTS_CONTROL_SECONDS: number = 300;
-// Nos aseguramos de refrescos periodicos de los datos del perfil de bateria
-const REFRESH_POWER_PROFILE_SECONDS: number = MOVEMENTS_CONTROL_SECONDS * 2; // How often to refresh the power profile in seconds
 // Duración del tiempo en que se estará enviando la posicion desde el dispositivo. Este valor sirve para configurar el periodo de duracion del active tracking.
-const REFRESH_POWER_PROFILE_EXTEND_SECONDS: number = REFRESH_POWER_PROFILE_SECONDS * 2;
+const REFRESH_POWER_PROFILE_EXTEND_SECONDS: number = MOVEMENTS_CONTROL_SECONDS * 2;
 
 const MOVEMENTS_MTS_FOR_BALANCED: number = 50;
 const MOVEMENTS_MTS_FOR_MINIMAL: number = 10;
@@ -155,7 +153,7 @@ async function getPowerProfile(
     printMessage(`${messagePrefix} ⚡️ ${message}`);
 
     /* Remember that the power profile should be refreshed */
-    needProfileRefresh = !powerProfileChanged && lastPowerProfileCheckedDiffSec >= REFRESH_POWER_PROFILE_SECONDS;
+    needProfileRefresh = !powerProfileChanged && lastPowerProfileCheckedDiffSec >= MOVEMENTS_CONTROL_SECONDS;
     if (needProfileRefresh) {
       lastPowerProfileChecked = Date.now();
 
