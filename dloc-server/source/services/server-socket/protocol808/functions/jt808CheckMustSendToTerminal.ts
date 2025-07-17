@@ -21,31 +21,12 @@ const jt808CheckMustSendToTerminal = (
   const terminalId = imei.slice(-12);
   const { uploadSec, heartBeatSec } = jt808PowerProfileConfig(newPowerProfile);
 
-  if (needProfileRefresh)
-    printMessage(
-      `${prefix} 🔄 power profile refresh needed, current profile [${newPowerProfile}]`
-    );
-
-  if (powerPrfChanged)
-    printMessage(
-      `${prefix} ⚡️ power profile changed from [${currentPowerPrfile}] to [${newPowerProfile}]`
-    );
-
-  // Sending power profile packet by configuration parameters don't work
-  //jt808CreateReportIntervalsParameters(
-  //  terminalId,
-  //  counter,
-  //  uploadSec,
-  //  prefix,
-  //  response
-  //);
-
   /** Create Power Profile Packet */
   const powerPacket = jt808CreatePowerProfilePacket(
     terminalId,
     counter + 200,
     newPowerProfile,
-    movementsControlSeconds * 2
+    movementsControlSeconds
   );
   printMessage(`${prefix} 📡 send Upload Interval [${uploadSec} sec]`);
   printMessage(

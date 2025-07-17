@@ -8,13 +8,11 @@ const proto1903HandleProcess: Proto1903HandleProcess = ({
   results,
   imei,
   prefix,
-  counter,
   newConnection,
   powerProfileChanged,
   needProfileRefresh,
   imeiData,
   newPowerProfileType,
-  movementsControlSeconds,
   sendData
 }: Proto1903ProcessProps): void => {
   let toSendAditional: string = "";
