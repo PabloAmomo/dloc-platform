@@ -12,6 +12,7 @@ import ServerSocketHandlerProps from "../../infraestucture/models/ServerSocketHa
 
 // TODO: [REFACTOR] Refactor this file to use a more modular approach, separating concerns and improving readability.
 
+// TODO: [FEATURE] Add parameter to specify the powerProfileConfig function to use.
 const serverSocketHandler: ServerSocketHandler = ({
   protocol,
   conn,
@@ -34,6 +35,7 @@ const serverSocketHandler: ServerSocketHandler = ({
   conn.on("end", () => handleEnd(remoteAddress, imei));
   conn.on("error", (err: Error) => handleError(remoteAddress, imei, err));
 
+  // TODO: [REFACTOR] Move this to a separate function
   const disconnect = () => {
     conn.destroy();
     clearItemInCacheIMEI(imei);
@@ -41,6 +43,7 @@ const serverSocketHandler: ServerSocketHandler = ({
       printMessage(`[${getNormalizedIMEI(imei)}] (${remoteAddress}) ❌ Connection closed.`);
   };
 
+  // TODO: [REFACTOR] Move this to a separate function
   const sendData = (data: Buffer[] | String[]) => {
     if (!conn || conn.destroyed) {
       printMessage(`[${getNormalizedIMEI(imei)}] (${remoteAddress}) ❌ Connection is already closed.`);

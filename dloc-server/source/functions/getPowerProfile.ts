@@ -15,6 +15,7 @@ const REFRESH_POWER_PROFILE_EXTEND_SECONDS: number = MOVEMENTS_CONTROL_SECONDS *
 const MOVEMENTS_MTS_FOR_BALANCED: number = 50;
 const MOVEMENTS_MTS_FOR_MINIMAL: number = 25;
 
+// TODO: [CONFIGURATION] Move this to a configuration file
 const MOVEMENT_MESURE: "distance" | "perimeter" = "perimeter";
 
 async function getPowerProfile(

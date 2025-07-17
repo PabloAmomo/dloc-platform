@@ -9,7 +9,7 @@ import jt808CreatePowerProfilePacket from './jt808CreatePowerProfilePacket';
 import jt808PowerProfileConfig from './jt808PowerProfileConfig';
 
 // TODO: [CONFIGURATION] Move this to a configuration file
-const REPORT_CONFIGURATION : Jt808ReportConfiguration = Jt808ReportConfiguration.intervalReport;
+const REPORT_CONFIGURATION : Jt808ReportConfiguration = Jt808ReportConfiguration.temporaryTracking;
 
 const jt808CheckMustSendToTerminal = (
   imei: string,
