@@ -21,7 +21,7 @@ function jt808PowerProfileConfig(
     profileType === PowerProfileType.AUTOMATIC_BALANCED
   )
     return {
-      heartBeatSec: 120,
+      heartBeatSec: 90,
       uploadSec: 60,
       ledState: false,
       forceReportLocInMs: 80000,
@@ -38,7 +38,7 @@ function jt808PowerProfileConfig(
 
   // Full power profile configuration
   return {
-    heartBeatSec: 120,
+    heartBeatSec: 60,
     uploadSec: 20,
     ledState: true,
     forceReportLocInMs: 50000,
