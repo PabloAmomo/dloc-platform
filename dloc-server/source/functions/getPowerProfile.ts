@@ -6,10 +6,11 @@ import updatePowerProfile from "./updatePowerProfile";
 
 // TODO: [VERIFY] Check movement type parameter working correctly
 
-const MOVEMENTS_CONTROL_SECONDS: number = 300; // How often to check movements in seconds
+const MOVEMENTS_CONTROL_SECONDS: number = 300;
+// Nos aseguramos de refrescos periodicos de los datos del perfil de bateria
 const REFRESH_POWER_PROFILE_SECONDS: number = MOVEMENTS_CONTROL_SECONDS * 5; // How often to refresh the power profile in seconds
-// REFRESH_POWER_PROFILE_SECONDS: 
-// Needed to refresh the send position interval from the device. (When enter in automatic minimal power for a while, the device will not send positions)
+// Duración del tiempo en que se estará enviando la posicion desde el dispositivo. Este valor sirve para configurar el periodo de duracion del active tracking.
+const REFRESH_POWER_PROFILE_EXTEND_SECONDS: number = REFRESH_POWER_PROFILE_SECONDS * 2;
 
 const MOVEMENTS_MTS_FOR_BALANCED: number = 50;
 const MOVEMENTS_MTS_FOR_MINIMAL: number = 10;
@@ -55,9 +56,6 @@ async function getPowerProfile(
     const lastPowerProfileCheckedDiffSec = (Date.now() - lastPowerProfileChecked) / 1000;
     const lastPowerProfileCheckedDiff = lastPowerProfileCheckedDiffSec >= MOVEMENTS_CONTROL_SECONDS;
 
-    /* Update las check */
-    lastPowerProfileChecked = Date.now();
-
     const isAutomatic = [
       PowerProfileType.AUTOMATIC_FULL,
       PowerProfileType.AUTOMATIC_BALANCED,
@@ -66,6 +64,9 @@ async function getPowerProfile(
 
     /* Nothing to do, the power profile is not set to automatic */
     if (!isAutomatic) {
+      /* Update las check */
+      lastPowerProfileChecked = Date.now();
+
       printMessage(
         `${messagePrefix} ⚡️ power profile is not automatic, using [${newPowerProfileType}] without changes`
       );
@@ -74,7 +75,7 @@ async function getPowerProfile(
         powerProfileChanged: false,
         lastPowerProfileChecked,
         needProfileRefresh: false,
-        movementsControlSeconds: MOVEMENTS_CONTROL_SECONDS * 10,
+        movementsControlSeconds: REFRESH_POWER_PROFILE_EXTEND_SECONDS,
       };
     }
 
@@ -84,13 +85,18 @@ async function getPowerProfile(
       currentPowerProfileType !== newPowerProfileType &&
       newPowerProfileType === PowerProfileType.AUTOMATIC_FULL
     ) {
+      lastPowerProfileChecked = Date.now();
+
       powerProfileChanged = true;
+
       printMessage(
         `${messagePrefix} ⚡️ ⚠️ power profile changed by user from [${currentPowerProfileType}] to [${newPowerProfileType}]`
       );
     }
 
     if (!powerProfileChanged && lastPowerProfileCheckedDiff) {
+      lastPowerProfileChecked = Date.now();
+
       /** Get the movement in last seconds */
       const metersMoveInLastSeconds = await getMovementInLastSeconds(
         imei,
@@ -149,11 +155,14 @@ async function getPowerProfile(
     printMessage(`${messagePrefix} ⚡️ ${message}`);
 
     /* Remember that the power profile should be refreshed */
-    needProfileRefresh = !powerProfileChanged && (lastPowerProfileCheckedDiffSec >= REFRESH_POWER_PROFILE_SECONDS);
-    if (needProfileRefresh)
+    needProfileRefresh = !powerProfileChanged && lastPowerProfileCheckedDiffSec >= REFRESH_POWER_PROFILE_SECONDS;
+    if (needProfileRefresh) {
+      lastPowerProfileChecked = Date.now();
+      
       printMessage(
         `${messagePrefix} 🔄 power profile refresh needed, last check was [${lastPowerProfileCheckedDiffSec} sec] ago`
       );
+    }
 
     //
   } catch (error: any) {
@@ -166,7 +175,7 @@ async function getPowerProfile(
     powerProfileChanged,
     lastPowerProfileChecked,
     needProfileRefresh,
-    movementsControlSeconds: REFRESH_POWER_PROFILE_SECONDS * 2, // Send double time to be shure the profile is refreshed
+    movementsControlSeconds: REFRESH_POWER_PROFILE_EXTEND_SECONDS, // Send double time to be shure the profile is refreshed
   };
 }
 
