@@ -87,25 +87,18 @@
       "response": ""
     },
     "step1": {
-      "title": "1. IMEI del Localizador o ID del Dispositivo",
-      "resume": "Obtén el IMEI de tu localizador (Necesario para darlo de alta en la plataforma).",
-      "command": "imei#",
+      "title": "1. ID/IMEI del Localizador o ID del Dispositivo",
+      "resume": "Obtén el ID/IMEI de tu localizador (Es el numero de la etiqueta del dispositivo pero con 0000 al inicio).",
+      "command": "",
       "extraCommand": "",
-      "response": "123456789012345"
+      "response": ""
     },
     "step2": {
-      "title": "2. Red de datos",
-      "resume": "Configura el acceso a la red de datos del operador movil de la tarjeta sim. (Ej: MasMovil españa APN#internet###)",
-      "command": "APN#name#user#password#",
-      "extraCommand": "",
-      "response": "Setting apn ok! o APN set success"
-    },
-    "step3": {
-      "title": "3. Servidor de la Platforma",
+      "title": "2. Servidor de la Platforma",
       "resume": "Configura el servidor de la plataforma donde reportará el localizador.",
-      "command": "DOMAIN#82.223.64.197#24666#",
+      "command": "SL DP82.223.64.197#24670#",
       "extraCommand": "",
-      "response": "Domain set success"
+      "response": "Set Ok!IP:82.223.64.197 24670"
     },
     "step4": {
       "text1": "Deja durante unos 10 minutos el localizador ecendido y en un sitio con vista directa al cielo, para que pueda posicionarse y comenzar a enviar datos a la plataforma.",

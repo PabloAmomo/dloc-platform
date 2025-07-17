@@ -88,26 +88,19 @@
     },
     "step1": {
       "title": "1. Tracker IMEI or Device ID",
-      "resume": "Obtain the IMEI of your tracker (Necessary to activate it on the platform).",
-      "command": "imei#",
+      "resume": "Get the ID/IMEI of your tracker (Its the number on the device label, but with 0000 at the beginning)",
+      "command": "",
       "extraCommand": "",
-      "response": "123456789012345"
+      "response": ""
     },
     "step2": {
-      "title": "2. Data Network",
-      "resume": "Set up access to the data network of the mobile operator of the SIM card. (Example: MasMovil Spain APN#internet###)",
-      "command": "APN#name#user#password#",
+      "title": "2. Set Platform Server",
+      "resume": "Configure the server of the platform where the tracker will report.",
+      "command": "SL DP82.223.64.197#24670#",
       "extraCommand": "",
-      "response": "Setting apn ok! or APN set success"
+      "response": "Set Ok!IP:82.223.64.197 24670"
     },
     "step3": {
-      "title": "3. Set Platform Server",
-      "resume": "Configure the server of the platform where the tracker will report.",
-      "command": "DOMAIN#82.223.64.197#24666#",
-      "extraCommand": "",
-      "response": "Domain set success"
-    },
-    "step4": {
       "text1": "Leave the tracker on for about 10 minutes in a place with a direct view of the sky so it can position itself and start sending data to the platform.",
       "text2": "... after 10 minutes ....",
       "text3": "You can activate the tracker on the platform by simply going to 'Add Pet' in the application menu and entering the IMEI you obtained at the beginning of this guide."
