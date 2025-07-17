@@ -33,17 +33,24 @@ const jt808ProcessPacket0x0xxxLocations: Jt808ProcessPacket = async ({
   const imei = getNormalizedIMEI(response.imei);
   const updateLastActivity = false;
 
-  let lastLatLng = "";
+  let extraMessage = "";
   if (locations.count > 0) {
     for (const location of locations.locations) {
+      let gpsConstellation = location.statusFlags.gpsPositioning ? "GPS" : "";
+      gpsConstellation += ` ${location.statusFlags.beidouPositioning ? "✅" : "❌"} Beidou`;
+      gpsConstellation += ` ${location.statusFlags.glonassPositioning ? "✅" : "❌"} Glonass`;
+      gpsConstellation += ` ${location.statusFlags.galileoPositioning ? "✅" : "❌"} Galileo`;
+
       if (location.lat !== 0 && location.lng !== 0)
-        lastLatLng = `[(${location.dateTimeUTC}) ${location.lat}, ${location.lng}]`;
+        extraMessage = `[(${location.dateTimeUTC}) ${location.lat}, ${location.lng} ${gpsConstellation}]`;
+
+      location.statusFlags.beidouPositioning
 
       await jt808PersistLocation(imei, remoteAddress, location, persistence, body, response);
     }
   }
 
-  jt808PrintMessage(imei, remoteAddress, msgType, lastLatLng);
+  jt808PrintMessage(imei, remoteAddress, msgType, extraMessage);
 
   return {
     updateLastActivity,
