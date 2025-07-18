@@ -19,7 +19,7 @@ const jt808CreateIntervalReportPacket = (
     //"0000002D 04 " + createHexFromNumberWithNBytes(movementMeters, 4), // Report distance intervals when moving during not login (meters)
     //"0000002E 04 " + createHexFromNumberWithNBytes(movementMeters, 4), // Report distance intervals when moving during dormancy (meters)
     //"0000002F 04 " + createHexFromNumberWithNBytes(movementMeters, 4), // Report distance intervals when moving during emergency (meters)
-    //"00000031 04 " + createHexFromNumberWithNBytes(movementMeters, 4), // Geofence radius (meters)
+    "00000031 04 " + createHexFromNumberWithNBytes(movementMeters, 4), // Geofence radius (meters)
   ]);
 
   return intervalsPacket;
