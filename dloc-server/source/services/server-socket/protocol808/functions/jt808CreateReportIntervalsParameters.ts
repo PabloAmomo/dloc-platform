@@ -1,4 +1,4 @@
-import convertStringToHexString from "../../../../functions/convertStringToHexString";
+import convertAnyToHexString from "../../../../functions/convertAnyToHexString";
 import createHexFromNumberWithNBytes from "../../../../functions/createHexFromNumberWithNBytes";
 import { printMessage } from "../../../../functions/printMessage";
 import jt808CreateParameterSettingPacket from "./jt808CreateParameterSettingPacket";
@@ -18,7 +18,7 @@ const jt808CreateReportIntervalsParameters = (
     ]
   );
   printMessage(
-    `${prefix} 🔋 Power config Packet sent (0x0027): ${convertStringToHexString(
+    `${prefix} 🔋 Power config Packet sent (0x0027): ${convertAnyToHexString(
       powerPackerSettingsX027
     )}`
   );
@@ -32,7 +32,7 @@ const jt808CreateReportIntervalsParameters = (
     ]
   );
   printMessage(
-    `${prefix} 🔋 Power config Packet sent (0x0027): ${convertStringToHexString(
+    `${prefix} 🔋 Power config Packet sent (0x0027): ${convertAnyToHexString(
       powerPackerSettingsX028
     )}`
   );
@@ -46,7 +46,7 @@ const jt808CreateReportIntervalsParameters = (
     ]
   );
   printMessage(
-    `${prefix} 🔋 Power config Packet sent (0x0029): ${convertStringToHexString(
+    `${prefix} 🔋 Power config Packet sent (0x0029): ${convertAnyToHexString(
       powerPackerSettingsX029
     )}`
   );

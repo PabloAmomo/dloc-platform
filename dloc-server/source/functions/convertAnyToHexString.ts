@@ -1,4 +1,4 @@
-const convertStringToHexString = (data: any): string => {
+const convertAnyToHexString = (data: any): string => {
   const hexData: string = data
     .toString("hex")
     .toUpperCase()
@@ -7,4 +7,4 @@ const convertStringToHexString = (data: any): string => {
   return hexData;
 };
 
-export default convertStringToHexString;
+export default convertAnyToHexString;

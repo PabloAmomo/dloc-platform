@@ -1,4 +1,4 @@
-import convertStringToHexString from "../../../functions/convertStringToHexString";
+import convertAnyToHexString from "../../../functions/convertAnyToHexString";
 import { getNormalizedIMEI } from "../../../functions/getNormalizedIMEI";
 import { printMessage } from "../../../functions/printMessage";
 import HandleConnectionProps from "../models/HandleConnectionProp";
@@ -55,7 +55,7 @@ const handleConnection = async ({
       printMessage(
         `[${getNormalizedIMEI(imei)}] (${remoteAddress}) ❌ error handling packet (1) (${
           err?.message ?? "unknown error"
-        }) packet [${isBuffer ? convertStringToHexString(data[i]) : ((data[i] as string)?.split(",")?.[0] ?? data[i])}]`
+        }) packet [${isBuffer ? convertAnyToHexString(data[i]) : ((data[i] as string)?.split(",")?.[0] ?? data[i])}]`
       );
     }
   }

@@ -1,4 +1,4 @@
-import convertStringToHexString from "../../functions/convertStringToHexString";
+import convertAnyToHexString from "../../functions/convertAnyToHexString";
 import { getNormalizedIMEI } from "../../functions/getNormalizedIMEI";
 import getPowerProfile from "../../functions/getPowerProfile";
 import { printMessage } from "../../functions/printMessage";
@@ -48,7 +48,7 @@ const serverSocketHandler: ServerSocketHandler = (props: ServerSocketHandlerProp
     let dataToUse;
 
     if (protocol === "PROTO1903") dataShow = dataString;
-    else if (protocol === "JT808") dataShow = convertStringToHexString(data);
+    else if (protocol === "JT808") dataShow = convertAnyToHexString(data);
     else {
       printMessage(`[${tempImei}] (${remoteAddress}) ❌ Unsupported protocol: ${protocol}.`);
       disconnect();

@@ -1,8 +1,13 @@
-import jt808Config from '../config/jt808Config';
-import jt808CheckMustSendToTerminal from '../functions/jt808CheckMustSendToTerminal';
-import jt808FrameEncode from '../functions/jt808FrameEncode';
-import Jt808HandleProcess from '../models/Jt808HandleProcess';
-import Jt808ProcessProps from '../models/Jt808ProcessProps';
+import checkMustSendToTerminalRequestReport from "../../../../functions/checkMustSendToTerminalRequestReport";
+import convertAnyToHexString from "../../../../functions/convertAnyToHexString";
+import { printMessage } from "../../../../functions/printMessage";
+import jt808Config from "../config/jt808Config";
+import jt808CheckMustSendToTerminal from "../functions/jt808CheckMustSendToTerminal";
+import jt808CreateQueryLocationMessage from "../functions/jt808CreateQueryLocationMessage";
+import jt808FrameEncode from "../functions/jt808FrameEncode";
+import jt808GetPowerProfileConfig from "../functions/jt808GetPowerProfileConfig";
+import Jt808HandleProcess from "../models/Jt808HandleProcess";
+import Jt808ProcessProps from "../models/Jt808ProcessProps";
 
 const jt808HandleProcess: Jt808HandleProcess = ({
   results,
@@ -17,10 +22,11 @@ const jt808HandleProcess: Jt808HandleProcess = ({
   sendData,
 }: Jt808ProcessProps): void => {
   const movementsControlSeconds = jt808Config.REFRESH_POWER_PROFILE_EXTEND_SECONDS;
-  
+  const terminalId = imei.slice(-12);
+
   if (isNewConnection || powerProfileChanged || needProfileRefresh) {
     const responseSend: Buffer[] = jt808CheckMustSendToTerminal(
-      imei,
+      terminalId,
       prefix,
       powerProfileChanged,
       needProfileRefresh,
@@ -30,8 +36,15 @@ const jt808HandleProcess: Jt808HandleProcess = ({
       movementsControlSeconds
     );
 
-    // TODO: [FEATURE] (If needed) Implement request report logic for JT808 (j808CheckMustSendToTerminalRequestReport copy of proto1903CheckMustSendToTerminalRequestReport)
-    // TODO: Every heartbeat request position if data is older than forceReportLocInSec
+    // TODO: [FEATURE] (If needed) Implement the send report packet to terminal
+    const { forceReportLocInSec } = jt808GetPowerProfileConfig(newPowerProfileType);
+
+    /** Check if must send to terminal request report */
+    if (checkMustSendToTerminalRequestReport(imei, imeiData, forceReportLocInSec)) {
+      const packet = jt808CreateQueryLocationMessage(terminalId, counter + 110);
+      printMessage(`${prefix} 📡 🔥🔥🔥🔥🔥🔥🔥 Need send request location report to terminal... ${convertAnyToHexString(packet)}`);
+    }
+
     responseSend.forEach((response) => {
       (results[0].response as Buffer[]).push(response);
     });
@@ -42,7 +55,6 @@ const jt808HandleProcess: Jt808HandleProcess = ({
   for (const result of results) {
     for (const response of result.response) {
       toSend.push(jt808FrameEncode(response as Buffer));
-       
     }
   }
 

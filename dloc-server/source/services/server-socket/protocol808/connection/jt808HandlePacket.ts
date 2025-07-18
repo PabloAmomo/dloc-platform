@@ -1,4 +1,4 @@
-import convertStringToHexString from "../../../../functions/convertStringToHexString";
+import convertAnyToHexString from "../../../../functions/convertAnyToHexString";
 import { getNormalizedIMEI } from "../../../../functions/getNormalizedIMEI";
 import positionUpdateLastActivityAndAddHistory from "../../../../functions/positionUpdateLastActivityAndAddHistory";
 import { printMessage } from "../../../../functions/printMessage";
@@ -32,7 +32,7 @@ const jt808HandlePacket: Jt808HandlePacket = async (
   let imeiToPrint: string = getNormalizedIMEI(imei);
 
   /* convert data to hex string */
-  const dataString: string = convertStringToHexString(data);
+  const dataString: string = convertAnyToHexString(data);
   printMessage(
     `[${imeiToPrint}] (${remoteAddress}) 📡 RECEIVED 👉 [${dataString}].`
   );
@@ -166,7 +166,7 @@ const jt808HandlePacket: Jt808HandlePacket = async (
   else {
     for (let i = 0; i < response.response.length; i++) {
       printMessage(
-        `[${imeiToPrint}] (${remoteAddress}) ✅ response [${convertStringToHexString(
+        `[${imeiToPrint}] (${remoteAddress}) ✅ response [${convertAnyToHexString(
           response.response[i]
         )}].`
       );

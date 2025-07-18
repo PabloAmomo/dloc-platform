@@ -1,6 +1,3 @@
-import convertStringToHexString from "../../../../functions/convertStringToHexString";
-import { printMessage } from "../../../../functions/printMessage";
-
 const jt808TimeSyncBody = (date: Date = new Date()): Buffer => {
   const buffer = Buffer.alloc(7);
 

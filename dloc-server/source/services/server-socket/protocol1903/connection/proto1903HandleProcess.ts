@@ -1,8 +1,9 @@
 import { printMessage } from "../../../../functions/printMessage";
 import Proto1903ProcessProps from "../models/Proto1903ProcessProps";
 import proto1903CheckMustSendToTerminal from "../functions/proto1903CheckMustSendToTerminal";
-import proto1903CheckMustSendToTerminalRequestReport from "../functions/proto1903CheckMustSendToTerminalRequestReport";
+import checkMustSendToTerminalRequestReport from "../../../../functions/checkMustSendToTerminalRequestReport";
 import Proto1903HandleProcess from "../models/Proto1903HandleProcess";
+import proto1903GetPowerProfileConfig from "../functions/proto1903GetPowerProfileConfig";
 
 const proto1903HandleProcess: Proto1903HandleProcess = ({
   results,
@@ -29,8 +30,10 @@ const proto1903HandleProcess: Proto1903HandleProcess = ({
     toSendAditional += responseSend;
   }
 
+  const { forceReportLocInSec } = proto1903GetPowerProfileConfig(newPowerProfileType);
+
   /** Check if must send to terminal request report */
-  if (proto1903CheckMustSendToTerminalRequestReport(imei, newPowerProfileType, imeiData)) {
+  if (checkMustSendToTerminalRequestReport(imei, imeiData, forceReportLocInSec)) {
     toSendAditional += "TRVBP20#";
     printMessage(`${prefix} 📡 send command TRVBP20 (Force to report Position).`);
   }
