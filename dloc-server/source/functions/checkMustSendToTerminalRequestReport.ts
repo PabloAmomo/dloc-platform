@@ -4,6 +4,7 @@ import { CacheImei } from "../infraestucture/models/CacheImei";
 import { CachePosition } from "../infraestucture/models/CachePosition";
 
 const checkMustSendToTerminalRequestReport = (
+  prefix: string,
   imei: string,
   imeiData: CacheImei,
   forceReportLocInSec: number

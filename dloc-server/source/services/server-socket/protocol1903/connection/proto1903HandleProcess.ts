@@ -33,7 +33,7 @@ const proto1903HandleProcess: Proto1903HandleProcess = ({
   const { forceReportLocInSec } = proto1903GetPowerProfileConfig(newPowerProfileType);
 
   /** Check if must send to terminal request report */
-  if (checkMustSendToTerminalRequestReport(imei, imeiData, forceReportLocInSec)) {
+  if (checkMustSendToTerminalRequestReport(prefix, imei, imeiData, forceReportLocInSec)) {
     toSendAditional += "TRVBP20#";
     printMessage(`${prefix} 📡 send command TRVBP20 (Force to report Position).`);
   }
