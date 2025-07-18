@@ -161,7 +161,7 @@ const jt808HandlePacket: Jt808HandlePacket = async (
   /** */
   if (response.response.length === 0)
     printMessage(
-      `[${imeiToPrint}] (${remoteAddress}) ⚠️  no response to send for packet [${dataString}]`
+      `[${imeiToPrint}] (${remoteAddress}) ⚠️  no response to send for packet [${dataString.substring(0, 20)}...]`
     );
   else {
     for (let i = 0; i < response.response.length; i++) {
