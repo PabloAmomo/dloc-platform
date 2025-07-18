@@ -5,19 +5,22 @@ const jt808CreateIntervalReportPacket = (
   terminalId: string,
   counter: number,
   intervalSec: number,
-  movementMeters: number
+  movementMeters: number,
 ): Buffer => {
   /* Create interval report Packet */
   const intervalsPacket = jt808CreateParameterSettingPacket(terminalId, counter + 215, [
-    "00000020 04 " + createHexFromNumberWithNBytes(intervalSec, 4), // Report by timming
+    "00000020 04 " + createHexFromNumberWithNBytes(2, 4),           // report type (2 = timmming and distance)
+
     "00000027 04 " + createHexFromNumberWithNBytes(intervalSec, 4), // Report time intervals during dormancy (seconds)
     "00000028 04 " + createHexFromNumberWithNBytes(intervalSec, 4), // Report time intervals during emergency alarm (seconds)
     "00000029 04 " + createHexFromNumberWithNBytes(intervalSec, 4), // Report time intervals when default (seconds)
 
-    "0000002C 04 " + createHexFromNumberWithNBytes(movementMeters, 4), // Report distance intervals when default moving (meters)
-    "0000002D 04 " + createHexFromNumberWithNBytes(movementMeters, 4), // Report distance intervals when moving during not login (meters)
-    "0000002E 04 " + createHexFromNumberWithNBytes(movementMeters, 4), // Report distance intervals when moving during dormancy (meters)
-    "0000002F 04 " + createHexFromNumberWithNBytes(movementMeters, 4), // Report distance intervals when moving during emergency (meters)
+    "0000002C 04 " + createHexFromNumberWithNBytes(intervalSec, 4), // Report distance intervals when default moving (meters)
+    "0000002D 04 " + createHexFromNumberWithNBytes(intervalSec, 4), // Report distance intervals when moving during not login (meters)
+    "0000002E 04 " + createHexFromNumberWithNBytes(intervalSec, 4), // Report distance intervals when moving during dormancy (meters)
+    "0000002F 04 " + createHexFromNumberWithNBytes(intervalSec, 4), // Report distance intervals when moving during emergency (meters)
+
+    "00000031 04 " + createHexFromNumberWithNBytes(movementMeters, 4), // Geofence radius (meters)
   ]);
 
   return intervalsPacket;
