@@ -1,18 +1,15 @@
-import { PowerProfileType } from "../../enums/PowerProfileType";
-import convertStringToHexString from "../../functions/convertStringToHexString";
-import { getNormalizedIMEI } from "../../functions/getNormalizedIMEI";
-import getPowerProfile from "../../functions/getPowerProfile";
-import { printMessage } from "../../functions/printMessage";
-import processPacketHealth from "../../functions/processPacketHealth";
-import { getRemoteAddress } from "../../functions/remoteAddress";
-import { CACHE_IMEI, clearItemInCacheIMEI } from "../../infraestucture/caches/cacheIMEI";
-import { CacheImei } from "../../infraestucture/models/CacheImei";
-import { ServerSocketHandler } from "../../infraestucture/models/ServerSocketHandler";
-import ServerSocketHandlerProps from "../../infraestucture/models/ServerSocketHandlerProps";
-import serverSocketDisconnect from "./functions/serverSocketDisconnect";
-import serverSocketSendData from "./functions/serverSocketSendData";
-
-// TODO: [REFACTOR] Refactor this file to use a more modular approach, separating concerns and improving readability.
+import convertStringToHexString from '../../functions/convertStringToHexString';
+import { getNormalizedIMEI } from '../../functions/getNormalizedIMEI';
+import getPowerProfile from '../../functions/getPowerProfile';
+import { printMessage } from '../../functions/printMessage';
+import processPacketHealth from '../../functions/processPacketHealth';
+import { getRemoteAddress } from '../../functions/remoteAddress';
+import { CACHE_IMEI } from '../../infraestucture/caches/cacheIMEI';
+import { CacheImei, CacheImeiEmptyItem } from '../../infraestucture/models/CacheImei';
+import { ServerSocketHandler } from '../../infraestucture/models/ServerSocketHandler';
+import ServerSocketHandlerProps from '../../infraestucture/models/ServerSocketHandlerProps';
+import serverSocketDisconnect from './functions/serverSocketDisconnect';
+import serverSocketSendData from './functions/serverSocketSendData';
 
 const serverSocketHandler: ServerSocketHandler = (props: ServerSocketHandlerProps) => {
   const {
@@ -59,7 +56,7 @@ const serverSocketHandler: ServerSocketHandler = (props: ServerSocketHandlerProp
     }
 
     dataToUse = decoder(data);
-
+    
     counter++;
     if (counter > 32000) counter = 1;
 
@@ -80,6 +77,9 @@ const serverSocketHandler: ServerSocketHandler = (props: ServerSocketHandlerProp
         disconnect,
       })
         .then(async (results) => {
+          /* If disconnected then exit */
+          if (!conn || conn.destroyed) return;
+
           if (!results[0]?.imei) {
             printMessage(`[${tempImei}] (${remoteAddress}) ❌ IMEI not found in data [${dataShow}].`);
             disconnect();
@@ -88,18 +88,10 @@ const serverSocketHandler: ServerSocketHandler = (props: ServerSocketHandlerProp
           imei = results[0].imei;
           const prefix = `[${imei}] (${remoteAddress})`;
 
-          /* If disconnected then return */
-          if (!conn || conn.destroyed) return;
-
           printMessage(`${prefix} 🌟 Current serial counter [${counter}].`);
 
           /** Get the las information about the IMEI */
-          const imeiData: CacheImei = CACHE_IMEI.get(imei) ?? {
-            powerProfile: PowerProfileType.AUTOMATIC_MINIMAL,
-            lastPowerProfileChecked: 0,
-            lastLBSRequestTimestamp: 0,
-            lastReportRequestTimestamp: 0,
-          };
+          const imeiData: CacheImei = CACHE_IMEI.get(imei) ?? CacheImeiEmptyItem;
 
           /** Get power profile for the imei */
           const {
@@ -118,7 +110,7 @@ const serverSocketHandler: ServerSocketHandler = (props: ServerSocketHandlerProp
             getPowerProfileConfig
           );
 
-          /** create or update socket connection to cache */
+          /** update the information in the cache */
           CACHE_IMEI.updateOrCreate(imei, {
             powerProfile: newPowerProfileType,
             lastPowerProfileChecked,
