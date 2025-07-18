@@ -20,11 +20,13 @@ const JT808_MESSAGES_CODES = {
 };
 
 const jt808PrintMessage = (imeiTemp: string, remoteAddress: string, msgType: number, addData: string = "") => {
-      printMessage(
-      `[${imeiTemp}] (${remoteAddress}) ✅ ${
-        JT808_MESSAGES_CODES[msgType as keyof typeof JT808_MESSAGES_CODES]
-      }${addData ? ` (${addData})` : ""}`
-    );
-}
+  if ([0x0104].includes(msgType)) addData = ""; // No additional data for this messages type
+
+  printMessage(
+    `[${imeiTemp}] (${remoteAddress}) ✅ ${JT808_MESSAGES_CODES[msgType as keyof typeof JT808_MESSAGES_CODES]}${
+      addData ? ` (${addData})` : ""
+    }`
+  );
+};
 
 export default jt808PrintMessage;
