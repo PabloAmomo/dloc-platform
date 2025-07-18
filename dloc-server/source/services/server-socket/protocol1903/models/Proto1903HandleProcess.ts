@@ -5,7 +5,7 @@ type Proto1903HandleProcess = ({
   imei,
   prefix,
   counter,
-  newConnection,
+  isNewConnection,
   powerProfileChanged,
   needProfileRefresh,
   imeiData,

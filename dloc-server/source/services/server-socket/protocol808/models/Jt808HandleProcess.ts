@@ -5,7 +5,7 @@ type Jt808HandleProcess = ({
   imei,
   prefix,
   counter,
-  newConnection,
+  isNewConnection,
   powerProfileChanged,
   needProfileRefresh,
   imeiData,

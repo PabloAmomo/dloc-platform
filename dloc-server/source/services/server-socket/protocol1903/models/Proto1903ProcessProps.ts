@@ -9,7 +9,7 @@ type Proto1903ProcessProps = {
   imei: string;
   prefix: string;
   counter: number;
-  newConnection: boolean;
+  isNewConnection: boolean;
   powerProfileChanged: boolean;
   needProfileRefresh: boolean;
   imeiData: CacheImei;

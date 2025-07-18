@@ -8,7 +8,7 @@ const proto1903HandleProcess: Proto1903HandleProcess = ({
   results,
   imei,
   prefix,
-  newConnection,
+  isNewConnection,
   powerProfileChanged,
   needProfileRefresh,
   imeiData,
@@ -16,7 +16,7 @@ const proto1903HandleProcess: Proto1903HandleProcess = ({
   sendData
 }: Proto1903ProcessProps): void => {
   let toSendAditional: string = "";
-  if (newConnection || powerProfileChanged || needProfileRefresh) {
+  if (isNewConnection || powerProfileChanged || needProfileRefresh) {
     const responseSend: string = proto1903CheckMustSendToTerminal(
       imei,
       prefix,

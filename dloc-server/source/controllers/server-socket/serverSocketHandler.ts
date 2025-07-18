@@ -9,26 +9,29 @@ import { CACHE_IMEI, clearItemInCacheIMEI } from "../../infraestucture/caches/ca
 import { CacheImei } from "../../infraestucture/models/CacheImei";
 import { ServerSocketHandler } from "../../infraestucture/models/ServerSocketHandler";
 import ServerSocketHandlerProps from "../../infraestucture/models/ServerSocketHandlerProps";
+import serverSocketDisconnect from "./functions/serverSocketDisconnect";
+import serverSocketSendData from "./functions/serverSocketSendData";
 
 // TODO: [REFACTOR] Refactor this file to use a more modular approach, separating concerns and improving readability.
 
-// TODO: [FEATURE] Add parameter to specify the powerProfileConfig function to use.
-const serverSocketHandler: ServerSocketHandler = ({
-  protocol,
-  conn,
-  persistence,
-  handleConnection,
-  handleProcess,
-  handlePacket,
-  handleClose,
-  handleEnd,
-  handleError,
-  getPowerProfileConfig,
-  decoder,
-}: ServerSocketHandlerProps) => {
+const serverSocketHandler: ServerSocketHandler = (props: ServerSocketHandlerProps) => {
+  const {
+    protocol,
+    conn,
+    persistence,
+    handleConnection,
+    handleProcess,
+    handlePacket,
+    handleClose,
+    handleEnd,
+    handleError,
+    getPowerProfileConfig,
+    decoder,
+  } = props;
+
   const remoteAddress: string = getRemoteAddress(conn);
   var imei: string = "";
-  var newConnection: boolean = true;
+  var isNewConnection: boolean = true;
   var counter = 0;
 
   /** Create event listeners for socket connection */
@@ -36,40 +39,9 @@ const serverSocketHandler: ServerSocketHandler = ({
   conn.on("end", () => handleEnd(remoteAddress, imei));
   conn.on("error", (err: Error) => handleError(remoteAddress, imei, err));
 
-  // TODO: [REFACTOR] Move this to a separate function
-  const disconnect = () => {
-    conn.destroy();
-    clearItemInCacheIMEI(imei);
-    if (!remoteAddress.includes("127.0.0.1"))
-      printMessage(`[${getNormalizedIMEI(imei)}] (${remoteAddress}) ❌ Connection closed.`);
-  };
-
-  // TODO: [REFACTOR] Move this to a separate function
-  const sendData = (data: Buffer[] | String[]) => {
-    if (!conn || conn.destroyed) {
-      printMessage(`[${getNormalizedIMEI(imei)}] (${remoteAddress}) ❌ Connection is already closed.`);
-      return;
-    }
-
-    const showError = (err: Error) => {
-      printMessage(`[${getNormalizedIMEI(imei)}] (${remoteAddress}) ❌ Error sending data: ${err.message}`);
-    };
-
-    for (const dataItem of data) {
-      if (typeof dataItem === "string") {
-        conn.write(dataItem, (err) => {
-          if (err) showError(err);
-        });
-      } else if (dataItem instanceof Buffer) {
-        conn.write(dataItem, (err) => {
-          if (err) showError(err);
-        });
-        conn.write(Buffer.alloc(0)); // Send an empty buffer to indicate end of packet
-      } else {
-        printMessage(`[${getNormalizedIMEI(imei)}] (${remoteAddress}) ❌ Unsupported data type: ${typeof dataItem}.`);
-      }
-    }
-  };
+  /** Create generic functions for socket connection */
+  const disconnect = () => serverSocketDisconnect(imei, remoteAddress, conn);
+  const sendData = (data: Buffer[] | String[]) => serverSocketSendData(imei, remoteAddress, conn, data);
 
   /** Handle data */
   conn.on("data", (data: Buffer) => {
@@ -96,7 +68,7 @@ const serverSocketHandler: ServerSocketHandler = ({
       if (processPacketHealth(dataString, remoteAddress, tempImei, sendData, disconnect)) return;
 
       /** New socket connection */
-      if (newConnection) printMessage(`[${tempImei}] (${remoteAddress}) 🧑‍💻 new connection.`);
+      if (isNewConnection) printMessage(`[${tempImei}] (${remoteAddress}) 🧑‍💻 is new connection.`);
 
       handleConnection({
         imei,
@@ -141,7 +113,7 @@ const serverSocketHandler: ServerSocketHandler = ({
             persistence,
             imeiData.lastPowerProfileChecked,
             prefix,
-            newConnection,
+            isNewConnection,
             imeiData.powerProfile,
             getPowerProfileConfig
           );
@@ -157,7 +129,7 @@ const serverSocketHandler: ServerSocketHandler = ({
             imei,
             prefix,
             counter,
-            newConnection,
+            isNewConnection,
             powerProfileChanged,
             needProfileRefresh,
             imeiData,
@@ -165,7 +137,7 @@ const serverSocketHandler: ServerSocketHandler = ({
             movementsControlSeconds,
             sendData,
           });
-          newConnection = false;
+          isNewConnection = false;
 
           //
         })
