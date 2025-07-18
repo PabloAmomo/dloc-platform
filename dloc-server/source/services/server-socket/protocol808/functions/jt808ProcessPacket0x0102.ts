@@ -24,11 +24,11 @@ const jt808ProcessPacket0x0102: Jt808ProcessPacket = async ({
 
   (response.response as Buffer[]).push(jt808CreateQueryLocationMessage(terminalId, counter + 100));
 
-  (response.response as Buffer[]).push(jt808CreateCheckParameterSettingPacket(terminalId, counter + 102, []));
+  (response.response as Buffer[]).push(jt808CreateCheckParameterSettingPacket(terminalId, counter + 101, []));
 
   // (F102) Low battery alarm （0 off 1 on）default on
   const parametersPackets = ["0000F102 01 " + createHexFromNumberWithNBytes(0, 2)];
-  (response.response as Buffer[]).push(jt808CreateParameterSettingPacket(terminalId, counter + 103, parametersPackets));
+  (response.response as Buffer[]).push(jt808CreateParameterSettingPacket(terminalId, counter + 102, parametersPackets));
 
   response.imei = padNumberLeft(terminalId, 15, "0");
 

@@ -41,8 +41,10 @@ const jt808HandleProcess: Jt808HandleProcess = ({
 
     /** Check if must send to terminal request report */
     if (checkMustSendToTerminalRequestReport(imei, imeiData, forceReportLocInSec)) {
+      // TODO: [REMAINDER] If this packet is activated here, remove from jt808ProcessPacket0x0102
       const packet = jt808CreateQueryLocationMessage(terminalId, counter + 110);
-      printMessage(`${prefix} 📡 🔥🔥🔥🔥🔥🔥🔥 Need send request location report to terminal... ${convertAnyToHexString(packet)}`);
+      // responseSend.push(packet); // uncomment if you want to send this packet
+      printMessage(`${prefix} 📡 🔥🔥🔥🔥 Request location report to terminal... ${convertAnyToHexString(packet)}`);
     }
 
     responseSend.forEach((response) => {
