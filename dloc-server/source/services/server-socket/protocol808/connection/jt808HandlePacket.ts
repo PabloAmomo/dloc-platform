@@ -16,9 +16,7 @@ import Jt808HandlePacket from "../models/Jt808HandlePacket";
 import Jt808HandlePacketProps from "../models/Jt808HandlePacketProps";
 import Jt808ProcessPacketProps from "../models/Jt808ProcessPacketPropss";
 
-const jt808HandlePacket: Jt808HandlePacket = async (
-  props: Jt808HandlePacketProps
-): Promise<HandlePacketResult> => {
+const jt808HandlePacket: Jt808HandlePacket = async (props: Jt808HandlePacketProps): Promise<HandlePacketResult> => {
   const { imei, remoteAddress, data, persistence, counter, disconnect } = props;
 
   let updateLastActivity: boolean = false;
@@ -33,9 +31,8 @@ const jt808HandlePacket: Jt808HandlePacket = async (
 
   /* convert data to hex string */
   const dataString: string = convertAnyToHexString(data);
-  printMessage(
-    `[${imeiToPrint}] (${remoteAddress}) 📡 RECEIVED 👉 [${dataString}].`
-  );
+  // TODO: [DEBUG] Only for debug
+  printMessage(`[${imeiToPrint}] (${remoteAddress}) 📡 RECEIVED 👉 [${dataString}].`);
 
   const jt808Packet = jt808GetFrameData(data);
 
@@ -110,11 +107,7 @@ const jt808HandlePacket: Jt808HandlePacket = async (
   // Upload the power saving (0x0112)
   //     response 0x8001
   // ---------------------------------------
-  else if (
-    [0x0002, 0x0003, 0x0104, 0x0105, 0x0107, 0x0108, 0x0112, 0x1007].includes(
-      jt808Packet.header.msgType
-    )
-  ) {
+  else if ([0x0002, 0x0003, 0x0104, 0x0105, 0x0107, 0x0108, 0x0112, 0x1007].includes(jt808Packet.header.msgType)) {
     const respProcess = await jt808ProcessPacket0x0xxx(functionData);
     updateLastActivity = respProcess.updateLastActivity;
     imeiToPrint = respProcess.imei;
@@ -134,19 +127,9 @@ const jt808HandlePacket: Jt808HandlePacket = async (
   // Unknow command - Discart packet
   // ---------------------------------------------
   else {
-    printMessage(
-      `[${imeiToPrint}] (${remoteAddress}) 🤷‍♂️ command unknown in data ⚠️  [${dataString}]  ⚠️`
-    );
+    printMessage(`[${imeiToPrint}] (${remoteAddress}) 🤷‍♂️ command unknown in data ⚠️  [${dataString}]  ⚠️`);
 
-    return await discardData(
-      "commad unknown",
-      false,
-      persistence,
-      imeiToPrint,
-      remoteAddress,
-      dataString,
-      response
-    );
+    return await discardData("commad unknown", false, persistence, imeiToPrint, remoteAddress, dataString, response);
   }
 
   /** Update last activity and add history */
@@ -165,11 +148,7 @@ const jt808HandlePacket: Jt808HandlePacket = async (
     );
   else {
     for (let i = 0; i < response.response.length; i++) {
-      printMessage(
-        `[${imeiToPrint}] (${remoteAddress}) ✅ response [${convertAnyToHexString(
-          response.response[i]
-        )}].`
-      );
+      printMessage(`[${imeiToPrint}] (${remoteAddress}) ✅ response [${convertAnyToHexString(response.response[i])}].`);
     }
   }
 
