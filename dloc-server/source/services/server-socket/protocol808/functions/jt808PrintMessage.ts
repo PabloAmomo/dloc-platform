@@ -23,7 +23,7 @@ const jt808PrintMessage = (imeiTemp: string, remoteAddress: string, msgType: num
       printMessage(
       `[${imeiTemp}] (${remoteAddress}) ✅ ${
         JT808_MESSAGES_CODES[msgType as keyof typeof JT808_MESSAGES_CODES]
-      } ${addData ? ` (${addData}) ` : ""}`
+      }${addData ? ` (${addData})` : ""}`
     );
 }
 
