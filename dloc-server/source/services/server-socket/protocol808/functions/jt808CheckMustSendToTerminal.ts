@@ -2,14 +2,12 @@ import { PowerProfileType } from '../../../../enums/PowerProfileType';
 import convertStringToHexString from '../../../../functions/convertStringToHexString';
 import createHexFromNumberWithNBytes from '../../../../functions/createHexFromNumberWithNBytes';
 import { printMessage } from '../../../../functions/printMessage';
+import jt808Config from '../config/jt808Config';
 import Jt808ReportConfiguration from '../enums/Jt808reportConfiguration';
 import jt808CreateCheckParameterSettingPacket from './jt808CreateCheckParameterSettingPacket';
 import jt808CreateParameterSettingPacket from './jt808CreateParameterSettingPacket';
 import jt808CreatePowerProfilePacket from './jt808CreatePowerProfilePacket';
 import jt808PowerProfileConfig from './jt808GetPowerProfileConfig';
-
-// TODO: [CONFIGURATION] Move this to a configuration file
-const REPORT_CONFIGURATION : Jt808ReportConfiguration = Jt808ReportConfiguration.temporaryTracking;
 
 const jt808CheckMustSendToTerminal = (
   imei: string,
@@ -24,6 +22,7 @@ const jt808CheckMustSendToTerminal = (
   const response: Buffer[] = [];
   const terminalId = imei.slice(-12);
   const { uploadSec, heartBeatSec } = jt808PowerProfileConfig(newPowerProfile);
+  const REPORT_CONFIGURATION : Jt808ReportConfiguration = jt808Config.REPORT_CONFIGURATION;
 
   /** Create Power Profile Packet */
   const powerPacket = jt808CreatePowerProfilePacket(
@@ -33,7 +32,7 @@ const jt808CheckMustSendToTerminal = (
     movementsControlSeconds,
     REPORT_CONFIGURATION
   );
-  const reportConfigurationText = REPORT_CONFIGURATION as Jt808ReportConfiguration === Jt808ReportConfiguration.temporaryTracking
+  const reportConfigurationText = REPORT_CONFIGURATION === Jt808ReportConfiguration.temporaryTracking
     ? 'temporary location tracking'
     : 'interval report';
   printMessage(`${prefix} 🎛️  Using report configuration [${reportConfigurationText}]`);

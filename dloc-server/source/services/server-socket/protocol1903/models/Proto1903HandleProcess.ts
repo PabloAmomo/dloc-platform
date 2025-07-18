@@ -10,7 +10,6 @@ type Proto1903HandleProcess = ({
   needProfileRefresh,
   imeiData,
   newPowerProfileType,
-  movementsControlSeconds,
   sendData
 }: Proto1903ProcessProps) => void;
 

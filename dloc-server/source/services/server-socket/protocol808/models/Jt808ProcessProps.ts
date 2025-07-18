@@ -14,7 +14,6 @@ type Jt808ProcessProps = {
   needProfileRefresh: boolean;
   imeiData: CacheImei;
   newPowerProfileType: PowerProfileType;
-  movementsControlSeconds: number;
   sendData: (data: Buffer[]) => void; // Function to send data, if needed
 };
 

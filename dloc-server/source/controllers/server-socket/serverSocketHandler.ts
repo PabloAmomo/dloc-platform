@@ -1,15 +1,15 @@
-import convertStringToHexString from '../../functions/convertStringToHexString';
-import { getNormalizedIMEI } from '../../functions/getNormalizedIMEI';
-import getPowerProfile from '../../functions/getPowerProfile';
-import { printMessage } from '../../functions/printMessage';
-import processPacketHealth from '../../functions/processPacketHealth';
-import { getRemoteAddress } from '../../functions/remoteAddress';
-import { CACHE_IMEI } from '../../infraestucture/caches/cacheIMEI';
-import { CacheImei, CacheImeiEmptyItem } from '../../infraestucture/models/CacheImei';
-import { ServerSocketHandler } from '../../infraestucture/models/ServerSocketHandler';
-import ServerSocketHandlerProps from '../../infraestucture/models/ServerSocketHandlerProps';
-import serverSocketDisconnect from './functions/serverSocketDisconnect';
-import serverSocketSendData from './functions/serverSocketSendData';
+import convertStringToHexString from "../../functions/convertStringToHexString";
+import { getNormalizedIMEI } from "../../functions/getNormalizedIMEI";
+import getPowerProfile from "../../functions/getPowerProfile";
+import { printMessage } from "../../functions/printMessage";
+import processPacketHealth from "../../functions/processPacketHealth";
+import { getRemoteAddress } from "../../functions/remoteAddress";
+import { CACHE_IMEI } from "../../infraestucture/caches/cacheIMEI";
+import { CacheImei, CacheImeiEmptyItem } from "../../infraestucture/models/CacheImei";
+import { ServerSocketHandler } from "../../infraestucture/models/ServerSocketHandler";
+import ServerSocketHandlerProps from "../../infraestucture/models/ServerSocketHandlerProps";
+import serverSocketDisconnect from "./functions/serverSocketDisconnect";
+import serverSocketSendData from "./functions/serverSocketSendData";
 
 const serverSocketHandler: ServerSocketHandler = (props: ServerSocketHandlerProps) => {
   const {
@@ -56,7 +56,7 @@ const serverSocketHandler: ServerSocketHandler = (props: ServerSocketHandlerProp
     }
 
     dataToUse = decoder(data);
-    
+
     counter++;
     if (counter > 32000) counter = 1;
 
@@ -94,21 +94,16 @@ const serverSocketHandler: ServerSocketHandler = (props: ServerSocketHandlerProp
           const imeiData: CacheImei = CACHE_IMEI.get(imei) ?? CacheImeiEmptyItem;
 
           /** Get power profile for the imei */
-          const {
-            newPowerProfileType,
-            powerProfileChanged,
-            lastPowerProfileChecked,
-            needProfileRefresh,
-            movementsControlSeconds,
-          } = await getPowerProfile(
-            imei,
-            persistence,
-            imeiData.lastPowerProfileChecked,
-            prefix,
-            isNewConnection,
-            imeiData.powerProfile,
-            getPowerProfileConfig
-          );
+          const { newPowerProfileType, powerProfileChanged, lastPowerProfileChecked, needProfileRefresh } =
+            await getPowerProfile(
+              imei,
+              persistence,
+              imeiData.lastPowerProfileChecked,
+              prefix,
+              isNewConnection,
+              imeiData.powerProfile,
+              getPowerProfileConfig
+            );
 
           /** update the information in the cache */
           CACHE_IMEI.updateOrCreate(imei, {
@@ -126,7 +121,6 @@ const serverSocketHandler: ServerSocketHandler = (props: ServerSocketHandlerProp
             needProfileRefresh,
             imeiData,
             newPowerProfileType,
-            movementsControlSeconds,
             sendData,
           });
           isNewConnection = false;

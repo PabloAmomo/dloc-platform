@@ -14,7 +14,6 @@ type Proto1903ProcessProps = {
   needProfileRefresh: boolean;
   imeiData: CacheImei;
   newPowerProfileType: PowerProfileType;
-  movementsControlSeconds: number;
   sendData: (data: string[]) => void; 
 };
 

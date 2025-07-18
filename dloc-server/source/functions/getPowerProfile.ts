@@ -1,19 +1,12 @@
-import { get } from "http";
-import { PowerProfileType } from "../enums/PowerProfileType";
-import GetPowerProfileConfig from "../models/GetProwerProfileConfig";
-import { GetPowerProfile, Persistence } from "../models/Persistence";
-import getMovementInLastSeconds from "./getMovementInLastSeconds";
-import { printMessage } from "./printMessage";
-import updatePowerProfile from "./updatePowerProfile";
+import config from '../config/config';
+import { PowerProfileType } from '../enums/PowerProfileType';
+import GetPowerProfileConfig from '../models/GetProwerProfileConfig';
+import { Persistence } from '../models/Persistence';
+import getMovementInLastSeconds from './getMovementInLastSeconds';
+import { printMessage } from './printMessage';
+import updatePowerProfile from './updatePowerProfile';
 
 // TODO: [VERIFY] Check movement type parameter working correctly
-
-const MOVEMENTS_CONTROL_SECONDS: number = 300;
-// Duración del tiempo en que se estará enviando la posicion desde el dispositivo. Este valor sirve para configurar el periodo de duracion del active tracking.
-const REFRESH_POWER_PROFILE_EXTEND_SECONDS: number = MOVEMENTS_CONTROL_SECONDS * 2;
-
-// TODO: [CONFIGURATION] Move this to a configuration file
-const MOVEMENT_MESURE: "distance" | "perimeter" = "perimeter";
 
 async function getPowerProfile(
   imei: string,
@@ -28,8 +21,9 @@ async function getPowerProfile(
   powerProfileChanged: boolean;
   lastPowerProfileChecked: number;
   needProfileRefresh: boolean;
-  movementsControlSeconds: number;
 }> {
+  const { MOVEMENT_MESURE, MOVEMENTS_CONTROL_SECONDS } = config;
+
   let newPowerProfileType = PowerProfileType.AUTOMATIC_FULL;
   let powerProfileChanged = false;
   let needProfileRefresh = false;
@@ -47,7 +41,7 @@ async function getPowerProfile(
       full: getPowerProfileConfig(PowerProfileType.AUTOMATIC_FULL).movementMeters,
       balanced: getPowerProfileConfig(PowerProfileType.AUTOMATIC_BALANCED).movementMeters,
       minimal: getPowerProfileConfig(PowerProfileType.AUTOMATIC_MINIMAL).movementMeters,
-    }
+    };
 
     /* Check if the response is valid */
     if (powerProfile.error) throw powerProfile.error;
@@ -79,7 +73,6 @@ async function getPowerProfile(
         powerProfileChanged: false,
         lastPowerProfileChecked,
         needProfileRefresh: false,
-        movementsControlSeconds: REFRESH_POWER_PROFILE_EXTEND_SECONDS,
       };
     }
 
@@ -115,10 +108,7 @@ async function getPowerProfile(
       );
 
       /** Change to balanced power profile */
-      if (
-        newPowerProfileType === PowerProfileType.AUTOMATIC_FULL &&
-        metersMoveInLastSeconds < movementsMts.balanced
-      ) {
+      if (newPowerProfileType === PowerProfileType.AUTOMATIC_FULL && metersMoveInLastSeconds < movementsMts.balanced) {
         newPowerProfileType = PowerProfileType.AUTOMATIC_BALANCED;
         powerProfileChanged = true;
       } else if (
@@ -179,7 +169,6 @@ async function getPowerProfile(
     powerProfileChanged,
     lastPowerProfileChecked,
     needProfileRefresh,
-    movementsControlSeconds: REFRESH_POWER_PROFILE_EXTEND_SECONDS, // Send double time to be shure the profile is refreshed
   };
 }
 

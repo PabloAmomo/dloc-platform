@@ -1,3 +1,4 @@
+import jt808Config from '../config/jt808Config';
 import jt808CheckMustSendToTerminal from '../functions/jt808CheckMustSendToTerminal';
 import jt808FrameEncode from '../functions/jt808FrameEncode';
 import Jt808HandleProcess from '../models/Jt808HandleProcess';
@@ -13,9 +14,10 @@ const jt808HandleProcess: Jt808HandleProcess = ({
   needProfileRefresh,
   imeiData,
   newPowerProfileType,
-  movementsControlSeconds,
   sendData,
 }: Jt808ProcessProps): void => {
+  const movementsControlSeconds = jt808Config.REFRESH_POWER_PROFILE_EXTEND_SECONDS;
+  
   if (isNewConnection || powerProfileChanged || needProfileRefresh) {
     const responseSend: Buffer[] = jt808CheckMustSendToTerminal(
       imei,

@@ -10,7 +10,6 @@ type Jt808HandleProcess = ({
   needProfileRefresh,
   imeiData,
   newPowerProfileType,
-  movementsControlSeconds,
   sendData
 }: Jt808ProcessProps) => void;
 
