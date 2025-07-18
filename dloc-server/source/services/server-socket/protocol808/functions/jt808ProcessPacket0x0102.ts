@@ -22,6 +22,7 @@ const jt808ProcessPacket0x0102: Jt808ProcessPacket = async ({
 
   (response.response as Buffer[]).push(jt808CreateGeneralResponse(terminalId, counter, msgSerialNumber, msgType, "00"));
 
+  // TODO: [REMAINDER] If this packet is activated here, remove from jt808HandleProcess
   (response.response as Buffer[]).push(jt808CreateQueryLocationMessage(terminalId, counter + 100));
 
   (response.response as Buffer[]).push(jt808CreateCheckParameterSettingPacket(terminalId, counter + 101, []));
