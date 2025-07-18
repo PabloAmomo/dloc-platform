@@ -1,13 +1,12 @@
-import checkMustSendToTerminalRequestReport from "../../../../functions/checkMustSendToTerminalRequestReport";
-import convertAnyToHexString from "../../../../functions/convertAnyToHexString";
-import { printMessage } from "../../../../functions/printMessage";
-import jt808Config from "../config/jt808Config";
-import jt808CheckMustSendToTerminal from "../functions/jt808CheckMustSendToTerminal";
-import jt808CreateQueryLocationMessage from "../functions/jt808CreateQueryLocationMessage";
-import jt808FrameEncode from "../functions/jt808FrameEncode";
-import jt808GetPowerProfileConfig from "../functions/jt808GetPowerProfileConfig";
-import Jt808HandleProcess from "../models/Jt808HandleProcess";
-import Jt808ProcessProps from "../models/Jt808ProcessProps";
+import checkMustSendToTerminalRequestReport from '../../../../functions/checkMustSendToTerminalRequestReport';
+import { printMessage } from '../../../../functions/printMessage';
+import jt808Config from '../config/jt808Config';
+import jt808CheckMustSendToTerminal from '../functions/jt808CheckMustSendToTerminal';
+import jt808CreateQueryLocationMessage from '../functions/jt808CreateQueryLocationMessage';
+import jt808FrameEncode from '../functions/jt808FrameEncode';
+import jt808GetPowerProfileConfig from '../functions/jt808GetPowerProfileConfig';
+import Jt808HandleProcess from '../models/Jt808HandleProcess';
+import Jt808ProcessProps from '../models/Jt808ProcessProps';
 
 const jt808HandleProcess: Jt808HandleProcess = ({
   results,
@@ -36,20 +35,19 @@ const jt808HandleProcess: Jt808HandleProcess = ({
       movementsControlSeconds
     );
 
-    // TODO: [FEATURE] (If needed) Implement the send report packet to terminal
-    const { forceReportLocInSec } = jt808GetPowerProfileConfig(newPowerProfileType);
-
-    /** Check if must send to terminal request report */
-    if (checkMustSendToTerminalRequestReport(imei, imeiData, forceReportLocInSec)) {
-      // TODO: [REMAINDER] If this packet is activated here, remove from jt808ProcessPacket0x0102
-      const packet = jt808CreateQueryLocationMessage(terminalId, counter + 110);
-      // responseSend.push(packet); // uncomment if you want to send this packet
-      printMessage(`${prefix} 📡 🔥🔥🔥🔥 Request location report to terminal... ${convertAnyToHexString(packet)}`);
-    }
-
     responseSend.forEach((response) => {
       (results[0].response as Buffer[]).push(response);
     });
+  }
+
+  // TODO: [FEATURE] (If needed) Implement the send report packet to terminal
+  /** Check if must send to terminal request report */
+  const { forceReportLocInSec } = jt808GetPowerProfileConfig(newPowerProfileType);
+  if (checkMustSendToTerminalRequestReport(imei, imeiData, forceReportLocInSec)) {
+    // TODO: [REMAINDER] If this packet is activated here, remove from jt808ProcessPacket0x0102
+    const packet = jt808CreateQueryLocationMessage(terminalId, counter + 110);
+    //  (results[0].response as Buffer[]).push(packet); // uncomment if you want to send this packet
+    printMessage(`${prefix} 📡 🔥🔥🔥🔥 Request location report to terminal...`);
   }
 
   /** Send */
