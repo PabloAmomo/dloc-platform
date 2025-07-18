@@ -5,7 +5,7 @@ const JT808_MESSAGES_CODES = {
   0x0002: "❤️  Terminal heartbeat",
   0x0003: "🔚 Terminal Logout",
   0x0104: "⚙️  Check terminal parameter response",
-  0x0105: "💤 Sleep notificationSleep notification",
+  0x0105: "💤 Sleep notification",
   0x0107: "✅ Check terminal attribute response",
   0x0108: "🌟 Sleep wake up notification",
   0x0112: "⚡️ Upload the power saving mode modified by SMS to the server",

@@ -37,6 +37,11 @@ const jt808ProcessPacket0x0xxx: Jt808ProcessPacket = async ({
       break;
     }
 
+    case 0x0105: {
+      extraMessage = `Sleep ${(body.length === 1 && body[0] === 0x00) ? "🚀 wakeup" : "💤 sleep"}`;
+      break;
+    }
+
     case 0x0107: {
       const { manufacturerId, terminalModel, simIccid } = jt808ParseTerminalAttributes(jt808Packet.body);
       extraMessage = `⚙️  Terminal attributes: ${manufacturerId} Model ${terminalModel} - SimICCID ${simIccid}`;
