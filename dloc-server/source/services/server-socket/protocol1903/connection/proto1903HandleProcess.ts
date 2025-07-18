@@ -1,8 +1,8 @@
-import { printMessage } from '../../../../functions/printMessage';
-import Proto1903ProcessProps from '../models/Proto1903ProcessProps';
-import proto1903CheckMustSendToTerminal from '../functions/proto1903CheckMustSendToTerminal';
-import proto1903MustSendToTerminalRequestReport from '../functions/proto1903MustSendToTerminalRequestReport';
-import Proto1903HandleProcess from '../models/Proto1903HandleProcess';
+import { printMessage } from "../../../../functions/printMessage";
+import Proto1903ProcessProps from "../models/Proto1903ProcessProps";
+import proto1903CheckMustSendToTerminal from "../functions/proto1903CheckMustSendToTerminal";
+import proto1903CheckMustSendToTerminalRequestReport from "../functions/proto1903CheckMustSendToTerminalRequestReport";
+import Proto1903HandleProcess from "../models/Proto1903HandleProcess";
 
 const proto1903HandleProcess: Proto1903HandleProcess = ({
   results,
@@ -13,7 +13,7 @@ const proto1903HandleProcess: Proto1903HandleProcess = ({
   needProfileRefresh,
   imeiData,
   newPowerProfileType,
-  sendData
+  sendData,
 }: Proto1903ProcessProps): void => {
   let toSendAditional: string = "";
   if (isNewConnection || powerProfileChanged || needProfileRefresh) {
@@ -30,13 +30,9 @@ const proto1903HandleProcess: Proto1903HandleProcess = ({
   }
 
   /** Check if must send to terminal request report */
-  if (
-    proto1903MustSendToTerminalRequestReport(imei, newPowerProfileType, imeiData)
-  ) {
+  if (proto1903CheckMustSendToTerminalRequestReport(imei, newPowerProfileType, imeiData)) {
     toSendAditional += "TRVBP20#";
-    printMessage(
-      `${prefix} 📡 send command TRVBP20 (Force to report Position).`
-    );
+    printMessage(`${prefix} 📡 send command TRVBP20 (Force to report Position).`);
   }
 
   /** Create response to send */
@@ -46,7 +42,7 @@ const proto1903HandleProcess: Proto1903HandleProcess = ({
   }
   if (toSendAditional) toSend += toSendAditional;
 
-  sendData([toSend]); 
+  sendData([toSend]);
 };
 
 export default proto1903HandleProcess;
