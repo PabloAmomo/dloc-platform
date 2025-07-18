@@ -14,7 +14,7 @@ const proto1903GetPowerProfileConfig : GetPowerProfileConfig = (
       heartBeatSec: 120,
       uploadSec: 90,
       ledState: false,
-      forceReportLocInMs: 110000,
+      forceReportLocInSec: 110,
       movementMeters: 25,
     };
 
@@ -26,7 +26,7 @@ const proto1903GetPowerProfileConfig : GetPowerProfileConfig = (
       heartBeatSec: 120,
       uploadSec: 60,
       ledState: false,
-      forceReportLocInMs: 80000,
+      forceReportLocInSec: 80,
       movementMeters: 50,
     };
 
@@ -44,7 +44,7 @@ const proto1903GetPowerProfileConfig : GetPowerProfileConfig = (
     heartBeatSec: 120,
     uploadSec: 20,
     ledState: true,
-    forceReportLocInMs: 50000,
+    forceReportLocInSec: 50,
     movementMeters: 50,
   };
 }

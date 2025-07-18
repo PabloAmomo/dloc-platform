@@ -5,12 +5,13 @@ import { CACHE_POSITION } from "../../../../infraestucture/caches/cachePosition"
 import { CacheImei } from "../../../../infraestucture/models/CacheImei";
 import { CachePosition } from "../../../../infraestucture/models/CachePosition";
 
-const proto1903MustSendToTerminalRequestReport = (
+const proto1903CheckMustSendToTerminalRequestReport = (
   imei: string,
   newPowerProfileType: PowerProfileType,
   imeiData: CacheImei
 ): boolean => {
-  const { forceReportLocInMs } = proto1903PowerProfileConfig(newPowerProfileType);
+  const { forceReportLocInSec } = proto1903PowerProfileConfig(newPowerProfileType);
+  const forceReportLocInMs = forceReportLocInSec * 1000; // Convert seconds to milliseconds
 
   const lastPosPacket: CachePosition | undefined = CACHE_POSITION.get(imei);
 
@@ -35,4 +36,4 @@ const proto1903MustSendToTerminalRequestReport = (
   return needSendToTerminal;
 };
 
-export default proto1903MustSendToTerminalRequestReport;
+export default proto1903CheckMustSendToTerminalRequestReport;
