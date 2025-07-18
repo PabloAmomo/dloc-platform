@@ -5,7 +5,6 @@ import { Jt808ProcessPacket } from "../models/Jt808ProcessPacket";
 import jt808CreateCheckParameterSettingPacket from "./jt808CreateCheckParameterSettingPacket";
 import jt808CreateGeneralResponse from "./jt808CreateGeneralResponse";
 import jt808CreateParameterSettingPacket from "./jt808CreateParameterSettingPacket";
-import jt808CreateQueryLocationMessage from "./jt808CreateQueryLocationMessage";
 import jt808PrintMessage from "./jt808PrintMessage";
 
 const jt808ProcessPacket0x0102: Jt808ProcessPacket = async ({
