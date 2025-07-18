@@ -2,6 +2,7 @@ import { CACHE_IMEI } from "../infraestucture/caches/cacheIMEI";
 import { CACHE_POSITION } from "../infraestucture/caches/cachePosition";
 import { CacheImei } from "../infraestucture/models/CacheImei";
 import { CachePosition } from "../infraestucture/models/CachePosition";
+import { printMessage } from "./printMessage";
 
 const checkMustSendToTerminalRequestReport = (
   prefix: string,
@@ -25,6 +26,9 @@ const checkMustSendToTerminalRequestReport = (
   if (needSendToTerminal) {
     CACHE_IMEI.updateOrCreate(imei, { ...imeiData, lastReportRequestTimestamp: currentTime });
   }
+
+  if (needSendToTerminal)
+    printMessage(`${prefix} 📡 🔥🔥 last position received: ${new Date(lastPosMs).toString()}`);
 
   return needSendToTerminal;
 };
