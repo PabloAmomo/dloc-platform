@@ -1,5 +1,5 @@
-import byteArrayToHexString from "../../../../functions/byteArrayToHexString";
-import numberToHexByteArray from "../../../../functions/numberToHexByteArray";
+import convertByteArrayToHexString from "../../../../functions/convertByteArrayToHexString";
+import convertNumberToHexByteArray from "../../../../functions/convertNumberToHexByteArray";
 import toHexWith from "../../../../functions/toHexWith";
 import jt808CreateFrameData from "./jt808CreateFrameData";
 import jt808TimeSyncBody from "./jt808TimeSyncBody";
@@ -14,7 +14,7 @@ const jt808CreateRequestSyncTimePacket = (
     terminalId: Buffer.from(imei, "hex"),
     msgSerialNumber: counter,
     body: Buffer.from(
-      byteArrayToHexString(numberToHexByteArray(msgSerialNumber)) +
+      convertByteArrayToHexString(convertNumberToHexByteArray(msgSerialNumber)) +
         toHexWith(0x0109, 4) +
         jt808TimeSyncBody().toString("hex"),
       "hex"

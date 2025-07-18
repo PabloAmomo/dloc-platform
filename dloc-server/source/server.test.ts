@@ -1,6 +1,6 @@
 import { exit } from "process";
-import byteArrayToHexString from "./functions/byteArrayToHexString";
-import numberToHexByteArray from "./functions/numberToHexByteArray";
+import convertByteArrayToHexString from "./functions/convertByteArrayToHexString";
+import convertNumberToHexByteArray from "./functions/convertNumberToHexByteArray";
 import { printMessage } from "./functions/printMessage";
 import jt808GetFrameData from "./services/server-socket/protocol808/functions/jt808GetFrameData";
 import jt808DecodeLocations from "./services/server-socket/protocol808/functions/jt808DecodeLocations";

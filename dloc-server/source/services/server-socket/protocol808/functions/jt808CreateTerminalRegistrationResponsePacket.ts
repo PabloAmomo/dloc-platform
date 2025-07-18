@@ -1,5 +1,5 @@
-import byteArrayToHexString from "../../../../functions/byteArrayToHexString";
-import numberToHexByteArray from "../../../../functions/numberToHexByteArray";
+import convertByteArrayToHexString from "../../../../functions/convertByteArrayToHexString";
+import convertNumberToHexByteArray from "../../../../functions/convertNumberToHexByteArray";
 import  jt808CreateFrameData  from "./jt808CreateFrameData";
 
 const jt808CreateTerminalRegistrationResponsePacket = (
@@ -12,7 +12,7 @@ const jt808CreateTerminalRegistrationResponsePacket = (
     terminalId: Buffer.from(terminalId, "hex"),
     msgSerialNumber: counter,
     body: Buffer.from(
-      byteArrayToHexString(numberToHexByteArray(originalMsgSerialNumber)) +
+      convertByteArrayToHexString(convertNumberToHexByteArray(originalMsgSerialNumber)) +
         "00" + terminalId,
       "hex"
     ),
