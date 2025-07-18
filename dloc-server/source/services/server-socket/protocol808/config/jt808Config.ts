@@ -3,7 +3,9 @@ import Jt808ReportConfiguration from "../enums/Jt808reportConfiguration";
 
 // Define the configuration for the JT808 protocol
 const jt808Config: { REPORT_CONFIGURATION: Jt808ReportConfiguration; REFRESH_POWER_PROFILE_EXTEND_SECONDS: number } = {
-  REPORT_CONFIGURATION: Jt808ReportConfiguration.intervalReport,
+  // Configuration for the report type used in the JT808 protocol)
+  // TODO: [BUG] intervalReport does not work, does not detect any movement or location change
+  REPORT_CONFIGURATION: Jt808ReportConfiguration.temporaryTracking,
   // Duration of the time during which the position will be sent from the device. This value is used to configure the active tracking duration period.
   REFRESH_POWER_PROFILE_EXTEND_SECONDS: config.MOVEMENTS_CONTROL_SECONDS * 2, // Double the time to ensure the profile is refreshed
 };

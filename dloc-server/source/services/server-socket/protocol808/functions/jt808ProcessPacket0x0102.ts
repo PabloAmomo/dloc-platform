@@ -28,9 +28,6 @@ const jt808ProcessPacket0x0102: Jt808ProcessPacket = async ({
   const parametersPackets = ["0000F102 01 " + createHexFromNumberWithNBytes(0, 2)];
   (response.response as Buffer[]).push(jt808CreateParameterSettingPacket(terminalId, counter + 101, parametersPackets));
 
-  // TODO: [REMAINDER] If this packet is activated here, remove from jt808HandleProcess
-  //(response.response as Buffer[]).push(jt808CreateQueryLocationMessage(terminalId, counter + 102));
-
   response.imei = padNumberLeft(terminalId, 15, "0");
 
   const imei = getNormalizedIMEI(response.imei);

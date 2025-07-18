@@ -40,11 +40,9 @@ const jt808HandleProcess: Jt808HandleProcess = ({
     });
   }
 
-  // TODO: [FEATURE] (If needed) Implement the send report packet to terminal
   /** Check if must send to terminal request report */
   const { forceReportLocInSec } = jt808GetPowerProfileConfig(newPowerProfileType);
   if (checkMustSendToTerminalRequestReport(prefix, imei, imeiData, forceReportLocInSec)) {
-    // TODO: [REMAINDER] If this packet is activated here, remove from jt808ProcessPacket0x0102
     const packet = jt808CreateQueryLocationMessage(terminalId, counter + 110);
     (results[0].response as Buffer[]).push(packet);
     printMessage(`${prefix} 🧭 🔥🔥 Request location report to terminal... (Force after ${forceReportLocInSec} seconds)`);
