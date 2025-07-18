@@ -28,7 +28,9 @@ const checkMustSendToTerminalRequestReport = (
   }
 
   if (needSendToTerminal)
-    printMessage(`${prefix} 📡 🔥🔥 last position received: ${new Date(lastPosMs).toString()}`);
+    printMessage(
+      `${prefix} 📡 🔥🔥 last position received (${lastPosMs} ms ago) at ${new Date(imeiData.lastReportRequestTimestamp).toISOString()}`
+    );
 
   return needSendToTerminal;
 };
