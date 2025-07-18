@@ -1,19 +1,16 @@
+import { get } from "http";
 import { PowerProfileType } from "../enums/PowerProfileType";
-import { Persistence } from "../models/Persistence";
+import GetPowerProfileConfig from "../models/GetProwerProfileConfig";
+import { GetPowerProfile, Persistence } from "../models/Persistence";
 import getMovementInLastSeconds from "./getMovementInLastSeconds";
 import { printMessage } from "./printMessage";
 import updatePowerProfile from "./updatePowerProfile";
 
 // TODO: [VERIFY] Check movement type parameter working correctly
 
-
 const MOVEMENTS_CONTROL_SECONDS: number = 300;
 // Duración del tiempo en que se estará enviando la posicion desde el dispositivo. Este valor sirve para configurar el periodo de duracion del active tracking.
 const REFRESH_POWER_PROFILE_EXTEND_SECONDS: number = MOVEMENTS_CONTROL_SECONDS * 2;
-
-// TODO: [FEATURE] Use MOVEMENTS_MTS_FOR_ from %PROTO%PowerProfileConfig
-const MOVEMENTS_MTS_FOR_BALANCED: number = 50;
-const MOVEMENTS_MTS_FOR_MINIMAL: number = 25;
 
 // TODO: [CONFIGURATION] Move this to a configuration file
 const MOVEMENT_MESURE: "distance" | "perimeter" = "perimeter";
@@ -24,7 +21,8 @@ async function getPowerProfile(
   lastPowerProfileChecked: number,
   messagePrefix: string,
   isNewConnection: boolean,
-  currentPowerProfileType: PowerProfileType
+  currentPowerProfileType: PowerProfileType,
+  getPowerProfileConfig: GetPowerProfileConfig
 ): Promise<{
   newPowerProfileType: PowerProfileType;
   powerProfileChanged: boolean;
@@ -45,6 +43,11 @@ async function getPowerProfile(
 
   try {
     const powerProfile = await persistence.getPowerProfile(imei);
+    const movementsMts = {
+      full: getPowerProfileConfig(PowerProfileType.AUTOMATIC_FULL).movementMeters,
+      balanced: getPowerProfileConfig(PowerProfileType.AUTOMATIC_BALANCED).movementMeters,
+      minimal: getPowerProfileConfig(PowerProfileType.AUTOMATIC_MINIMAL).movementMeters,
+    }
 
     /* Check if the response is valid */
     if (powerProfile.error) throw powerProfile.error;
@@ -114,28 +117,28 @@ async function getPowerProfile(
       /** Change to balanced power profile */
       if (
         newPowerProfileType === PowerProfileType.AUTOMATIC_FULL &&
-        metersMoveInLastSeconds < MOVEMENTS_MTS_FOR_BALANCED
+        metersMoveInLastSeconds < movementsMts.balanced
       ) {
         newPowerProfileType = PowerProfileType.AUTOMATIC_BALANCED;
         powerProfileChanged = true;
       } else if (
         /** Change to minimal power profile */
         newPowerProfileType === PowerProfileType.AUTOMATIC_BALANCED &&
-        metersMoveInLastSeconds < MOVEMENTS_MTS_FOR_MINIMAL
+        metersMoveInLastSeconds < movementsMts.minimal
       ) {
         newPowerProfileType = PowerProfileType.AUTOMATIC_MINIMAL;
         powerProfileChanged = true;
       } else if (
         /** Change to balanced power profile */
         newPowerProfileType === PowerProfileType.AUTOMATIC_MINIMAL &&
-        metersMoveInLastSeconds > MOVEMENTS_MTS_FOR_MINIMAL
+        metersMoveInLastSeconds > movementsMts.minimal
       ) {
         newPowerProfileType = PowerProfileType.AUTOMATIC_BALANCED;
         powerProfileChanged = true;
       } else if (
         /** Change to full power profile */
         newPowerProfileType === PowerProfileType.AUTOMATIC_BALANCED &&
-        metersMoveInLastSeconds > MOVEMENTS_MTS_FOR_BALANCED
+        metersMoveInLastSeconds > movementsMts.balanced
       ) {
         newPowerProfileType = PowerProfileType.AUTOMATIC_FULL;
         powerProfileChanged = true;

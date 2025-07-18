@@ -142,7 +142,8 @@ const serverSocketHandler: ServerSocketHandler = ({
             imeiData.lastPowerProfileChecked,
             prefix,
             newConnection,
-            imeiData.powerProfile
+            imeiData.powerProfile,
+            getPowerProfileConfig
           );
 
           /** create or update socket connection to cache */
