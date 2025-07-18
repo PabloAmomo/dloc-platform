@@ -6,7 +6,7 @@ import Jt808ReportConfiguration from '../enums/Jt808reportConfiguration';
 import jt808CreateCheckParameterSettingPacket from './jt808CreateCheckParameterSettingPacket';
 import jt808CreateParameterSettingPacket from './jt808CreateParameterSettingPacket';
 import jt808CreatePowerProfilePacket from './jt808CreatePowerProfilePacket';
-import jt808PowerProfileConfig from './jt808PowerProfileConfig';
+import jt808PowerProfileConfig from './jt808GetPowerProfileConfig';
 
 // TODO: [CONFIGURATION] Move this to a configuration file
 const REPORT_CONFIGURATION : Jt808ReportConfiguration = Jt808ReportConfiguration.temporaryTracking;

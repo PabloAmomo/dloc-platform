@@ -1,10 +1,11 @@
 import { PowerProfileType } from "../../../../enums/PowerProfileType";
 import { PowerProfileConfig } from "../../../../models/PowerProfileConfig";
 import { printMessage } from "../../../../functions/printMessage";
+import GetPowerProfileConfig from "../../../../models/GetProwerProfileConfig";
 
-function jt808PowerProfileConfig(
+const proto1903GetPowerProfileConfig : GetPowerProfileConfig = (
   profileType: PowerProfileType = PowerProfileType.FULL
-) : PowerProfileConfig {
+) : PowerProfileConfig => {
   if (
     profileType === PowerProfileType.MINIMAL ||
     profileType === PowerProfileType.AUTOMATIC_MINIMAL
@@ -22,7 +23,7 @@ function jt808PowerProfileConfig(
     profileType === PowerProfileType.AUTOMATIC_BALANCED
   )
     return {
-      heartBeatSec: 90,
+      heartBeatSec: 120,
       uploadSec: 60,
       ledState: false,
       forceReportLocInMs: 80000,
@@ -35,12 +36,12 @@ function jt808PowerProfileConfig(
     profileType !== PowerProfileType.AUTOMATIC_FULL
   )
     printMessage(
-      `❌ power profile (Proto JT808) [${profileType}] not found, defaulting to full power profile`
+      `❌ power profile (Proto1903) [${profileType}] not found, defaulting to full power profile`
     );
 
   // Full power profile configuration
   return {
-    heartBeatSec: 60,
+    heartBeatSec: 120,
     uploadSec: 20,
     ledState: true,
     forceReportLocInMs: 50000,
@@ -48,4 +49,4 @@ function jt808PowerProfileConfig(
   };
 }
 
-export default jt808PowerProfileConfig;
+export default proto1903GetPowerProfileConfig;

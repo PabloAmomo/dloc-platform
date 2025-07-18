@@ -9,6 +9,7 @@ import Proto1903HandlePacket from '../../services/server-socket/protocol1903/mod
 import Proto1903HandleProcess from '../../services/server-socket/protocol1903/models/Proto1903HandleProcess';
 import Jt808HandlePacket from '../../services/server-socket/protocol808/models/Jt808HandlePacket';
 import Jt808HandleProcess from '../../services/server-socket/protocol808/models/Jt808HandleProcess';
+import GetPowerProfileConfig from '../../models/GetProwerProfileConfig';
 
 export default interface  ServerSocketHandlerProps {
   protocol: "PROTO1903" | "JT808";
@@ -20,5 +21,6 @@ export default interface  ServerSocketHandlerProps {
   handleClose: HandleClose;
   handleEnd: HandleEnd;
   handleError: HandleError;
+  getPowerProfileConfig: GetPowerProfileConfig;
   decoder: (data: Buffer) => Buffer[] | string[];
 }

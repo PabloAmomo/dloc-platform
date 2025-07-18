@@ -23,6 +23,7 @@ const serverSocketHandler: ServerSocketHandler = ({
   handleClose,
   handleEnd,
   handleError,
+  getPowerProfileConfig,
   decoder,
 }: ServerSocketHandlerProps) => {
   const remoteAddress: string = getRemoteAddress(conn);

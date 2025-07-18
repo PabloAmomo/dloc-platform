@@ -23,6 +23,8 @@ import jt808HandleError from './services/server-socket/protocol808/connection/jt
 import jt808HandlePacket from './services/server-socket/protocol808/connection/jt808HandlePacket';
 import jt808HandleProcess from './services/server-socket/protocol808/connection/jt808HandleProcess';
 import jt808Decoder from './services/server-socket/protocol808/functions/jt808Decoder';
+import jt808GetPowerProfileConfig from './services/server-socket/protocol808/functions/jt808GetPowerProfileConfig';
+import proto1903GetPowerProfileConfig from './services/server-socket/protocol1903/functions/proto1903GetPowerProfileConfig';
 
 /** Load environment variables */
 dotenv.config();
@@ -90,6 +92,7 @@ if (SOCKET_PROTOCOL == "1903") {
         handleEnd: proto1903HandleEnd,
         handleError: proto1903HandleError,
         decoder: proto1903Decoder as (data: Buffer) => string[],
+        getPowerProfileConfig: proto1903GetPowerProfileConfig
       }),
     PORT_SOCKET
   );
@@ -110,6 +113,7 @@ if (SOCKET_PROTOCOL == "1903") {
         handleEnd: jt808HandleEnd,
         handleError: jt808HandleError,
         decoder: jt808Decoder as (data: Buffer) => Buffer[],
+        getPowerProfileConfig: jt808GetPowerProfileConfig
       }),
     PORT_SOCKET
   );
