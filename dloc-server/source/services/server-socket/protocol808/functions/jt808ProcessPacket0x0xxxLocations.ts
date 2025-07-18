@@ -38,16 +38,16 @@ const jt808ProcessPacket0x0xxxLocations: Jt808ProcessPacket = async ({
   if (locations.count > 0) {
     for (const location of locations.locations) {
       location.statusFlags.positioning;
-      gpsConstellation = ` Fixed > ${location.statusFlags.positioning ? "👍" : "👎"}`;
-      gpsConstellation += ` GPS > ${location.statusFlags.gpsPositioning ? "✅" : "❌"}`;
-      gpsConstellation += ` Beidou > ${location.statusFlags.beidouPositioning ? "✅" : "❌"}`;
-      gpsConstellation += ` Glonass > ${location.statusFlags.glonassPositioning ? "✅" : "❌"}`;
-      gpsConstellation += ` Galileo >${location.statusFlags.galileoPositioning ? "✅" : "❌"}`;
+      gpsConstellation = ` Fixed ${location.statusFlags.positioning ? "👍" : "👎"}`;
+      gpsConstellation += ` - GPS ${location.statusFlags.gpsPositioning ? "✅" : "❌"}`;
+      gpsConstellation += ` - Beidou ${location.statusFlags.beidouPositioning ? "✅" : "❌"}`;
+      gpsConstellation += ` - Glonass ${location.statusFlags.glonassPositioning ? "✅" : "❌"}`;
+      gpsConstellation += ` - Galileo ${location.statusFlags.galileoPositioning ? "✅" : "❌"}`;
 
       if (location.lat !== 0 && location.lng !== 0)
-        extraMessage = `[${location.dateTimeUTC.replace(".000Z", "").replace("T", "")}] Lat ${location.lat} - Lng ${
+        extraMessage = `[${location.dateTimeUTC.replace(".000Z", "").replace("T", " ")}] Lat ${location.lat} - Lng ${
           location.lng
-        } ${gpsConstellation.trim()}]`;
+        } ${gpsConstellation.trim()}`;
 
       location.statusFlags.beidouPositioning;
 
