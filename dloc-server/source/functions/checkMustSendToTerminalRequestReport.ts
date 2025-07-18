@@ -29,7 +29,7 @@ const checkMustSendToTerminalRequestReport = (
 
   if (needSendToTerminal)
     printMessage(
-      `${prefix} 📡 🔥🔥 last position received (${(lastPosMs / 1000).toFixed(0)} sec ago) at ${new Date(
+      `${prefix} 🧭 📡 last position received (${(lastPosMs / 1000).toFixed(0)} sec ago) at ${new Date(
         imeiData.lastReportRequestTimestamp
       ).toISOString()}`
     );
