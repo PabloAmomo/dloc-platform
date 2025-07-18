@@ -45,7 +45,7 @@ const jt808CheckMustSendToTerminal = (
   const heartBeatPacket = jt808CreateParameterSettingPacket(terminalId, counter + 210, [
     "00000001 04 " + createHexFromNumberWithNBytes(heartBeatSec, 4),
   ]);
-  printMessage(`${prefix} ❤️  Heart beat config Packet sent: ${convertStringToHexString(heartBeatPacket)}`);
+  printMessage(`${prefix} ❤️  Heart beat config Packet sent - interval ${heartBeatSec} sec`);
   response.push(heartBeatPacket);
 
   /* Create parameters settings Packet */
