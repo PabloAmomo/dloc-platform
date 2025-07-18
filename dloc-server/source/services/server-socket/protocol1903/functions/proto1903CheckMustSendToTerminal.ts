@@ -11,7 +11,7 @@ const proto1903CheckMustSendToTerminal = (
   currentPowerPrfile: PowerProfileType,
   newPowerProfile: PowerProfileType
 ): string => {
-  const { uploadSec, heartBeatSec, forceReportLocInMs, ledState } = proto1903PowerProfileConfig(newPowerProfile);
+  const { uploadSec, heartBeatSec, forceReportLocInSec, ledState } = proto1903PowerProfileConfig(newPowerProfile);
 
   if (needProfileRefresh) {
     printMessage(
@@ -26,7 +26,7 @@ const proto1903CheckMustSendToTerminal = (
 
   printMessage(
     `${prefix} 📡 send HeartBeat [${heartBeatSec} sec] - Leds [${ledState}] - Upload Interval [${uploadSec} sec] - forceUpdateLoc [${
-      forceReportLocInMs / 1000
+      forceReportLocInSec
     } sec]`
   );
 

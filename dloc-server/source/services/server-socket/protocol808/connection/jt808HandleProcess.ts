@@ -30,6 +30,8 @@ const jt808HandleProcess: Jt808HandleProcess = ({
       movementsControlSeconds
     );
 
+    // TODO: [FEATURE] (If needed) Implement request report logic for JT808 (j808CheckMustSendToTerminalRequestReport copy of proto1903CheckMustSendToTerminalRequestReport)
+
     responseSend.forEach((response) => {
       (results[0].response as Buffer[]).push(response);
     });
