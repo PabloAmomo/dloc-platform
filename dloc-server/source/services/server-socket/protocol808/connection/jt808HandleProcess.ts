@@ -31,7 +31,7 @@ const jt808HandleProcess: Jt808HandleProcess = ({
     );
 
     // TODO: [FEATURE] (If needed) Implement request report logic for JT808 (j808CheckMustSendToTerminalRequestReport copy of proto1903CheckMustSendToTerminalRequestReport)
-
+    // TODO: Every heartbeat request position if data is older than forceReportLocInSec
     responseSend.forEach((response) => {
       (results[0].response as Buffer[]).push(response);
     });
