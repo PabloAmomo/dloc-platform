@@ -338,7 +338,7 @@ const proto1903HandlePacket: Proto1903HandlePacket = async (
   /** */
   if (response.response.length === 0) {
     printMessage(
-      `[${imeiTemp}] (${remoteAddress}) ⚠️  no response to send for packet [${data.substring(0, 20)}...]`
+      `[${imeiTemp}] (${remoteAddress}) ⚠️  no response to send for packet [${data.substring(0, 40)}...]`
     );
   } else {
     for (let i = 0; i < response.response.length; i++) {
