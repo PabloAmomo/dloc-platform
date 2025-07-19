@@ -5,8 +5,10 @@ import { printMessage } from "../../../../functions/printMessage";
 import jt808Config from "../config/jt808Config";
 import Jt808ReportConfiguration from "../enums/Jt808reportConfiguration";
 import jt808CreateCheckParameterSettingPacket from "./jt808CreateCheckParameterSettingPacket";
+import jt808CreateFrameData from "./jt808CreateFrameData";
 import jt808CreateParameterSettingPacket from "./jt808CreateParameterSettingPacket";
 import jt808CreatePowerProfilePacket from "./jt808CreatePowerProfilePacket";
+import jt808CreateWakeupuPacket from "./jt808CreateWakeupuPacket";
 import jt808PowerProfileConfig from "./jt808GetPowerProfileConfig";
 
 const jt808CheckMustSendToTerminal = (
@@ -30,10 +32,14 @@ const jt808CheckMustSendToTerminal = (
   printMessage(`${prefix} 🎛️  Using report configuration [${reportConfigurationText}]`);
   printMessage(`${prefix} 📡 send Upload Interval [${uploadSec} sec]`);
 
+  /** Create wake up packet */
+  const wakeUpPacket =  jt808CreateWakeupuPacket(terminalId, counter + 150);
+  response.push(wakeUpPacket);
+
   /** Create Power Profile Packets */
   const powerPacket = jt808CreatePowerProfilePacket(
     terminalId,
-    counter + 200,
+    counter + 201,
     newPowerProfile,
     movementsControlSeconds,
     REPORT_CONFIGURATION
