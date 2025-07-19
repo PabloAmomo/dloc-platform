@@ -5,7 +5,7 @@ import { Jt808ProcessPacket } from "../models/Jt808ProcessPacket";
 import jt808CreateCheckParameterSettingPacket from "./jt808CreateCheckParameterSettingPacket";
 import jt808CreateGeneralResponse from "./jt808CreateGeneralResponse";
 import jt808CreateParameterSettingPacket from "./jt808CreateParameterSettingPacket";
-import jt808CreateWakeupuPacket from "./jt808CreateWakeupuPacket";
+import jt808CreateWakeupPacket from "./jt808CreateWakeupPacket";
 import jt808PrintMessage from "./jt808PrintMessage";
 
 const jt808ProcessPacket0x0102: Jt808ProcessPacket = async ({
@@ -22,7 +22,7 @@ const jt808ProcessPacket0x0102: Jt808ProcessPacket = async ({
 
   (response.response as Buffer[]).push(jt808CreateGeneralResponse(terminalId, counter, msgSerialNumber, msgType, "00"));
 
-  (response.response as Buffer[]).push(jt808CreateWakeupuPacket(terminalId, counter + 50));
+  (response.response as Buffer[]).push(jt808CreateWakeupPacket(terminalId, counter + 50));
 
   (response.response as Buffer[]).push(jt808CreateCheckParameterSettingPacket(terminalId, counter + 100, []));
 
@@ -30,7 +30,7 @@ const jt808ProcessPacket0x0102: Jt808ProcessPacket = async ({
   // (0094) Upload mode of GNSS module detailed location data: 0x00, local storage, do not upload (default); 0x01, upload in time interval; 0x02, upload in distance interval; 0x0B, upload in accumulative time, automatically stop uploading after reaching transmission time; 0x0C, upload in accumulative distance, automatically stop uploading after reaching a certain distance 0x0D, upload in accumulative number of data, automatically stop uploading after reaching the number of uploads
   // (0090) Definition of GNSS positioning mode is as follows: bit0, 0: disable GPS positioning, 1: enable GPS positioning | bit1, 0: disable Beidou positioning, 1: enable Beidou positioning | bit2, 0: disable GLONASS positioning, 1: enable GLONASS positioning | bit3, 0: disable Galileo positioning, 1: enable Galileo positioning
   const parametersPackets = [
-    "00000090 01 " + createHexFromNumberWithNBytes(255, 1),
+    "00000090 01 " + createHexFromNumberWithNBytes(9, 1), // Enable GPS and Galileo positioning (Bit 0 y Bit 3)
     "00000094 01 " + createHexFromNumberWithNBytes(1, 1),
     "0000F102 01 " + createHexFromNumberWithNBytes(0, 1),
   ];

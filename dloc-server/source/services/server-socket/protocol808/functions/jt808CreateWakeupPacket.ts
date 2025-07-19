@@ -1,6 +1,6 @@
 import jt808CreateFrameData from "./jt808CreateFrameData";
 
-const jt808CreateWakeupuPacket = (terminalId: string, counter: number): Buffer => {
+const jt808CreateWakeupPacket = (terminalId: string, counter: number): Buffer => {
   return jt808CreateFrameData({
     msgType: 0x8145,
     terminalId: Buffer.from(terminalId, "hex"),
@@ -9,4 +9,4 @@ const jt808CreateWakeupuPacket = (terminalId: string, counter: number): Buffer =
   });
 }
 
-export default jt808CreateWakeupuPacket;
+export default jt808CreateWakeupPacket;
