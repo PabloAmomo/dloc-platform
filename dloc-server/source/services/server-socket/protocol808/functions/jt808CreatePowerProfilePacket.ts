@@ -11,7 +11,8 @@ const jt808CreatePowerProfilePacket = (
   terminalId: string,
   counter: number,
   powerProfileType: PowerProfileType,
-  reportConfiguration: Jt808ReportConfiguration
+  reportConfiguration: Jt808ReportConfiguration,
+  prefix: string
 ): Buffer[] => {
   const { uploadSec, movementMeters } = jt808PowerProfileConfig(powerProfileType);
   const responseArray: Buffer[] = [];
@@ -29,15 +30,15 @@ const jt808CreatePowerProfilePacket = (
 
     if (reportConfiguration !== Jt808ReportConfiguration.temporaryTracking) {
       printMessage(
-        `⚡️ Power profile type ${powerProfileType} then send temporary tracking packet 🚀`
+        `${prefix} ⚡️ Power profile type ${powerProfileType} then send temporary tracking packet 🚀`
       );
     }
 
     /* Send temporary location tracking cancel packet */
-    responseArray.push(jt808CreateTemporaryLocationTrackingPacket(terminalId, counter++, 0, 0));
+    responseArray.push(jt808CreateTemporaryLocationTrackingPacket(terminalId, counter++, 0, 0, prefix));
 
     /* Send temporary location tracking packet */
-    responseArray.push(jt808CreateTemporaryLocationTrackingPacket(terminalId, counter++, uploadSec, durationSec));
+    responseArray.push(jt808CreateTemporaryLocationTrackingPacket(terminalId, counter++, uploadSec, durationSec, prefix));
   }
 
   if (reportConfiguration === Jt808ReportConfiguration.intervalReport)

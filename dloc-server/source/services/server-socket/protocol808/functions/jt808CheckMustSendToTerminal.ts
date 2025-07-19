@@ -29,7 +29,7 @@ const jt808CheckMustSendToTerminal = (
   printMessage(`${prefix} 📡 send Upload Interval [${uploadSec} sec]`);
 
   /** Create Power Profile Packets */
-  const powerPackets = jt808CreatePowerProfilePacket(terminalId, counter + 201, newPowerProfile, REPORT_CONFIGURATION);
+  const powerPackets = jt808CreatePowerProfilePacket(terminalId, counter + 201, newPowerProfile, REPORT_CONFIGURATION, prefix);
   response.push(...powerPackets);
 
   /* Create HeartBeat Packet */
