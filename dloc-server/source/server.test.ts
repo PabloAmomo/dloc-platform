@@ -18,6 +18,28 @@ import jt808CreateTerminalRegistrationResponsePacket from "./services/server-soc
 import jt808CehckUploadPowerSaving from "./services/server-socket/protocol808/functions/jt808CehckUploadPowerSaving";
 
 
+  
+/*
+// Sleep Packet
+(response.response as Buffer[]).push(
+  jt808CreateFrameData({
+    msgType: 0x8135,
+    terminalId: Buffer.from(terminalId, "hex"),
+    msgSerialNumber: counter + 102,
+    body: Buffer.alloc(0), // No body for this response
+  })
+);
+// Wakeup Packet
+(response.response as Buffer[]).push(
+  jt808CreateFrameData({
+    msgType: 0x8145,
+    terminalId: Buffer.from(terminalId, "hex"),
+    msgSerialNumber: counter + 102,
+    body: Buffer.alloc(0), // No body for this response
+  })
+);
+*/
+
 // TODO: [BUG] Not working and I don't know why. In the future use jt808CreateCheckParameterSettingPacket
 //(response.response as Buffer[]).push(
 //  jt808CreateMessage(
