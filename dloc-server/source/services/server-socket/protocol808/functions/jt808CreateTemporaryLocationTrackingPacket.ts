@@ -1,4 +1,5 @@
 import createHexFromNumberWithNBytes from "../../../../functions/createHexFromNumberWithNBytes";
+import { printMessage } from "../../../../functions/printMessage";
 import jt808CreateFrameData from "./jt808CreateFrameData";
 
 const jt808CreateTemporaryLocationTrackingPacket = (
@@ -11,6 +12,8 @@ const jt808CreateTemporaryLocationTrackingPacket = (
   const bufDuration = createHexFromNumberWithNBytes(durationSec, 4);
   const paramter1 = bufInterval + bufDuration;
 
+  printMessage(`📡 Temporary Location Tracking Packet: Interval: ${intervalSec} sec, Duration: ${durationSec} sec`);
+  
   const packet = jt808CreateFrameData({
     msgType: 0x8202,
     terminalId: Buffer.from(terminalId, "hex"),

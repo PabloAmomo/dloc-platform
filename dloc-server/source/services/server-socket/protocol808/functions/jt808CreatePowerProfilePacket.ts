@@ -1,3 +1,4 @@
+import config from "../../../../config/config";
 import { PowerProfileType } from "../../../../enums/PowerProfileType";
 import Jt808ReportConfiguration from "../enums/Jt808reportConfiguration";
 import jt808CreateIntervalReportPacket from "./jt808CreateIntervalReportPacket";
@@ -8,13 +9,29 @@ const jt808CreatePowerProfilePacket = (
   terminalId: string,
   counter: number,
   powerProfileType: PowerProfileType,
-  durationSec: number,
   reportConfiguration: Jt808ReportConfiguration
-): Buffer => {
+): Buffer[] => {
   const { uploadSec, movementMeters } = jt808PowerProfileConfig(powerProfileType);
+  const responseArray: Buffer[] = [];
 
-  return reportConfiguration === Jt808ReportConfiguration.temporaryTracking
-    ? jt808CreateTemporaryLocationTrackingPacket(terminalId, counter, uploadSec, durationSec)
-    : jt808CreateIntervalReportPacket(terminalId, counter, uploadSec, movementMeters);
+  if (
+    reportConfiguration === Jt808ReportConfiguration.temporaryTracking ||
+    powerProfileType === PowerProfileType.AUTOMATIC_FULL ||
+    powerProfileType === PowerProfileType.FULL
+  ) {
+    const { MOVEMENTS_CONTROL_SECONDS } = config;
+    const durationSec = MOVEMENTS_CONTROL_SECONDS + uploadSec;
+    /* Send temporary location tracking cancel packet */
+    responseArray.push(jt808CreateTemporaryLocationTrackingPacket(terminalId, counter + 1, 0, 0));
+
+    /* Send temporary location tracking packet */
+    responseArray.push(jt808CreateTemporaryLocationTrackingPacket(terminalId, counter + 2, uploadSec, durationSec));
+  }
+
+  if (reportConfiguration === Jt808ReportConfiguration.intervalReport)
+    responseArray.push(jt808CreateIntervalReportPacket(terminalId, counter + 3, uploadSec, movementMeters));
+
+  return responseArray;
 };
+
 export default jt808CreatePowerProfilePacket;

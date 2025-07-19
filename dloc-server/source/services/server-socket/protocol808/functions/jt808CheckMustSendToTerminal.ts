@@ -1,11 +1,9 @@
 import { PowerProfileType } from "../../../../enums/PowerProfileType";
-import convertAnyToHexString from "../../../../functions/convertAnyToHexString";
 import createHexFromNumberWithNBytes from "../../../../functions/createHexFromNumberWithNBytes";
 import { printMessage } from "../../../../functions/printMessage";
 import jt808Config from "../config/jt808Config";
 import Jt808ReportConfiguration from "../enums/Jt808reportConfiguration";
 import jt808CreateCheckParameterSettingPacket from "./jt808CreateCheckParameterSettingPacket";
-import jt808CreateFrameData from "./jt808CreateFrameData";
 import jt808CreateParameterSettingPacket from "./jt808CreateParameterSettingPacket";
 import jt808CreatePowerProfilePacket from "./jt808CreatePowerProfilePacket";
 import jt808CreateWakeupuPacket from "./jt808CreateWakeupuPacket";
@@ -19,7 +17,6 @@ const jt808CheckMustSendToTerminal = (
   counter: number,
   currentPowerPrfile: string,
   newPowerProfile: PowerProfileType,
-  movementsControlSeconds: number
 ): Buffer[] => {
   const response: Buffer[] = [];
   const { uploadSec, heartBeatSec } = jt808PowerProfileConfig(newPowerProfile);
@@ -37,14 +34,15 @@ const jt808CheckMustSendToTerminal = (
   response.push(wakeUpPacket);
 
   /** Create Power Profile Packets */
-  const powerPacket = jt808CreatePowerProfilePacket(
+  const powerPackets = jt808CreatePowerProfilePacket(
     terminalId,
     counter + 201,
     newPowerProfile,
-    movementsControlSeconds,
     REPORT_CONFIGURATION
   );
-  response.push(powerPacket);
+  for (const powerPacket of powerPackets) {
+    response.push(powerPacket);
+  }
 
   /* Create HeartBeat Packet */
   const heartBeatPacket = jt808CreateParameterSettingPacket(terminalId, counter + 210, [

@@ -20,7 +20,6 @@ const jt808HandleProcess: Jt808HandleProcess = ({
   newPowerProfileType,
   sendData,
 }: Jt808ProcessProps): void => {
-  const movementsControlSeconds = jt808Config.REFRESH_POWER_PROFILE_EXTEND_SECONDS;
   const terminalId = imei.slice(-12);
 
   if (isNewConnection || powerProfileChanged || needProfileRefresh) {
@@ -32,7 +31,6 @@ const jt808HandleProcess: Jt808HandleProcess = ({
       counter,
       imeiData.powerProfile,
       newPowerProfileType,
-      movementsControlSeconds
     );
 
     responseSend.forEach((response) => {
