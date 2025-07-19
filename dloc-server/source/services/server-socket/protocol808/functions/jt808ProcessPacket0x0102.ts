@@ -36,7 +36,7 @@ const jt808ProcessPacket0x0102: Jt808ProcessPacket = async ({
 
   (response.response as Buffer[]).push(
     jt808CreateFrameData({
-      msgType: 0x8135,
+      msgType: 0x8145,
       terminalId: Buffer.from(terminalId, "hex"),
       msgSerialNumber: counter + 102,
       body: Buffer.from("09", "hex"),
