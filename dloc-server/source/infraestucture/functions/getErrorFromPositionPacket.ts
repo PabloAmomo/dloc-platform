@@ -14,7 +14,7 @@ const getErrorFromPositionPacket = (positionPacket: PositionPacket): getErrorFro
     errorMsg = 'invalid date time';
   } else if (!positionPacket || !positionPacket.valid || !positionPacket.imei) {
     message = `[${imei}] (${positionPacket.remoteAddress}) 🧭 position without valid data ❌ [valid ${positionPacket.valid}]`;
-    errorMsg = 'position without valid data';
+    errorMsg = 'position without valid position data';
   } else if (positionPacket.lat == null || positionPacket.lng == null) {
     message = `[${imei}] (${positionPacket.remoteAddress}) 🧭 position without coordinates ❌ [lat: ${positionPacket.lat ?? 'ND'} lng: ${positionPacket.lng ?? 'ND'} ]`;
     errorMsg = 'position without coordinates';
