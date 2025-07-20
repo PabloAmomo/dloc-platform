@@ -89,11 +89,11 @@ import jt808CehckUploadPowerSaving from "./services/server-socket/protocol808/fu
 //console.log(`Response: ${responseVal.toString("hex")}`);
 
 // Power Saving Mode
-const buffer = Buffer.from("7E011200060562134176540009080000000000037E", "hex");
-const response = jt808GetFrameData(buffer);
-console.log(response);
-const powerSaveResponse = jt808CehckUploadPowerSaving(response.body, "IMEI", "remoteAddress");
-console.log(`Power Save Response: ${JSON.stringify(powerSaveResponse)}`);
+//const buffer = Buffer.from("7E011200060562134176540009080000000000037E", "hex");
+//const response = jt808GetFrameData(buffer);
+//console.log(response);
+//const powerSaveResponse = jt808CehckUploadPowerSaving(response.body, "IMEI", "remoteAddress");
+//console.log(`Power Save Response: ${JSON.stringify(powerSaveResponse)}`);
 
 // Location (Single Location)
 //const buffer = Buffer.from("7E020100570562134176540234007200000000000C0000000000000000000000000000000025071120465701040000000004020154050101060100EB2100D60317D7115D0017D7115C2717D7115B1C17D70F5C1C17D711331717D70F5B15300119310101107E", "hex");
@@ -129,7 +129,7 @@ console.log(`Power Save Response: ${JSON.stringify(powerSaveResponse)}`);
 //console.log(`locations: ${JSON.stringify(responseLoc.locations, null, 2)}`);
 
 // Atributes
-//const buffer = Buffer.from("7E01070032056213417654000714383933343034383432353032303431303234323F0547462D323216534C5F534B20323032312F30332F30362031383A3131657E", "hex");
+//const buffer = Buffer.from("7E01070032056213417654000C14383933343034383432353032303431303234323F0547462D323216534C5F534B20323032312F30332F30362031383A31316E7E", "hex");
 //const response = jt808GetFrameData(buffer);
 //console.log(response);
 //const responseVal = jt808ParseTerminalAttributes(response.body);
