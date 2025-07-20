@@ -32,7 +32,7 @@ const jt808ProcessPacket0x0100: Jt808ProcessPacket = async ({
   // (F102) Low battery alarm （0 off 1 on）default on
   // TODO: [VERIFY] (Moved from 0x102) NO Configure sat constallation (Use all constellations)
   const parametersPackets = [
-    // "00000090 01 " + createHexFromNumberWithNBytes(255, 1), // -> GPS, Beidu, and Galileo positioning 00001011 = 11 (Bit 0, 1 y Bit 3 )
+    "00000090 01 " + createHexFromNumberWithNBytes(255, 1), // -> GPS, Beidu, and Galileo positioning 00001011 = 11 (Bit 0, 1 y Bit 3 )
     "00000094 01 " + createHexFromNumberWithNBytes(1, 1),
     "0000F102 01 " + createHexFromNumberWithNBytes(0, 1),
   ];
