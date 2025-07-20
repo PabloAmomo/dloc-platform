@@ -27,8 +27,9 @@ const jt808CreatePowerProfilePacket = (
     (powerProfileType === PowerProfileType.AUTOMATIC_FULL || powerProfileType === PowerProfileType.FULL);
 
   /** Create wake up packet */
-  responseArray.push(jt808CreateWakeupPacket(terminalId, counter++));
-  printMessage(`${prefix} 🔋 Wake up packet sent [${counter}]`);
+  // TODO: [TESTING] Test if this packet is needed
+  //responseArray.push(jt808CreateWakeupPacket(terminalId, counter++));
+  //printMessage(`${prefix} 🔋 Wake up packet sent [${counter}]`);
 
   if (isTemporaryTracking || isHybridReport) {
     const { MOVEMENTS_CONTROL_SECONDS } = config;
