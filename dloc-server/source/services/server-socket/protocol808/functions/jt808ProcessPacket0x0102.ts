@@ -20,11 +20,11 @@ const jt808ProcessPacket0x0102: Jt808ProcessPacket = async ({
     header: { terminalId, msgSerialNumber, msgType },
   } = jt808Packet;
 
-  (response.response as Buffer[]).push(jt808CreateGeneralResponse(terminalId, counter, msgSerialNumber, msgType, "00"));
+  (response.response as Buffer[]).push(jt808CreateGeneralResponse(terminalId, counter + 50, msgSerialNumber, msgType, "00"));
 
-  (response.response as Buffer[]).push(jt808CreateWakeupPacket(terminalId, counter + 50));
+  (response.response as Buffer[]).push(jt808CreateWakeupPacket(terminalId, counter + 51));
 
-  (response.response as Buffer[]).push(jt808CreateCheckParameterSettingPacket(terminalId, counter + 100, []));
+  (response.response as Buffer[]).push(jt808CreateCheckParameterSettingPacket(terminalId, counter + 52, []));
 
   // (F102) Low battery alarm （0 off 1 on）default on
   // (0094) Upload mode of GNSS module detailed location data: 0x00, local storage, do not upload (default); 0x01, upload in time interval; 0x02, upload in distance interval; 0x0B, upload in accumulative time, automatically stop uploading after reaching transmission time; 0x0C, upload in accumulative distance, automatically stop uploading after reaching a certain distance 0x0D, upload in accumulative number of data, automatically stop uploading after reaching the number of uploads
@@ -34,7 +34,7 @@ const jt808ProcessPacket0x0102: Jt808ProcessPacket = async ({
     "00000094 01 " + createHexFromNumberWithNBytes(1, 1),
     "0000F102 01 " + createHexFromNumberWithNBytes(0, 1),
   ];
-  (response.response as Buffer[]).push(jt808CreateParameterSettingPacket(terminalId, counter + 101, parametersPackets));
+  (response.response as Buffer[]).push(jt808CreateParameterSettingPacket(terminalId, counter + 53, parametersPackets));
 
   response.imei = padNumberLeft(terminalId, 15, "0");
 

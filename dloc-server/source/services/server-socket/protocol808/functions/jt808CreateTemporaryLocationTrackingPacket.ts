@@ -13,8 +13,10 @@ const jt808CreateTemporaryLocationTrackingPacket = (
   const bufDuration = createHexFromNumberWithNBytes(durationSec, 4);
   const paramter1 = bufInterval + bufDuration;
 
-  printMessage(`${prefix} 📡 Temporary Location Tracking Packet: Interval: ${intervalSec} sec, Duration: ${durationSec} sec`);
-  
+  printMessage(
+    `${prefix} 📡 Temporary Location Tracking Packet: Interval: ${intervalSec} sec, Duration: ${durationSec} sec [${counter}]`
+  );
+
   const packet = jt808CreateFrameData({
     msgType: 0x8202,
     terminalId: Buffer.from(terminalId, "hex"),

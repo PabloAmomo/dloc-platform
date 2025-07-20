@@ -8,7 +8,7 @@ const jt808CreateIntervalReportPacket = (
   movementMeters: number,
 ): Buffer => {
   /* Create interval report Packet */
-  const intervalsPacket = jt808CreateParameterSettingPacket(terminalId, counter + 215, [
+  const intervalsPacket = jt808CreateParameterSettingPacket(terminalId, counter, [
     "00000020 01 " + createHexFromNumberWithNBytes(0, 2),           // report type (1 = timmming)
 
     "00000027 04 " + createHexFromNumberWithNBytes(intervalSec, 4), // Report time intervals during dormancy (seconds)

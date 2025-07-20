@@ -1,3 +1,4 @@
+import { report } from "process";
 import config from "../../../../config/config";
 import { PowerProfileType } from "../../../../enums/PowerProfileType";
 import { printMessage } from "../../../../functions/printMessage";
@@ -17,31 +18,36 @@ const jt808CreatePowerProfilePacket = (
   const { uploadSec, movementMeters } = jt808PowerProfileConfig(powerProfileType);
   const responseArray: Buffer[] = [];
 
+  const isTemporaryTracking = reportConfiguration === Jt808ReportConfiguration.temporaryTracking;
+  const isIntervalReport = reportConfiguration === Jt808ReportConfiguration.intervalReport;
+  const isHybridReport = reportConfiguration === Jt808ReportConfiguration.hybridRport;
+
+  const hasHybridTracking =
+    isHybridReport &&
+    (powerProfileType === PowerProfileType.AUTOMATIC_FULL || powerProfileType === PowerProfileType.FULL);
+
   /** Create wake up packet */
   responseArray.push(jt808CreateWakeupPacket(terminalId, counter++));
+  printMessage(`${prefix} 🔋 Wake up packet sent [${counter}]`);
 
-  if (
-    reportConfiguration === Jt808ReportConfiguration.temporaryTracking ||
-    powerProfileType === PowerProfileType.AUTOMATIC_FULL ||
-    powerProfileType === PowerProfileType.FULL
-  ) {
+  if (isTemporaryTracking || isHybridReport) {
     const { MOVEMENTS_CONTROL_SECONDS } = config;
     const durationSec = MOVEMENTS_CONTROL_SECONDS + uploadSec;
 
-    if (reportConfiguration !== Jt808ReportConfiguration.temporaryTracking) {
-      printMessage(
-        `${prefix} ⚡️ Power profile type ${powerProfileType} then send temporary tracking packet 🚀`
-      );
-    }
-
-    /* Send temporary location tracking cancel packet */
+    /* Send temporary location tracking clean packet */
     responseArray.push(jt808CreateTemporaryLocationTrackingPacket(terminalId, counter++, 0, 0, prefix));
 
+    if (hasHybridTracking)
+      printMessage(`${prefix} ⚡️ HybridReport with power profile ${powerProfileType}. Send tracking packet 🚀 [${counter}]`);
+
     /* Send temporary location tracking packet */
-    responseArray.push(jt808CreateTemporaryLocationTrackingPacket(terminalId, counter++, uploadSec, durationSec, prefix));
+    if (isTemporaryTracking || hasHybridTracking)
+      responseArray.push(
+        jt808CreateTemporaryLocationTrackingPacket(terminalId, counter++, uploadSec, durationSec, prefix)
+      );
   }
 
-  if (reportConfiguration === Jt808ReportConfiguration.intervalReport)
+  if (isIntervalReport)
     responseArray.push(jt808CreateIntervalReportPacket(terminalId, counter++, uploadSec, movementMeters));
 
   return responseArray;

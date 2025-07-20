@@ -28,7 +28,7 @@ const jt808ProcessPacket0x0100: Jt808ProcessPacket = async ({
 
   // Terminal time zone (0x00 = UTC)
   (response.response as Buffer[]).push(
-    jt808CreateParameterSettingPacket(terminalId, counter + 101, ["0000F142 01 00"])
+    jt808CreateParameterSettingPacket(terminalId, counter + 100, ["0000F142 01 00"])
   );
   printMessage(`[${imei}] (${remoteAddress}) 🌎 Time zone to 0 packet sent (Device will restart)`);
 

@@ -20,29 +20,38 @@ const jt808CheckMustSendToTerminal = (
   const response: Buffer[] = [];
   const { uploadSec, heartBeatSec } = jt808PowerProfileConfig(newPowerProfile);
   const REPORT_CONFIGURATION: Jt808ReportConfiguration = jt808Config.REPORT_CONFIGURATION;
+
   const reportConfigurationText =
     REPORT_CONFIGURATION === Jt808ReportConfiguration.temporaryTracking
       ? "temporary location tracking"
-      : "interval report";
-
-  printMessage(`${prefix} 🎛️  Using report configuration [${reportConfigurationText}]`);
-  printMessage(`${prefix} 📡 send Upload Interval [${uploadSec} sec]`);
+      : Jt808ReportConfiguration.intervalReport
+      ? "interval report"
+      : "hybrid report";
 
   /** Create Power Profile Packets */
-  const powerPackets = jt808CreatePowerProfilePacket(terminalId, counter + 201, newPowerProfile, REPORT_CONFIGURATION, prefix);
+  const powerPackets = jt808CreatePowerProfilePacket(
+    terminalId,
+    counter++,
+    newPowerProfile,
+    REPORT_CONFIGURATION,
+    prefix
+  );
   response.push(...powerPackets);
 
+  printMessage(`${prefix} 🎛️  Using report configuration [${reportConfigurationText}]`);
+  printMessage(`${prefix} 📡 send Upload Interval [${uploadSec} sec] [${counter}]`);
+
   /* Create HeartBeat Packet */
-  const heartBeatPacket = jt808CreateParameterSettingPacket(terminalId, counter + 210, [
+  const heartBeatPacket = jt808CreateParameterSettingPacket(terminalId, counter++, [
     "00000001 04 " + createHexFromNumberWithNBytes(heartBeatSec, 4),
   ]);
-  printMessage(`${prefix} ❤️  Heart beat config Packet sent - interval ${heartBeatSec} sec`);
+  printMessage(`${prefix} ❤️  Heart beat config sent - interval ${heartBeatSec} sec [${counter}]`);
   response.push(heartBeatPacket);
 
   /* Create parameters settings Packet */
-  const parametersSettings = jt808CreateCheckParameterSettingPacket(terminalId, counter + 211, []);
+  const parametersSettings = jt808CreateCheckParameterSettingPacket(terminalId, counter++, []);
   response.push(parametersSettings);
-  printMessage(`${prefix} ⚙️  Parameters setting Packet sent`);
+  printMessage(`${prefix} ⚙️  Parameters setting Packet sent [${counter}]`);
 
   return response;
 };

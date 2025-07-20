@@ -28,9 +28,9 @@ const jt808HandleProcess: Jt808HandleProcess = ({
       prefix,
       powerProfileChanged,
       needProfileRefresh,
-      counter,
+      counter + 200,
       imeiData.powerProfile,
-      newPowerProfileType,
+      newPowerProfileType
     );
 
     responseSend.forEach((response) => {
@@ -41,9 +41,13 @@ const jt808HandleProcess: Jt808HandleProcess = ({
   /** Check if must send to terminal request report */
   const { forceReportLocInSec } = jt808GetPowerProfileConfig(newPowerProfileType);
   if (checkMustSendToTerminalRequestReport(prefix, imei, imeiData, forceReportLocInSec)) {
-    const packet = jt808CreateQueryLocationMessage(terminalId, counter + 110);
+    const packet = jt808CreateQueryLocationMessage(terminalId, counter + 220);
     (results[0].response as Buffer[]).push(packet);
-    printMessage(`${prefix} 🧭 🔥🔥 Request location report to terminal... (Force after ${forceReportLocInSec} seconds)`);
+    printMessage(
+      `${prefix} 🧭 🔥🔥 Request location report to terminal... (Force after ${forceReportLocInSec} seconds) [${
+        counter + 220
+      }]`
+    );
   }
 
   /** Send */
