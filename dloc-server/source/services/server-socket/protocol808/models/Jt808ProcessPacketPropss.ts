@@ -8,4 +8,5 @@ export default interface Jt808ProcessPacketProps {
   jt808Packet: Jt808Packet;
   counter: number;
   persistence: Persistence;
+  prefix: string
 }

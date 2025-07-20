@@ -13,6 +13,7 @@ const jt808ProcessPacket0x0xxxLocations: Jt808ProcessPacket = async ({
   jt808Packet,
   counter,
   persistence,
+  prefix,
 }) => {
   const {
     body,
@@ -25,7 +26,7 @@ const jt808ProcessPacket0x0xxxLocations: Jt808ProcessPacket = async ({
       count: 1,
       locations: [jt808DecodeLocationReport(body)],
     };
-  else locations = jt808DecodeLocations(body, msgType === 0x0704);
+  else locations = jt808DecodeLocations(body, msgType === 0x0704, prefix);
 
   (response.response as Buffer[]).push(jt808CreateGeneralResponse(terminalId, counter, msgSerialNumber, msgType, "00"));
 

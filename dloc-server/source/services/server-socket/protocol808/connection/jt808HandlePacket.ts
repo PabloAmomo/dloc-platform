@@ -42,6 +42,7 @@ const jt808HandlePacket: Jt808HandlePacket = async (props: Jt808HandlePacketProp
     jt808Packet,
     counter,
     persistence,
+    prefix: `[${imeiToPrint}] (${remoteAddress})`
   };
 
   // ---------------------------------------

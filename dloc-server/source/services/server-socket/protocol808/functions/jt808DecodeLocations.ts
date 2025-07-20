@@ -1,10 +1,12 @@
+import { printMessage } from "../../../../functions/printMessage";
 import { Jt808LocationPacket } from "../models/Jt808LocationPacket";
 import jt808ParseAlarmBits from "./jt808ParseAlarmBits";
 import jt808ParseStatusBits from "./jt808ParseStatusBits";
 
 const jt808DecodeLocations = (
   body: Buffer,
-  multiLocations: boolean
+  multiLocations: boolean,
+  prefix: string 
 ): {
   count: number;
   locations: Jt808LocationPacket[];
@@ -22,6 +24,11 @@ const jt808DecodeLocations = (
     const dataType = multiLocations ? body.readUInt8(offset++) : 0;
     const locLength = body.readUInt16BE(offset);
     offset += 2;
+
+    if (locLength === 0) {
+      printMessage(`${prefix} 🧭 ❌ Invalid location data size (${locLength} bytes is not valid value)`);
+      continue;
+    }
 
     const locData = body.subarray(offset, offset + locLength);
     offset += locLength - 1;
