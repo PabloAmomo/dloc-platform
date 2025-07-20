@@ -41,6 +41,7 @@ const jt808ProcessPacket0x0xxxLocations: Jt808ProcessPacket = async ({
       gpsConstellation = ` Fixed ${location.statusFlags.positioning ? "👍" : "👎"}`;
       gpsConstellation += ` [GPS ${location.statusFlags.gpsPositioning ? "✅" : "❌"}]`;
       gpsConstellation += ` [Beidu ${location.statusFlags.beidouPositioning ? "✅" : "❌"}]`;
+      gpsConstellation += ` [Glonass ${location.statusFlags.glonassPositioning ? "✅" : "❌"}]`;
       gpsConstellation += ` [Galileo ${location.statusFlags.galileoPositioning ? "✅" : "❌"}]`;
 
       if (location.lat !== 0 && location.lng !== 0)
