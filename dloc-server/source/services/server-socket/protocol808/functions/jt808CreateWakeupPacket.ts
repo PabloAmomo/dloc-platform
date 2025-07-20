@@ -7,6 +7,6 @@ const jt808CreateWakeupPacket = (terminalId: string, counter: number): Buffer =>
     msgSerialNumber: counter,
     body: Buffer.alloc(0), // No body for this response
   });
-}
+};
 
 export default jt808CreateWakeupPacket;

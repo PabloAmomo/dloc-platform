@@ -20,7 +20,9 @@ const jt808ProcessPacket0x0102: Jt808ProcessPacket = async ({
     header: { terminalId, msgSerialNumber, msgType },
   } = jt808Packet;
 
-  (response.response as Buffer[]).push(jt808CreateGeneralResponse(terminalId, counter + 50, msgSerialNumber, msgType, "00"));
+  (response.response as Buffer[]).push(
+    jt808CreateGeneralResponse(terminalId, counter + 50, msgSerialNumber, msgType, "00")
+  );
 
   (response.response as Buffer[]).push(jt808CreateWakeupPacket(terminalId, counter + 51));
 
