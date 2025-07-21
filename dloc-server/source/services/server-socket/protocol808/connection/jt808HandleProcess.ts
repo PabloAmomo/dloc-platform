@@ -1,3 +1,4 @@
+import { PowerProfileType } from "../../../../enums/PowerProfileType";
 import checkMustSendToTerminalRequestReport from "../../../../functions/checkMustSendToTerminalRequestReport";
 import { printMessage } from "../../../../functions/printMessage";
 import jt808Config from "../config/jt808Config";
@@ -49,11 +50,14 @@ const jt808HandleProcess: Jt808HandleProcess = ({
     printMessage(`${prefix} 🔋 Wake up packet sent [${count}]`);
 
     // TODO: [TESTING] If better send and active tracking to activate the device?
-    // TODO: [CONFIG] If work fine, move the durationSec and uploadSec to config
-    const packet = jt808CreateTemporaryLocationTrackingPacket(terminalId, counter++, 10, 20, prefix);
+    // TODO: [CONFIG] If work fine, move the durTimeSec to config
+    const durTimeSec = 10;
+    if (newPowerProfileType !== PowerProfileType.AUTOMATIC_FULL) {
+      const packet = jt808CreateTemporaryLocationTrackingPacket(terminalId, counter++, durTimeSec, durTimeSec + 5, prefix);
+      (results[0].response as Buffer[]).push(packet);
+      printMessage(`${prefix} 🧭 🔥🔥 Request location... (Force after ${forceReportLocInSec} seconds) [${count}]`);
+    }
     // const packet = jt808CreateQueryLocationMessage(terminalId, count++);
-    (results[0].response as Buffer[]).push(packet);
-    printMessage(`${prefix} 🧭 🔥🔥 Request location... (Force after ${forceReportLocInSec} seconds) [${count}]`);
   }
 
   /** Send */
