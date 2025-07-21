@@ -6,8 +6,6 @@ import getMovementInLastSeconds from './getMovementInLastSeconds';
 import { printMessage } from './printMessage';
 import updatePowerProfile from './updatePowerProfile';
 
-// TODO: [VERIFY] Check movement type parameter working correctly
-
 async function getPowerProfile(
   imei: string,
   persistence: Persistence,
