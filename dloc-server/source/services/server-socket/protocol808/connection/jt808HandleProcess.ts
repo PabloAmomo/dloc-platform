@@ -52,7 +52,7 @@ const jt808HandleProcess: Jt808HandleProcess = ({
     // TODO: [TESTING] If better send and active tracking to activate the device?
     // TODO: [CONFIG] If work fine, move the durTimeSec to config
     if (newPowerProfileType !== PowerProfileType.AUTOMATIC_FULL) {
-      const packet = jt808CreateTemporaryLocationTrackingPacket(terminalId, count++, 10, 20, prefix);
+      const packet = jt808CreateTemporaryLocationTrackingPacket(terminalId, count++, 20, 40, prefix);
       (results[0].response as Buffer[]).push(packet);
       printMessage(`${prefix} 🧭 🔥🔥 Request location... (Force after ${forceReportLocInSec} seconds) [${count}]`);
     }
