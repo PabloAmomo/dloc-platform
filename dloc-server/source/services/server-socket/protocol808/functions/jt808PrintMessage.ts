@@ -12,9 +12,9 @@ const JT808_MESSAGES_CODES = {
   0x1007: "🔥 Unknown command 10 07",
   0x0100: "📋 Terminal registration",
   0x0102: "🔐 Terminal authentication",
-  0x0704: "📍 Location batch",
-  0x0201: "📍 Location response",
-  0x0200: "📍 Location report",
+  0x0704: "📍 Loc. batch",
+  0x0201: "📍 Loc. response",
+  0x0200: "📍 Loc. report",
   0x0109: "⏰ Request synchronization time",
   0x0210: "🔋 Battery level update when sleep",
 };
