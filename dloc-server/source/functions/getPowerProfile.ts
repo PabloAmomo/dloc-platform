@@ -1,10 +1,10 @@
-import config from '../config/config';
-import { PowerProfileType } from '../enums/PowerProfileType';
-import GetPowerProfileConfig from '../models/GetProwerProfileConfig';
-import { Persistence } from '../models/Persistence';
-import getMovementInLastSeconds from './getMovementInLastSeconds';
-import { printMessage } from './printMessage';
-import updatePowerProfile from './updatePowerProfile';
+import config from "../config/config";
+import { PowerProfileType } from "../enums/PowerProfileType";
+import GetPowerProfileConfig from "../models/GetProwerProfileConfig";
+import { Persistence } from "../models/Persistence";
+import getMovementInLastSeconds from "./getMovementInLastSeconds";
+import { printMessage } from "./printMessage";
+import updatePowerProfile from "./updatePowerProfile";
 
 async function getPowerProfile(
   imei: string,
@@ -106,6 +106,7 @@ async function getPowerProfile(
       );
 
       /** Change to balanced power profile */
+      let movementAlarm = false;
       if (newPowerProfileType === PowerProfileType.AUTOMATIC_FULL && metersMoveInLastSeconds < movementsMts.balanced) {
         newPowerProfileType = PowerProfileType.AUTOMATIC_BALANCED;
         powerProfileChanged = true;
@@ -121,6 +122,7 @@ async function getPowerProfile(
         newPowerProfileType === PowerProfileType.AUTOMATIC_MINIMAL &&
         metersMoveInLastSeconds > movementsMts.minimal
       ) {
+        movementAlarm = true;
         newPowerProfileType = PowerProfileType.AUTOMATIC_BALANCED;
         powerProfileChanged = true;
       } else if (
@@ -128,9 +130,15 @@ async function getPowerProfile(
         newPowerProfileType === PowerProfileType.AUTOMATIC_BALANCED &&
         metersMoveInLastSeconds > movementsMts.balanced
       ) {
+        movementAlarm = true;
         newPowerProfileType = PowerProfileType.AUTOMATIC_FULL;
         powerProfileChanged = true;
       }
+
+      if (movementAlarm)
+        printMessage(
+          `${messagePrefix} 🚶‍♂️ 🔥🔥 Change power profile for movement`
+        );
     }
 
     /* Save the new power profile (If was changed) */
