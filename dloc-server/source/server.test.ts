@@ -40,7 +40,7 @@ import jt808CehckUploadPowerSaving from "./services/server-socket/protocol808/fu
 );
 */
 
-// TODO: [BUG] Not working and I don't know why. In the future use jt808CreateCheckParameterSettingPacket
+// [BUG] Not working and I don't know why. In the future use jt808CreateCheckParameterSettingPacket
 //(response.response as Buffer[]).push(
 //  jt808CreateMessage(
 //    jt808Packet.header.terminalId,

@@ -46,13 +46,15 @@ const jt808HandleProcess: Jt808HandleProcess = ({
   if (checkMustSendToTerminalRequestReport(prefix, imei, imeiData, forceReportLocInSec)) {
     let count = counter + 199;
 
-    (results[0].response as Buffer[]).push(jt808CreateWakeupPacket(terminalId, count++));
-    printMessage(`${prefix} 🔋 Wake up packet sent [${count}]`);
+    // TODO: [TESTING] is needed to wake up the device?
+    //(results[0].response as Buffer[]).push(jt808CreateWakeupPacket(terminalId, count++));
+    //printMessage(`${prefix} 🔋 Wake up packet sent [${count}]`);
 
     // TODO: [TESTING] If better send and active tracking to activate the device?
     // TODO: [CONFIG] If work fine, move the durTimeSec to config
     if (newPowerProfileType !== PowerProfileType.AUTOMATIC_FULL) {
-      const packet = jt808CreateTemporaryLocationTrackingPacket(terminalId, count++, 20, 40, prefix);
+      const intervalSec : number = 20;
+      const packet = jt808CreateTemporaryLocationTrackingPacket(terminalId, count++, intervalSec, intervalSec * 2, prefix);
       (results[0].response as Buffer[]).push(packet);
       printMessage(`${prefix} 🧭 🔥🔥 Request location... (Force after ${forceReportLocInSec} seconds) [${count}]`);
     }
