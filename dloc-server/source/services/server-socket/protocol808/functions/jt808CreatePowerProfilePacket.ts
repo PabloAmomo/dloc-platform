@@ -21,7 +21,6 @@ const jt808CreatePowerProfilePacket = (
   const isIntervalReport = reportConfiguration === Jt808ReportConfiguration.intervalReport;
   const isHybridReport = reportConfiguration === Jt808ReportConfiguration.hybridRport;
 
-  /** Create wake up packet */
   // TODO: [TESTING] Test if this packet is needed
   //responseArray.push(jt808CreateWakeupPacket(terminalId, counter++));
   //printMessage(`${prefix} 🔋 Wake up packet sent [${counter}]`);
