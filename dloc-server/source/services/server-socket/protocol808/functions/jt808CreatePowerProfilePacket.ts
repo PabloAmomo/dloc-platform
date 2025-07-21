@@ -17,14 +17,9 @@ const jt808CreatePowerProfilePacket = (
 ): Buffer[] => {
   const { uploadSec, movementMeters } = jt808PowerProfileConfig(powerProfileType);
   const responseArray: Buffer[] = [];
-
   const isTemporaryTracking = reportConfiguration === Jt808ReportConfiguration.temporaryTracking;
   const isIntervalReport = reportConfiguration === Jt808ReportConfiguration.intervalReport;
   const isHybridReport = reportConfiguration === Jt808ReportConfiguration.hybridRport;
-
-  const hasHybridTracking =
-    isHybridReport &&
-    (powerProfileType === PowerProfileType.AUTOMATIC_FULL || powerProfileType === PowerProfileType.FULL);
 
   /** Create wake up packet */
   // TODO: [TESTING] Test if this packet is needed
@@ -38,18 +33,25 @@ const jt808CreatePowerProfilePacket = (
     /* Send temporary location tracking clean packet */
     responseArray.push(jt808CreateTemporaryLocationTrackingPacket(terminalId, counter++, 0, 0, prefix));
 
-    if (hasHybridTracking)
-      printMessage(`${prefix} ⚡️ HybridReport with power profile ${powerProfileType}. Send tracking packet 🚀 [${counter}]`);
+    const hasTemporaryTracking =
+      isHybridReport &&
+      (powerProfileType === PowerProfileType.AUTOMATIC_FULL || powerProfileType === PowerProfileType.FULL);
 
     /* Send temporary location tracking packet */
-    if (isTemporaryTracking || hasHybridTracking)
+    if (isTemporaryTracking || hasTemporaryTracking)
       responseArray.push(
         jt808CreateTemporaryLocationTrackingPacket(terminalId, counter++, uploadSec, durationSec, prefix)
       );
+    if (hasTemporaryTracking)
+      printMessage(
+        `${prefix} ⚡️ 🫅 HybridReport with power profile ${powerProfileType}. Send tracking packet 🚀 [${counter}]`
+      );
   }
 
-  if (isIntervalReport)
+  if (isIntervalReport || isHybridReport) {
     responseArray.push(jt808CreateIntervalReportPacket(terminalId, counter++, uploadSec, movementMeters));
+    if (isHybridReport) printMessage(`${prefix} ⚡️ 🫅 HybridReport. Send IntervalReport packet 🚀 [${counter}]`);
+  }
 
   return responseArray;
 };
