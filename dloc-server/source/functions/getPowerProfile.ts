@@ -85,7 +85,7 @@ async function getPowerProfile(
       powerProfileChanged = true;
 
       printMessage(
-        `${messagePrefix} ⚡️ ⚠️ power profile changed by user from [${currentPowerProfileType}] to [${newPowerProfileType}]`
+        `${messagePrefix} ⚡️ ⚠️  power profile changed by user from [${currentPowerProfileType}] to [${newPowerProfileType}]`
       );
     }
 
