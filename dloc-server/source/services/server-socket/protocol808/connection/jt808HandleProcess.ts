@@ -43,15 +43,13 @@ const jt808HandleProcess: Jt808HandleProcess = ({
   /** Check if must send to terminal request report */
   const { forceReportLocInSec } = jt808GetPowerProfileConfig(newPowerProfileType);
   if (checkMustSendToTerminalRequestReport(prefix, imei, imeiData, forceReportLocInSec)) {
-    // let count = counter + 199;
+    let count = counter + 199;
 
-    // TODO: [TESTING] Test if this packet is needed
-    //(results[0].response as Buffer[]).push(jt808CreateWakeupPacket(terminalId, count++));
-    //printMessage(`${prefix} 🔋 Wake up packet sent [${count}]`);
+    (results[0].response as Buffer[]).push(jt808CreateWakeupPacket(terminalId, count++));
+    printMessage(`${prefix} 🔋 Wake up packet sent [${count}]`);
 
     // TODO: [TESTING] If better send and active tracking to activate the device?
     // TODO: [CONFIG] If work fine, move the durationSec and uploadSec to config
-    const count = counter + 200;
     const packet = jt808CreateTemporaryLocationTrackingPacket(terminalId, counter++, 10, 20, prefix);
     // const packet = jt808CreateQueryLocationMessage(terminalId, count++);
     (results[0].response as Buffer[]).push(packet);
