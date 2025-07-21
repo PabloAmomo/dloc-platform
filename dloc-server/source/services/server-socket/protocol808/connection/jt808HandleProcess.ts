@@ -42,16 +42,14 @@ const jt808HandleProcess: Jt808HandleProcess = ({
   /** Check if must send to terminal request report */
   const { forceReportLocInSec } = jt808GetPowerProfileConfig(newPowerProfileType);
   if (checkMustSendToTerminalRequestReport(prefix, imei, imeiData, forceReportLocInSec)) {
-    (results[0].response as Buffer[]).push(jt808CreateWakeupPacket(terminalId, counter + 220));
-    printMessage(`${prefix} 🔋 Wake up packet sent [${counter + 220}]`);
+    let count = counter + 199;
 
-    const packet = jt808CreateQueryLocationMessage(terminalId, counter + 221);
+    (results[0].response as Buffer[]).push(jt808CreateWakeupPacket(terminalId, count++));
+    printMessage(`${prefix} 🔋 Wake up packet sent [${count}]`);
+
+    const packet = jt808CreateQueryLocationMessage(terminalId, count++);
     (results[0].response as Buffer[]).push(packet);
-    printMessage(
-      `${prefix} 🧭 🔥🔥 Request location report to terminal... (Force after ${forceReportLocInSec} seconds) [${
-        counter + 221
-      }]`
-    );
+    printMessage(`${prefix} 🧭 🔥🔥 Request location... (Force after ${forceReportLocInSec} seconds) [${count}]`);
   }
 
   /** Send */
