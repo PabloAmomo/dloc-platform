@@ -2,10 +2,10 @@ import { PowerProfileType } from "../../../../enums/PowerProfileType";
 import checkMustSendToTerminalRequestReport from "../../../../functions/checkMustSendToTerminalRequestReport";
 import { printMessage } from "../../../../functions/printMessage";
 import jt808Config from "../config/jt808Config";
+import Jt808ReportConfiguration from "../enums/Jt808reportConfiguration";
 import jt808CheckMustSendToTerminal from "../functions/jt808CheckMustSendToTerminal";
 import jt808CreateQueryLocationMessage from "../functions/jt808CreateQueryLocationMessage";
 import jt808CreateTemporaryLocationTrackingPacket from "../functions/jt808CreateTemporaryLocationTrackingPacket";
-import jt808CreateWakeupPacket from "../functions/jt808CreateWakeupPacket";
 import jt808FrameEncode from "../functions/jt808FrameEncode";
 import jt808GetPowerProfileConfig from "../functions/jt808GetPowerProfileConfig";
 import Jt808HandleProcess from "../models/Jt808HandleProcess";
@@ -24,6 +24,7 @@ const jt808HandleProcess: Jt808HandleProcess = ({
   sendData,
 }: Jt808ProcessProps): void => {
   const terminalId = imei.slice(-12);
+  const { REPORT_CONFIGURATION } = jt808Config;
 
   if (isNewConnection || powerProfileChanged || needProfileRefresh) {
     const responseSend: Buffer[] = jt808CheckMustSendToTerminal(
@@ -46,19 +47,20 @@ const jt808HandleProcess: Jt808HandleProcess = ({
   if (checkMustSendToTerminalRequestReport(prefix, imei, imeiData, forceReportLocInSec)) {
     let count = counter + 199;
 
-    // TODO: [TESTING] is needed to wake up the device?
-    //(results[0].response as Buffer[]).push(jt808CreateWakeupPacket(terminalId, count++));
-    //printMessage(`${prefix} 🔋 Wake up packet sent [${count}]`);
+    // TODO: [TESTING] If better send and active tracking to activate the device? (For hybrid and interval report)
 
-    // TODO: [TESTING] If better send and active tracking to activate the device?
-    // TODO: [CONFIG] If work fine, move the durTimeSec to config
     if (newPowerProfileType !== PowerProfileType.AUTOMATIC_FULL) {
-      const intervalSec : number = 20;
-      const packet = jt808CreateTemporaryLocationTrackingPacket(terminalId, count++, intervalSec, intervalSec * 2, prefix);
-      (results[0].response as Buffer[]).push(packet);
+      // TODO: [CONFIG] If work fine, move the intervalSec to config
+      const intervalSec: number = 20;
+
+      (results[0].response as Buffer[]).push(
+        Jt808ReportConfiguration.temporaryTracking
+          ? jt808CreateQueryLocationMessage(terminalId, count++)
+          : jt808CreateTemporaryLocationTrackingPacket(terminalId, count++, intervalSec, intervalSec * 2, prefix)
+      );
+
       printMessage(`${prefix} 🧭 🔥🔥 Request location... (Force after ${forceReportLocInSec} seconds) [${count}]`);
     }
-    // const packet = jt808CreateQueryLocationMessage(terminalId, count++);
   }
 
   /** Send */
