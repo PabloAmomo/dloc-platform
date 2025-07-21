@@ -39,11 +39,11 @@ const jt808ProcessPacket0x0xxxLocations: Jt808ProcessPacket = async ({
   if (locations.count > 0) {
     for (const location of locations.locations) {
       location.statusFlags.positioning;
-      gpsConstellation = ` Fixed ${location.statusFlags.positioning ? "👍" : "👎"}`;
+      gpsConstellation = ` FIX ${location.statusFlags.positioning ? "👍" : "👎"}`;
       gpsConstellation += ` [GPS ${location.statusFlags.gpsPositioning ? "✅" : "❌"}]`;
-      gpsConstellation += ` [Beidu ${location.statusFlags.beidouPositioning ? "✅" : "❌"}]`;
-      gpsConstellation += ` [Glonass ${location.statusFlags.glonassPositioning ? "✅" : "❌"}]`;
-      gpsConstellation += ` [Galileo ${location.statusFlags.galileoPositioning ? "✅" : "❌"}]`;
+      gpsConstellation += ` [BEI ${location.statusFlags.beidouPositioning ? "✅" : "❌"}]`;
+      gpsConstellation += ` [GLO ${location.statusFlags.glonassPositioning ? "✅" : "❌"}]`;
+      gpsConstellation += ` [GAL ${location.statusFlags.galileoPositioning ? "✅" : "❌"}]`;
 
       if (location.lat !== 0 && location.lng !== 0)
         extraMessage = `[${location.dateTimeUTC.replace(".000Z", "").replace("T", " ")}] Lat ${location.lat} - Lng ${
