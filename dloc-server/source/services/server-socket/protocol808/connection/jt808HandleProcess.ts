@@ -47,18 +47,23 @@ const jt808HandleProcess: Jt808HandleProcess = ({
   if (checkMustSendToTerminalRequestReport(prefix, imei, imeiData, forceReportLocInSec)) {
     let count = counter + 199;
 
-    // TODO: [TESTING] If better send and active tracking to activate the device? (For hybrid and interval report)
+    const isIntervalReport = REPORT_CONFIGURATION == Jt808ReportConfiguration.intervalReport;
+    const isTemporaryTracking = REPORT_CONFIGURATION == Jt808ReportConfiguration.temporaryTracking;
+    const isHybridRport = REPORT_CONFIGURATION == Jt808ReportConfiguration.hybridRport;
+    const isFullPowerProfile =
+      newPowerProfileType === PowerProfileType.FULL || newPowerProfileType === PowerProfileType.AUTOMATIC_FULL;
 
-    if (newPowerProfileType !== PowerProfileType.AUTOMATIC_FULL) {
-      // TODO: [CONFIG] If work fine, move the intervalSec to config
-      const intervalSec: number = 20;
+    let packetToSend: Buffer | undefined = undefined;
 
-      (results[0].response as Buffer[]).push(
-        Jt808ReportConfiguration.temporaryTracking
-          ? jt808CreateQueryLocationMessage(terminalId, count++)
-          : jt808CreateTemporaryLocationTrackingPacket(terminalId, count++, intervalSec, intervalSec * 2, prefix)
-      );
+    // TODO: [TESTING] If better send and active tracking to activate the device? (For hybrid report)
+    if (isTemporaryTracking || isIntervalReport || (isHybridRport && isFullPowerProfile))
+      packetToSend = jt808CreateQueryLocationMessage(terminalId, count++);
+    else if (isHybridRport && !isFullPowerProfile)
+      // TODO: [TESTING] If keep this functionality, move the time and interval to config
+      packetToSend = jt808CreateTemporaryLocationTrackingPacket(terminalId, count++, 20, 60, prefix);
 
+    if (packetToSend) {
+      (results[0].response as Buffer[]).push(packetToSend);
       printMessage(`${prefix} 🧭 🔥🔥 Request location... (Force after ${forceReportLocInSec} seconds) [${count}]`);
     }
   }
