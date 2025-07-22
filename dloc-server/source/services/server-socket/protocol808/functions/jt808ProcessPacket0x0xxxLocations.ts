@@ -1,5 +1,6 @@
 import { getNormalizedIMEI } from "../../../../functions/getNormalizedIMEI";
 import padNumberLeft from "../../../../functions/padNumberLeft";
+import { CACHE_IMEI } from "../../../../infraestucture/caches/cacheIMEI";
 import { Jt808ProcessPacket } from "../models/Jt808ProcessPacket";
 import jt808CreateGeneralResponse from "./jt808CreateGeneralResponse";
 import jt808DecodeLocationReport from "./jt808DecodeLocationReport";
@@ -50,7 +51,8 @@ const jt808ProcessPacket0x0xxxLocations: Jt808ProcessPacket = async ({
           location.lng
         } ${gpsConstellation.trim()}`;
 
-      location.statusFlags.beidouPositioning;
+      const imeiData = CACHE_IMEI.get(imei);
+      CACHE_IMEI.updateOrCreate(imei, { ...imeiData, lastReportRequestTimestamp: Date.now() });
 
       await jt808PersistLocation(imei, remoteAddress, location, persistence, body, response);
     }
