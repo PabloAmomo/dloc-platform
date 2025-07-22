@@ -40,19 +40,20 @@ const jt808ProcessPacket0x0xxxLocations: Jt808ProcessPacket = async ({
   if (locations.count > 0) {
     for (const location of locations.locations) {
       location.statusFlags.positioning;
-      gpsConstellation = ` FIX ${location.statusFlags.positioning ? "👍" : "👎"}`;
-      gpsConstellation += ` [GPS ${location.statusFlags.gpsPositioning ? "✅" : "❌"}]`;
-      gpsConstellation += ` [BEI ${location.statusFlags.beidouPositioning ? "✅" : "❌"}]`;
-      gpsConstellation += ` [GLO ${location.statusFlags.glonassPositioning ? "✅" : "❌"}]`;
-      gpsConstellation += ` [GAL ${location.statusFlags.galileoPositioning ? "✅" : "❌"}]`;
+      gpsConstellation = ` FIX ${location.statusFlags.positioning ? "👍" : "👎"} `;
+      gpsConstellation += `  GPS${location.statusFlags.gpsPositioning ? "✅" : "❌"}`;
+      gpsConstellation += `  BEI${location.statusFlags.beidouPositioning ? "✅" : "❌"}`;
+      gpsConstellation += `  GLO${location.statusFlags.glonassPositioning ? "✅" : "❌"}`;
+      gpsConstellation += `  GAL${location.statusFlags.galileoPositioning ? "✅" : "❌"}`;
 
       if (location.lat !== 0 && location.lng !== 0)
         extraMessage = `[${location.dateTimeUTC.replace(".000Z", "").replace("T", " ")}] Lat ${location.lat} - Lng ${
           location.lng
         } ${gpsConstellation.trim()}`;
 
-      const imeiData = CACHE_IMEI.get(imei);
-      CACHE_IMEI.updateOrCreate(imei, { ...imeiData, lastReportRequestTimestamp: Date.now() });
+      // TODO: [BUD] Avoid to send the same location multiple times (By send the request location when is not necessary)
+      //const imeiData = CACHE_IMEI.get(imei);
+      //CACHE_IMEI.updateOrCreate(imei, { ...imeiData, lastReportRequestTimestamp: Date.now() });
 
       await jt808PersistLocation(imei, remoteAddress, location, persistence, body, response);
     }
