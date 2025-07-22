@@ -14,7 +14,9 @@ const jt808CreateTemporaryLocationTrackingPacket = (
   const paramter1 = bufInterval + bufDuration;
 
   printMessage(
-    `${prefix} 📡 Temporary Location Tracking Packet: Interval: ${intervalSec} sec, Duration: ${durationSec} sec [${counter}]`
+    intervalSec === 0 && durationSec === 0
+      ? `${prefix} 📡 Temporary Location Tracking: 🧹 Clean Tracking [${counter}]`
+      : `${prefix} 📡 Temporary Location Tracking: ⏰ Interval: ${intervalSec} sec, Duration: ${durationSec} sec [${counter}]`
   );
 
   const packet = jt808CreateFrameData({
