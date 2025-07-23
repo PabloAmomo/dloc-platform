@@ -72,6 +72,7 @@ const jt808HandleProcess: Jt808HandleProcess = ({
         REQUEST_POSITION_INTERVAL_SECOND,
         prefix
       );
+      // temporary tracking || Hybrid report with full power profile (Already has and active tracking active)
     else packetToSend = jt808CreateQueryLocationMessage(terminalId, count++);
 
     if (packetToSend) {
