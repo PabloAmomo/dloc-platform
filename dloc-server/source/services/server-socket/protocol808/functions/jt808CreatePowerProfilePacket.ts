@@ -19,6 +19,10 @@ const jt808CreatePowerProfilePacket = (
   const isIntervalReport = reportConfiguration === Jt808ReportConfiguration.intervalReport;
   const isHybridReport = reportConfiguration === Jt808ReportConfiguration.hybridRport;
 
+  // TODO: [TESTING] Test if this packet is needed
+  //responseArray.push(jt808CreateWakeupPacket(terminalId, counter++));
+  //printMessage(`${prefix} 🔋 Wake up packet sent [${counter}]`);
+
   if (isTemporaryTracking || isHybridReport) {
     const { MOVEMENTS_CONTROL_SECONDS } = config;
     const durationSec = MOVEMENTS_CONTROL_SECONDS + uploadSec;
