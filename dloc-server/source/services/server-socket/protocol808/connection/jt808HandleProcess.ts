@@ -11,6 +11,10 @@ import jt808GetPowerProfileConfig from "../functions/jt808GetPowerProfileConfig"
 import Jt808HandleProcess from "../models/Jt808HandleProcess";
 import Jt808ProcessProps from "../models/Jt808ProcessProps";
 
+// TODO: [TESTING] If keep this functionality, move the time and interval to config
+const REQUEST_POSITION_ACTIVE_SECOND = 20; // seconds
+const REQUEST_POSITION_INTERVAL_SECOND = 40; // seconds
+
 const jt808HandleProcess: Jt808HandleProcess = ({
   results,
   imei,
@@ -59,8 +63,7 @@ const jt808HandleProcess: Jt808HandleProcess = ({
     if (isTemporaryTracking || isIntervalReport || (isHybridRport && isFullPowerProfile))
       packetToSend = jt808CreateQueryLocationMessage(terminalId, count++);
     else if (isHybridRport && !isFullPowerProfile)
-      // TODO: [TESTING] If keep this functionality, move the time and interval to config
-      packetToSend = jt808CreateTemporaryLocationTrackingPacket(terminalId, count++, 20, 60, prefix);
+      packetToSend = jt808CreateTemporaryLocationTrackingPacket(terminalId, count++, REQUEST_POSITION_ACTIVE_SECOND, REQUEST_POSITION_INTERVAL_SECOND, prefix);
 
     if (packetToSend) {
       (results[0].response as Buffer[]).push(packetToSend);
