@@ -51,10 +51,6 @@ const jt808ProcessPacket0x0xxxLocations: Jt808ProcessPacket = async ({
           location.lng
         } ${gpsConstellation.trim()}`;
 
-      // TODO: [BUD] Avoid to send the same location multiple times (By send the request location when is not necessary)
-      //const imeiData = CACHE_IMEI.get(imei);
-      //CACHE_IMEI.updateOrCreate(imei, { ...imeiData, lastReportRequestTimestamp: Date.now() });
-
       await jt808PersistLocation(imei, remoteAddress, location, persistence, body, response);
     }
   }
