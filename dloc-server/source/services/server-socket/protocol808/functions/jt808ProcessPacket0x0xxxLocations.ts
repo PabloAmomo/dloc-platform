@@ -40,7 +40,7 @@ const jt808ProcessPacket0x0xxxLocations: Jt808ProcessPacket = async ({
   if (locations.count > 0) {
     for (const location of locations.locations) {
       location.statusFlags.positioning;
-      gpsConstellation = ` FIX ${location.statusFlags.positioning ? "👍" : "👎"} `;
+      gpsConstellation = ` [📍 FIX ${location.statusFlags.positioning ? "✅" : "❌"}]`;
       gpsConstellation += `  GPS${location.statusFlags.gpsPositioning ? "✅" : "❌"}`;
       gpsConstellation += `  BEI${location.statusFlags.beidouPositioning ? "✅" : "❌"}`;
       gpsConstellation += `  GLO${location.statusFlags.glonassPositioning ? "✅" : "❌"}`;
