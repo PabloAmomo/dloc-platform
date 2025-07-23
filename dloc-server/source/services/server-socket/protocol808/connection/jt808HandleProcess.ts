@@ -11,10 +11,6 @@ import jt808GetPowerProfileConfig from "../functions/jt808GetPowerProfileConfig"
 import Jt808HandleProcess from "../models/Jt808HandleProcess";
 import Jt808ProcessProps from "../models/Jt808ProcessProps";
 
-// TODO: [TESTING] If keep this functionality, move the time and interval to config
-const REQUEST_POSITION_ACTIVE_SECOND = 20; // seconds
-const REQUEST_POSITION_INTERVAL_SECOND = 40; // seconds
-
 const jt808HandleProcess: Jt808HandleProcess = ({
   results,
   imei,
@@ -28,7 +24,7 @@ const jt808HandleProcess: Jt808HandleProcess = ({
   sendData,
 }: Jt808ProcessProps): void => {
   const terminalId = imei.slice(-12);
-  const { REPORT_CONFIGURATION } = jt808Config;
+  const { REPORT_CONFIGURATION, REQUEST_POSITION_ACTIVE_SECOND, REQUEST_POSITION_INTERVAL_SECOND } = jt808Config;
 
   if (isNewConnection || powerProfileChanged || needProfileRefresh) {
     const responseSend: Buffer[] = jt808CheckMustSendToTerminal(
@@ -59,11 +55,24 @@ const jt808HandleProcess: Jt808HandleProcess = ({
 
     let packetToSend: Buffer | undefined = undefined;
 
-    // TODO: [TESTING] If better send and active tracking to activate the device? (For hybrid report)
-    if (isTemporaryTracking || isIntervalReport || (isHybridRport && isFullPowerProfile))
-      packetToSend = jt808CreateQueryLocationMessage(terminalId, count++);
+    // TODO: [TESTING] If better send and active tracking to activate the device?
+    if (isIntervalReport)
+      packetToSend = jt808CreateTemporaryLocationTrackingPacket(
+        terminalId,
+        count++,
+        REQUEST_POSITION_ACTIVE_SECOND,
+        REQUEST_POSITION_INTERVAL_SECOND,
+        prefix
+      );
     else if (isHybridRport && !isFullPowerProfile)
-      packetToSend = jt808CreateTemporaryLocationTrackingPacket(terminalId, count++, REQUEST_POSITION_ACTIVE_SECOND, REQUEST_POSITION_INTERVAL_SECOND, prefix);
+      packetToSend = jt808CreateTemporaryLocationTrackingPacket(
+        terminalId,
+        count++,
+        REQUEST_POSITION_ACTIVE_SECOND,
+        REQUEST_POSITION_INTERVAL_SECOND,
+        prefix
+      );
+    else packetToSend = jt808CreateQueryLocationMessage(terminalId, count++);
 
     if (packetToSend) {
       (results[0].response as Buffer[]).push(packetToSend);
