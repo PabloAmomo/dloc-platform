@@ -53,30 +53,37 @@ const jt808HandleProcess: Jt808HandleProcess = ({
     const isFullPowerProfile =
       newPowerProfileType === PowerProfileType.FULL || newPowerProfileType === PowerProfileType.AUTOMATIC_FULL;
 
-    let packetToSend: Buffer | undefined = undefined;
+    let packetsToSend: Buffer[] = [];
 
     // TODO: [TESTING] If better send and active tracking to activate the device?
-    if (isIntervalReport)
-      packetToSend = jt808CreateTemporaryLocationTrackingPacket(
-        terminalId,
-        count++,
-        REQUEST_POSITION_ACTIVE_SECOND,
-        REQUEST_POSITION_INTERVAL_SECOND,
-        prefix
+    if (isIntervalReport) {
+      packetsToSend.push(jt808CreateTemporaryLocationTrackingPacket(terminalId, counter++, 0, 0, prefix));
+      packetsToSend.push(
+        jt808CreateTemporaryLocationTrackingPacket(
+          terminalId,
+          count++,
+          REQUEST_POSITION_ACTIVE_SECOND,
+          REQUEST_POSITION_INTERVAL_SECOND,
+          prefix
+        )
       );
-    else if (isHybridRport && !isFullPowerProfile)
-      packetToSend = jt808CreateTemporaryLocationTrackingPacket(
-        terminalId,
-        count++,
-        REQUEST_POSITION_ACTIVE_SECOND,
-        REQUEST_POSITION_INTERVAL_SECOND,
-        prefix
+    } else if (isHybridRport && !isFullPowerProfile) {
+      packetsToSend.push(jt808CreateTemporaryLocationTrackingPacket(terminalId, counter++, 0, 0, prefix));
+      packetsToSend.push(
+        jt808CreateTemporaryLocationTrackingPacket(
+          terminalId,
+          count++,
+          REQUEST_POSITION_ACTIVE_SECOND,
+          REQUEST_POSITION_INTERVAL_SECOND,
+          prefix
+        )
       );
-      // temporary tracking || Hybrid report with full power profile (Already has and active tracking active)
-    else packetToSend = jt808CreateQueryLocationMessage(terminalId, count++);
+    }
+    // temporary tracking || Hybrid report with full power profile (Already has and active tracking active)
+    else packetsToSend.push(jt808CreateQueryLocationMessage(terminalId, count++));
 
-    if (packetToSend) {
-      (results[0].response as Buffer[]).push(packetToSend);
+    if (packetsToSend.length > 0) {
+      results[0].response = [...(results[0].response as Buffer[]), ...packetsToSend];
       printMessage(`${prefix} 🧭 🔥🔥 Request location... (Force after ${forceReportLocInSec} seconds) [${count}]`);
     }
   }
