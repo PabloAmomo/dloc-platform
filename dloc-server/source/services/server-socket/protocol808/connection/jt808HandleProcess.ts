@@ -34,7 +34,8 @@ const jt808HandleProcess: Jt808HandleProcess = ({
       needProfileRefresh,
       counter + 200,
       imeiData.powerProfile,
-      newPowerProfileType
+      newPowerProfileType,
+      isNewConnection
     );
 
     responseSend.forEach((response) => {
@@ -55,7 +56,6 @@ const jt808HandleProcess: Jt808HandleProcess = ({
 
     let packetsToSend: Buffer[] = [];
 
-    // TODO: [TESTING] If better send and active tracking to activate the device?
     if (isIntervalReport) {
       packetsToSend.push(jt808CreateTemporaryLocationTrackingPacket(terminalId, counter++, 0, 0, prefix));
       packetsToSend.push(
