@@ -56,31 +56,21 @@ const jt808HandleProcess: Jt808HandleProcess = ({
 
     let packetsToSend: Buffer[] = [];
 
-    if (isIntervalReport) {
+    // Request location
+    packetsToSend.push(jt808CreateQueryLocationMessage(terminalId, count++));
+
+    // Request active tracking (Not needed for temporaryTracking mode)
+    if (isIntervalReport || (isHybridRport && !isFullPowerProfile))
       packetsToSend.push(jt808CreateTemporaryLocationTrackingPacket(terminalId, counter++, 0, 0, prefix));
-      packetsToSend.push(
-        jt808CreateTemporaryLocationTrackingPacket(
-          terminalId,
-          count++,
-          REQUEST_POSITION_ACTIVE_SECOND,
-          REQUEST_POSITION_INTERVAL_SECOND,
-          prefix
-        )
-      );
-    } else if (isHybridRport && !isFullPowerProfile) {
-      packetsToSend.push(jt808CreateTemporaryLocationTrackingPacket(terminalId, counter++, 0, 0, prefix));
-      packetsToSend.push(
-        jt808CreateTemporaryLocationTrackingPacket(
-          terminalId,
-          count++,
-          REQUEST_POSITION_ACTIVE_SECOND,
-          REQUEST_POSITION_INTERVAL_SECOND,
-          prefix
-        )
-      );
-    }
-    // temporary tracking || Hybrid report with full power profile (Already has and active tracking active)
-    else packetsToSend.push(jt808CreateQueryLocationMessage(terminalId, count++));
+    packetsToSend.push(
+      jt808CreateTemporaryLocationTrackingPacket(
+        terminalId,
+        count++,
+        REQUEST_POSITION_ACTIVE_SECOND,
+        REQUEST_POSITION_INTERVAL_SECOND,
+        prefix
+      )
+    );
 
     if (packetsToSend.length > 0) {
       results[0].response = [...(results[0].response as Buffer[]), ...packetsToSend];
