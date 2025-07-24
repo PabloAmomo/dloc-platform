@@ -1,10 +1,10 @@
-import config from "../config/config";
-import { PowerProfileType } from "../enums/PowerProfileType";
-import GetPowerProfileConfig from "../models/GetProwerProfileConfig";
-import { Persistence } from "../models/Persistence";
-import getMovementInLastSeconds from "./getMovementInLastSeconds";
-import { printMessage } from "./printMessage";
-import updatePowerProfile from "./updatePowerProfile";
+import config from '../config/config';
+import { PowerProfileType } from '../enums/PowerProfileType';
+import GetPowerProfileConfig from '../models/GetProwerProfileConfig';
+import { Persistence } from '../models/Persistence';
+import getMovementInLastSeconds from './getMovementInLastSeconds';
+import { printMessage } from './printMessage';
+import updatePowerProfile from './updatePowerProfile';
 
 async function getPowerProfile(
   imei: string,
