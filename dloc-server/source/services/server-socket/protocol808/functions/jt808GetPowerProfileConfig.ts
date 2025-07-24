@@ -8,10 +8,10 @@ const jt808GetPowerProfileConfig: GetPowerProfileConfig = (
 ): PowerProfileConfig => {
   if (profileType === PowerProfileType.MINIMAL || profileType === PowerProfileType.AUTOMATIC_MINIMAL)
     return {
-      heartBeatSec: 120,
+      heartBeatSec: 150,
       uploadSec: 120,
       ledState: false,
-      forceReportLocInSec: 110,
+      forceReportLocInSec: 125,
       movementMeters: 50,
     };
 
@@ -20,7 +20,7 @@ const jt808GetPowerProfileConfig: GetPowerProfileConfig = (
       heartBeatSec: 90,
       uploadSec: 60,
       ledState: false,
-      forceReportLocInSec: 80,
+      forceReportLocInSec: 65,
       movementMeters: 50,
     };
 
@@ -33,7 +33,7 @@ const jt808GetPowerProfileConfig: GetPowerProfileConfig = (
     heartBeatSec: 60,
     uploadSec: 20,
     ledState: true,
-    forceReportLocInSec: 60,
+    forceReportLocInSec: 45,
     movementMeters: 50,
   };
 };
