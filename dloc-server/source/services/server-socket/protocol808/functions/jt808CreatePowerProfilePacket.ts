@@ -11,7 +11,8 @@ const jt808CreatePowerProfilePacket = (
   counter: number,
   powerProfileType: PowerProfileType,
   reportConfiguration: Jt808ReportConfiguration,
-  prefix: string
+  prefix: string,
+  isNewConnection: boolean
 ): Buffer[] => {
   const { uploadSec, movementMeters } = jt808PowerProfileConfig(powerProfileType);
   const responseArray: Buffer[] = [];
