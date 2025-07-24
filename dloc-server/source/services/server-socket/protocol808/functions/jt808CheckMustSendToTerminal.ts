@@ -15,7 +15,8 @@ const jt808CheckMustSendToTerminal = (
   needProfileRefresh: boolean,
   counter: number,
   currentPowerPrfile: string,
-  newPowerProfile: PowerProfileType
+  newPowerProfile: PowerProfileType,
+  isNewConnection: boolean
 ): Buffer[] => {
   const response: Buffer[] = [];
   const { uploadSec, heartBeatSec } = jt808PowerProfileConfig(newPowerProfile);
@@ -34,7 +35,8 @@ const jt808CheckMustSendToTerminal = (
     counter++,
     newPowerProfile,
     REPORT_CONFIGURATION,
-    prefix
+    prefix,
+    isNewConnection
   );
   response.push(...powerPackets);
 
