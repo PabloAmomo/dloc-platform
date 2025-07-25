@@ -19,8 +19,8 @@ const protoGt06GetFrameData = (buffer: Buffer): ProtoGt06Packet => {
   const packetLength = buffer[2];
 
   // Verificación básica de longitud esperada
-  if (buffer.length !== packetLength + 5)
-    throw new Error(`Invalid packet length. Expected ${packetLength + 5} bytes, got ${buffer.length}`);
+  if (buffer.length !== packetLength + 5 + 3)
+    throw new Error(`Invalid packet length. Expected ${packetLength + 5 + 3} bytes, got ${buffer.length}`);
 
   // 3. Protocol Number (1 byte)
   const protocolNumber = buffer[3];
