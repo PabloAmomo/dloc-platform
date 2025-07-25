@@ -25,6 +25,13 @@ import jt808HandleProcess from './services/server-socket/protocol808/connection/
 import jt808Decoder from './services/server-socket/protocol808/functions/jt808Decoder';
 import jt808GetPowerProfileConfig from './services/server-socket/protocol808/functions/jt808GetPowerProfileConfig';
 import proto1903GetPowerProfileConfig from './services/server-socket/protocol1903/functions/proto1903GetPowerProfileConfig';
+import protoGt06HandleProcess from './services/server-socket/protocolGT06/connection/protoGt06HandleProcess';
+import protoGt06HandlePacket from './services/server-socket/protocolGT06/connection/protoGt06HandlePacket';
+import protoGt06HandleEnd from './services/server-socket/protocolGT06/connection/protoGt06HandleEnd';
+import protoGt06HandleError from './services/server-socket/protocolGT06/connection/protoGt06HandleError';
+import protoGt06Decoder from './services/server-socket/protocolGT06/functions/protoGt06Decoder';
+import protoGt06GetPowerProfileConfig from './services/server-socket/protocolGT06/functions/protoGt06GetPowerProfileConfig';
+import protoGt06HandleClose from './services/server-socket/protocolGT06/connection/protoGt06HandleClose';
 
 /** Load environment variables */
 dotenv.config();
@@ -118,8 +125,30 @@ if (SOCKET_PROTOCOL == "1903") {
     PORT_SOCKET
   );
   //
+} else if (SOCKET_PROTOCOL == "GT06") {
+  //
+  /** Start Socket server (Protocol GT06) */
+  printMessage(`✅ Using protocol ${SOCKET_PROTOCOL}.`);
+  startServerSocket(
+    (conn) =>
+      serverSocketHandler({
+        conn,
+        persistence: getPersistence(),
+        protocol: "GT06",
+        handleConnection,
+        handleProcess: protoGt06HandleProcess,
+        handlePacket: protoGt06HandlePacket,
+        handleClose: protoGt06HandleClose,
+        handleEnd: protoGt06HandleEnd,
+        handleError: protoGt06HandleError,
+        decoder: protoGt06Decoder as (data: Buffer) => string[],
+        getPowerProfileConfig: protoGt06GetPowerProfileConfig
+      }),
+    PORT_SOCKET
+  );
+  //
 } else {
-  printMessage("❌ Error: Invalid SOCKET_PROTOCOL. Use '1903' or '808'.");
+  printMessage("❌ Error: Invalid SOCKET_PROTOCOL. Use '1903' or '808' or 'GT06'.");
   process.exit(1);
 }
 
