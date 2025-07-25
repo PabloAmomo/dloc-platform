@@ -141,7 +141,7 @@ if (SOCKET_PROTOCOL == "1903") {
         handleClose: protoGt06HandleClose,
         handleEnd: protoGt06HandleEnd,
         handleError: protoGt06HandleError,
-        decoder: protoGt06Decoder as (data: Buffer) => string[],
+        decoder: protoGt06Decoder as (data: Buffer) => Buffer[],
         getPowerProfileConfig: protoGt06GetPowerProfileConfig
       }),
     PORT_SOCKET

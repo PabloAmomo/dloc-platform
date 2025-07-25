@@ -3,7 +3,7 @@ import { Persistence } from "../../../../models/Persistence";
 export default interface ProtoGt06HandlePacketProps {
   imei: string;
   remoteAddress: string;
-  data: string;
+  data: Buffer;
   persistence: Persistence;
   counter: number;
   disconnect: () => void;
