@@ -14,7 +14,7 @@ import jt808ProcessPacket0x0xxx from "../functions/jt808ProcessPacket0x0xxx";
 import jt808ProcessPacket0x0xxxLocations from "../functions/jt808ProcessPacket0x0xxxLocations";
 import Jt808HandlePacket from "../models/Jt808HandlePacket";
 import Jt808HandlePacketProps from "../models/Jt808HandlePacketProps";
-import Jt808ProcessPacketProps from "../models/Jt808ProcessPacketPropss";
+import Jt808ProcessPacketProps from "../models/Jt808ProcessPacketProps";
 
 const jt808HandlePacket: Jt808HandlePacket = async (props: Jt808HandlePacketProps): Promise<HandlePacketResult> => {
   const { imei, remoteAddress, data, persistence, counter, disconnect } = props;
