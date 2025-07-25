@@ -24,7 +24,7 @@ COPY ./.docker.env ./.docker.env
 COPY ./.docker.socket.env ./.docker.socket.env
 COPY ./.docker.socket.protocol1903.env ./.docker.socket.protocol1903.env
 COPY ./.docker.socket.protocol808.env ./.docker.socket.protocol808.env
-COPY ./.docker.socket.protocolgt06.env ./.docker.socket.protocolgt06.env
+COPY ./.docker.socket.protocoltopin.env ./.docker.socket.protocoltopin.env
 COPY ./.docker.http.env ./.docker.http.env
 
 RUN if [ "$SERVER_TYPE" = "socket" ]; then \
@@ -33,8 +33,8 @@ RUN if [ "$SERVER_TYPE" = "socket" ]; then \
       cp ./.docker.socket.protocol1903.env ./.env ; \
     elif [ "$SERVER_TYPE" = "socket-808" ]; then \
       cp ./.docker.socket.protocol808.env ./.env ; \
-    elif [ "$SERVER_TYPE" = "socket-gt06" ]; then \
-      cp ./.docker.socket.protocolgt06.env ./.env ; \
+    elif [ "$SERVER_TYPE" = "socket-topin" ]; then \
+      cp ./.docker.socket.protocoltopin.env ./.env ; \
     elif [ "$SERVER_TYPE" = "http" ]; then \
       cp ./.docker.http.env ./.env ; \
     else \

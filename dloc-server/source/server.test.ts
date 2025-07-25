@@ -16,10 +16,11 @@ import { parseUtcDateTime } from "./functions/parseUtcDateTime";
 import jt808CreateGeneralResponse from "./services/server-socket/protocol808/functions/jt808CreateGeneralResponse";
 import jt808CreateTerminalRegistrationResponsePacket from "./services/server-socket/protocol808/functions/jt808CreateTerminalRegistrationResponsePacket";
 import jt808CehckUploadPowerSaving from "./services/server-socket/protocol808/functions/jt808CehckUploadPowerSaving";
-import protoGt06GetFrameData from "./services/server-socket/protocolGT06/functions/protoGt06GetFrameData";
+import protoTopinGetFrameData from "./services/server-socket/protocolTopin/functions/protoTopinGetFrameData";
 
 import net from 'net';
 
+/*
 // 78 78 00 18 25 07 25 23 01 45 03 00 D6 07 00 00 1D C5 01 12 F6 1E 6A 00 00 1D C5 01 12 F6 1E 6A 00 00 1D C5 01 12 F6 1E 6A 00 0D 0A
 
 // Dirección del servidor y puerto
@@ -54,7 +55,7 @@ if (firts) {
   client.write(packet2);
   console.log('📤 Paquete enviado (2):', packet2.toString('hex'));
     // Si solo esperas una respuesta, puedes cerrar la conexión:
-  client.destroy();
+  // client.destroy();
   }
 
 });
@@ -85,6 +86,7 @@ client.connect(PORT, HOST, () => {
 
 // console.log(protoGt06GetFrameData(Buffer.from("78780D010359339078151063280D0A", "hex")));
 
+*/
 
 /*
 // Sleep Packet

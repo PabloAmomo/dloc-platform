@@ -1,6 +1,6 @@
 import crc16ITU from "../../../../functions/crc16ITU";
 
-const protoGt06CreatePacket = (protocolNumber: number, serialNumber: number, dataPayload: Buffer) => {
+const protoTopinCreatePacket = (protocolNumber: number, serialNumber: number, dataPayload: Buffer) => {
   // protocol + data + serial
   const contentLength = 1 + dataPayload.length + 2; // proto(1) + data(N) + serial(2)
 
@@ -41,4 +41,4 @@ const protoGt06CreatePacket = (protocolNumber: number, serialNumber: number, dat
   return packet;
 };
 
-export default protoGt06CreatePacket;
+export default protoTopinCreatePacket;

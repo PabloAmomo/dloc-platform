@@ -1,6 +1,6 @@
 import { Persistence } from "../../../../models/Persistence";
 
-export default interface ProtoGt06HandlePacketProps {
+export default interface ProtoTopinHandlePacketProps {
   imei: string;
   remoteAddress: string;
   data: Buffer;

@@ -1,4 +1,4 @@
-export interface ProtoGt06Packet  {
+export interface ProtoTopinPacket  {
     raw: string,
     packetLength: number,
     protocolNumber: number,

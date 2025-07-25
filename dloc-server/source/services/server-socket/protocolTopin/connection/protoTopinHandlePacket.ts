@@ -11,17 +11,17 @@ import { PositionPacket } from "../../../../models/PositionPacket";
 import discardData from "../../functions/discardData";
 import getLbsPosition from "../../functions/getLbsPosition";
 import HandlePacketResult from "../../models/HandlePacketResult";
-import protoGt06CreatePositionPacket from "../functions/protoGt06CreatePositionPacket";
-import protoGt06GetFrameData from "../functions/protoGt06GetFrameData";
-import PROTOGt06_REGEX_PACKETS from "../functions/protoGt06PacketParseREGEX";
-import protoGt06ProcessPacket0x01 from "../functions/protoGt06ProcessPacket0x01";
-import ProtoGt06HandlePacket from "../models/ProtoGt06HandlePacket";
-import ProtoGt06HandlePacketProps from "../models/ProtoGt06HandlePacketProps";
-import ProtoGt06ProcessPacketProps from "../models/ProtoGt06ProcessPacketProps";
+import protoGt06CreatePositionPacket from "../functions/protoTopinCreatePositionPacket";
+import protoGt06GetFrameData from "../functions/protoTopinGetFrameData";
+import PROTOGt06_REGEX_PACKETS from "../functions/protoTopinPacketParseREGEX";
+import protoGt06ProcessPacket0x01 from "../functions/protoTopinProcessPacket0x01";
+import ProtoGt06HandlePacket from "../models/ProtoTopinHandlePacket";
+import ProtoGt06HandlePacketProps from "../models/ProtoTopinHandlePacketProps";
+import ProtoGt06ProcessPacketProps from "../models/ProtoTopinProcessPacketProps";
 
 const noImei: string = "no imei received";
 
-const protoGt06HandlePacket: ProtoGt06HandlePacket = async (
+const protoTopinHandlePacket: ProtoGt06HandlePacket = async (
   props: ProtoGt06HandlePacketProps
 ): Promise<HandlePacketResult> => {
   const { imei, remoteAddress, data, persistence, disconnect } = props;
@@ -41,13 +41,13 @@ const protoGt06HandlePacket: ProtoGt06HandlePacket = async (
   // TODO: [DEBUG] Only for debug
   printMessage(`[${imeiToPrint}] (${remoteAddress}) 📡 RECEIVED 👉 [${dataString}].`);
 
-  const gt06Packet = protoGt06GetFrameData(data);
+  const topinPacket = protoGt06GetFrameData(data);
 
   const functionData: ProtoGt06ProcessPacketProps = {
     remoteAddress,
     response,
     imei,
-    gt06Packet,
+    topinPacket,
     persistence,
     prefix: `[${imeiToPrint}] (${remoteAddress})`,
   };
@@ -55,7 +55,7 @@ const protoGt06HandlePacket: ProtoGt06HandlePacket = async (
   // ---------------------------------------
   // Login Message 0x01
   // ---------------------------------------
-  if (gt06Packet.protocolNumber === 0x01) {
+  if (topinPacket.protocolNumber === 0x01) {
     const respProcess = await protoGt06ProcessPacket0x01(functionData);
     updateLastActivity = respProcess.updateLastActivity;
     imeiToPrint = respProcess.imei;
@@ -64,7 +64,7 @@ const protoGt06HandlePacket: ProtoGt06HandlePacket = async (
   // ---------------------------------------
   // Location Data 0x12
   // ---------------------------------------
-  else if (gt06Packet.protocolNumber === 0x12) {
+  else if (topinPacket.protocolNumber === 0x12) {
     //  const respProcess = await jt808ProcessPacket0x0100(functionData);
     //  updateLastActivity = respProcess.updateLastActivity;
     //  imeiToPrint = respProcess.imei;
@@ -73,7 +73,7 @@ const protoGt06HandlePacket: ProtoGt06HandlePacket = async (
   // ---------------------------------------
   // Status information 0x13
   // ---------------------------------------
-  else if (gt06Packet.protocolNumber === 0x13) {
+  else if (topinPacket.protocolNumber === 0x13) {
     //  const respProcess = await jt808ProcessPacket0x0100(functionData);
     //  updateLastActivity = respProcess.updateLastActivity;
     //  imeiToPrint = respProcess.imei;
@@ -82,7 +82,7 @@ const protoGt06HandlePacket: ProtoGt06HandlePacket = async (
   // ---------------------------------------
   // String information 0x15
   // ---------------------------------------
-  else if (gt06Packet.protocolNumber === 0x15) {
+  else if (topinPacket.protocolNumber === 0x15) {
     //  const respProcess = await jt808ProcessPacket0x0100(functionData);
     //  updateLastActivity = respProcess.updateLastActivity;
     //  imeiToPrint = respProcess.imei;
@@ -91,7 +91,7 @@ const protoGt06HandlePacket: ProtoGt06HandlePacket = async (
   // ---------------------------------------
   // Alarm data 0x16
   // ---------------------------------------
-  else if (gt06Packet.protocolNumber === 0x16) {
+  else if (topinPacket.protocolNumber === 0x16) {
     //  const respProcess = await jt808ProcessPacket0x0100(functionData);
     //  updateLastActivity = respProcess.updateLastActivity;
     //  imeiToPrint = respProcess.imei;
@@ -100,7 +100,7 @@ const protoGt06HandlePacket: ProtoGt06HandlePacket = async (
   // ---------------------------------------
   // GPS, query address information by phone number 0x1A
   // ---------------------------------------
-  else if (gt06Packet.protocolNumber === 0x1a) {
+  else if (topinPacket.protocolNumber === 0x1a) {
     //  const respProcess = await jt808ProcessPacket0x0100(functionData);
     //  updateLastActivity = respProcess.updateLastActivity;
     //  imeiToPrint = respProcess.imei;
@@ -212,4 +212,4 @@ const protoGt06HandlePacket: ProtoGt06HandlePacket = async (
   return response;
 };
 
-export default protoGt06HandlePacket;
+export default protoTopinHandlePacket;

@@ -1,9 +1,9 @@
 import { PowerProfileType } from '../../../../enums/PowerProfileType';
 import { printMessage } from '../../../../functions/printMessage';
-import protoGt06CreateConfig from './protoGt06CreateConfig';
-import protoGt06GetPowerProfileConfig from './protoGt06GetPowerProfileConfig';
+import protoGt06CreateConfig from './protoTopinCreateConfig';
+import protoGt06GetPowerProfileConfig from './protoTopinGetPowerProfileConfig';
 
-const protoGt06CheckMustSendToTerminal = (
+const protoTopinCheckMustSendToTerminal = (
   imei: string,
   prefix: string,
   powerPrfChanged: boolean,
@@ -33,4 +33,4 @@ const protoGt06CheckMustSendToTerminal = (
   return protoGt06CreateConfig(newPowerProfile);
 };
 
-export default protoGt06CheckMustSendToTerminal;
+export default protoTopinCheckMustSendToTerminal;

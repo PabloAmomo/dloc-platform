@@ -10,16 +10,16 @@ import Proto1903HandlePacket from '../../services/server-socket/protocol1903/mod
 import Proto1903HandleProcess from '../../services/server-socket/protocol1903/models/Proto1903HandleProcess';
 import Jt808HandlePacket from '../../services/server-socket/protocol808/models/Jt808HandlePacket';
 import Jt808HandleProcess from '../../services/server-socket/protocol808/models/Jt808HandleProcess';
-import ProtoGt06HandlePacket from '../../services/server-socket/protocolGT06/models/ProtoGt06HandlePacket';
-import ProtoGt06HandleProcess from '../../services/server-socket/protocolGT06/models/ProtoGt06HandleProcess';
+import ProtoTopinHandlePacket from '../../services/server-socket/protocolTopin/models/ProtoTopinHandlePacket';
+import ProtoTopinHandleProcess from '../../services/server-socket/protocolTopin/models/ProtoTopinHandleProcess';
 
 export default interface  ServerSocketHandlerProps {
-  protocol: "PROTO1903" | "JT808" | "GT06";
+  protocol: "PROTO1903" | "JT808" | "TOPIN";
   conn: net.Socket;
   persistence: Persistence;
   handleConnection: HandleConnection;
-  handleProcess: Proto1903HandleProcess | Jt808HandleProcess | ProtoGt06HandleProcess;
-  handlePacket: Proto1903HandlePacket | Jt808HandlePacket | ProtoGt06HandlePacket;
+  handleProcess: Proto1903HandleProcess | Jt808HandleProcess | ProtoTopinHandleProcess;
+  handlePacket: Proto1903HandlePacket | Jt808HandlePacket | ProtoTopinHandlePacket;
   handleClose: HandleClose;
   handleEnd: HandleEnd;
   handleError: HandleError;

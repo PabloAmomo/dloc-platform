@@ -1,12 +1,12 @@
 import { Persistence } from '../../../../models/Persistence';
 import HandlePacketResult from '../../models/HandlePacketResult';
-import { ProtoGt06Packet } from './ProtoGt06Packet';
+import { ProtoTopinPacket } from './ProtoTopinPacket';
 
-export default interface ProtoGt06ProcessPacketProps {
+export default interface ProtoTopinProcessPacketProps {
   remoteAddress: string;
   imei: string;
   response: HandlePacketResult;
-  gt06Packet: ProtoGt06Packet;
+  topinPacket: ProtoTopinPacket;
   persistence: Persistence;
-  prefix: string
+  prefix: string;
 }

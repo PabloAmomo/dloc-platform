@@ -1,9 +1,9 @@
 import { PowerProfileType } from '../../../../enums/PowerProfileType';
 import padNumberLeft from '../../../../functions/padNumberLeft';
-import protoGt06PowerProfileConfig from './protoGt06GetPowerProfileConfig';
+import protoGt06PowerProfileConfig from './protoTopinGetPowerProfileConfig';
 import { uniqueId } from '../../../../functions/uniqueId';
 
-function protoGt06CreateConfig(
+function protoTopinCreateConfig(
   powerProfileType: PowerProfileType
 ): string {
   let response = "";
@@ -23,4 +23,4 @@ function protoGt06CreateConfig(
 
   return response;
 }
-export default protoGt06CreateConfig;
+export default protoTopinCreateConfig;

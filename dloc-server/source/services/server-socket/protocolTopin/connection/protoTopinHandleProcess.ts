@@ -1,11 +1,11 @@
 import { printMessage } from "../../../../functions/printMessage";
-import ProtoGt06ProcessProps from "../models/ProtoGt06ProcessProps";
-import protoGt06CheckMustSendToTerminal from "../functions/protoGt06CheckMustSendToTerminal";
+import ProtoGt06ProcessProps from "../models/ProtoTopinProcessProps";
+import protoGt06CheckMustSendToTerminal from "../functions/protoTopinCheckMustSendToTerminal";
 import checkMustSendToTerminalRequestReport from "../../../../functions/checkMustSendToTerminalRequestReport";
-import ProtoGt06HandleProcess from "../models/ProtoGt06HandleProcess";
-import protoGt06GetPowerProfileConfig from "../functions/protoGt06GetPowerProfileConfig";
+import ProtoGt06HandleProcess from "../models/ProtoTopinHandleProcess";
+import protoGt06GetPowerProfileConfig from "../functions/protoTopinGetPowerProfileConfig";
 
-const protoGt06HandleProcess: ProtoGt06HandleProcess = ({
+const protoTopinHandleProcess: ProtoGt06HandleProcess = ({
   results,
   imei,
   prefix,
@@ -50,4 +50,4 @@ const protoGt06HandleProcess: ProtoGt06HandleProcess = ({
   sendData(toSend);
 };
 
-export default protoGt06HandleProcess;
+export default protoTopinHandleProcess;

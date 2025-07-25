@@ -4,7 +4,7 @@ import { PowerProfileType } from '../../../../enums/PowerProfileType';
 import { CacheImei } from '../../../../infraestucture/models/CacheImei';
 import HandlePacketResult from '../../models/HandlePacketResult';
 
-type ProtoGt06ProcessProps = {
+type ProtoTopinProcessProps = {
   results: HandlePacketResult[];
   imei: string;
   prefix: string;
@@ -17,4 +17,4 @@ type ProtoGt06ProcessProps = {
   sendData: (data: Buffer[]) => void; 
 };
 
-export default ProtoGt06ProcessProps;
+export default ProtoTopinProcessProps;

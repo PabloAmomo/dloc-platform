@@ -1,6 +1,6 @@
-import ProtovProcessProps from "./ProtoGt06ProcessProps";
+import ProtovProcessProps from "./ProtoTopinProcessProps";
 
-type ProtoGt06HandleProcess = ({
+type ProtoTopinHandleProcess = ({
   results,
   imei,
   prefix,
@@ -13,4 +13,4 @@ type ProtoGt06HandleProcess = ({
   sendData
 }: ProtovProcessProps) => void;
 
-export default ProtoGt06HandleProcess;
+export default ProtoTopinHandleProcess;

@@ -1,7 +1,6 @@
-import crc16ITU from "../../../../functions/crc16ITU";
-import { ProtoGt06Packet } from "../models/ProtoGt06Packet";
+import { ProtoTopinPacket } from "../models/ProtoTopinPacket";
 
-const protoGt06GetFrameData = (buffer: Buffer): ProtoGt06Packet => {
+const protoTopinGetFrameData = (buffer: Buffer): ProtoTopinPacket => {
   if (
     buffer[0] !== 0x78 ||
     buffer[1] !== 0x78 ||
@@ -78,13 +77,5 @@ const protoGt06GetFrameData = (buffer: Buffer): ProtoGt06Packet => {
   };
 };
 
-export default protoGt06GetFrameData;
+export default protoTopinGetFrameData;
 
-// CRC muy simple: XOR acumulado (1 byte)
-function simpleCRC(buffer: Buffer): number {
-  let crc = 0x00;
-  for (let i = 0; i < buffer.length; i++) {
-    crc ^= buffer[i];
-  }
-  return crc;
-}

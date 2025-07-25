@@ -5,7 +5,7 @@ import { parseLatOrLng } from '../../../../functions/parseLatOrLng';
 import { parseUtcDateTime } from '../../../../functions/parseUtcDateTime';
 import { printMessage } from '../../../../functions/printMessage';
 
-const protoGt06CreatePositionPacket = (imei: string, remoteAddress: string, values: string[], accuracy: GpsAccuracy, activity: string): PositionPacket | undefined => {
+const protoTopinCreatePositionPacket = (imei: string, remoteAddress: string, values: string[], accuracy: GpsAccuracy, activity: string): PositionPacket | undefined => {
   try {
     return {
       imei,
@@ -27,4 +27,4 @@ const protoGt06CreatePositionPacket = (imei: string, remoteAddress: string, valu
   }
 };
 
-export default protoGt06CreatePositionPacket;
+export default protoTopinCreatePositionPacket;

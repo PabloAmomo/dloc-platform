@@ -49,7 +49,7 @@ const serverSocketHandler: ServerSocketHandler = (props: ServerSocketHandlerProp
 
     if (protocol === "PROTO1903") dataShow = dataString;
     else if (protocol === "JT808") dataShow = convertAnyToHexString(data);
-    else if (protocol === "GT06") dataShow = convertAnyToHexString(data);
+    else if (protocol === "TOPIN") dataShow = convertAnyToHexString(data);
     else {
       printMessage(`[${tempImei}] (${remoteAddress}) ❌ Unsupported protocol: ${protocol}.`);
       disconnect();

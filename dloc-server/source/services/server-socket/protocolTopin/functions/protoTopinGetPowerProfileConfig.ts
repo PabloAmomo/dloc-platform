@@ -3,7 +3,7 @@ import { PowerProfileConfig } from "../../../../models/PowerProfileConfig";
 import { printMessage } from "../../../../functions/printMessage";
 import GetPowerProfileConfig from "../../../../models/GetProwerProfileConfig";
 
-const protoGt06GetPowerProfileConfig : GetPowerProfileConfig = (
+const protoTopinGetPowerProfileConfig : GetPowerProfileConfig = (
   profileType: PowerProfileType = PowerProfileType.FULL
 ) : PowerProfileConfig => {
   if (
@@ -49,4 +49,4 @@ const protoGt06GetPowerProfileConfig : GetPowerProfileConfig = (
   };
 }
 
-export default protoGt06GetPowerProfileConfig;
+export default protoTopinGetPowerProfileConfig;

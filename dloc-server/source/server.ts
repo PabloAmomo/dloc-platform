@@ -1,4 +1,5 @@
 import dotenv from 'dotenv';
+
 import routes from './controllers/server-http/routes';
 import serverSocketHandler from './controllers/server-socket/serverSocketHandler';
 import { printMessage } from './functions/printMessage';
@@ -17,6 +18,7 @@ import proto1903HandleError from './services/server-socket/protocol1903/connecti
 import proto1903HandlePacket from './services/server-socket/protocol1903/connection/proto1903HandlePacket';
 import proto1903HandleProcess from './services/server-socket/protocol1903/connection/proto1903HandleProcess';
 import proto1903Decoder from './services/server-socket/protocol1903/functions/proto1903Decoder';
+import proto1903GetPowerProfileConfig from './services/server-socket/protocol1903/functions/proto1903GetPowerProfileConfig';
 import jt808HandleClose from './services/server-socket/protocol808/connection/jt808HandleClose';
 import jt808HandleEnd from './services/server-socket/protocol808/connection/jt808HandleEnd';
 import jt808HandleError from './services/server-socket/protocol808/connection/jt808HandleError';
@@ -24,14 +26,13 @@ import jt808HandlePacket from './services/server-socket/protocol808/connection/j
 import jt808HandleProcess from './services/server-socket/protocol808/connection/jt808HandleProcess';
 import jt808Decoder from './services/server-socket/protocol808/functions/jt808Decoder';
 import jt808GetPowerProfileConfig from './services/server-socket/protocol808/functions/jt808GetPowerProfileConfig';
-import proto1903GetPowerProfileConfig from './services/server-socket/protocol1903/functions/proto1903GetPowerProfileConfig';
-import protoGt06HandleProcess from './services/server-socket/protocolGT06/connection/protoGt06HandleProcess';
-import protoGt06HandlePacket from './services/server-socket/protocolGT06/connection/protoGt06HandlePacket';
-import protoGt06HandleEnd from './services/server-socket/protocolGT06/connection/protoGt06HandleEnd';
-import protoGt06HandleError from './services/server-socket/protocolGT06/connection/protoGt06HandleError';
-import protoGt06Decoder from './services/server-socket/protocolGT06/functions/protoGt06Decoder';
-import protoGt06GetPowerProfileConfig from './services/server-socket/protocolGT06/functions/protoGt06GetPowerProfileConfig';
-import protoGt06HandleClose from './services/server-socket/protocolGT06/connection/protoGt06HandleClose';
+import protoTopinHandleClose from './services/server-socket/protocolTopin/connection/protoTopinHandleClose';
+import protoTopinHandleEnd from './services/server-socket/protocolTopin/connection/protoTopinHandleEnd';
+import protoTopinHandleError from './services/server-socket/protocolTopin/connection/protoTopinHandleError';
+import protoTopinHandlePacket from './services/server-socket/protocolTopin/connection/protoTopinHandlePacket';
+import protoTopinHandleProcess from './services/server-socket/protocolTopin/connection/protoTopinHandleProcess';
+import protoTopinDecoder from './services/server-socket/protocolTopin/functions/protoTopinDecoder';
+import protoTopinGetPowerProfileConfig from './services/server-socket/protocolTopin/functions/protoTopinGetPowerProfileConfig';
 
 /** Load environment variables */
 dotenv.config();
@@ -125,30 +126,30 @@ if (SOCKET_PROTOCOL == "1903") {
     PORT_SOCKET
   );
   //
-} else if (SOCKET_PROTOCOL == "GT06") {
+} else if (SOCKET_PROTOCOL == "TOPIN") {
   //
-  /** Start Socket server (Protocol GT06) */
+  /** Start Socket server (Protocol TOPIN) */
   printMessage(`✅ Using protocol ${SOCKET_PROTOCOL}.`);
   startServerSocket(
     (conn) =>
       serverSocketHandler({
         conn,
         persistence: getPersistence(),
-        protocol: "GT06",
+        protocol: "TOPIN",
         handleConnection,
-        handleProcess: protoGt06HandleProcess,
-        handlePacket: protoGt06HandlePacket,
-        handleClose: protoGt06HandleClose,
-        handleEnd: protoGt06HandleEnd,
-        handleError: protoGt06HandleError,
-        decoder: protoGt06Decoder as (data: Buffer) => Buffer[],
-        getPowerProfileConfig: protoGt06GetPowerProfileConfig
+        handleProcess: protoTopinHandleProcess,
+        handlePacket: protoTopinHandlePacket,
+        handleClose: protoTopinHandleClose,
+        handleEnd: protoTopinHandleEnd,
+        handleError: protoTopinHandleError,
+        decoder: protoTopinDecoder as (data: Buffer) => Buffer[],
+        getPowerProfileConfig: protoTopinGetPowerProfileConfig
       }),
     PORT_SOCKET
   );
   //
 } else {
-  printMessage("❌ Error: Invalid SOCKET_PROTOCOL. Use '1903' or '808' or 'GT06'.");
+  printMessage("❌ Error: Invalid SOCKET_PROTOCOL. Use '1903' or '808' or 'TOPIN'.");
   process.exit(1);
 }
 
