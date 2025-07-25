@@ -6,7 +6,6 @@ const config: {
 } = {
   MOVEMENT_MESURE: "perimeter",
   MOVEMENTS_CONTROL_SECONDS: 300,
-
 };
 
 export default config;
