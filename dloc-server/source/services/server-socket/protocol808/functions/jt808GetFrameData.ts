@@ -3,6 +3,7 @@ import { Jt808Packet } from "../models/Jt808Packet";
 const jt808GetFrameData = (buffer: Buffer): Jt808Packet => {
 
     if (buffer[0] !== 0x7E || buffer[buffer.length - 1] !== 0x7E) {
+      // TODO: Verify hat happend with this throw
     throw new Error('Invalid start or end delimiter');
   }
 
