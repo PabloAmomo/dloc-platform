@@ -4,6 +4,7 @@ import { printMessage } from "../../../../functions/printMessage";
 import Jt808ReportConfiguration from "../enums/Jt808reportConfiguration";
 import jt808CreateIntervalReportPacket from "./jt808CreateIntervalReportPacket";
 import jt808CreateTemporaryLocationTrackingPacket from "./jt808CreateTemporaryLocationTrackingPacket";
+import jt808CreateWakeupPacket from "./jt808CreateWakeupPacket";
 import jt808PowerProfileConfig from "./jt808GetPowerProfileConfig";
 
 const jt808CreatePowerProfilePacket = (
@@ -20,10 +21,8 @@ const jt808CreatePowerProfilePacket = (
   const isIntervalReport = reportConfiguration === Jt808ReportConfiguration.intervalReport;
   const isHybridReport = reportConfiguration === Jt808ReportConfiguration.hybridRport;
 
-  // TODO: [NEXT ITERATION] Activate this, and configure interval tracking
-  // TODO: [TESTING] Test if this packet is needed
-  //responseArray.push(jt808CreateWakeupPacket(terminalId, counter++));
-  //printMessage(`${prefix} 🔋 Wake up packet sent [${counter}]`);
+  responseArray.push(jt808CreateWakeupPacket(terminalId, counter++));
+  printMessage(`${prefix} 🙋 🔥 Wake up packet sent [${counter}]`);
 
   if (isTemporaryTracking || isHybridReport) {
     const { MOVEMENTS_CONTROL_SECONDS } = config;
