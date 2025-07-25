@@ -17,35 +17,37 @@ const protoGt06HandleProcess: ProtoGt06HandleProcess = ({
   sendData,
 }: ProtoGt06ProcessProps): void => {
   let toSendAditional: string = "";
-  if (isNewConnection || powerProfileChanged || needProfileRefresh) {
-    const responseSend: string = protoGt06CheckMustSendToTerminal(
-      imei,
-      prefix,
-      powerProfileChanged,
-      needProfileRefresh,
-      imeiData.powerProfile,
-      newPowerProfileType
-    );
+  // TODO: Implement the logic for handling the GT06 protocol
+  //if (isNewConnection || powerProfileChanged || needProfileRefresh) {
+  //  const responseSend: string = protoGt06CheckMustSendToTerminal(
+  //    imei,
+  //    prefix,
+  //    powerProfileChanged,
+  //    needProfileRefresh,
+  //    imeiData.powerProfile,
+  //    newPowerProfileType
+  //  );
+  //
+  //  toSendAditional += responseSend;
+  //}
 
-    toSendAditional += responseSend;
-  }
-
-  const { forceReportLocInSec } = protoGt06GetPowerProfileConfig(newPowerProfileType);
+  //const { forceReportLocInSec } = protoGt06GetPowerProfileConfig(newPowerProfileType);
 
   /** Check if must send to terminal request report */
-  if (checkMustSendToTerminalRequestReport(prefix, imei, imeiData, forceReportLocInSec)) {
-    toSendAditional += "TRVBP20#";
-    printMessage(`${prefix} 📡 send command TRVBP20 (Force to report Position).`);
+  //if (checkMustSendToTerminalRequestReport(prefix, imei, imeiData, forceReportLocInSec)) {
+  //  toSendAditional += "TRVBP20#";
+  //  printMessage(`${prefix} 📡 send command TRVBP20 (Force to report Position).`);
+  //}
+
+  /** Send */
+  const toSend: Buffer[] = [];
+  for (const result of results) {
+    for (const response of result.response) {
+      toSend.push(response as Buffer);
+    }
   }
 
-  /** Create response to send */
-  let toSend: string = "";
-  for (let i = 0; i < results.length; i++) {
-    if (results[i].response.length > 0) toSend += results[i].response.join("");
-  }
-  if (toSendAditional) toSend += toSendAditional;
-
-  sendData([toSend]);
+  sendData(toSend);
 };
 
 export default protoGt06HandleProcess;

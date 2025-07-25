@@ -14,7 +14,7 @@ type ProtoGt06ProcessProps = {
   needProfileRefresh: boolean;
   imeiData: CacheImei;
   newPowerProfileType: PowerProfileType;
-  sendData: (data: string[]) => void; 
+  sendData: (data: Buffer[]) => void; 
 };
 
 export default ProtoGt06ProcessProps;

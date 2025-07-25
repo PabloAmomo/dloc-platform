@@ -1,4 +1,4 @@
-import { exit } from "process";
+
 import convertByteArrayToHexString from "./functions/convertByteArrayToHexString";
 import convertNumberToHexByteArray from "./functions/convertNumberToHexByteArray";
 import { printMessage } from "./functions/printMessage";
@@ -18,10 +18,61 @@ import jt808CreateTerminalRegistrationResponsePacket from "./services/server-soc
 import jt808CehckUploadPowerSaving from "./services/server-socket/protocol808/functions/jt808CehckUploadPowerSaving";
 import protoGt06GetFrameData from "./services/server-socket/protocolGT06/functions/protoGt06GetFrameData";
 
+import net from 'net';
 
-  // 7878 0D 0103593390781510 6328 0D0A
+// Dirección del servidor y puerto
+//const HOST = 'www.365gps.net'; // o IP del servidor
+//const PORT = 8005;        // reemplaza con el puerto correcto
+const HOST = '82.223.64.197';
+const PORT = 24671; // reemplaza con el puerto correcto
 
-console.log(protoGt06GetFrameData(Buffer.from("78780D010359339078151063280D0A", "hex")));
+// Paquete a enviar (como buffer)
+const hexPacket = '78780D010359339078151063280D0A';
+const packet = Buffer.from(hexPacket, 'hex');
+
+// Crear conexión al socket
+const client = new net.Socket();
+
+
+
+// Manejar respuesta del servidor
+interface ServerResponse {
+  data: Buffer;
+}
+
+client.on('data', (data: Buffer) => {
+  const response: ServerResponse = { data };
+  console.log('📥 Respuesta recibida:', response.data.toString('hex'));
+
+  // Si solo esperas una respuesta, puedes cerrar la conexión:
+  client.destroy();
+});
+
+// Manejar errores
+interface SocketError extends Error {
+  code?: string;
+  errno?: number;
+  syscall?: string;
+  address?: string;
+  port?: number;
+}
+
+client.on('error', (err: SocketError) => {
+  console.error('❌ Error de conexión:', err.message);
+});
+
+// Al cerrar la conexión
+client.on('close', () => {
+  console.log('🔌 Conexión cerrada');
+});
+
+client.connect(PORT, HOST, () => {
+  console.log('✅ Conectado al servidor');
+  client.write(packet);
+  console.log('📤 Paquete enviado:', packet.toString('hex'));
+});
+
+// console.log(protoGt06GetFrameData(Buffer.from("78780D010359339078151063280D0A", "hex")));
 
 
 /*
@@ -149,8 +200,6 @@ console.log(protoGt06GetFrameData(Buffer.from("78780D010359339078151063280D0A", 
 //  console.log(`Parameter ID: ${toHexWith(param.id, 4)}, Length: ${param.length}, Value: ${param.value.toString("hex")}`);
 //}
 //console.log(`Response Settings: ${JSON.stringify(responseVal.paramatersSettings, null, 2)}`);
-
-exit(0);
 
 //console.log(`Packet count: ${count}`);
 //console.log(`locations: ${JSON.stringify(locations, null, 2)}`);
