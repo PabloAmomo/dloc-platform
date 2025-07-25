@@ -14,6 +14,7 @@ import HandlePacketResult from "../../models/HandlePacketResult";
 import protoGt06CreatePositionPacket from "../functions/protoGt06CreatePositionPacket";
 import protoGt06GetFrameData from "../functions/protoGt06GetFrameData";
 import PROTOGt06_REGEX_PACKETS from "../functions/protoGt06PacketParseREGEX";
+import protoGt06ProcessPacket0x01 from "../functions/protoGt06ProcessPacket0x01";
 import ProtoGt06HandlePacket from "../models/ProtoGt06HandlePacket";
 import ProtoGt06HandlePacketProps from "../models/ProtoGt06HandlePacketProps";
 import ProtoGt06ProcessPacketProps from "../models/ProtoGt06ProcessPacketProps";
@@ -23,7 +24,7 @@ const noImei: string = "no imei received";
 const protoGt06HandlePacket: ProtoGt06HandlePacket = async (
   props: ProtoGt06HandlePacketProps
 ): Promise<HandlePacketResult> => {
-    const { imei, remoteAddress, data, persistence, counter, disconnect } = props;
+  const { imei, remoteAddress, data, persistence, disconnect } = props;
 
   let updateLastActivity: boolean = false;
   let response: HandlePacketResult = {
@@ -45,31 +46,79 @@ const protoGt06HandlePacket: ProtoGt06HandlePacket = async (
   const functionData: ProtoGt06ProcessPacketProps = {
     remoteAddress,
     response,
+    imei,
     gt06Packet,
-    counter,
     persistence,
-    prefix: `[${imeiToPrint}] (${remoteAddress})`
+    prefix: `[${imeiToPrint}] (${remoteAddress})`,
   };
 
   // ---------------------------------------
-  // Terminal registration（0x0100)
-  //     response 0x8100
+  // Login Message 0x01
   // ---------------------------------------
-  //if (jt808Packet.header.msgType === 0x0100) {
-  //  const respProcess = await jt808ProcessPacket0x0100(functionData);
-  //  updateLastActivity = respProcess.updateLastActivity;
-  //  imeiToPrint = respProcess.imei;
-  //}
+  if (gt06Packet.protocolNumber === 0x01) {
+    const respProcess = await protoGt06ProcessPacket0x01(functionData);
+    updateLastActivity = respProcess.updateLastActivity;
+    imeiToPrint = respProcess.imei;
+  }
+
+  // ---------------------------------------
+  // Location Data 0x12
+  // ---------------------------------------
+  else if (gt06Packet.protocolNumber === 0x12) {
+    //  const respProcess = await jt808ProcessPacket0x0100(functionData);
+    //  updateLastActivity = respProcess.updateLastActivity;
+    //  imeiToPrint = respProcess.imei;
+  }
+
+  // ---------------------------------------
+  // Status information 0x13
+  // ---------------------------------------
+  else if (gt06Packet.protocolNumber === 0x13) {
+    //  const respProcess = await jt808ProcessPacket0x0100(functionData);
+    //  updateLastActivity = respProcess.updateLastActivity;
+    //  imeiToPrint = respProcess.imei;
+  }
+
+  // ---------------------------------------
+  // String information 0x15
+  // ---------------------------------------
+  else if (gt06Packet.protocolNumber === 0x15) {
+    //  const respProcess = await jt808ProcessPacket0x0100(functionData);
+    //  updateLastActivity = respProcess.updateLastActivity;
+    //  imeiToPrint = respProcess.imei;
+  }
+
+  // ---------------------------------------
+  // Alarm data 0x16
+  // ---------------------------------------
+  else if (gt06Packet.protocolNumber === 0x16) {
+    //  const respProcess = await jt808ProcessPacket0x0100(functionData);
+    //  updateLastActivity = respProcess.updateLastActivity;
+    //  imeiToPrint = respProcess.imei;
+  }
+
+  // ---------------------------------------
+  // GPS, query address information by phone number 0x1A
+  // ---------------------------------------
+  else if (gt06Packet.protocolNumber === 0x1a) {
+    //  const respProcess = await jt808ProcessPacket0x0100(functionData);
+    //  updateLastActivity = respProcess.updateLastActivity;
+    //  imeiToPrint = respProcess.imei;
+  }
+
+  // Protocol Number
+
+  //    Command information sent by the server to the terminal 0x80
 
   // ---------------------------------------
   // Terminal authentication（0x0102)
   //     response 0x8001
   // ---------------------------------------
- //else if (jt808Packet.header.msgType === 0x0102) {
- //  const respProcess = await jt808ProcessPacket0x0102(functionData);
- //  updateLastActivity = respProcess.updateLastActivity;
- //  imeiToPrint = respProcess.imei;
- //}
+  //else if (jt808Packet.header.msgType === 0x0102) {
+  //  const respProcess = await jt808ProcessPacket0x0102(functionData);
+  //  updateLastActivity = respProcess.updateLastActivity;
+  //  imeiToPrint = respProcess.imei;
+  //}
 
   // ---------------------------------------
   // Positioning data batch upload（0x0704）
@@ -133,11 +182,11 @@ const protoGt06HandlePacket: ProtoGt06HandlePacket = async (
   // ---------------------------------------------
   // Unknow command - Discart packet
   // ---------------------------------------------
-  //else {
+  else {
     printMessage(`[${imeiToPrint}] (${remoteAddress}) 🤷‍♂️ command unknown in data ⚠️  [${dataString}]  ⚠️`);
 
     return await discardData("commad unknown", false, persistence, imeiToPrint, remoteAddress, dataString, response);
-  //}
+  }
 
   /** Update last activity and add history */
   await positionUpdateLastActivityAndAddHistory(

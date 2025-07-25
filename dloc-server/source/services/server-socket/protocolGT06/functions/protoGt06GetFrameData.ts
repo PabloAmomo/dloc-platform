@@ -1,3 +1,4 @@
+import crc16ITU from "../../../../functions/crc16ITU";
 import { ProtoGt06Packet } from "../models/ProtoGt06Packet";
 
 const protoGt06GetFrameData = (buffer: Buffer): ProtoGt06Packet => {
@@ -9,38 +10,48 @@ const protoGt06GetFrameData = (buffer: Buffer): ProtoGt06Packet => {
   )
     throw new Error("Invalid start or end delimiter");
 
-  const content = buffer.slice(2, buffer.length - 3);
-  const checksum = buffer[buffer.length - 4];
+  if (buffer.length < 10) throw new Error("Packet too short to be valid");
 
-  //  Packet Length 1
-  //Protocol Number 1
-  //Information Content N
-  //Information Serial Numbe 2
-  //Error Check 2
-  //Stop Bit 2
+  // 1. Start Bit (2 bytes)
+  const startBit = buffer.slice(0, 2).toString("hex");
 
-  const msgId = content.readUInt16BE(0);
+  // 2. Packet Length (1 byte)
+  const packetLength = buffer[2];
 
-  const terminalId = content.slice(2, 2).toString("hex");
+  // Verificación básica de longitud esperada
+  if (buffer.length !== packetLength + 5)
+    throw new Error(`Invalid packet length. Expected ${packetLength + 5} bytes, got ${buffer.length}`);
 
-  let bodyStart = 4;
+  // 3. Protocol Number (1 byte)
+  const protocolNumber = buffer[3];
 
-  const body = content.slice(bodyStart);
+  // 4. Information Content (N bytes)
+  const infoContentEndIndex = 4 + (packetLength - 5); // subtract Protocol(1) + Serial(2) + CRC(2)
+  const informationContent = buffer.slice(4, infoContentEndIndex);
 
-  const calculatedChecksum = content.reduce((sum, byte) => sum ^ byte, 0);
-  const isChecksumValid = calculatedChecksum === checksum;
+  // 5. Information Serial Number (2 bytes)
+  const serialNumber = buffer.readUInt16BE(infoContentEndIndex);
+
+  // 6. Error Check (2 bytes)
+  const errorCheckBytes = buffer.slice(infoContentEndIndex + 2, infoContentEndIndex + 4);
+  const errorCheck = errorCheckBytes.readUInt16BE(0);
+
+  const stopBit = buffer.slice(infoContentEndIndex + 4, infoContentEndIndex + 6).toString("hex");
+
+  // ---- CRC VALIDATION ----
+  const crcInput = buffer.slice(2, infoContentEndIndex + 2);
+  const calculatedCRC = crc16ITU(crcInput);
+
+  const isValid = calculatedCRC === errorCheck;
+
+  if (!isValid) throw new Error(`CRC mismatch: expected ${errorCheck.toString(16)}, got ${calculatedCRC.toString(16)}`);
 
   return {
     raw: buffer.toString("hex"),
-    header: {
-      msgType: msgId,
-      terminalId,
-    },
-    body,
-    checksum: {
-      value: checksum,
-      valid: isChecksumValid,
-    },
+    packetLength,
+    protocolNumber,
+    informationContent,
+    serialNumber,
   };
 };
 

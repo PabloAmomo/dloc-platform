@@ -5,7 +5,6 @@ export default interface ProtoGt06HandlePacketProps {
   remoteAddress: string;
   data: Buffer;
   persistence: Persistence;
-  counter: number;
   disconnect: () => void;
 }
 
