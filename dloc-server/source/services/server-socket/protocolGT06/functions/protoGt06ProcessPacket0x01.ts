@@ -10,10 +10,10 @@ const protoGt06ProcessPacket0x01: ProtoGt06ProcessPacket = async ({
   persistence,
   prefix,
 }) => {
-  const imei = gt06Packet.informationContent.toString("utf8");
+  const imei = gt06Packet.informationContent.toString("utf8").slice(-15);
 
   response.imei = padNumberLeft(imei, 15, "0");
-  response.imei = getNormalizedIMEI(imei);
+  response.imei = getNormalizedIMEI(response.imei);
 
   (response.response as Buffer[]).push(protoGt06CreateResponse0x01(gt06Packet));
 
