@@ -16,9 +16,14 @@ import { parseUtcDateTime } from "./functions/parseUtcDateTime";
 import jt808CreateGeneralResponse from "./services/server-socket/protocol808/functions/jt808CreateGeneralResponse";
 import jt808CreateTerminalRegistrationResponsePacket from "./services/server-socket/protocol808/functions/jt808CreateTerminalRegistrationResponsePacket";
 import jt808CehckUploadPowerSaving from "./services/server-socket/protocol808/functions/jt808CehckUploadPowerSaving";
+import protoGt06GetFrameData from "./services/server-socket/protocolGT06/functions/protoGt06GetFrameData";
 
 
-  
+  // 7878 0D 0103593390781510 6328 0D0A
+
+console.log(protoGt06GetFrameData(Buffer.from("78780D010359339078151063280D0A", "hex")));
+
+
 /*
 // Sleep Packet
 (response.response as Buffer[]).push(
@@ -97,10 +102,10 @@ import jt808CehckUploadPowerSaving from "./services/server-socket/protocol808/fu
 
 // Location (Single Location)
 //const buffer = Buffer.from("7E020100570562134176540234007200000000000C0000000000000000000000000000000025071120465701040000000004020154050101060100EB2100D60317D7115D0017D7115C2717D7115B1C17D70F5C1C17D711331717D70F5B15300119310101107E", "hex");
-const buffer = Buffer.from("7E02010052056213417654001C000000000000000C0000000000000000000000000000000025072020055301040000000004020157050101060100EC1C30B1B5065ECCAC862C895F3DB3B5A8A2378B097CB382A2378B097DB3300118310100FC7E","hex");
-const response = jt808GetFrameData(buffer);
-console.log(response);
-const locations = jt808DecodeLocations(response.body, false, "");
+//const buffer = Buffer.from("7E02010052056213417654001C000000000000000C0000000000000000000000000000000025072020055301040000000004020157050101060100EC1C30B1B5065ECCAC862C895F3DB3B5A8A2378B097CB382A2378B097DB3300118310100FC7E","hex");
+//const response = jt808GetFrameData(buffer);
+//console.log(response);
+//const locations = jt808DecodeLocations(response.body, false, "");
 
 // Common response from terminal
 //const buffer = Buffer.from("7E0001000505621341765401BE0067810300497E", "hex")
