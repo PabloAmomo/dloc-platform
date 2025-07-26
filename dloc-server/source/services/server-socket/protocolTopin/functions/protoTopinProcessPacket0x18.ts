@@ -19,7 +19,7 @@ const protoTopinProcessPacket0x18: ProtoTopinProcessPacket = async ({
 }) => {
   const positions: PositionPacket[] = [];
 
-  let { year, month, day, hours, minutes, seconds  } = getDateTimeValues(new Date());
+  let { year, month, day, hours, minutes, seconds } = getDateTimeValues(new Date());
 
   let offset = 0;
   while (offset + 17 <= topinPacket.informationContent.length) {
@@ -27,7 +27,7 @@ const protoTopinProcessPacket0x18: ProtoTopinProcessPacket = async ({
       printMessage(`${prefix} ❌ Invalid position packet length: ${topinPacket.informationContent.length}`);
       continue;
     }
-   
+
     const record = topinPacket.informationContent.slice(offset, offset + 17);
 
     year = 2000 + record[0];
@@ -40,6 +40,9 @@ const protoTopinProcessPacket0x18: ProtoTopinProcessPacket = async ({
       .toString()
       .padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
     const dateTimeUtc = new Date(dateTimeUtcString);
+
+    console.log(` 📍 ---> latitud ${record.readUInt32BE(6)}`);
+    console.log(` 📍 ---> longitud ${record.readUInt32BE(10)}`);
 
     const latitude = record.readUInt32BE(6) / 30000 / 60;
     const longitude = record.readUInt32BE(10) / 30000 / 60;

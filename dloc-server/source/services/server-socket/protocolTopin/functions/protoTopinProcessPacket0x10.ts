@@ -36,6 +36,10 @@ const protoTopinProcessPacket0x10: ProtoTopinProcessPacket = async ({
   const hours = dateBytes[3];
   const minutes = dateBytes[4];
   const seconds = dateBytes[5];
+
+  console.log(` 📍 ---> latitud ${topinPacket.informationContent.readUInt32BE(7)}`);
+  console.log(` 📍 ---> longitud ${topinPacket.informationContent.readUInt32BE(11)}`);
+
   const lat = topinPacket.informationContent.readUInt32BE(7) / 30000 / 60;
   const lng = topinPacket.informationContent.readUInt32BE(11) / 30000 / 60;
   const statusBytes = topinPacket.informationContent.slice(16, 18);
