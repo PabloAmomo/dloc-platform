@@ -51,10 +51,10 @@ const protoTopinCreatePositionPacket = (
     const statusBits = (statusBytes[0] << 8) | statusBytes[1];
 
     const eastWest = (statusBytes[0] & 0x02) >> 1; // 0 = East, 1 = West
-    const northSouth = statusBytes[0] & 0x01; // 0 = Norte, 1 = Sur
+    const northSouth = statusBytes[0] & 0x01; // 0 = South, 1 = North
     const directionAngle = statusBits & 0x03ff; // Direction angle in degrees
 
-    const lat = northSouth ? -rawLat : rawLat; // North is positive, South is negative
+    const lat = northSouth ? rawLat : -rawLat; // North is positive, South is negative
     const lng = eastWest ? -rawLng : rawLng; // East is positive,
 
     return {
