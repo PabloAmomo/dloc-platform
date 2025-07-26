@@ -1,5 +1,6 @@
 import { printMessage } from "../../../../functions/printMessage";
 import { ProtoTopinProcessPacket } from "../models/ProtoTopinProcessPacket";
+import protoTopinCreateResponse0xB3 from "./protoTopinCreateResponse0xB3";
 
 const protoTopinProcessPacket0xB3: ProtoTopinProcessPacket = async ({
   remoteAddress,
@@ -8,7 +9,9 @@ const protoTopinProcessPacket0xB3: ProtoTopinProcessPacket = async ({
   persistence,
   prefix,
 }) => {
-  printMessage(`${prefix} ✅ ICCID received from device (${topinPacket.informationContent.toString('ascii')})`);
+  printMessage(`${prefix} ✅ ICCID received from device (${topinPacket.informationContent.toString("ascii")})`);
+
+  (response.response as Buffer[]).push(protoTopinCreateResponse0xB3(topinPacket));
 
   return {
     updateLastActivity: true,
