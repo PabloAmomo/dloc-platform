@@ -9,7 +9,7 @@ const protoTopinProcessPacket0x80: ProtoTopinProcessPacket = async ({
   persistence,
   prefix,
 }) => {
-  printMessage(`${prefix} ✅ Manual position received from device (${topinPacket.informationContent.toString("hex")})`);
+  printMessage(`${prefix} ✅ Manual position received from device`);
 
   (response.response as Buffer[]).push(protoTopinCreateResponse0x80(topinPacket));
 

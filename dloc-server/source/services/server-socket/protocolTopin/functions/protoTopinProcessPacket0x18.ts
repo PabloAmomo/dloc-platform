@@ -1,13 +1,7 @@
-import { ProtoTopinProcessPacket } from "../models/ProtoTopinProcessPacket";
-import { PositionPacket } from "../../../../models/PositionPacket";
-import { GpsAccuracy } from "../../../../models/GpsAccuracy";
-import { printMessage } from "../../../../functions/printMessage";
-import protoTopinCreateResponse0x18 from "./protoTopinCreateResponse0x18";
-import protoTopinPersistPosition from "./protoTopinPersistPosition";
-import getDateTimeValues from "../../../../functions/getDateTimeValues";
-import config from "../../../../config/config";
-
-const MAX_TIME_DIFFERENCE_MS = config.MAX_TIME_DIFFERENCE_MS;
+import getDateTimeValues from '../../../../functions/getDateTimeValues';
+import { printMessage } from '../../../../functions/printMessage';
+import { ProtoTopinProcessPacket } from '../models/ProtoTopinProcessPacket';
+import protoTopinCreateResponse0x18 from './protoTopinCreateResponse0x18';
 
 const protoTopinProcessPacket0x18: ProtoTopinProcessPacket = async ({
   remoteAddress,
