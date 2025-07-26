@@ -1,12 +1,6 @@
-import crc16ITU from "../../../../functions/crc16ITU";
-
 const protoTopinCreatePacket = (dataPayload: Buffer) => {
-  // protocol + data + serial
-  const packetLength = 2 + dataPayload.length + 2; // start + data(N) + end
+  const packet = Buffer.alloc(2 + dataPayload.length + 2);
 
-  // Buffer to create the content
-  const packet = Buffer.alloc(packetLength);
- 
   if (dataPayload.length > 0) dataPayload.copy(packet, 2);
 
   packet[0] = 0x78;
