@@ -1,6 +1,5 @@
 import { getNormalizedIMEI } from "../../../../functions/getNormalizedIMEI";
 import padNumberLeft from "../../../../functions/padNumberLeft";
-import { CACHE_IMEI } from "../../../../infraestucture/caches/cacheIMEI";
 import { Jt808ProcessPacket } from "../models/Jt808ProcessPacket";
 import jt808CreateGeneralResponse from "./jt808CreateGeneralResponse";
 import jt808DecodeLocationReport from "./jt808DecodeLocationReport";
