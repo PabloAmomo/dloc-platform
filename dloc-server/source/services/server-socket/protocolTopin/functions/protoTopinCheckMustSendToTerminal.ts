@@ -9,8 +9,9 @@ const protoTopinCheckMustSendToTerminal = (
   powerPrfChanged: boolean,
   needProfileRefresh: boolean,
   currentPowerPrfile: PowerProfileType,
-  newPowerProfile: PowerProfileType
-): string => {
+  newPowerProfile: PowerProfileType,
+  isNewConnection: boolean
+): Buffer[] => {
   const { uploadSec, heartBeatSec, forceReportLocInSec, ledState } = protoTopinGetPowerProfileConfig(newPowerProfile);
 
   if (needProfileRefresh) {

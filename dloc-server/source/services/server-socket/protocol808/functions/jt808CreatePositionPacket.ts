@@ -2,9 +2,9 @@ import { GpsAccuracy } from "../../../../models/GpsAccuracy";
 import { PositionPacket } from "../../../../models/PositionPacket";
 import { printMessage } from "../../../../functions/printMessage";
 import { Jt808LocationPacket } from "../models/Jt808LocationPacket";
+import config from "../../../../config/config";
 
-// TODO: Move this constant to a shared configuration file
-const MAX_TIME_DIFFERENCE_MS = 300000; // 5 minutes in milliseconds
+const MAX_TIME_DIFFERENCE_MS = config.MAX_TIME_DIFFERENCE_MS;
 
 const jt808CreatePositionPacket = (
   imei: string,
@@ -17,11 +17,12 @@ const jt808CreatePositionPacket = (
     const now = new Date();
 
     const timeDifference = dateTimeUtc.getTime() - now.getTime();
+    const minutesAfterNow = timeDifference / 1000 / 60;
     if (timeDifference > MAX_TIME_DIFFERENCE_MS) {
       printMessage(
-        `[${imei}] (${remoteAddress}) ❌ Location packet date/time is ${MAX_TIME_DIFFERENCE_MS / 60} minutes or more in the future of the current time.`
+        `[${imei}] (${remoteAddress}) ❌ Location packet date/time is ${minutesAfterNow} minutes in the future of the current time.`
       );
-      return undefined;
+      return;
     }
 
     return {
@@ -39,10 +40,8 @@ const jt808CreatePositionPacket = (
       activity,
     };
   } catch (err: Error | any) {
-    printMessage(
-      `[${imei}] (${remoteAddress}) ❌ error creating position packet [${err.message}]`
-    );
-    return undefined;
+    printMessage(`[${imei}] (${remoteAddress}) ❌ error creating position packet [${err.message}]`);
+    return;
   }
 };
 

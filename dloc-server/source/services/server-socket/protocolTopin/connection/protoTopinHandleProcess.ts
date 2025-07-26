@@ -1,9 +1,9 @@
-import { printMessage } from "../../../../functions/printMessage";
-import ProtoTopinProcessProps from "../models/ProtoTopinProcessProps";
-import protoTopinCheckMustSendToTerminal from "../functions/protoTopinCheckMustSendToTerminal";
-import checkMustSendToTerminalRequestReport from "../../../../functions/checkMustSendToTerminalRequestReport";
-import ProtoTopinHandleProcess from "../models/ProtoTopinHandleProcess";
-import protoTopinGetPowerProfileConfig from "../functions/protoTopinGetPowerProfileConfig";
+import checkMustSendToTerminalRequestReport from '../../../../functions/checkMustSendToTerminalRequestReport';
+import { printMessage } from '../../../../functions/printMessage';
+import protoTopinCheckMustSendToTerminal from '../functions/protoTopinCheckMustSendToTerminal';
+import protoTopinGetPowerProfileConfig from '../functions/protoTopinGetPowerProfileConfig';
+import ProtoTopinHandleProcess from '../models/ProtoTopinHandleProcess';
+import ProtoTopinProcessProps from '../models/ProtoTopinProcessProps';
 
 const protoTopinHandleProcess: ProtoTopinHandleProcess = ({
   results,
@@ -16,28 +16,29 @@ const protoTopinHandleProcess: ProtoTopinHandleProcess = ({
   newPowerProfileType,
   sendData,
 }: ProtoTopinProcessProps): void => {
-  let toSendAditional: string = "";
-  // TODO: Implement the logic for handling the Topin protocol
-  //if (isNewConnection || powerProfileChanged || needProfileRefresh) {
-  //  const responseSend: string = protoTopinCheckMustSendToTerminal(
-  //    imei,
-  //    prefix,
-  //    powerProfileChanged,
-  //    needProfileRefresh,
-  //    imeiData.powerProfile,
-  //    newPowerProfileType
-  //  );
-  //
-  //  toSendAditional += responseSend;
-  //}
+  if (isNewConnection || powerProfileChanged || needProfileRefresh) {
+    const responseSend: Buffer[] = protoTopinCheckMustSendToTerminal(
+      imei,
+      prefix,
+      powerProfileChanged,
+      needProfileRefresh,
+      imeiData.powerProfile,
+      newPowerProfileType,
+      isNewConnection
+    );
 
-  //const { forceReportLocInSec } = protoTopinGetPowerProfileConfig(newPowerProfileType);
+    responseSend.forEach((response) => {
+      (results[0].response as Buffer[]).push(response);
+    });
+  }
+
+  const { forceReportLocInSec } = protoTopinGetPowerProfileConfig(newPowerProfileType);
 
   /** Check if must send to terminal request report */
-  //if (checkMustSendToTerminalRequestReport(prefix, imei, imeiData, forceReportLocInSec)) {
-  //  toSendAditional += "TRVBP20#";
-  //  printMessage(`${prefix} 📡 send command TRVBP20 (Force to report Position).`);
-  //}
+  if (checkMustSendToTerminalRequestReport(prefix, imei, imeiData, forceReportLocInSec)) {
+    // TODO: Implement the logic for sending a request report
+    printMessage(`${prefix} 📡 send packet to request report position.`);
+  }
 
   /** Send */
   const toSend: Buffer[] = [];

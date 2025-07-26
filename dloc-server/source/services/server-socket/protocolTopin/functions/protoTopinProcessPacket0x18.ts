@@ -5,11 +5,10 @@ import { printMessage } from "../../../../functions/printMessage";
 import protoTopinCreateResponse0x18 from "./protoTopinCreateResponse0x18";
 import protoTopinPersistPosition from "./protoTopinPersistPosition";
 import getDateTimeValues from "../../../../functions/getDateTimeValues";
+import config from "../../../../config/config";
 
-// TODO: Move this constant to a shared configuration file
-const MAX_TIME_DIFFERENCE_MS = 300000; // 5 minutes in milliseconds
+const MAX_TIME_DIFFERENCE_MS = config.MAX_TIME_DIFFERENCE_MS;
 
-// TODO: Unify wit protoTopinProcessPacket0x10
 const protoTopinProcessPacket0x18: ProtoTopinProcessPacket = async ({
   remoteAddress,
   response,
@@ -18,6 +17,11 @@ const protoTopinProcessPacket0x18: ProtoTopinProcessPacket = async ({
   prefix,
 }) => {
   const positions: PositionPacket[] = [];
+  const responseVal = {
+    updateLastActivity: false,
+    imei: response.imei,
+    mustDisconnect: false,
+  };
 
   let { year, month, day, hours, minutes, seconds } = getDateTimeValues(new Date());
 
@@ -55,13 +59,12 @@ const protoTopinProcessPacket0x18: ProtoTopinProcessPacket = async ({
     const northSouth = status1 & 0x01;
 
     const timeDifference = dateTimeUtc.getTime() - new Date().getTime();
+    const minutesAfterNow = timeDifference / 1000 / 60;
     if (timeDifference > MAX_TIME_DIFFERENCE_MS) {
       printMessage(
-        `${prefix} ❌ Location packet date/time is ${
-          MAX_TIME_DIFFERENCE_MS / 60
-        } minutes or more in the future of the current time.`
+        `${prefix} ❌ Location packet date/time is ${minutesAfterNow} minutes in the future of the current time.`
       );
-      continue;
+      return responseVal;
     }
 
     positions.push({
@@ -88,22 +91,14 @@ const protoTopinProcessPacket0x18: ProtoTopinProcessPacket = async ({
 
   if (positions.length === 0) {
     printMessage(`${prefix} ❌ No valid position data found in the packet.`);
-    return {
-      updateLastActivity: false,
-      imei: response.imei,
-      mustDisconnect: false,
-    };
+    return responseVal;
   }
 
   for (const position of positions) {
     protoTopinPersistPosition(response.imei, remoteAddress, position, persistence, topinPacket, response, prefix);
   }
 
-  return {
-    updateLastActivity: false,
-    imei: response.imei,
-    mustDisconnect: false,
-  };
+  return responseVal;
 };
 
 export default protoTopinProcessPacket0x18;

@@ -1,9 +1,10 @@
+import config from "../../../../config/config";
 import { printMessage } from "../../../../functions/printMessage";
 import { GpsAccuracy } from "../../../../models/GpsAccuracy";
 import { PositionPacket } from "../../../../models/PositionPacket";
 
-// TODO: Move this constant to a shared configuration file
-const MAX_TIME_DIFFERENCE_MS = 300000; // 5 minutes in milliseconds
+const MAX_TIME_DIFFERENCE_MS = config.MAX_TIME_DIFFERENCE_MS;
+const PACKET_LENGTH = 18; 
 
 const protoTopinCreatePositionPacket = (
   imei: string,
@@ -14,7 +15,7 @@ const protoTopinCreatePositionPacket = (
   activity: string
 ): PositionPacket | undefined => {
   try {
-    if (data.length < 18) {
+    if (data.length < PACKET_LENGTH) {
       printMessage(`${prefix} ❌ Invalid packet length ${data.length}.`);
       return;
     }
@@ -53,9 +54,9 @@ const protoTopinCreatePositionPacket = (
     const lat = southNorth ? rawLat : -rawLat; // North is positive, South is negative
     const lng = eastWest ? -rawLng : rawLng; // East is positive,
 
-    const high = statusBytes[0] & 0x03;     // bits 0 y 1
-    const low = statusBytes[1];             // 8 bits completos
-    const directionAngle = (high << 8) | low;   
+    const high = statusBytes[0] & 0x03; // bits 0 y 1
+    const low = statusBytes[1]; // 8 bits completos
+    const directionAngle = (high << 8) | low;
 
     return {
       imei,

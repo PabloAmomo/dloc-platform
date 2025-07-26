@@ -1,12 +1,9 @@
-import { Direction } from "../../../../models/Direction";
 import { GpsAccuracy } from "../../../../models/GpsAccuracy";
 import { PositionPacket } from "../../../../models/PositionPacket";
-import { parseLatOrLng } from "../../../../functions/parseLatOrLng";
-import { parseUtcDateTime } from "../../../../functions/parseUtcDateTime";
 import { printMessage } from "../../../../functions/printMessage";
+import config from "../../../../config/config";
 
-// TODO: Move this constant to a shared configuration file
-const MAX_TIME_DIFFERENCE_MS = 300000; // 5 minutes in milliseconds
+const MAX_TIME_DIFFERENCE_MS = config.MAX_TIME_DIFFERENCE_MS;
 
 // TODO: Use for 0x18 y 0x19
 const protoTopinCreatePositionPacketEx = (
@@ -26,7 +23,6 @@ const protoTopinCreatePositionPacketEx = (
     const gsmSignal = -1;
     const batteryLevel = -1;
 
- 
     const year = 2000 + parseInt(data[0].toString(16).padStart(2, "0"));
     const month = data[1].toString(16).padStart(2, "0");
     const day = data[2].toString(16).padStart(2, "0");
@@ -47,7 +43,6 @@ const protoTopinCreatePositionPacketEx = (
     const lat = data.readUInt32BE(6);
     const lng = data.readUInt32BE(10);
 
-
     console.log(` 📍 ---> latitud ${lat.toFixed(7)}`);
     console.log(` 📍 ---> longitud ${lng.toFixed(7)}`);
 
@@ -65,7 +60,7 @@ const protoTopinCreatePositionPacketEx = (
     const minutesAfterNow = timeDifference / 1000 / 60;
     if (timeDifference > MAX_TIME_DIFFERENCE_MS) {
       printMessage(
-        `${prefix} ❌ Location packet date/time is ${minutesAfterNow} minutes or more in the future of the current time.`
+        `[${imei}] (${remoteAddress}) ❌ Location packet date/time is ${minutesAfterNow} minutes in the future of the current time.`
       );
       return;
     }
