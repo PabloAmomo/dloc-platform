@@ -46,16 +46,16 @@ const protoTopinCreatePositionPacket = (
     const speed = data[15]; // Speed in km/h
 
     const statusBytes = data.slice(16, 18);
-    const valid = (statusBytes[0] & 0x04) >> 2 === 1;
+    const valid = (statusBytes[0] & 0x10) >> 4 === 1;
+    const eastWest = (statusBytes[0] & 0x08) >> 3; // 0 = East, 1 = West
+    const southNorth = (statusBytes[0] & 0x04) >> 2; // 0 = South, 1 = North
 
-    const statusBits = (statusBytes[0] << 8) | statusBytes[1];
-
-    const eastWest = (statusBytes[0] & 0x02) >> 1; // 0 = East, 1 = West
-    const northSouth = statusBytes[0] & 0x01; // 0 = South, 1 = North
-    const directionAngle = statusBits & 0x03ff; // Direction angle in degrees
-
-    const lat = northSouth ? rawLat : -rawLat; // North is positive, South is negative
+    const lat = southNorth ? rawLat : -rawLat; // North is positive, South is negative
     const lng = eastWest ? -rawLng : rawLng; // East is positive,
+
+    const high = statusBytes[0] & 0x03;     // bits 0 y 1
+    const low = statusBytes[1];             // 8 bits completos
+    const directionAngle = (high << 8) | low;   
 
     return {
       imei,
