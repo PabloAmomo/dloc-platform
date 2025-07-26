@@ -8,6 +8,7 @@ import protoTopinGetFrameData from '../functions/protoTopinGetFrameData';
 import protoTopinProcessPacket0x01 from '../functions/protoTopinProcessPacket0x01';
 import protoTopinProcessPacket0x08 from '../functions/protoTopinProcessPacket0x08';
 import protoTopinProcessPacket0x10 from '../functions/protoTopinProcessPacket0x10';
+import protoTopinProcessPacket0x11 from '../functions/protoTopinProcessPacket0x11';
 import protoTopinProcessPacket0x13 from '../functions/protoTopinProcessPacket0x13';
 import protoTopinProcessPacket0x18 from '../functions/protoTopinProcessPacket0x18';
 import protoTopinProcessPacket0x30 from '../functions/protoTopinProcessPacket0x30';
@@ -99,6 +100,15 @@ const protoTopinHandlePacket: ProtoTopinHandlePacket = async (
   // ---------------------------------------
   else if (topinPacket.protocolNumber === 0x10) {
     const respProcess = await protoTopinProcessPacket0x10(functionData);
+    updateLastActivity = respProcess.updateLastActivity;
+    imeiToPrint = respProcess.imei;
+  }
+
+  // ---------------------------------------
+  // Positioning data packets 0x11
+  // ---------------------------------------
+  else if (topinPacket.protocolNumber === 0x11) {
+    const respProcess = await protoTopinProcessPacket0x11(functionData);
     updateLastActivity = respProcess.updateLastActivity;
     imeiToPrint = respProcess.imei;
   }
