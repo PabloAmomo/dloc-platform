@@ -11,7 +11,7 @@ const protoTopinProcessPacket0x13: ProtoTopinProcessPacket = async ({
   persistence,
   prefix,
 }) => {
-  printMessage(`${prefix} 🎛️ status package received. Sending interval time.`);
+  printMessage(`${prefix} 🎛️  status package received. Sending interval time.`);
 
   const battery = topinPacket.informationContent[0];
   const softwareVersion = topinPacket.informationContent[1];
