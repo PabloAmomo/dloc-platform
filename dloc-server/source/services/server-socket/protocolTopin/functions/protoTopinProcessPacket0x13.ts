@@ -26,10 +26,10 @@ const protoTopinProcessPacket0x13: ProtoTopinProcessPacket = async ({
   const imeiData: CacheImei = CACHE_IMEI.get(imei) ?? CacheImeiEmptyItem;
   const powerProfile = protoTopinGetPowerProfileConfig(imeiData.powerProfile);
 
-  const uploadIntervalMin = Math.floor(powerProfile.uploadSec / 60);
+  const uploadIntervalMin = Math.floor(powerProfile.uploadSec / 60) ?? 1; // Setting a default value of 1 minute if undefined
   (response.response as Buffer[]).push(protoTopinCreateResponse0x13(topinPacket, uploadIntervalMin));
 
-  printMessage(`${prefix} ❤️ Request upload interval to ${uploadIntervalMin}`);
+  printMessage(`${prefix} ❤️  Request upload interval to ${uploadIntervalMin} minutes.`);
   printMessage(`${prefix} 🌎 Current time zone ${timezone}`);
   printMessage(`${prefix} 🔋 Battery level: ${battery}%`);
 
