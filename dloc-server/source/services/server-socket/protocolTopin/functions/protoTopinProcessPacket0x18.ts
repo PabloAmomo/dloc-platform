@@ -29,7 +29,7 @@ const protoTopinProcessPacket0x18: ProtoTopinProcessPacket = async ({
   while (offset + 17 <= topinPacket.informationContent.length) {
     if (topinPacket.informationContent.length < 17) {
       printMessage(`${prefix} ❌ Invalid position packet length: ${topinPacket.informationContent.length}`);
-      continue;
+      return responseVal;
     }
 
     const record = topinPacket.informationContent.slice(offset, offset + 17);
@@ -64,6 +64,7 @@ const protoTopinProcessPacket0x18: ProtoTopinProcessPacket = async ({
       printMessage(
         `${prefix} ❌ Location packet date/time is ${minutesAfterNow} minutes in the future of the current time.`
       );
+      offset += 17;
       continue;
     }
 
@@ -71,6 +72,7 @@ const protoTopinProcessPacket0x18: ProtoTopinProcessPacket = async ({
       printMessage(
         `${prefix} ❌ Invalid latitude/longitude values: lat=${latitude}, lng=${longitude}. Skipping position.`
       );
+      offset += 17;
       continue;
     }
 
