@@ -1,0 +1,106 @@
+import { ProtoTopinProcessPacket } from "../models/ProtoTopinProcessPacket";
+import { PositionPacket } from "../../../../models/PositionPacket";
+import { GpsAccuracy } from "../../../../models/GpsAccuracy";
+import { printMessage } from "../../../../functions/printMessage";
+import protoTopinCreateResponse0x18 from "./protoTopinCreateResponse0x18";
+import protoTopinPersistPosition from "./protoTopinPersistPosition";
+
+// TODO: Move this constant to a shared configuration file
+const MAX_TIME_DIFFERENCE_MS = 300000; // 5 minutes in milliseconds
+
+// TODO: Unify wit protoTopinProcessPacket0x10
+const protoTopinProcessPacket0x18: ProtoTopinProcessPacket = async ({
+  remoteAddress,
+  response,
+  topinPacket,
+  persistence,
+  prefix,
+}) => {
+  const positions: PositionPacket[] = [];
+
+  const dateTime = new Date();
+  let year = dateTime.getFullYear() - 2000;
+  let month = dateTime.getMonth() + 1;
+  let day = dateTime.getDate();
+  let hour = dateTime.getHours();
+  let minute = dateTime.getMinutes();
+  let second = dateTime.getSeconds();
+
+  let offset = 0;
+  while (offset + 17 <= topinPacket.informationContent.length) {
+    const record = topinPacket.informationContent.slice(offset, offset + 17);
+
+    year = 2000 + record[0];
+    month = record[1];
+    day = record[2];
+    hour = record[3];
+    minute = record[4];
+    second = record[5];
+    const dateTimeUtcString = `${year}-${month.toString().padStart(2, "0")}-${day.toString().padStart(2, "0")} ${hour
+      .toString()
+      .padStart(2, "0")}:${minute.toString().padStart(2, "0")}:${second.toString().padStart(2, "0")}`;
+    const dateTimeUtc = new Date(dateTimeUtcString);
+
+    const latitude = record.readUInt32BE(6) / 30000 / 60;
+    const longitude = record.readUInt32BE(10) / 30000 / 60;
+
+    const status1 = record[15];
+    const status2 = record[16];
+
+    const statusBits = (status1 << 8) | status2;
+    const eastWest = (status1 & 0x02) >> 1;
+    const northSouth = status1 & 0x01;
+
+    const timeDifference = dateTimeUtc.getTime() - new Date().getTime();
+    if (timeDifference > MAX_TIME_DIFFERENCE_MS) {
+      printMessage(
+        `${prefix} ❌ Location packet date/time is ${
+          MAX_TIME_DIFFERENCE_MS / 60
+        } minutes or more in the future of the current time.`
+      );
+      continue;
+    }
+
+    positions.push({
+      imei: response.imei,
+      remoteAddress,
+      dateTimeUtc,
+      valid: (status1 & 0x04) >> 2 === 1,
+      lat: northSouth ? latitude : -latitude,
+      lng: eastWest ? -longitude : longitude,
+      speed: record[14], // Speed in km/h
+      directionAngle: statusBits & 0x03ff,
+      gsmSignal: -1,
+      batteryLevel: -1,
+      accuracy: GpsAccuracy.gps,
+      activity: "{}",
+    });
+
+    offset += 17;
+  }
+
+  (response.response as Buffer[]).push(
+    protoTopinCreateResponse0x18(topinPacket, Buffer.from([year, month, day, hour, minute, second]))
+  );
+
+  if (positions.length === 0) {
+    printMessage(`${prefix} ❌ No valid position data found in the packet.`);
+    return {
+      updateLastActivity: false,
+      imei: response.imei,
+      mustDisconnect: false,
+    };
+  }
+
+  for (const position of positions) {
+    protoTopinPersistPosition(response.imei, remoteAddress, position, persistence, topinPacket, response, prefix);
+  }
+
+  return {
+    updateLastActivity: false,
+    imei: response.imei,
+    mustDisconnect: false,
+  };
+};
+
+export default protoTopinProcessPacket0x18;
