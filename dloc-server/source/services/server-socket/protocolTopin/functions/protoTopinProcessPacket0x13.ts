@@ -2,7 +2,6 @@ import positionUpdateBatteryAndLastActivity from "../../../../functions/position
 import { printMessage } from "../../../../functions/printMessage";
 import { ProtoTopinProcessPacket } from "../models/ProtoTopinProcessPacket";
 import protoTopinCreateResponse0x13 from "./protoTopinCreateResponse0x13";
-import protoTopinCreateResponse0x30 from "./protoTopinCreateResponse0x30";
 
 const protoTopinProcessPacket0x13: ProtoTopinProcessPacket = async ({
   remoteAddress,
