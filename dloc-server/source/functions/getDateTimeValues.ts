@@ -22,3 +22,5 @@ const getDateTimeValues = (date: Date): {
     seconds // Seconds (0-59)
   };
 }
+
+export default getDateTimeValues;

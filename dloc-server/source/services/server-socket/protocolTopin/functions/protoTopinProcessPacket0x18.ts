@@ -4,6 +4,7 @@ import { GpsAccuracy } from "../../../../models/GpsAccuracy";
 import { printMessage } from "../../../../functions/printMessage";
 import protoTopinCreateResponse0x18 from "./protoTopinCreateResponse0x18";
 import protoTopinPersistPosition from "./protoTopinPersistPosition";
+import getDateTimeValues from "../../../../functions/getDateTimeValues";
 
 // TODO: Move this constant to a shared configuration file
 const MAX_TIME_DIFFERENCE_MS = 300000; // 5 minutes in milliseconds
