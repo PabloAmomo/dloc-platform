@@ -1,6 +1,7 @@
 import checkMustSendToTerminalRequestReport from "../../../../functions/checkMustSendToTerminalRequestReport";
 import { printMessage } from "../../../../functions/printMessage";
 import protoTopinCheckMustSendToTerminal from "../functions/protoTopinCheckMustSendToTerminal";
+import protoTopinCreatePacket from "../functions/protoTopinCreatePacket";
 import protoTopinGetPowerProfileConfig from "../functions/protoTopinGetPowerProfileConfig";
 import ProtoTopinHandleProcess from "../models/ProtoTopinHandleProcess";
 import ProtoTopinProcessProps from "../models/ProtoTopinProcessProps";
@@ -41,6 +42,8 @@ const protoTopinHandleProcess: ProtoTopinHandleProcess = ({
   if (checkMustSendToTerminalRequestReport(prefix, imei, imeiData, forceReportLocInSec)) {
     // TODO: Implement the logic for sending a request report
     printMessage(`${prefix} 📡 send packet to request report position. (NOT IMPLEMENTED YET)`);
+    additionals.push(protoTopinCreatePacket(Buffer.from([0x01, 0x01])));
+    additionals.push(protoTopinCreatePacket(Buffer.from([0x01, 0x80])));
   }
 
   /** Send */
