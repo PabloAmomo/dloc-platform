@@ -7,6 +7,7 @@ import HandlePacketResult from "../../models/HandlePacketResult";
 import protoGt06GetFrameData from "../functions/protoTopinGetFrameData";
 import protoTopinProcessPacket0x01 from "../functions/protoTopinProcessPacket0x01";
 import protoTopinProcessPacket0x08 from "../functions/protoTopinProcessPacket0x08";
+import protoTopinProcessPacket0x10 from "../functions/protoTopinProcessPacket0x10";
 import protoTopinProcessPacket0x13 from "../functions/protoTopinProcessPacket0x13";
 import protoTopinProcessPacket0x30 from "../functions/protoTopinProcessPacket0x30";
 import protoTopinProcessPacket0xB3 from "../functions/protoTopinProcessPacket0xB3";
@@ -88,6 +89,15 @@ const protoTopinHandlePacket: ProtoGt06HandlePacket = async (
   // ---------------------------------------
   else if (topinPacket.protocolNumber === 0xB3) {
     const respProcess = await protoTopinProcessPacket0xB3(functionData);
+    updateLastActivity = respProcess.updateLastActivity;
+    imeiToPrint = respProcess.imei;
+  }
+
+  // ---------------------------------------
+  // Positioning data packets 0x10
+  // ---------------------------------------
+  else if (topinPacket.protocolNumber === 0x10) {
+    const respProcess = await protoTopinProcessPacket0x10(functionData);
     updateLastActivity = respProcess.updateLastActivity;
     imeiToPrint = respProcess.imei;
   }
