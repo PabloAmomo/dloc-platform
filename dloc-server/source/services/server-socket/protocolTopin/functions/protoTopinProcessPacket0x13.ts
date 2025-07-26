@@ -28,7 +28,7 @@ const protoTopinProcessPacket0x13: ProtoTopinProcessPacket = async ({
 
   let uploadIntervalMin = Math.floor(powerProfile.uploadSec / 60); 
   if (uploadIntervalMin === 0) uploadIntervalMin = 1; // Setting a default value of 1 minute if undefined
-  (response.response as Buffer[]).push(protoTopinCreateResponse0x13(topinPacket, uploadIntervalMin));
+  (response.response as Buffer[]).push(protoTopinCreateResponse0x13(uploadIntervalMin));
 
   printMessage(`${prefix} ❤️  Request upload interval to ${uploadIntervalMin} minutes.`);
   printMessage(`${prefix} 🌎 Current time zone ${timezone}`);

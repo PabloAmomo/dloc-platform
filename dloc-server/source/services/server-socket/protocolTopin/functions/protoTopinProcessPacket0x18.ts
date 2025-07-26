@@ -34,15 +34,15 @@ const protoTopinProcessPacket0x18: ProtoTopinProcessPacket = async ({
 
     const record = topinPacket.informationContent.slice(offset, offset + 17);
 
-    year = 2000 + record[0];
-    month = record[1];
-    day = record[2];
-    hours = record[3];
-    minutes = record[4];
-    seconds = record[5];
-    const dateTimeUtcString = `${year}-${month.toString().padStart(2, "0")}-${day.toString().padStart(2, "0")} ${hours
+    const year = 2000 + parseInt(record[0].toString(16).padStart(2, "0"));
+    const month = record[1].toString(16).padStart(2, "0");
+    const day = record[2].toString(16).padStart(2, "0");
+    const hours = record[3].toString(16).padStart(2, "0");
+    const minutes = record[4].toString(16).padStart(2, "0");
+    const seconds = record[5].toString(16).padStart(2, "0");
+    const dateTimeUtcString = `${year}-${month.toString().padStart(2, "0")}-${day.toString().padStart(2, "0")}T${hours
       .toString()
-      .padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+      .padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}.000Z`;
     const dateTimeUtc = new Date(dateTimeUtcString);
 
     console.log(` 📍 ---> latitud ${record.readUInt32BE(6)}`);

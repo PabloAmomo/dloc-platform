@@ -31,9 +31,6 @@ const protoTopinHandleProcess: ProtoTopinHandleProcess = ({
     );
 
     if (responseSend.length > 0) additionals.push(...responseSend);
-
-    console.log(`-----> ${prefix} 📡 Sending configuration to terminal: ${responseSend.length} packets`);
-
   }
 
   const { forceReportLocInSec } = protoTopinGetPowerProfileConfig(newPowerProfileType);
