@@ -18,9 +18,6 @@ const protoTopinGetFrameData = (buffer: Buffer): ProtoTopinPacket => {
   const protocolNumber = packetData[1]; // Second byte is the protocol number
   const informationContent = packetData.slice(2); // Exclude protocol number
 
-  console.log(`Protocol Number: ${protocolNumber}`);
-  console.log(`Information Content: ${informationContent.toString("hex")}`);
-  
   return {
     raw: buffer.toString("hex"),
     packetLength,
