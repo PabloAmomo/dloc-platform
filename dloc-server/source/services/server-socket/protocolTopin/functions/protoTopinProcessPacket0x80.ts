@@ -11,7 +11,7 @@ const protoTopinProcessPacket0x80: ProtoTopinProcessPacket = async ({
 }) => {
   printMessage(`${prefix} ✅ Manual position received from device`);
 
-  (response.response as Buffer[]).push(protoTopinCreateResponse0x80(topinPacket));
+  (response.response as Buffer[]).push(protoTopinCreateResponse0x80());
 
   return {
     updateLastActivity: true,
