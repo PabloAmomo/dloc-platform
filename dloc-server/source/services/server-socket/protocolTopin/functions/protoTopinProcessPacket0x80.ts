@@ -9,9 +9,9 @@ const protoTopinProcessPacket0x80: ProtoTopinProcessPacket = async ({
   persistence,
   prefix,
 }) => {
-  printMessage(`${prefix} ✅ Manual position received from device`);
-
-  (response.response as Buffer[]).push(protoTopinCreateResponse0x80());
+  printMessage(`${prefix} ✅ Manual position received from device (no response expected)`);
+  
+  // (response.response as Buffer[]).push(protoTopinCreateResponse0x80());
 
   return {
     updateLastActivity: true,
