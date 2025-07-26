@@ -11,10 +11,6 @@ const protoTopinGetFrameData = (buffer: Buffer): ProtoTopinPacket => {
 
   const packetData = buffer.slice(2, -2); // Exclude start and end delimiters
   const packetLength = packetData[0]; // First byte is the length
-
-  if (packetLength !== 0 && packetData.length + 2 !== packetLength) // +2 for the end delimiter removed
-    throw new Error(`Invalid packet length. Expected ${packetLength - 2} bytes, got ${packetData.length}`);
-
   const protocolNumber = packetData[1]; // Second byte is the protocol number
   const informationContent = packetData.slice(2); // Exclude protocol number
 
