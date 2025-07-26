@@ -1,29 +1,78 @@
-import { Direction } from '../../../../models/Direction';
-import { GpsAccuracy } from '../../../../models/GpsAccuracy';
-import { PositionPacket } from '../../../../models/PositionPacket';
-import { parseLatOrLng } from '../../../../functions/parseLatOrLng';
-import { parseUtcDateTime } from '../../../../functions/parseUtcDateTime';
-import { printMessage } from '../../../../functions/printMessage';
+import { printMessage } from "../../../../functions/printMessage";
+import { GpsAccuracy } from "../../../../models/GpsAccuracy";
+import { PositionPacket } from "../../../../models/PositionPacket";
 
-const protoTopinCreatePositionPacket = (imei: string, remoteAddress: string, values: string[], accuracy: GpsAccuracy, activity: string): PositionPacket | undefined => {
+// TODO: Move this constant to a shared configuration file
+const MAX_TIME_DIFFERENCE_MS = 300000; // 5 minutes in milliseconds
+
+const protoTopinCreatePositionPacket = (
+  imei: string,
+  remoteAddress: string,
+  prefix: string,
+  data: Buffer,
+  accuracy: GpsAccuracy,
+  activity: string
+): PositionPacket | undefined => {
   try {
+    if (data.length < 18) {
+      printMessage(`${prefix} ❌ Invalid packet length ${data.length}.`);
+      return;
+    }
+
+    const dateBytes = data.slice(0, 6);
+    const year = 2000 + dateBytes[0];
+    const month = dateBytes[1];
+    const day = dateBytes[2];
+    const hours = dateBytes[3];
+    const minutes = dateBytes[4];
+    const seconds = dateBytes[5];
+    const dateTimeUtcString = `${year}-${month.toString().padStart(2, "0")}-${day.toString().padStart(2, "0")}T${hours
+      .toString()
+      .padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}.000Z`;
+    const dateTimeUtc = new Date(dateTimeUtcString);
+
+    const timeDifference = dateTimeUtc.getTime() - new Date().getTime();
+    const minutesAfterNow = timeDifference / 1000 / 60;
+    if (timeDifference > MAX_TIME_DIFFERENCE_MS) {
+      printMessage(
+        `${prefix} ❌ Location packet date/time is ${minutesAfterNow} minutes in the future of the current time.`
+      );
+      return;
+    }
+
+    const rawLat = data.readUInt32BE(7) / 30000 / 60;
+    const rawLng = data.readUInt32BE(11) / 30000 / 60;
+
+    const speed = data[15]; // Speed in km/h
+
+    const statusBytes = data.slice(16, 18);
+    const valid = (statusBytes[0] & 0x04) >> 2 === 1;
+
+    const statusBits = (statusBytes[0] << 8) | statusBytes[1];
+
+    const eastWest = (statusBytes[0] & 0x02) >> 1; // 0 = East, 1 = West
+    const northSouth = statusBytes[0] & 0x01; // 0 = Norte, 1 = Sur
+    const directionAngle = statusBits & 0x03ff; // Direction angle in degrees
+
+    const lat = northSouth ? -rawLat : rawLat; // North is positive, South is negative
+    const lng = eastWest ? -rawLng : rawLng; // East is positive,
+
     return {
       imei,
       remoteAddress,
-      dateTimeUtc: parseUtcDateTime(values[2], values[9]),
-      valid: (values[3] ?? '').toUpperCase().trim() === 'A',
-      lat: parseLatOrLng(values[4], values[5] as Direction),
-      lng: parseLatOrLng(values[6], values[7] as Direction),
-      speed: parseInt(values[8] ?? '0'),
-      directionAngle: parseInt(values[10] ?? '0'),
-      gsmSignal: parseInt(values[11] ?? '-1'),
-      batteryLevel: parseInt(values[13] ?? '-1'),
+      dateTimeUtc,
+      valid,
+      lat,
+      lng,
+      speed,
+      directionAngle,
+      gsmSignal: -1,
+      batteryLevel: -1,
       accuracy,
       activity,
     };
   } catch (err: Error | any) {
-    printMessage(`[${imei}] (${remoteAddress}) ❌ error creating position packet [${err.message}]`);
-    return undefined;
+    printMessage(`${prefix} ❌ error creating position packet [${err.message}]`);
   }
 };
 
