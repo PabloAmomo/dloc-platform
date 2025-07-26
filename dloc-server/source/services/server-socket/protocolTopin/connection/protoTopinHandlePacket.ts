@@ -1,20 +1,12 @@
 import convertAnyToHexString from "../../../../functions/convertAnyToHexString";
-import { getNormalizedIMEI, NO_IMEI_STRING } from "../../../../functions/getNormalizedIMEI";
-import { getUtcDateTime } from "../../../../functions/getUtcDateTime";
-import getValuesFromStringByRegexs from "../../../../functions/getValuesFromStringByRegex";
-import positionAddPositionAndUpdateDevice from "../../../../functions/positionAddPositionAndUpdateDevice";
-import positionUpdateBatteryAndLastActivity from "../../../../functions/positionUpdateBatteryAndLastActivity";
+import { getNormalizedIMEI } from "../../../../functions/getNormalizedIMEI";
 import positionUpdateLastActivityAndAddHistory from "../../../../functions/positionUpdateLastActivityAndAddHistory";
 import { printMessage } from "../../../../functions/printMessage";
-import { GpsAccuracy } from "../../../../models/GpsAccuracy";
-import { PositionPacket } from "../../../../models/PositionPacket";
 import discardData from "../../functions/discardData";
-import getLbsPosition from "../../functions/getLbsPosition";
 import HandlePacketResult from "../../models/HandlePacketResult";
-import protoGt06CreatePositionPacket from "../functions/protoTopinCreatePositionPacket";
 import protoGt06GetFrameData from "../functions/protoTopinGetFrameData";
-import PROTOGt06_REGEX_PACKETS from "../functions/protoTopinPacketParseREGEX";
-import protoGt06ProcessPacket0x01 from "../functions/protoTopinProcessPacket0x01";
+import protoTopinProcessPacket0x01 from "../functions/protoTopinProcessPacket0x01";
+import protoTopinProcessPacket0x08 from "../functions/protoTopinProcessPacket0x08";
 import ProtoGt06HandlePacket from "../models/ProtoTopinHandlePacket";
 import ProtoGt06HandlePacketProps from "../models/ProtoTopinHandlePacketProps";
 import ProtoGt06ProcessPacketProps from "../models/ProtoTopinProcessPacketProps";
@@ -56,59 +48,21 @@ const protoTopinHandlePacket: ProtoGt06HandlePacket = async (
   // Login Message 0x01
   // ---------------------------------------
   if (topinPacket.protocolNumber === 0x01) {
-    const respProcess = await protoGt06ProcessPacket0x01(functionData);
+    const respProcess = await protoTopinProcessPacket0x01(functionData);
     updateLastActivity = respProcess.updateLastActivity;
     imeiToPrint = respProcess.imei;
   }
 
   // ---------------------------------------
-  // Location Data 0x12
+  // Heartbeat 0x08
   // ---------------------------------------
-  else if (topinPacket.protocolNumber === 0x12) {
-    //  const respProcess = await jt808ProcessPacket0x0100(functionData);
-    //  updateLastActivity = respProcess.updateLastActivity;
-    //  imeiToPrint = respProcess.imei;
+  else if (topinPacket.protocolNumber === 0x08) {
+    const respProcess = await protoTopinProcessPacket0x08(functionData);
+    updateLastActivity = respProcess.updateLastActivity;
+    imeiToPrint = respProcess.imei;
   }
 
-  // ---------------------------------------
-  // Status information 0x13
-  // ---------------------------------------
-  else if (topinPacket.protocolNumber === 0x13) {
-    //  const respProcess = await jt808ProcessPacket0x0100(functionData);
-    //  updateLastActivity = respProcess.updateLastActivity;
-    //  imeiToPrint = respProcess.imei;
-  }
 
-  // ---------------------------------------
-  // String information 0x15
-  // ---------------------------------------
-  else if (topinPacket.protocolNumber === 0x15) {
-    //  const respProcess = await jt808ProcessPacket0x0100(functionData);
-    //  updateLastActivity = respProcess.updateLastActivity;
-    //  imeiToPrint = respProcess.imei;
-  }
-
-  // ---------------------------------------
-  // Alarm data 0x16
-  // ---------------------------------------
-  else if (topinPacket.protocolNumber === 0x16) {
-    //  const respProcess = await jt808ProcessPacket0x0100(functionData);
-    //  updateLastActivity = respProcess.updateLastActivity;
-    //  imeiToPrint = respProcess.imei;
-  }
-
-  // ---------------------------------------
-  // GPS, query address information by phone number 0x1A
-  // ---------------------------------------
-  else if (topinPacket.protocolNumber === 0x1a) {
-    //  const respProcess = await jt808ProcessPacket0x0100(functionData);
-    //  updateLastActivity = respProcess.updateLastActivity;
-    //  imeiToPrint = respProcess.imei;
-  }
-
-  // Protocol Number
-
-  //    Command information sent by the server to the terminal 0x80
 
   // ---------------------------------------
   // Terminal authentication（0x0102)

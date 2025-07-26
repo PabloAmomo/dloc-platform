@@ -3,7 +3,6 @@ export interface ProtoTopinPacket  {
     packetLength: number,
     protocolNumber: number,
     informationContent: Buffer,
-    serialNumber: number,
 }
 
 

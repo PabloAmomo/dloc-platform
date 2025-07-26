@@ -20,6 +20,8 @@ import protoTopinGetFrameData from "./services/server-socket/protocolTopin/funct
 
 import net from 'net';
 
+console.log(protoTopinGetFrameData(Buffer.from("78780D010359339078151063280D0A", "hex")));
+
 /*
 // 78 78 00 18 25 07 25 23 01 45 03 00 D6 07 00 00 1D C5 01 12 F6 1E 6A 00 00 1D C5 01 12 F6 1E 6A 00 00 1D C5 01 12 F6 1E 6A 00 0D 0A
 
@@ -84,7 +86,7 @@ client.connect(PORT, HOST, () => {
   console.log('📤 Paquete enviado:', packet1.toString('hex'));
 });
 
-// console.log(protoGt06GetFrameData(Buffer.from("78780D010359339078151063280D0A", "hex")));
+
 
 */
 
