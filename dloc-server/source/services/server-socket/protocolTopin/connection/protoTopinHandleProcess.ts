@@ -37,9 +37,7 @@ const protoTopinHandleProcess: ProtoTopinHandleProcess = ({
 
   /** Check if must send to terminal request report */
   if (checkMustSendToTerminalRequestReport(prefix, imei, imeiData, forceReportLocInSec)) {
-    // TODO: [VERIFY] This is not implemented yet, but it should be.
-    printMessage(`${prefix} 📡 send packet to request report position.`);
-    // additionals.push(protoTopinCreatePacket(Buffer.from([0x01, 0x01])));
+    printMessage(`${prefix} 📡 🔥 send packet to request report position.`);
     additionals.push(protoTopinCreatePacket(Buffer.from([0x01, 0x80])));
   }
 

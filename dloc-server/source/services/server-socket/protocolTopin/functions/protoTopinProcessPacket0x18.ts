@@ -45,9 +45,6 @@ const protoTopinProcessPacket0x18: ProtoTopinProcessPacket = async ({
       .padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}.000Z`;
     const dateTimeUtc = new Date(dateTimeUtcString);
 
-    console.log(` 📍 ---> latitud ${record.readUInt32BE(6)}`);
-    console.log(` 📍 ---> longitud ${record.readUInt32BE(10)}`);
-
     const latitude = record.readUInt32BE(6) / 30000 / 60;
     const longitude = record.readUInt32BE(10) / 30000 / 60;
 
@@ -70,7 +67,7 @@ const protoTopinProcessPacket0x18: ProtoTopinProcessPacket = async ({
 
     if (latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180) {
       printMessage(
-        `${prefix} ❌ Invalid latitude/longitude values: lat=${latitude}, lng=${longitude}. Skipping position.`
+        `${prefix} ❌ Invalid latitude/longitude lat=${latitude}, lng=${longitude}. Skipping.`
       );
       offset += 17;
       continue;
