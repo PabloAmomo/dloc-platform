@@ -7,6 +7,7 @@ import HandlePacketResult from "../../models/HandlePacketResult";
 import protoGt06GetFrameData from "../functions/protoTopinGetFrameData";
 import protoTopinProcessPacket0x01 from "../functions/protoTopinProcessPacket0x01";
 import protoTopinProcessPacket0x08 from "../functions/protoTopinProcessPacket0x08";
+import protoTopinProcessPacket0x30 from "../functions/protoTopinProcessPacket0x30";
 import ProtoGt06HandlePacket from "../models/ProtoTopinHandlePacket";
 import ProtoGt06HandlePacketProps from "../models/ProtoTopinHandlePacketProps";
 import ProtoGt06ProcessPacketProps from "../models/ProtoTopinProcessPacketProps";
@@ -62,7 +63,14 @@ const protoTopinHandlePacket: ProtoGt06HandlePacket = async (
     imeiToPrint = respProcess.imei;
   }
 
-
+  // ---------------------------------------
+  // update time 0x30
+  // ---------------------------------------
+  else if (topinPacket.protocolNumber === 0x30) {
+    const respProcess = await protoTopinProcessPacket0x30(functionData);
+    updateLastActivity = respProcess.updateLastActivity;
+    imeiToPrint = respProcess.imei;
+  }
 
   // ---------------------------------------
   // Terminal authentication（0x0102)
