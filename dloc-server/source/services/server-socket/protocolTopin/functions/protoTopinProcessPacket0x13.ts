@@ -21,6 +21,7 @@ const protoTopinProcessPacket0x13: ProtoTopinProcessPacket = async ({
   const softwareVersion = topinPacket.informationContent[1];
   const timezone = topinPacket.informationContent[2];
   const intervalTimeMin = topinPacket.informationContent[3];
+  const signalStrength = topinPacket.informationContent[4];
 
   /** Get the las information about the IMEI */
   const imeiData: CacheImei = CACHE_IMEI.get(imei) ?? CacheImeiEmptyItem;
@@ -28,11 +29,13 @@ const protoTopinProcessPacket0x13: ProtoTopinProcessPacket = async ({
 
   let uploadIntervalMin = Math.floor(powerProfile.uploadSec / 60); 
   if (uploadIntervalMin === 0) uploadIntervalMin = 1; // Setting a default value of 1 minute if undefined
-  (response.response as Buffer[]).push(protoTopinCreateResponse0x13(uploadIntervalMin));
+  (response.response as Buffer[]).push(...protoTopinCreateResponse0x13(uploadIntervalMin, powerProfile.heartBeatSec));
 
   printMessage(`${prefix} ❤️  Request upload interval to ${uploadIntervalMin} minutes.`);
+  printMessage(`${prefix} ❤️  Request hearbeat interval to ${powerProfile.heartBeatSec} seconds.`);
   printMessage(`${prefix} 🌎 Current time zone ${timezone}`);
   printMessage(`${prefix} 🔋 Battery level: ${battery}%`);
+  printMessage(`${prefix} 📡 Signal strength: ${signalStrength}`);
 
   await positionUpdateBatteryAndLastActivity(response.imei, remoteAddress, persistence, battery);
 

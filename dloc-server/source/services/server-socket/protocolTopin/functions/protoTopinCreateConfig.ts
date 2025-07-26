@@ -11,10 +11,9 @@ function protoTopinCreateConfig(powerProfileType: PowerProfileType): Buffer[] {
   response.push(protoTopinCreateResponse0x97(uploadSec));
   response.push(protoTopinCreateResponse0x98(uploadSec));
 
-  // TODO: [VERIFY] Check if this works correctly with the new protocol
-  let heartBeatMin = Math.floor(heartBeatSec / 60);
-  if (heartBeatMin === 0) heartBeatMin = 1; // Setting a default value of 1 minute if undefined
-  response.push(protoTopinCreateResponse0x13(heartBeatMin)); // Heartbeat interval in minutes
+  let uploadIntervalMin = Math.floor(uploadSec / 60); 
+  if (uploadIntervalMin === 0) uploadIntervalMin = 1; // Setting a default value of 1 minute if undefined
+  response.push(...protoTopinCreateResponse0x13(uploadIntervalMin, heartBeatSec));
 
   return response;
 }
