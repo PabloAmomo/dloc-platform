@@ -1,4 +1,5 @@
 import { handleAddBatteryLevel } from "./handleAddBatteryLevel";
+import { handleAddSignalStrength } from "./handleAddSignalStrength";
 import { handleAddDiscarted } from "./handleAddDiscarted";
 import { handleAddHistory } from "./handleAddHistory";
 import { handleAddPosition } from "./handleAddPosition";
@@ -13,6 +14,7 @@ import { handleGetLastPositions } from "./handleGetLastPositions";
 
 export {
   handleAddBatteryLevel,
+  handleAddSignalStrength,
   handleAddDiscarted,
   handleAddHistory,
   handleAddPosition,
