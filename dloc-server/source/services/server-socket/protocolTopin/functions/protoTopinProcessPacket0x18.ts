@@ -64,7 +64,14 @@ const protoTopinProcessPacket0x18: ProtoTopinProcessPacket = async ({
       printMessage(
         `${prefix} ❌ Location packet date/time is ${minutesAfterNow} minutes in the future of the current time.`
       );
-      return responseVal;
+      continue;
+    }
+
+    if (latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180) {
+      printMessage(
+        `${prefix} ❌ Invalid latitude/longitude values: lat=${latitude}, lng=${longitude}. Skipping position.`
+      );
+      continue;
     }
 
     positions.push({
