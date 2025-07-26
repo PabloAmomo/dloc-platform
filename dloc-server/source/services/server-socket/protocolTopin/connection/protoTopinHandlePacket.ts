@@ -1,21 +1,22 @@
-import convertAnyToHexString from '../../../../functions/convertAnyToHexString';
-import { getNormalizedIMEI } from '../../../../functions/getNormalizedIMEI';
-import positionUpdateLastActivityAndAddHistory from '../../../../functions/positionUpdateLastActivityAndAddHistory';
-import { printMessage } from '../../../../functions/printMessage';
-import discardData from '../../functions/discardData';
-import HandlePacketResult from '../../models/HandlePacketResult';
-import protoTopinGetFrameData from '../functions/protoTopinGetFrameData';
-import protoTopinProcessPacket0x01 from '../functions/protoTopinProcessPacket0x01';
-import protoTopinProcessPacket0x08 from '../functions/protoTopinProcessPacket0x08';
-import protoTopinProcessPacket0x10 from '../functions/protoTopinProcessPacket0x10';
-import protoTopinProcessPacket0x11 from '../functions/protoTopinProcessPacket0x11';
-import protoTopinProcessPacket0x13 from '../functions/protoTopinProcessPacket0x13';
-import protoTopinProcessPacket0x18 from '../functions/protoTopinProcessPacket0x18';
-import protoTopinProcessPacket0x30 from '../functions/protoTopinProcessPacket0x30';
-import protoTopinProcessPacket0xB3 from '../functions/protoTopinProcessPacket0xB3';
-import ProtoTopinHandlePacket from '../models/ProtoTopinHandlePacket';
-import ProtoTopinHandlePacketProps from '../models/ProtoTopinHandlePacketProps';
-import ProtoTopinProcessPacketProps from '../models/ProtoTopinProcessPacketProps';
+import convertAnyToHexString from "../../../../functions/convertAnyToHexString";
+import { getNormalizedIMEI } from "../../../../functions/getNormalizedIMEI";
+import positionUpdateLastActivityAndAddHistory from "../../../../functions/positionUpdateLastActivityAndAddHistory";
+import { printMessage } from "../../../../functions/printMessage";
+import discardData from "../../functions/discardData";
+import HandlePacketResult from "../../models/HandlePacketResult";
+import protoTopinGetFrameData from "../functions/protoTopinGetFrameData";
+import protoTopinProcessPacket0x01 from "../functions/protoTopinProcessPacket0x01";
+import protoTopinProcessPacket0x08 from "../functions/protoTopinProcessPacket0x08";
+import protoTopinProcessPacket0x10 from "../functions/protoTopinProcessPacket0x10";
+import protoTopinProcessPacket0x11 from "../functions/protoTopinProcessPacket0x11";
+import protoTopinProcessPacket0x13 from "../functions/protoTopinProcessPacket0x13";
+import protoTopinProcessPacket0x18 from "../functions/protoTopinProcessPacket0x18";
+import protoTopinProcessPacket0x30 from "../functions/protoTopinProcessPacket0x30";
+import protoTopinProcessPacket0x80 from "../functions/protoTopinProcessPacket0x80";
+import protoTopinProcessPacket0xB3 from "../functions/protoTopinProcessPacket0xB3";
+import ProtoTopinHandlePacket from "../models/ProtoTopinHandlePacket";
+import ProtoTopinHandlePacketProps from "../models/ProtoTopinHandlePacketProps";
+import ProtoTopinProcessPacketProps from "../models/ProtoTopinProcessPacketProps";
 
 const noImei: string = "no imei received";
 
@@ -69,33 +70,6 @@ const protoTopinHandlePacket: ProtoTopinHandlePacket = async (
   }
 
   // ---------------------------------------
-  // status package 0x13
-  // ---------------------------------------
-  else if (topinPacket.protocolNumber === 0x13) {
-    const respProcess = await protoTopinProcessPacket0x13(functionData);
-    updateLastActivity = respProcess.updateLastActivity;
-    imeiToPrint = respProcess.imei;
-  }
-
-  // ---------------------------------------
-  // update time 0x30
-  // ---------------------------------------
-  else if (topinPacket.protocolNumber === 0x30) {
-    const respProcess = await protoTopinProcessPacket0x30(functionData);
-    updateLastActivity = respProcess.updateLastActivity;
-    imeiToPrint = respProcess.imei;
-  }
-
-  // ---------------------------------------
-  // ICCID 0x3B
-  // ---------------------------------------
-  else if (topinPacket.protocolNumber === 0xB3) {
-    const respProcess = await protoTopinProcessPacket0xB3(functionData);
-    updateLastActivity = respProcess.updateLastActivity;
-    imeiToPrint = respProcess.imei;
-  }
-
-  // ---------------------------------------
   // Positioning data packets 0x10
   // ---------------------------------------
   else if (topinPacket.protocolNumber === 0x10) {
@@ -113,7 +87,16 @@ const protoTopinHandlePacket: ProtoTopinHandlePacket = async (
     imeiToPrint = respProcess.imei;
   }
 
-    // ---------------------------------------
+  // ---------------------------------------
+  // status package 0x13
+  // ---------------------------------------
+  else if (topinPacket.protocolNumber === 0x13) {
+    const respProcess = await protoTopinProcessPacket0x13(functionData);
+    updateLastActivity = respProcess.updateLastActivity;
+    imeiToPrint = respProcess.imei;
+  }
+
+  // ---------------------------------------
   // Positioning data batch 0x18
   // ---------------------------------------
   else if (topinPacket.protocolNumber === 0x18) {
@@ -122,6 +105,33 @@ const protoTopinHandlePacket: ProtoTopinHandlePacket = async (
     imeiToPrint = respProcess.imei;
   }
 
+  // ---------------------------------------
+  // update time 0x30
+  // ---------------------------------------
+  else if (topinPacket.protocolNumber === 0x30) {
+    const respProcess = await protoTopinProcessPacket0x30(functionData);
+    updateLastActivity = respProcess.updateLastActivity;
+    imeiToPrint = respProcess.imei;
+  }
+
+  // ---------------------------------------
+  // ICCID 0x3B
+  // ---------------------------------------
+  else if (topinPacket.protocolNumber === 0xb3) {
+    const respProcess = await protoTopinProcessPacket0xB3(functionData);
+    updateLastActivity = respProcess.updateLastActivity;
+    imeiToPrint = respProcess.imei;
+  }
+
+  // ---------------------------------------
+  // Manual position request 0x80
+  // ---------------------------------------
+  else if (topinPacket.protocolNumber === 0x80) {
+    const respProcess = await protoTopinProcessPacket0x80(functionData);
+    updateLastActivity = respProcess.updateLastActivity;
+    imeiToPrint = respProcess.imei;
+  }
+  
   // ---------------------------------------
   // Terminal heartbeat（0x0002）
   // Terminal Logout（0x0003）
