@@ -1,6 +1,6 @@
-import ProtoGt06ProcessPacketProps from "./ProtoTopinProcessPacketProps";
+import ProtoTopinProcessPacketProps from "./ProtoTopinProcessPacketProps";
 
-export type  ProtoTopinProcessPacket =  (props: ProtoGt06ProcessPacketProps) => Promise<{
+export type  ProtoTopinProcessPacket =  (props: ProtoTopinProcessPacketProps) => Promise<{
   updateLastActivity: boolean; 
   imei: string;
   mustDisconnect: boolean;

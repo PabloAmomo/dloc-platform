@@ -4,7 +4,7 @@ import protoTopinCreatePacket from "./protoTopinCreatePacket";
 // TODO: Unify the responses when its posible
 
 // TODO: Unify with protoTopinProcessPacket0x10
-const protoTopinCreateResponse0x18 = (gt06Packer: ProtoTopinPacket, datetime: Buffer): Buffer => {
+const protoTopinCreateResponse0x18 = (TopinPacker: ProtoTopinPacket, datetime: Buffer): Buffer => {
   return protoTopinCreatePacket(Buffer.from([0x08, 0x10, ...datetime]));
 }
 

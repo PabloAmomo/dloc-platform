@@ -1,8 +1,8 @@
 import HandlePacketResult from '../../models/HandlePacketResult';
-import ProtoGt06HandlePacketProps from './ProtoTopinHandlePacketProps';
+import ProtoTopinHandlePacketProps from './ProtoTopinHandlePacketProps';
 
 type ProtoTopinHandlePacket = (
-  props: ProtoGt06HandlePacketProps
+  props: ProtoTopinHandlePacketProps
 ) => Promise<HandlePacketResult>;
 
 export default ProtoTopinHandlePacket;

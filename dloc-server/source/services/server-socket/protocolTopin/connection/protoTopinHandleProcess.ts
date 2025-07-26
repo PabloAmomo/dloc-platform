@@ -1,11 +1,11 @@
 import { printMessage } from "../../../../functions/printMessage";
-import ProtoGt06ProcessProps from "../models/ProtoTopinProcessProps";
-import protoGt06CheckMustSendToTerminal from "../functions/protoTopinCheckMustSendToTerminal";
+import ProtoTopinProcessProps from "../models/ProtoTopinProcessProps";
+import protoTopinCheckMustSendToTerminal from "../functions/protoTopinCheckMustSendToTerminal";
 import checkMustSendToTerminalRequestReport from "../../../../functions/checkMustSendToTerminalRequestReport";
-import ProtoGt06HandleProcess from "../models/ProtoTopinHandleProcess";
-import protoGt06GetPowerProfileConfig from "../functions/protoTopinGetPowerProfileConfig";
+import ProtoTopinHandleProcess from "../models/ProtoTopinHandleProcess";
+import protoTopinGetPowerProfileConfig from "../functions/protoTopinGetPowerProfileConfig";
 
-const protoTopinHandleProcess: ProtoGt06HandleProcess = ({
+const protoTopinHandleProcess: ProtoTopinHandleProcess = ({
   results,
   imei,
   prefix,
@@ -15,11 +15,11 @@ const protoTopinHandleProcess: ProtoGt06HandleProcess = ({
   imeiData,
   newPowerProfileType,
   sendData,
-}: ProtoGt06ProcessProps): void => {
+}: ProtoTopinProcessProps): void => {
   let toSendAditional: string = "";
-  // TODO: Implement the logic for handling the GT06 protocol
+  // TODO: Implement the logic for handling the Topin protocol
   //if (isNewConnection || powerProfileChanged || needProfileRefresh) {
-  //  const responseSend: string = protoGt06CheckMustSendToTerminal(
+  //  const responseSend: string = protoTopinCheckMustSendToTerminal(
   //    imei,
   //    prefix,
   //    powerProfileChanged,
@@ -31,7 +31,7 @@ const protoTopinHandleProcess: ProtoGt06HandleProcess = ({
   //  toSendAditional += responseSend;
   //}
 
-  //const { forceReportLocInSec } = protoGt06GetPowerProfileConfig(newPowerProfileType);
+  //const { forceReportLocInSec } = protoTopinGetPowerProfileConfig(newPowerProfileType);
 
   /** Check if must send to terminal request report */
   //if (checkMustSendToTerminalRequestReport(prefix, imei, imeiData, forceReportLocInSec)) {

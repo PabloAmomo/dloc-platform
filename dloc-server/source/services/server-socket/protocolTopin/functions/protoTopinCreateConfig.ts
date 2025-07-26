@@ -1,6 +1,6 @@
 import { PowerProfileType } from '../../../../enums/PowerProfileType';
 import padNumberLeft from '../../../../functions/padNumberLeft';
-import protoGt06PowerProfileConfig from './protoTopinGetPowerProfileConfig';
+import protoTopinPowerProfileConfig from './protoTopinGetPowerProfileConfig';
 import { uniqueId } from '../../../../functions/uniqueId';
 
 function protoTopinCreateConfig(
@@ -8,7 +8,7 @@ function protoTopinCreateConfig(
 ): string {
   let response = "";
   const timestamp: string = uniqueId();
-  const { heartBeatSec, uploadSec, ledState } = protoGt06PowerProfileConfig(
+  const { heartBeatSec, uploadSec, ledState } = protoTopinPowerProfileConfig(
     powerProfileType
   );
 

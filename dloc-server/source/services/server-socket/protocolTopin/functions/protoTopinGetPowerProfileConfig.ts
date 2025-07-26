@@ -36,7 +36,7 @@ const protoTopinGetPowerProfileConfig : GetPowerProfileConfig = (
     profileType !== PowerProfileType.AUTOMATIC_FULL
   )
     printMessage(
-      `❌ power profile (ProtoGt06) [${profileType}] not found, defaulting to full power profile`
+      `❌ power profile (ProtoTopin) [${profileType}] not found, defaulting to full power profile`
     );
 
   // Full power profile configuration

@@ -1,7 +1,7 @@
 import { PowerProfileType } from '../../../../enums/PowerProfileType';
 import { printMessage } from '../../../../functions/printMessage';
-import protoGt06CreateConfig from './protoTopinCreateConfig';
-import protoGt06GetPowerProfileConfig from './protoTopinGetPowerProfileConfig';
+import protoTopinCreateConfig from './protoTopinCreateConfig';
+import protoTopinGetPowerProfileConfig from './protoTopinGetPowerProfileConfig';
 
 const protoTopinCheckMustSendToTerminal = (
   imei: string,
@@ -11,7 +11,7 @@ const protoTopinCheckMustSendToTerminal = (
   currentPowerPrfile: PowerProfileType,
   newPowerProfile: PowerProfileType
 ): string => {
-  const { uploadSec, heartBeatSec, forceReportLocInSec, ledState } = protoGt06GetPowerProfileConfig(newPowerProfile);
+  const { uploadSec, heartBeatSec, forceReportLocInSec, ledState } = protoTopinGetPowerProfileConfig(newPowerProfile);
 
   if (needProfileRefresh) {
     printMessage(
@@ -30,7 +30,7 @@ const protoTopinCheckMustSendToTerminal = (
     } sec]`
   );
 
-  return protoGt06CreateConfig(newPowerProfile);
+  return protoTopinCreateConfig(newPowerProfile);
 };
 
 export default protoTopinCheckMustSendToTerminal;

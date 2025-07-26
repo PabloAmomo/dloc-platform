@@ -1,24 +1,25 @@
-import convertAnyToHexString from "../../../../functions/convertAnyToHexString";
-import { getNormalizedIMEI } from "../../../../functions/getNormalizedIMEI";
-import positionUpdateLastActivityAndAddHistory from "../../../../functions/positionUpdateLastActivityAndAddHistory";
-import { printMessage } from "../../../../functions/printMessage";
-import discardData from "../../functions/discardData";
-import HandlePacketResult from "../../models/HandlePacketResult";
-import protoGt06GetFrameData from "../functions/protoTopinGetFrameData";
-import protoTopinProcessPacket0x01 from "../functions/protoTopinProcessPacket0x01";
-import protoTopinProcessPacket0x08 from "../functions/protoTopinProcessPacket0x08";
-import protoTopinProcessPacket0x10 from "../functions/protoTopinProcessPacket0x10";
-import protoTopinProcessPacket0x13 from "../functions/protoTopinProcessPacket0x13";
-import protoTopinProcessPacket0x30 from "../functions/protoTopinProcessPacket0x30";
-import protoTopinProcessPacket0xB3 from "../functions/protoTopinProcessPacket0xB3";
-import ProtoGt06HandlePacket from "../models/ProtoTopinHandlePacket";
-import ProtoGt06HandlePacketProps from "../models/ProtoTopinHandlePacketProps";
-import ProtoGt06ProcessPacketProps from "../models/ProtoTopinProcessPacketProps";
+import convertAnyToHexString from '../../../../functions/convertAnyToHexString';
+import { getNormalizedIMEI } from '../../../../functions/getNormalizedIMEI';
+import positionUpdateLastActivityAndAddHistory from '../../../../functions/positionUpdateLastActivityAndAddHistory';
+import { printMessage } from '../../../../functions/printMessage';
+import discardData from '../../functions/discardData';
+import HandlePacketResult from '../../models/HandlePacketResult';
+import protoTopinGetFrameData from '../functions/protoTopinGetFrameData';
+import protoTopinProcessPacket0x01 from '../functions/protoTopinProcessPacket0x01';
+import protoTopinProcessPacket0x08 from '../functions/protoTopinProcessPacket0x08';
+import protoTopinProcessPacket0x10 from '../functions/protoTopinProcessPacket0x10';
+import protoTopinProcessPacket0x13 from '../functions/protoTopinProcessPacket0x13';
+import protoTopinProcessPacket0x18 from '../functions/protoTopinProcessPacket0x18';
+import protoTopinProcessPacket0x30 from '../functions/protoTopinProcessPacket0x30';
+import protoTopinProcessPacket0xB3 from '../functions/protoTopinProcessPacket0xB3';
+import ProtoTopinHandlePacket from '../models/ProtoTopinHandlePacket';
+import ProtoTopinHandlePacketProps from '../models/ProtoTopinHandlePacketProps';
+import ProtoTopinProcessPacketProps from '../models/ProtoTopinProcessPacketProps';
 
 const noImei: string = "no imei received";
 
-const protoTopinHandlePacket: ProtoGt06HandlePacket = async (
-  props: ProtoGt06HandlePacketProps
+const protoTopinHandlePacket: ProtoTopinHandlePacket = async (
+  props: ProtoTopinHandlePacketProps
 ): Promise<HandlePacketResult> => {
   const { imei, remoteAddress, data, persistence, disconnect } = props;
 
@@ -37,9 +38,9 @@ const protoTopinHandlePacket: ProtoGt06HandlePacket = async (
   // TODO: [DEBUG] Only for debug
   printMessage(`[${imeiToPrint}] (${remoteAddress}) 📡 RECEIVED 👉 [${dataString}].`);
 
-  const topinPacket = protoGt06GetFrameData(data);
+  const topinPacket = protoTopinGetFrameData(data);
 
-  const functionData: ProtoGt06ProcessPacketProps = {
+  const functionData: ProtoTopinProcessPacketProps = {
     remoteAddress,
     response,
     imei,
@@ -102,28 +103,14 @@ const protoTopinHandlePacket: ProtoGt06HandlePacket = async (
     imeiToPrint = respProcess.imei;
   }
 
-
+    // ---------------------------------------
+  // Positioning data batch 0x18
   // ---------------------------------------
-  // Positioning data batch upload（0x0704）
-  // Location information query 0x0201）
-  // Location report（0x0200）
-  //     response 0x8001
-  // ---------------------------------------
-  //else if ([0x0704, 0x0201, 0x0200].includes(jt808Packet.header.msgType)) {
-  //  const respProcess = await jt808ProcessPacket0x0xxxLocations(functionData);
-  //  updateLastActivity = respProcess.updateLastActivity;
-  //  imeiToPrint = respProcess.imei;
-  //}
-
-  // ---------------------------------------
-  // Battery level update when sleep（0x0210）
-  //     response 0x8001
-  // ---------------------------------------
-  //else if (jt808Packet.header.msgType === 0x0210) {
-  //  const respProcess = await jt808ProcessPacket0x0210(functionData);
-  //  updateLastActivity = respProcess.updateLastActivity;
-  //  imeiToPrint = respProcess.imei;
-  //}
+  else if (topinPacket.protocolNumber === 0x18) {
+    const respProcess = await protoTopinProcessPacket0x18(functionData);
+    updateLastActivity = respProcess.updateLastActivity;
+    imeiToPrint = respProcess.imei;
+  }
 
   // ---------------------------------------
   // Terminal heartbeat（0x0002）
@@ -141,15 +128,6 @@ const protoTopinHandlePacket: ProtoGt06HandlePacket = async (
   //  updateLastActivity = respProcess.updateLastActivity;
   //  imeiToPrint = respProcess.imei;
   //  if (respProcess.mustDisconnect) disconnect();
-  //}
-
-  // ---------------------------------------
-  // Terminal general response（0x0001）
-  // ---------------------------------------
-  //else if ([0x0001].includes(jt808Packet.header.msgType)) {
-  //  const respProcess = await jt808ProcessPacket0x0001(functionData);
-  //  updateLastActivity = respProcess.updateLastActivity;
-  //  imeiToPrint = respProcess.imei;
   //}
 
   // ---------------------------------------------

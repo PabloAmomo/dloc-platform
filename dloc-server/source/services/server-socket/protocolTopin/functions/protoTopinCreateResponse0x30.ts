@@ -1,9 +1,9 @@
 import { ProtoTopinPacket } from "../models/ProtoTopinPacket";
 import protoTopinCreatePacket from "./protoTopinCreatePacket";
 
-function protoTopinCreateResponse0x30(gt06Packer: ProtoTopinPacket): Buffer {
+function protoTopinCreateResponse0x30(TopinPacker: ProtoTopinPacket): Buffer {
   const dateTime = new Date();
-  const year = dateTime.getFullYear() - 2000; // Year offset for GT06 protocol
+  const year = dateTime.getFullYear() - 2000; // Year offset for Topin protocol
   const month = dateTime.getMonth() + 1; // Months are 0-indexed in JavaScript
   const day = dateTime.getDate();
   const hours = dateTime.getHours();
