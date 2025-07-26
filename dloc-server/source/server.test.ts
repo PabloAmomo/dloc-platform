@@ -22,20 +22,18 @@ import net from 'net';
 
 console.log(protoTopinGetFrameData(Buffer.from("78780D010359339078151063280D0A", "hex")));
 
-/*
+
 // 78 78 00 18 25 07 25 23 01 45 03 00 D6 07 00 00 1D C5 01 12 F6 1E 6A 00 00 1D C5 01 12 F6 1E 6A 00 00 1D C5 01 12 F6 1E 6A 00 0D 0A
 
 // Dirección del servidor y puerto
-const HOST = 'www.365gps.net'; // o IP del servidor
-const PORT = 8005;        // reemplaza con el puerto correcto
-//const HOST = '82.223.64.197';
-//const PORT = 24671; // reemplaza con el puerto correcto
+//const HOST = 'www.365gps.net'; // o IP del servidor
+//const PORT = 8005;        // reemplaza con el puerto correcto
+const HOST = '82.223.64.197';
+const PORT = 24671; // reemplaza con el puerto correcto
 
 // Paquete a enviar (como buffer)
-const hexPacketp2 = '787800182507252301450300D60700001DC50112F61E6A00001DC50112F61E6A00001DC50112F61E6A000D0A'
 const hexPacketp1 = '78780D010359339078151063280D0A';
 const packet1 = Buffer.from(hexPacketp1, 'hex');
-const packet2 = Buffer.from(hexPacketp2, 'hex');
 
 // Crear conexión al socket
 const client = new net.Socket();
@@ -47,18 +45,11 @@ interface ServerResponse {
   data: Buffer;
 }
 
-let firts = true;
 client.on('data', (data: Buffer) => {
   const response: ServerResponse = { data };
   console.log('📥 Respuesta recibida:', response.data.toString('hex'));
 
-if (firts) {
-    firts = false;
-  client.write(packet2);
-  console.log('📤 Paquete enviado (2):', packet2.toString('hex'));
-    // Si solo esperas una respuesta, puedes cerrar la conexión:
-  // client.destroy();
-  }
+  client.destroy(); 
 
 });
 
@@ -88,7 +79,7 @@ client.connect(PORT, HOST, () => {
 
 
 
-*/
+
 
 /*
 // Sleep Packet

@@ -15,7 +15,8 @@ const protoTopinProcessPacket0x01: ProtoTopinProcessPacket = async ({
   response.imei = padNumberLeft(imei, 15, "0");
   response.imei = getNormalizedIMEI(response.imei);
 
-  (response.response as Buffer[]).push(protoGt06CreateResponse0x01(topinPacket));
+  const softVersion = topinPacket.informationContent.slice(-1).readUInt8(0);
+  (response.response as Buffer[]).push(protoGt06CreateResponse0x01(topinPacket, softVersion));
 
   return {
     updateLastActivity: true,
