@@ -45,7 +45,7 @@ const protoTopinProcessPacket0x10: ProtoTopinProcessPacket = async ({
   const statusBytes = topinPacket.informationContent.slice(16, 18);
   const statusBits = (statusBytes[0] << 8) | statusBytes[1];
   const eastWest = (statusBytes[0] & 0x02) >> 1; // 0 = East, 1 = West
-  const northSouth = statusBytes[0] & 0x01; // 0 = South, 1 = North
+  const northSouth = statusBytes[0] & 0x01; // 0 = Norte, 1 = Sur
   const dateTimeUtcString = `${year}-${month.toString().padStart(2, "0")}-${day.toString().padStart(2, "0")} ${hours
     .toString()
     .padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
@@ -66,7 +66,7 @@ const protoTopinProcessPacket0x10: ProtoTopinProcessPacket = async ({
     remoteAddress,
     dateTimeUtc,
     valid: (statusBytes[0] & 0x04) >> 2 === 1,
-    lat: northSouth ? lat : -lat,
+    lat: northSouth ? -lat : lat,
     lng: eastWest ? -lng : lng,
     speed: topinPacket.informationContent[15], // Speed in km/h
     directionAngle: statusBits & 0x03ff,
