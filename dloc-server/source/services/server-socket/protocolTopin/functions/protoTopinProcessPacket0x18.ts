@@ -18,27 +18,26 @@ const protoTopinProcessPacket0x18: ProtoTopinProcessPacket = async ({
 }) => {
   const positions: PositionPacket[] = [];
 
-  const dateTime = new Date();
-  let year = dateTime.getFullYear() - 2000;
-  let month = dateTime.getMonth() + 1;
-  let day = dateTime.getDate();
-  let hour = dateTime.getHours();
-  let minute = dateTime.getMinutes();
-  let second = dateTime.getSeconds();
+  let { year, month, day, hours, minutes, seconds  } = getDateTimeValues(new Date());
 
   let offset = 0;
   while (offset + 17 <= topinPacket.informationContent.length) {
+    if (topinPacket.informationContent.length < 17) {
+      printMessage(`${prefix} ❌ Invalid position packet length: ${topinPacket.informationContent.length}`);
+      continue;
+    }
+   
     const record = topinPacket.informationContent.slice(offset, offset + 17);
 
     year = 2000 + record[0];
     month = record[1];
     day = record[2];
-    hour = record[3];
-    minute = record[4];
-    second = record[5];
-    const dateTimeUtcString = `${year}-${month.toString().padStart(2, "0")}-${day.toString().padStart(2, "0")} ${hour
+    hours = record[3];
+    minutes = record[4];
+    seconds = record[5];
+    const dateTimeUtcString = `${year}-${month.toString().padStart(2, "0")}-${day.toString().padStart(2, "0")} ${hours
       .toString()
-      .padStart(2, "0")}:${minute.toString().padStart(2, "0")}:${second.toString().padStart(2, "0")}`;
+      .padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
     const dateTimeUtc = new Date(dateTimeUtcString);
 
     const latitude = record.readUInt32BE(6) / 30000 / 60;
@@ -80,7 +79,7 @@ const protoTopinProcessPacket0x18: ProtoTopinProcessPacket = async ({
   }
 
   (response.response as Buffer[]).push(
-    protoTopinCreateResponse0x18(topinPacket, Buffer.from([year, month, day, hour, minute, second]))
+    protoTopinCreateResponse0x18(topinPacket, Buffer.from([year, month, day, hours, minutes, seconds]))
   );
 
   if (positions.length === 0) {

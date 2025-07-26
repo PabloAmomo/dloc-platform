@@ -33,18 +33,18 @@ const protoTopinProcessPacket0x10: ProtoTopinProcessPacket = async ({
   const year = 2000 + dateBytes[0];
   const month = dateBytes[1];
   const day = dateBytes[2];
-  const hour = dateBytes[3];
-  const minute = dateBytes[4];
-  const second = dateBytes[5];
+  const hours = dateBytes[3];
+  const minutes = dateBytes[4];
+  const seconds = dateBytes[5];
   const lat = topinPacket.informationContent.readUInt32BE(7) / 30000 / 60;
   const lng = topinPacket.informationContent.readUInt32BE(11) / 30000 / 60;
   const statusBytes = topinPacket.informationContent.slice(16, 18);
   const statusBits = (statusBytes[0] << 8) | statusBytes[1];
   const eastWest = (statusBytes[0] & 0x02) >> 1; // 0 = East, 1 = West
   const northSouth = statusBytes[0] & 0x01; // 0 = South, 1 = North
-  const dateTimeUtcString = `${year}-${month.toString().padStart(2, "0")}-${day.toString().padStart(2, "0")} ${hour
+  const dateTimeUtcString = `${year}-${month.toString().padStart(2, "0")}-${day.toString().padStart(2, "0")} ${hours
     .toString()
-    .padStart(2, "0")}:${minute.toString().padStart(2, "0")}:${second.toString().padStart(2, "0")}`;
+    .padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
   const dateTimeUtc = new Date(dateTimeUtcString);
 
   const timeDifference = dateTimeUtc.getTime() - new Date().getTime();
@@ -73,7 +73,7 @@ const protoTopinProcessPacket0x10: ProtoTopinProcessPacket = async ({
   };
 
   (response.response as Buffer[]).push(
-    protoTopinCreateResponse0x10(topinPacket, Buffer.from([year, month, day, hour, minute, second]))
+    protoTopinCreateResponse0x10(topinPacket, Buffer.from([year, month, day, hours, minutes, seconds]))
   );
 
   protoTopinPersistPosition(response.imei, remoteAddress, location, persistence, topinPacket, response, prefix);
