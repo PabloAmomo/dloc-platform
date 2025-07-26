@@ -16,10 +16,13 @@ import { printMessage } from "../../../functions/printMessage";
       if (typeof dataItem === "string") {
         conn.write(dataItem, (err?: Error) => {
           if (err) showError(err);
+          else printMessage(`[${getNormalizedIMEI(imei)}] (${remoteAddress}) 📡 Sent data: ${dataItem}`);
         });
       } else if (dataItem instanceof Buffer) {
         conn.write(dataItem, (err?: Error) => {
           if (err) showError(err);
+          // TODO: [DEBUG] Remove this when the protocol (topin) is stable
+          else printMessage(`[${getNormalizedIMEI(imei)}] (${remoteAddress}) 📡 Sent data: ${dataItem.toString('hex')}`);
         });
         conn.write(Buffer.alloc(0)); // Send an empty buffer to indicate end of packet
       } else {
