@@ -18,7 +18,7 @@ const protoTopinProcessPacket0x18: ProtoTopinProcessPacket = async ({
 }) => {
   const positions: PositionPacket[] = [];
   const responseVal = {
-    updateLastActivity: false,
+    updateLastActivity: true,
     imei: response.imei,
     mustDisconnect: false,
   };
@@ -104,7 +104,7 @@ const protoTopinProcessPacket0x18: ProtoTopinProcessPacket = async ({
     protoTopinPersistPosition(response.imei, remoteAddress, position, persistence, topinPacket, response, prefix);
   }
 
-  return responseVal;
+  return { ...responseVal, updateLastActivity: false };
 };
 
 export default protoTopinProcessPacket0x18;
