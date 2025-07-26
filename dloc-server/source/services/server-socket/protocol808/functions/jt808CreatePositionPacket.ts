@@ -3,6 +3,7 @@ import { PositionPacket } from "../../../../models/PositionPacket";
 import { printMessage } from "../../../../functions/printMessage";
 import { Jt808LocationPacket } from "../models/Jt808LocationPacket";
 
+// TODO: Move this constant to a shared configuration file
 const MAX_TIME_DIFFERENCE_MS = 300000; // 5 minutes in milliseconds
 
 const jt808CreatePositionPacket = (
@@ -18,7 +19,7 @@ const jt808CreatePositionPacket = (
     const timeDifference = dateTimeUtc.getTime() - now.getTime();
     if (timeDifference > MAX_TIME_DIFFERENCE_MS) {
       printMessage(
-        `[${imei}] (${remoteAddress}) ❌ Location packet date/time is 5 minutes or more in the future of the current time.`
+        `[${imei}] (${remoteAddress}) ❌ Location packet date/time is ${MAX_TIME_DIFFERENCE_MS / 60} minutes or more in the future of the current time.`
       );
       return undefined;
     }
