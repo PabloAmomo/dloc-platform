@@ -73,16 +73,6 @@ const protoTopinHandlePacket: ProtoGt06HandlePacket = async (
   }
 
   // ---------------------------------------
-  // Terminal authentication（0x0102)
-  //     response 0x8001
-  // ---------------------------------------
-  //else if (jt808Packet.header.msgType === 0x0102) {
-  //  const respProcess = await jt808ProcessPacket0x0102(functionData);
-  //  updateLastActivity = respProcess.updateLastActivity;
-  //  imeiToPrint = respProcess.imei;
-  //}
-
-  // ---------------------------------------
   // Positioning data batch upload（0x0704）
   // Location information query 0x0201）
   // Location report（0x0200）
@@ -90,16 +80,6 @@ const protoTopinHandlePacket: ProtoGt06HandlePacket = async (
   // ---------------------------------------
   //else if ([0x0704, 0x0201, 0x0200].includes(jt808Packet.header.msgType)) {
   //  const respProcess = await jt808ProcessPacket0x0xxxLocations(functionData);
-  //  updateLastActivity = respProcess.updateLastActivity;
-  //  imeiToPrint = respProcess.imei;
-  //}
-
-  // ---------------------------------------
-  // Request synchronization time（0x0109）
-  //     response 0x8109
-  // ---------------------------------------
-  //else if (jt808Packet.header.msgType === 0x0109) {
-  //  const respProcess = await jt808ProcessPacket0x0109(functionData);
   //  updateLastActivity = respProcess.updateLastActivity;
   //  imeiToPrint = respProcess.imei;
   //}
