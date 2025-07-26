@@ -44,8 +44,8 @@ const protoTopinCreatePositionPacketEx = (
     //console.log(`${prefix} 📍 ---> gpsDataLength ${gpsDataLength}`);
     //console.log(`${prefix} 📍 ---> satellites ${satellites}`);
 
-    const lat = data.readUInt32BE(7);
-    const lng = data.readUInt32BE(11);
+    const lat = data.readUInt32BE(6);
+    const lng = data.readUInt32BE(10);
 
 
     console.log(` 📍 ---> latitud ${lat.toFixed(7)}`);

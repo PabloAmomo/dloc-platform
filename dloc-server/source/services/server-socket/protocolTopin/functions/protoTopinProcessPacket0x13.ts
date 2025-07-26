@@ -1,9 +1,14 @@
+import { get } from "http";
 import positionUpdateBatteryAndLastActivity from "../../../../functions/positionUpdateBatteryAndLastActivity";
 import { printMessage } from "../../../../functions/printMessage";
+import { CACHE_IMEI } from "../../../../infraestucture/caches/cacheIMEI";
+import { CacheImei, CacheImeiEmptyItem } from "../../../../infraestucture/models/CacheImei";
 import { ProtoTopinProcessPacket } from "../models/ProtoTopinProcessPacket";
 import protoTopinCreateResponse0x13 from "./protoTopinCreateResponse0x13";
+import protoTopinGetPowerProfileConfig from "./protoTopinGetPowerProfileConfig";
 
 const protoTopinProcessPacket0x13: ProtoTopinProcessPacket = async ({
+  imei,
   remoteAddress,
   response,
   topinPacket,
@@ -17,9 +22,14 @@ const protoTopinProcessPacket0x13: ProtoTopinProcessPacket = async ({
   const timezone = topinPacket.informationContent[2];
   const intervalTimeMin = topinPacket.informationContent[3];
 
-  // TODO: Send interval time based on power profile configuration
-  (response.response as Buffer[]).push(protoTopinCreateResponse0x13(topinPacket, intervalTimeMin));
+  /** Get the las information about the IMEI */
+  const imeiData: CacheImei = CACHE_IMEI.get(imei) ?? CacheImeiEmptyItem;
+  const powerProfile = protoTopinGetPowerProfileConfig(imeiData.powerProfile);
 
+  const uploadIntervalMin = Math.floor(powerProfile.uploadSec / 60);
+  (response.response as Buffer[]).push(protoTopinCreateResponse0x13(topinPacket, uploadIntervalMin));
+
+  printMessage(`${prefix} ❤️ Request upload interval to ${uploadIntervalMin}`);
   printMessage(`${prefix} 🌎 Current time zone ${timezone}`);
   printMessage(`${prefix} 🔋 Battery level: ${battery}%`);
 
