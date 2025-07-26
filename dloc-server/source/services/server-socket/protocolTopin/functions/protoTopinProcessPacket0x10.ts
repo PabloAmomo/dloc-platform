@@ -5,10 +5,12 @@ import { PositionPacket } from "../../../../models/PositionPacket";
 import discardData from "../../functions/discardData";
 import { ProtoTopinProcessPacket } from "../models/ProtoTopinProcessPacket";
 import protoTopinCreateResponse0x10 from "./protoTopinCreateResponse0x10";
+import protoTopinPersistPosition from "./protoTopinPersistPosition";
 
 // TODO: Move this constant to a shared configuration file
 const MAX_TIME_DIFFERENCE_MS = 300000; // 5 minutes in milliseconds
 
+// TODO: Unify wit protoTopinProcessPacket0x18
 const protoTopinProcessPacket0x10: ProtoTopinProcessPacket = async ({
   remoteAddress,
   response,
@@ -74,32 +76,7 @@ const protoTopinProcessPacket0x10: ProtoTopinProcessPacket = async ({
     protoTopinCreateResponse0x10(topinPacket, Buffer.from([year, month, day, hour, minute, second]))
   );
 
-  let oldPacket: boolean = false;
-  const oldPacketMessage = "old packet";
-  await positionAddPositionAndUpdateDevice(
-    response.imei,
-    remoteAddress,
-    location,
-    persistence,
-    () => {},
-    (error) => {
-      oldPacket = error?.message === "old packet";
-    }
-  );
-
-  if (oldPacket)
-    await discardData(
-      oldPacketMessage,
-      true,
-      persistence,
-      response.imei,
-      remoteAddress,
-      topinPacket.informationContent.toString("hex"),
-      response
-    );
-
-  let extraMessage = `[${dateTimeUtcString}] Lat ${lat} - Lng ${lng} [${location.valid ? "✅" : "❌"}]`;
-  printMessage(`${prefix} 📍 Location received: ${extraMessage}`);
+  protoTopinPersistPosition(response.imei, remoteAddress, location, persistence, topinPacket, response, prefix);
 
   return {
     updateLastActivity: false,
