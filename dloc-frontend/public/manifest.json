@@ -1,0 +1,36 @@
+{
+  "short_name": "maiPet",
+  "name": "maiPet",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "images/logos/logo32.png",
+      "sizes": "32x32",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "images/logos/logo192-white.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "images/logos/logo512-white.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    },
+    {
+      "src": "images/logos/logo192-white.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "maskable"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}
