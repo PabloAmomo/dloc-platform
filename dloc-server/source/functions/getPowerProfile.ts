@@ -1,10 +1,10 @@
-import config from '../config/config';
-import { PowerProfileType } from '../enums/PowerProfileType';
-import GetPowerProfileConfig from '../models/GetProwerProfileConfig';
-import { Persistence } from '../models/Persistence';
-import getMovementInLastSeconds from './getMovementInLastSeconds';
-import { printMessage } from './printMessage';
-import updatePowerProfile from './updatePowerProfile';
+import config from "../config/config";
+import { PowerProfileType } from "../enums/PowerProfileType";
+import GetPowerProfileConfig from "../models/GetProwerProfileConfig";
+import { Persistence } from "../models/Persistence";
+import getMovementInLastSeconds from "./getMovementInLastSeconds";
+import { printMessage } from "./printMessage";
+import updatePowerProfile from "./updatePowerProfile";
 
 async function getPowerProfile(
   imei: string,
@@ -84,9 +84,12 @@ async function getPowerProfile(
 
       powerProfileChanged = true;
 
-      const fullPower = newPowerProfileType === PowerProfileType.AUTOMATIC_FULL || newPowerProfileType === PowerProfileType.FULL;
+      const fullPower =
+        newPowerProfileType === PowerProfileType.AUTOMATIC_FULL || newPowerProfileType === PowerProfileType.FULL;
       printMessage(
-        `${messagePrefix} 🆕 ${fullPower ? "🔥" : "♻️"} power profile changed by user from [${currentPowerProfileType}] to [${newPowerProfileType}]`
+        `${messagePrefix} 🆕 ${
+          fullPower ? "🔥" : "♻️"
+        } power profile changed by user from [${currentPowerProfileType}] to [${newPowerProfileType}]`
       );
     }
 
@@ -136,10 +139,7 @@ async function getPowerProfile(
         powerProfileChanged = true;
       }
 
-      if (movementAlarm)
-        printMessage(
-          `${messagePrefix} 🚶‍♂️ [MOVE] 🏃 Change power profile for movement`
-        );
+      if (movementAlarm) printMessage(`${messagePrefix} 🚶‍♂️ [MOVE] 🏃 Change power profile for movement`);
     }
 
     /* Save the new power profile (If was changed) */
