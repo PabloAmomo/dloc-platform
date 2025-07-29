@@ -8,7 +8,7 @@ const protoTopinGetPowerProfileConfig: GetPowerProfileConfig = (
 ): PowerProfileConfig => {
   if (profileType === PowerProfileType.MINIMAL || profileType === PowerProfileType.AUTOMATIC_MINIMAL)
     return {
-      heartBeatSec: 60,
+      heartBeatSec: 120,
       uploadSec: 90,
       ledState: false,
       forceReportLocInSec: 110,
@@ -17,7 +17,7 @@ const protoTopinGetPowerProfileConfig: GetPowerProfileConfig = (
 
   if (profileType === PowerProfileType.BALANCED || profileType === PowerProfileType.AUTOMATIC_BALANCED)
     return {
-      heartBeatSec: 60,
+      heartBeatSec: 120,
       uploadSec: 60,
       ledState: false,
       forceReportLocInSec: 80,
@@ -30,9 +30,9 @@ const protoTopinGetPowerProfileConfig: GetPowerProfileConfig = (
 
   // Full power profile configuration
   return {
-    heartBeatSec: 60,
+    heartBeatSec: 120,
     uploadSec: 20,
-    ledState: true,
+    ledState: false,
     forceReportLocInSec: 50,
     movementMeters: 50,
   };
