@@ -1,3 +1,4 @@
+import config from "../../../../config/config";
 import convertAnyToHexString from "../../../../functions/convertAnyToHexString";
 import { getNormalizedIMEI } from "../../../../functions/getNormalizedIMEI";
 import positionUpdateLastActivityAndAddHistory from "../../../../functions/positionUpdateLastActivityAndAddHistory";
@@ -41,8 +42,8 @@ const protoTopinHandlePacket: ProtoTopinHandlePacket = async (
 
   /* convert data to hex string */
   const dataString: string = convertAnyToHexString(data);
-  // TODO: [DEBUG] Remove this when the protocol (topin) is stable
-  printMessage(`[${imeiToPrint}] (${remoteAddress}) 📡 RECEIVED 👉 [${dataString}].`);
+
+  if (config.SHOW_PACKETS_RECEIVED) printMessage(`[${imeiToPrint}] (${remoteAddress}) 👉 👉 👉 👉 [${dataString}].`);
 
   const topinPacket = protoTopinGetFrameData(data);
 
