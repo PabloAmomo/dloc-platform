@@ -14,10 +14,6 @@ function protoTopinCreateConfig(
 
   response.push(...protoTopinCreatePacket0x13(prefix, powerProfileType));
 
-  // TODO: this make a bettery drain
-  // const { uploadSec } = protoTopinPowerProfileConfig(powerProfileType);
-  // response.push(protoTopinCreatePacket0x97(uploadSec)); // Configure upload interval
-
   const { ledState } = protoTopinPowerProfileConfig(powerProfileType);
   response.push(protoTopinCreatePacket0x61(ledState));
 

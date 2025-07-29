@@ -3,7 +3,7 @@ import protoTopinCreatePacket0x44 from "./protoTopinCreatePacket0x44";
 import protoTopinCreatePacket0x97 from "./protoTopinCreatePacket0x97";
 
 function protoTopinCreateResponse0x13(heartBeatIntervalMin: number, uploadIntervalSec: number): Buffer[] {
-  const packetStopUpload = protoTopinCreatePacket0x44();
+  //const packetStopUpload = protoTopinCreatePacket0x44();
 
   const packetHeartBeatIntervalMin =
     heartBeatIntervalMin !== 0
@@ -16,8 +16,9 @@ function protoTopinCreateResponse0x13(heartBeatIntervalMin: number, uploadInterv
   //    : Buffer.alloc(0);
 
   const packetUploadIntervalSec = protoTopinCreatePacket0x97(uploadIntervalSec);
+  // packetStopUpload
 
-  return [packetStopUpload, packetHeartBeatIntervalMin, packetUploadIntervalSec];
+  return [packetHeartBeatIntervalMin, packetUploadIntervalSec];
 }
 
 export default protoTopinCreateResponse0x13;
