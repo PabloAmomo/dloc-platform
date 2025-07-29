@@ -156,7 +156,7 @@ async function getPowerProfile(
     printMessage(`${messagePrefix} ⚡️ ${message}`);
 
     /* Remember that the power profile should be refreshed */
-    needProfileRefresh = !powerProfileChanged && lastPowerProfileCheckedDiffSec >= MOVEMENTS_CONTROL_SECONDS;
+    needProfileRefresh = !powerProfileChanged && lastPowerProfileCheckedDiff;
     if (needProfileRefresh) {
       lastPowerProfileChecked = Date.now();
 
@@ -164,7 +164,6 @@ async function getPowerProfile(
         `${messagePrefix} 🔄 power profile refresh needed, last check was [${lastPowerProfileCheckedDiffSec} sec] ago`
       );
     }
-
     //
   } catch (error: any) {
     const errorMsg = error?.message ?? error;
