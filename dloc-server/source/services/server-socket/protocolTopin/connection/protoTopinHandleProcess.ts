@@ -18,8 +18,6 @@ const protoTopinHandleProcess: ProtoTopinHandleProcess = ({
   sendData,
 }: ProtoTopinProcessProps): void => {
   const additionals: Buffer[] = [];
-  // TODO: DEBUG
-  console.log(` --> isNewConnection: ${isNewConnection}, powerProfileChanged: ${powerProfileChanged}, needProfileRefresh: ${needProfileRefresh}`);
 
   if (isNewConnection || powerProfileChanged || needProfileRefresh) {
     const responseSend: Buffer[] = protoTopinCheckMustSendToTerminal(
@@ -53,9 +51,6 @@ const protoTopinHandleProcess: ProtoTopinHandleProcess = ({
   if (additionals.length > 0) toSend.push(...additionals);
 
   sendData(toSend);
-
-  // TODO: DEBUG
-  console.log(` --> isNewConnection: ${isNewConnection}, powerProfileChanged: ${powerProfileChanged}, needProfileRefresh: ${needProfileRefresh}`);
 };
 
 export default protoTopinHandleProcess;

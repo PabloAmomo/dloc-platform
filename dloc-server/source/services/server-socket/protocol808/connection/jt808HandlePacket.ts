@@ -31,8 +31,6 @@ const jt808HandlePacket: Jt808HandlePacket = async (props: Jt808HandlePacketProp
 
   /* convert data to hex string */
   const dataString: string = convertAnyToHexString(data);
-  // TODO: [DEBUG] Remove this when the protocol (topin) is stable
-  printMessage(`[${imeiToPrint}] (${remoteAddress}) 📡 RECEIVED 👉 [${dataString}].`);
 
   const jt808Packet = jt808GetFrameData(data);
 

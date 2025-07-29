@@ -31,7 +31,7 @@ const protoTopinCheckMustSendToTerminal = (
     } sec]`
   );
 
-  return protoTopinCreateConfig(prefix, newPowerProfile);
+  return protoTopinCreateConfig(prefix, newPowerProfile, isNewConnection);
 };
 
 export default protoTopinCheckMustSendToTerminal;
