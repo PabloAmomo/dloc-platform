@@ -13,6 +13,8 @@ import { printMessage } from "../../../functions/printMessage";
     };
 
     for (const dataItem of data) {
+      if (data.length === 0) continue; // Skip if no data to send
+      
       if (typeof dataItem === "string") {
         conn.write(dataItem, (err?: Error) => {
           if (err) showError(err);
