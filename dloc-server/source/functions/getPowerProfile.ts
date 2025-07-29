@@ -29,6 +29,7 @@ async function getPowerProfile(
   if (lastPowerProfileChecked === 0) lastPowerProfileChecked = Date.now();
 
   if (isNewConnection) {
+    lastPowerProfileChecked = Date.now();
     await updatePowerProfile(imei, newPowerProfileType, persistence, messagePrefix);
     printMessage(`${messagePrefix} 🆕 new connection, setting power profile to [${newPowerProfileType}]`);
   }
