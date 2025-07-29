@@ -8,6 +8,7 @@ const protoTopinCreatePacket0x13 = (prefix: string, powerProfileType: PowerProfi
   let heartBeatIntervalMin = Math.floor(heartBeatSec / 60);
   if (heartBeatIntervalMin === 0) heartBeatIntervalMin = 1;
 
+  printMessage(`${prefix} ❌ Stop uploading data.`);
   printMessage(`${prefix} 🆙 Setting hearbeat interval to ${heartBeatIntervalMin} minutes.`);
   printMessage(`${prefix} ❤️  Setting upload interval to ${uploadSec} seconds.`);
 
