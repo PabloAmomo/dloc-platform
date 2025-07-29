@@ -11,7 +11,7 @@ const protoTopinCreatePacket0x13 = (prefix: string, powerProfileType: PowerProfi
   printMessage(`${prefix} 🆙 Request hearbeat interval to ${heartBeatIntervalMin} minutes.`);
   printMessage(`${prefix} ❤️  Request upload interval to ${uploadSec} seconds.`);
 
-  return protoTopinCreateResponse0x13(heartBeatIntervalMin, uploadSec);
+  return protoTopinCreateResponse0x13(5, 20);
 }
 
 export default protoTopinCreatePacket0x13;
