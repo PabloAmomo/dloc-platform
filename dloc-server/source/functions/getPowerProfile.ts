@@ -28,6 +28,8 @@ async function getPowerProfile(
 
   if (lastPowerProfileChecked === 0) lastPowerProfileChecked = Date.now();
 
+  return { newPowerProfileType, powerProfileChanged, lastPowerProfileChecked, needProfileRefresh };
+  
   try {
     if (isNewConnection) {
       await updatePowerProfile(imei, newPowerProfileType, persistence, messagePrefix);
@@ -85,6 +87,7 @@ async function getPowerProfile(
 
       const fullPower =
         newPowerProfileType === PowerProfileType.AUTOMATIC_FULL || newPowerProfileType === PowerProfileType.FULL;
+
       printMessage(
         `${messagePrefix} 🆕 ${
           fullPower ? "🔥" : "♻️"
@@ -155,7 +158,7 @@ async function getPowerProfile(
     printMessage(`${messagePrefix} ⚡️ ${message}`);
 
     /* Remember that the power profile should be refreshed */
-    needProfileRefresh = !powerProfileChanged && lastPowerProfileCheckedDiffSec >= MOVEMENTS_CONTROL_SECONDS;;
+    needProfileRefresh = !powerProfileChanged && lastPowerProfileCheckedDiffSec >= MOVEMENTS_CONTROL_SECONDS;
     if (needProfileRefresh) {
       lastPowerProfileChecked = Date.now();
 
