@@ -31,7 +31,7 @@ const protoTopinProcessPacket0x18: ProtoTopinProcessPacket = async ({
   const dateTimeUtc = protoTopinGetBCDDateTimeUTC(bufferDate);
 
     // TODO: [VERIFY] Cehck if the LBS data time is correct and valid to process
-  printMessage(`${prefix} 📅 Date and time from device: ${dateTimeUtc.toISOString}`);
+  printMessage(`${prefix} 📅 Date and time from device: ${dateTimeUtc.toISOString()}`);
 
   const googleGeoPositionRequest: GoogleGeoPositionRequest | null = protoTopinCreateGoogleGeoPositionRequest(
     prefix,
