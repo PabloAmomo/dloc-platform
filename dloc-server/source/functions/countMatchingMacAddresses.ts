@@ -8,12 +8,6 @@ const countMatchingMacAddresses = (list1: WifiAccessPoint[], list2: WifiAccessPo
     if (macSet.has(device.macAddress.toLowerCase())) count++;
   }
 
-  // TODO: [DEBUG] Log the lists and count for debugging purposes
-  if (count === 1) {
-    console.log("---> (1)", JSON.stringify(list1));
-    console.log("---> (2)", JSON.stringify(list2));
-  }
-
   return count;
 };
 

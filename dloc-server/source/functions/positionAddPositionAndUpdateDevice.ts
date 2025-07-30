@@ -1,4 +1,5 @@
 import { CACHE_POSITION } from "../infraestucture/caches/cachePosition";
+import { CachePosition } from "../infraestucture/models/CachePosition";
 import { PersistenceResult } from "../infraestucture/models/PersistenceResult";
 import { Persistence } from "../models/Persistence";
 import { PositionPacket } from "../models/PositionPacket";
@@ -13,6 +14,12 @@ async function positionAddPositionAndUpdateDevice(
   onErrorUpdateDevice?: (error: Error) => void
 ): Promise<string> {
   var message: string = "ok";
+
+  const lastPacketTime = CACHE_POSITION.get(imei)?.dateTimeUtc?.getTime() ?? 0;
+  if (lastPacketTime !== 0)
+    printMessage(
+      `[${imei}] (${remoteAddress}) ⏰ last position received 🌟 ${(lastPacketTime / 1000).toFixed(0)} sec ago 🌟`
+    );
 
   /** Add position packet to cache */
   printMessage(`[${imei}] (${remoteAddress}) ✅ updating cache [${JSON.stringify(positionPacket)}]`);

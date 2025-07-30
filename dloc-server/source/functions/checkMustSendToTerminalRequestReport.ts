@@ -13,10 +13,10 @@ const checkMustSendToTerminalRequestReport = (
   const forceReportLocInMs = forceReportLocInSec * 1000;
 
   const lastPosPacket: CachePosition | undefined = CACHE_POSITION.get(imei);
+  const lastPacketTime = lastPosPacket?.dateTimeUtc?.getTime() ?? 0;
 
   const currentTime = Date.now();
-
-  const lastPosMs = !lastPosPacket ? forceReportLocInMs : currentTime - (lastPosPacket?.dateTimeUtc?.getTime() ?? 0);
+  const lastPosMs = !lastPosPacket ? forceReportLocInMs : currentTime - lastPacketTime;
 
   const needSendToTerminal =
     forceReportLocInMs > 0 &&
