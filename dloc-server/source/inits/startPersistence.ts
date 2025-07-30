@@ -9,11 +9,11 @@ var persistenceTimer: NodeJS.Timeout;
 /** Clean Persistence */
 const cleanPersistence = () => {
   const persistence = getPersistence();
-  if (!persistence) return printMessage(`Persistence not ready...`);
+  if (!persistence) return printMessage(`⛔️ Persistence not ready...`);
   
-  printMessage(`Persistence clean started...`);
+  printMessage(`🧹 Persistence clean started...`);
   persistence.clean().then((result: PersistenceResult) => {
-    if (!result.error) printMessage(`Persistence cleaned...`);
+    if (!result.error) printMessage(`✅ Persistence cleaned...`);
   });
 };
 
@@ -26,14 +26,14 @@ const startPersistence = (persistence: Persistence) => {
   persistenceTimer = setInterval(() => cleanPersistence(), 3600000);
 
   /** Banner */
-  printMessage(`Persistence: [${persistence.getPersistenceName()}]`);
-  printMessage(`Persistence Config: [${persistence.getPersistenceConfig()}]`);
+  printMessage(`💾 Persistence: [${persistence.getPersistenceName()}]`);
+  printMessage(`🎛️ Persistence Config: [${persistence.getPersistenceConfig()}]`);
   persistence.health().then((result) => {
     if (result.error) {
-      printMessage(`Persistence not ready: ${result.error?.message || result.error}`);
+      printMessage(`⛔️ Persistence not ready: ${result.error?.message || result.error}`);
       process.exit(1);
     }
-    printMessage(`Persistence checked...`);
+    printMessage(`✅ Persistence checked...`);
     cleanPersistence();
   });
 };
