@@ -1,5 +1,10 @@
 import config from "../config/config";
-import { PowerProfileType } from "../enums/PowerProfileType";
+import {
+  PowerProfileType,
+  powerProfileTypeAutomatic,
+  powerProfileTypeIsFull,
+  powerProfileTypeIsMinimal,
+} from "../enums/PowerProfileType";
 import GetPowerProfileConfig from "../models/GetProwerProfileConfig";
 import { Persistence } from "../models/Persistence";
 import getMovementInLastSeconds from "./getMovementInLastSeconds";
@@ -50,20 +55,13 @@ async function getPowerProfile(
     if (powerProfile?.results[0]?.powerProfile)
       newPowerProfileType = powerProfile.results[0].powerProfile.toLowerCase() as PowerProfileType;
 
-    const isAutomatic = [
-      PowerProfileType.AUTOMATIC_FULL,
-      PowerProfileType.AUTOMATIC_BALANCED,
-      PowerProfileType.AUTOMATIC_MINIMAL,
-    ].includes(newPowerProfileType);
-
     /* Check if the power profile must be changed by timeout (REFRESH_POWER_PROFILE_SECONDS) */
     const lastPowerProfileCheckedDiffSec = (Date.now() - lastPowerProfileChecked) / 1000;
     const lastPowerProfileCheckedDiff = lastPowerProfileCheckedDiffSec >= REFRESH_POWER_PROFILE_SECONDS;
 
     /* Nothing to do, the power profile is not set to automatic */
-    if (!isAutomatic) {
+    if (!powerProfileTypeAutomatic(newPowerProfileType)) {
       lastPowerProfileChecked = Date.now();
-
       printMessage(
         `${messagePrefix} ⚡️ power profile is not automatic, using [${newPowerProfileType}] without changes`
       );
@@ -82,15 +80,11 @@ async function getPowerProfile(
       newPowerProfileType === PowerProfileType.AUTOMATIC_FULL
     ) {
       lastPowerProfileChecked = Date.now();
-
       powerProfileChanged = true;
-
-      const fullPower =
-        newPowerProfileType === PowerProfileType.AUTOMATIC_FULL || newPowerProfileType === PowerProfileType.FULL;
 
       printMessage(
         `${messagePrefix} 🆕 ${
-          fullPower ? "🔥" : "♻️"
+          powerProfileTypeIsFull(newPowerProfileType) ? "🔥" : "♻️"
         } power profile changed by user from [${currentPowerProfileType}] to [${newPowerProfileType}]`
       );
     }
@@ -157,17 +151,17 @@ async function getPowerProfile(
     }
     printMessage(`${messagePrefix} ⚡️ ${message}`);
 
-    /* Remember that the power profile should be refreshed */
+    /* Check if the power profile should be refreshed */
     needProfileRefresh = !powerProfileChanged && lastPowerProfileCheckedDiff;
     if (needProfileRefresh) {
       lastPowerProfileChecked = Date.now();
-
       printMessage(
         `${messagePrefix} 🔄 power profile refresh needed, last check was [${lastPowerProfileCheckedDiffSec} sec] ago`
       );
     }
 
-    if (!powerProfileChanged && !needProfileRefresh)
+    /** Show message only when can make a profile change */
+    if (!powerProfileChanged && !needProfileRefresh && !powerProfileTypeIsMinimal(newPowerProfileType))
       printMessage(
         `${messagePrefix} ⚡️ next power profile change in ${(
           REFRESH_POWER_PROFILE_SECONDS - lastPowerProfileCheckedDiffSec
