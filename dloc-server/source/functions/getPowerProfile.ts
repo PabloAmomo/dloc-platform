@@ -28,21 +28,20 @@ async function getPowerProfile(
 
   if (lastPowerProfileChecked === 0) lastPowerProfileChecked = Date.now();
 
-  if (isNewConnection) {
-    await updatePowerProfile(imei, newPowerProfileType, persistence, messagePrefix);
-    printMessage(`${messagePrefix} 🆕 new connection, setting power profile to [${newPowerProfileType}]`);
-  }
-
   try {
+    if (isNewConnection) {
+      await updatePowerProfile(imei, newPowerProfileType, persistence, messagePrefix);
+      printMessage(`${messagePrefix} 🆕 new connection, setting power profile to [${newPowerProfileType}]`);
+    }
+
     const powerProfile = await persistence.getPowerProfile(imei);
+    if (powerProfile.error) throw powerProfile.error;
+
     const movementsMts = {
       full: getPowerProfileConfig(PowerProfileType.AUTOMATIC_FULL).movementMeters,
       balanced: getPowerProfileConfig(PowerProfileType.AUTOMATIC_BALANCED).movementMeters,
       minimal: getPowerProfileConfig(PowerProfileType.AUTOMATIC_MINIMAL).movementMeters,
     };
-
-    /* Check if the response is valid */
-    if (powerProfile.error) throw powerProfile.error;
 
     /* Set the power profile */
     if (powerProfile?.results[0]?.powerProfile)
@@ -156,7 +155,7 @@ async function getPowerProfile(
     printMessage(`${messagePrefix} ⚡️ ${message}`);
 
     /* Remember that the power profile should be refreshed */
-    needProfileRefresh = !powerProfileChanged && lastPowerProfileCheckedDiff;
+    needProfileRefresh = !powerProfileChanged && lastPowerProfileCheckedDiffSec >= MOVEMENTS_CONTROL_SECONDS;;
     if (needProfileRefresh) {
       lastPowerProfileChecked = Date.now();
 
