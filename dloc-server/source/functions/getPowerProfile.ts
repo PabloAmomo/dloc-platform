@@ -28,8 +28,6 @@ async function getPowerProfile(
 
   if (lastPowerProfileChecked === 0) lastPowerProfileChecked = Date.now();
 
-  return { newPowerProfileType, powerProfileChanged, lastPowerProfileChecked, needProfileRefresh };
-  
   try {
     if (isNewConnection) {
       await updatePowerProfile(imei, newPowerProfileType, persistence, messagePrefix);
@@ -52,6 +50,17 @@ async function getPowerProfile(
     /* Check if the power profile must be changed */
     const lastPowerProfileCheckedDiffSec = (Date.now() - lastPowerProfileChecked) / 1000;
     const lastPowerProfileCheckedDiff = lastPowerProfileCheckedDiffSec >= MOVEMENTS_CONTROL_SECONDS;
+
+    console.log("");
+    console.log(`---->Last power profile checked diff: ${lastPowerProfileCheckedDiffSec} seconds ${MOVEMENTS_CONTROL_SECONDS}`);
+    console.log("");
+
+    
+    return { newPowerProfileType, powerProfileChanged, lastPowerProfileChecked, needProfileRefresh };
+
+
+
+
 
     const isAutomatic = [
       PowerProfileType.AUTOMATIC_FULL,
