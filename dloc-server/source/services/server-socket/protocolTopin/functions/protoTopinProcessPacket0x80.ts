@@ -33,11 +33,13 @@ const protoTopinProcessPacket0x80: ProtoTopinProcessPacket = async ({
   /** Use las LBS if is valid and the message is "same lbs and wifi data" or "GPS spacing is less than 50 meters" */
   if (code === 0x05 || code === 0x07) {
     const lastLbsKey = CACHE_IMEI.get(imei)?.lastLBSKey;
-    // TODO: [FEATURE] Dtermine what dateTimeUTC to use here, maybe the last request date?
-    const dateTimeUtc = new Date(); // Use now can be problematic if the device is not synced
     if (lastLbsKey) {
+      
       printMessage(`${prefix} 🗼 [LBS] ✅ Reprocessing last LBS with key: ${lastLbsKey}`);
       const lbsGetResponse = CACHE_LBS.get(lastLbsKey)?.response as GoogleGeoPositionResponse;
+
+      const dateTimeUtc = new Date(Date.now() - 2000); // Use 2 seconds ago to avoid issues with the database position time
+
       protoToppisPersistLbsResponse({
         imei,
         remoteAddress,
