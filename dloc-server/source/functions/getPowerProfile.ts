@@ -168,7 +168,7 @@ async function getPowerProfile(
     if (!powerProfileChanged && !needProfileRefresh) {
       printMessage(
         `${messagePrefix} ⚡️ next power profile change in ${
-          MOVEMENTS_CONTROL_SECONDS - lastPowerProfileCheckedDiffSec / 1000
+          MOVEMENTS_CONTROL_SECONDS - lastPowerProfileCheckedDiffSec
         } seconds`
       );
     }
