@@ -13,7 +13,7 @@ const protoTopinCreatePacket0x13 = (prefix: string, powerProfileType: PowerProfi
   printMessage(`${prefix} ❤️  Send setting hearbeat interval to ${heartBeatIntervalMin} minutes.`);
   printMessage(`${prefix} 🆙 Send setting upload interval to ${uploadSec} seconds.`);
 
-  const packets = protoTopinCreateResponse0x13(heartBeatIntervalMin, 0);
+  const packets = protoTopinCreateResponse0x13(heartBeatIntervalMin, uploadSec);
 
   if (protoTopinConfig.USE_PACKET_0x97) {
     printMessage(`${prefix} 🙋🏻 Send setting upload interval to ${uploadSec} seconds. (With 0x97)`);
