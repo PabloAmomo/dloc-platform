@@ -90,6 +90,8 @@ const serverSocketHandler: ServerSocketHandler = (props: ServerSocketHandlerProp
 
           /** Get the las information about the IMEI */
           const imeiData: CacheImei = CACHE_IMEI.get(imei) ?? CacheImeiEmptyItem;
+          console.log("IMEI DATA BEFORE GET POWER PROFILE");
+          console.log(imeiData);
 
           /** Get power profile for the imei */
           const { newPowerProfileType, powerProfileChanged, lastPowerProfileChecked, needProfileRefresh } =
@@ -108,6 +110,10 @@ const serverSocketHandler: ServerSocketHandler = (props: ServerSocketHandlerProp
             powerProfile: newPowerProfileType,
             lastPowerProfileChecked,
           });
+
+          const imeiData2: CacheImei = CACHE_IMEI.get(imei) ?? CacheImeiEmptyItem;
+          console.log("IMEI DATA AFTER GET POWER PROFILE");
+          console.log(imeiData2);
 
           handleProcess({
             results,
