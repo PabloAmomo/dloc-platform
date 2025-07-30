@@ -6,7 +6,7 @@ import { ProtoTopinProcessPacket } from "../models/ProtoTopinProcessPacket";
 import protoToppisPersistLbsResponse from "../../../../functions/protoToppisPersistLbsResponse";
 
 const infoMessages: { [key: number]: string } = {
-  0x00: `🤷‍♂️ unknown`,
+  0x00: `🤷‍♂️ unknown or not reason defined`,
   0x01: `⌛️ Time is incorrect`,
   0x02: `🗼 Less than 2 LBS`,
   0x03: `📶 Less than 3 Wifi`,
@@ -30,6 +30,7 @@ const protoTopinProcessPacket0x80: ProtoTopinProcessPacket = async ({
   const message = infoMessages[code];
   printMessage(`${prefix} 🙋 Manual Position: ${message}`);
 
+  /** Use las LBS if is valid and the message is "same lbs and wifi data" or "GPS spacing is less than 50 meters" */
   if (code === 0x05 || code === 0x07) {
     const lastLbsKey = CACHE_IMEI.get(imei)?.lastLBSKey;
     if (lastLbsKey) {

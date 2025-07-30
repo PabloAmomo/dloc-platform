@@ -1,5 +1,7 @@
 import positionAddPositionAndUpdateDevice from "../../../../functions/positionAddPositionAndUpdateDevice";
 import { printMessage } from "../../../../functions/printMessage";
+import { CACHE_IMEI } from "../../../../infraestucture/caches/cacheIMEI";
+import { GpsAccuracy } from "../../../../models/GpsAccuracy";
 import { Persistence } from "../../../../models/Persistence";
 import { PositionPacket } from "../../../../models/PositionPacket";
 import discardData from "../../functions/discardData";
@@ -16,9 +18,11 @@ const protoTopinPersistPosition = async (
   prefix: string
 ) => {
   try {
-    const { lat, lng, dateTimeUtc, valid } = position;
+    const { lat, lng, dateTimeUtc, valid, accuracy } = position;
     let extraMessage = `[${dateTimeUtc?.toISOString() ?? "NO DATE"}] Lat ${lat} - Lng ${lng}`;
-    printMessage(`${prefix} 📍 ${valid ? "✅" : "❌"} Location received: [${valid ? "valid" : "invalid"}] ${extraMessage}`);
+    printMessage(
+      `${prefix} 📍 ${valid ? "✅" : "❌"} Location received: [${valid ? "valid" : "invalid"}] ${extraMessage}`
+    );
 
     let oldPacket: boolean = false;
     const oldPacketMessage = "old packet";
@@ -32,6 +36,13 @@ const protoTopinPersistPosition = async (
         oldPacket = error?.message === "old packet";
       }
     );
+
+    /** When get a gps position, remove lbs key to avoid use it in lbs request not sync */
+    if (!oldPacket && accuracy !== GpsAccuracy.lbs) {
+      CACHE_IMEI.updateOrCreate(imei, {
+        lastLBSKey: "",
+      });
+    }
 
     if (oldPacket)
       await discardData(
