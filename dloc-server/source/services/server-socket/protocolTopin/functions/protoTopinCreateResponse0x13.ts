@@ -1,18 +1,13 @@
 import protoTopinCreatePacket from "./protoTopinCreatePacket";
 
 function protoTopinCreateResponse0x13(heartBeatIntervalMin: number, uploadIntervalSec: number): Buffer[] {
+  const packets = [];
 
-  const packetHeartBeatIntervalMin =
-    heartBeatIntervalMin !== 0
-      ? protoTopinCreatePacket(Buffer.from([0x02, 0x13, heartBeatIntervalMin]))
-      : Buffer.alloc(0);
+  if (heartBeatIntervalMin !== 0) packets.push(protoTopinCreatePacket(Buffer.from([0x02, 0x13, heartBeatIntervalMin])));
 
-  const packetUploadIntervalSec =
-    uploadIntervalSec !== 0
-      ? protoTopinCreatePacket(Buffer.from([0x03, 0x13, 0x00, uploadIntervalSec]))
-      : Buffer.alloc(0);
-  
-  return [packetHeartBeatIntervalMin, packetUploadIntervalSec];
+  if (uploadIntervalSec !== 0) packets.push(protoTopinCreatePacket(Buffer.from([0x03, 0x13, 0x00, uploadIntervalSec])));
+
+  return packets;
 }
 
 export default protoTopinCreateResponse0x13;
