@@ -6,6 +6,8 @@ import getMovementInLastSeconds from "./getMovementInLastSeconds";
 import { printMessage } from "./printMessage";
 import updatePowerProfile from "./updatePowerProfile";
 
+const { MOVEMENT_MESURE, MOVEMENTS_CONTROL_SECONDS, REFRESH_POWER_PROFILE_SECONDS } = config;
+
 // TODO: Refactor this function to use a more structured approach, possibly with a class or a more modular design.
 async function getPowerProfile(
   imei: string,
@@ -21,7 +23,11 @@ async function getPowerProfile(
   lastPowerProfileChecked: number;
   needProfileRefresh: boolean;
 }> {
-  const { MOVEMENT_MESURE, MOVEMENTS_CONTROL_SECONDS } = config;
+  const movementsMts = {
+    full: getPowerProfileConfig(PowerProfileType.AUTOMATIC_FULL).movementMeters,
+    balanced: getPowerProfileConfig(PowerProfileType.AUTOMATIC_BALANCED).movementMeters,
+    minimal: getPowerProfileConfig(PowerProfileType.AUTOMATIC_MINIMAL).movementMeters,
+  };
 
   let newPowerProfileType = PowerProfileType.AUTOMATIC_FULL;
   let powerProfileChanged = false;
@@ -30,19 +36,15 @@ async function getPowerProfile(
   if (lastPowerProfileChecked === 0) lastPowerProfileChecked = Date.now();
 
   try {
+    /** If new connection, update database to Full Power Profile */
     if (isNewConnection) {
       await updatePowerProfile(imei, newPowerProfileType, persistence, messagePrefix);
       printMessage(`${messagePrefix} 🆕 new connection, setting power profile to [${newPowerProfileType}]`);
     }
 
+    /* Get the power profile from the database */
     const powerProfile = await persistence.getPowerProfile(imei);
     if (powerProfile.error) throw powerProfile.error;
-
-    const movementsMts = {
-      full: getPowerProfileConfig(PowerProfileType.AUTOMATIC_FULL).movementMeters,
-      balanced: getPowerProfileConfig(PowerProfileType.AUTOMATIC_BALANCED).movementMeters,
-      minimal: getPowerProfileConfig(PowerProfileType.AUTOMATIC_MINIMAL).movementMeters,
-    };
 
     /* Set the power profile */
     if (powerProfile?.results[0]?.powerProfile)
@@ -54,9 +56,9 @@ async function getPowerProfile(
       PowerProfileType.AUTOMATIC_MINIMAL,
     ].includes(newPowerProfileType);
 
-    /* Check if the power profile must be changed */
+    /* Check if the power profile must be changed by timeout (REFRESH_POWER_PROFILE_SECONDS) */
     const lastPowerProfileCheckedDiffSec = (Date.now() - lastPowerProfileChecked) / 1000;
-    const lastPowerProfileCheckedDiff = lastPowerProfileCheckedDiffSec >= MOVEMENTS_CONTROL_SECONDS;
+    const lastPowerProfileCheckedDiff = lastPowerProfileCheckedDiffSec >= REFRESH_POWER_PROFILE_SECONDS;
 
     /* Nothing to do, the power profile is not set to automatic */
     if (!isAutomatic) {
@@ -168,7 +170,7 @@ async function getPowerProfile(
     if (!powerProfileChanged && !needProfileRefresh) {
       printMessage(
         `${messagePrefix} ⚡️ next power profile change in ${
-          MOVEMENTS_CONTROL_SECONDS - lastPowerProfileCheckedDiffSec
+          REFRESH_POWER_PROFILE_SECONDS - lastPowerProfileCheckedDiffSec
         } seconds`
       );
     }

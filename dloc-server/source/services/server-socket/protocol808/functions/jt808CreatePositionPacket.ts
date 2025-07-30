@@ -4,7 +4,7 @@ import { printMessage } from "../../../../functions/printMessage";
 import { Jt808LocationPacket } from "../models/Jt808LocationPacket";
 import config from "../../../../config/config";
 
-const MAX_TIME_DIFFERENCE_MS = config.MAX_TIME_DIFFERENCE_MS;
+const MAX_TIME_DIFFERENCE_MS = config.MAX_TIME_DATETIME_DIFFERENCE_MS;
 
 const jt808CreatePositionPacket = (
   imei: string,

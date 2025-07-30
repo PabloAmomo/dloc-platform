@@ -3,7 +3,7 @@ import config from "../../../../config/config";
 import { WifiAccessPoint } from "../../../../models/WifiAccessPoint";
 import convertPercentToRSSI from "../../../../functions/convertPercentToRSSI";
 
-const MAX_TIME_DIFFERENCE_MS = config.MAX_TIME_DIFFERENCE_MS;
+const MAX_TIME_DIFFERENCE_MS = config.MAX_TIME_DATETIME_DIFFERENCE_MS;
 
 const protoTopinExtractWifiAps = (
   prefix: string,

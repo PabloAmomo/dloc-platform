@@ -3,7 +3,7 @@ import { printMessage } from "../../../../functions/printMessage";
 import { GpsAccuracy } from "../../../../models/GpsAccuracy";
 import { PositionPacket } from "../../../../models/PositionPacket";
 
-const MAX_TIME_DIFFERENCE_MS = config.MAX_TIME_DIFFERENCE_MS;
+const MAX_TIME_DIFFERENCE_MS = config.MAX_TIME_DATETIME_DIFFERENCE_MS;
 const PACKET_LENGTH = 18; 
 
 const protoTopinCreatePositionPacket = (
