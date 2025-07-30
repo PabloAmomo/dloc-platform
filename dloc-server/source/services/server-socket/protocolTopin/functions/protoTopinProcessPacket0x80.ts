@@ -33,7 +33,7 @@ const protoTopinProcessPacket0x80: ProtoTopinProcessPacket = async ({
   if (code === 0x05 || code === 0x07) {
     const lastLbsKey = CACHE_IMEI.get(imei)?.lastLBSKey;
     if (lastLbsKey) {
-      printMessage(`${prefix} 📡 Reprocessing last LBS with key: ${lastLbsKey}`);
+      printMessage(`${prefix} 🗼 [LBS] ✅ Reprocessing last LBS with key: ${lastLbsKey}`);
       const lbsGetResponse = CACHE_LBS.get(lastLbsKey)?.response as GoogleGeoPositionResponse;
       protoToppisPersistLbsResponse({
         imei,
