@@ -1,4 +1,3 @@
-import net from "node:net";
 import { printMessage } from "../../functions/printMessage";
 import { Cache } from "../../functions/cache";
 import { PowerProfileType } from "../../enums/PowerProfileType";
