@@ -151,9 +151,7 @@ async function getPowerProfile(
         message = `power profile automatically changed from [${currentPowerProfileType}] to [${newPowerProfileType}]`;
       }
     } else {
-      message = `power profile for device [${newPowerProfileType}] (Time left to change: ${
-        MOVEMENTS_CONTROL_SECONDS - lastPowerProfileCheckedDiffSec / 1000
-      } seconds)`;
+      message = `power profile for device [${newPowerProfileType}] is not changed`;
     }
     printMessage(`${messagePrefix} ⚡️ ${message}`);
 
@@ -164,6 +162,14 @@ async function getPowerProfile(
 
       printMessage(
         `${messagePrefix} 🔄 power profile refresh needed, last check was [${lastPowerProfileCheckedDiffSec} sec] ago`
+      );
+    }
+
+    if (!powerProfileChanged && !needProfileRefresh) {
+      printMessage(
+        `${messagePrefix} ⚡️ next power profile change in ${
+          MOVEMENTS_CONTROL_SECONDS - lastPowerProfileCheckedDiffSec / 1000
+        } seconds`
       );
     }
     //
