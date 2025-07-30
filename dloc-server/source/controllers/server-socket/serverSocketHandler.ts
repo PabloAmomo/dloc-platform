@@ -52,10 +52,9 @@ const serverSocketHandler: ServerSocketHandler = (props: ServerSocketHandlerProp
       disconnect();
       return;
     }
+    dataShow = protocol === "PROTO1903" ? dataString : convertAnyToHexString(data);
 
     try {
-      dataShow = protocol === "PROTO1903" ? dataString : convertAnyToHexString(data);
-
       dataToUse = decoder(data);
 
       counter++;
