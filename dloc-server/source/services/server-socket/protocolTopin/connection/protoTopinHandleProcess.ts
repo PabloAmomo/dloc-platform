@@ -42,7 +42,6 @@ const protoTopinHandleProcess: ProtoTopinHandleProcess = ({
     printMessage(`${prefix} 🚀 send packet to request report position. (🔋 By power profile)`);
     additionals.push(protoTopinCreatePacket0x80());
     imeiData.lastReportRequestTimestamp = Date.now();
-    // TODO: CHECK THIS
     CACHE_IMEI.updateOrCreate(imei, { lastReportRequestTimestamp: imeiData.lastReportRequestTimestamp });
     hasReportPosition = true;
   }

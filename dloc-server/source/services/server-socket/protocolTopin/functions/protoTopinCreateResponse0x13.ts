@@ -11,9 +11,6 @@ function protoTopinCreateResponse0x13(heartBeatIntervalMin: number, uploadInterv
     uploadIntervalSec !== 0
       ? protoTopinCreatePacket(Buffer.from([0x03, 0x13, 0x00, uploadIntervalSec]))
       : Buffer.alloc(0);
-
-  // TODO: Removed the upload interval configuration as it is not used in the current protocol.
-  //const packetUploadIntervalSec = protoTopinCreatePacket0x97(uploadIntervalSec);
   
   return [packetHeartBeatIntervalMin, packetUploadIntervalSec];
 }
