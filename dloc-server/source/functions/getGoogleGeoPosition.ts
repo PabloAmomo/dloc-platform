@@ -100,6 +100,7 @@ async function getGoogleGeoPosition(
   }
 
   CACHE_IMEI.updateOrCreate(imei, {
+    ...imeiData,
     lastLBSRequestTimestamp: Date.now(),
     lastLBSKey: cacheKey,
   });
