@@ -16,10 +16,9 @@ const protoTopinPersistPosition = async (
   prefix: string
 ) => {
   try {
-    let extraMessage = `[${position.dateTimeUtc?.toISOString() ?? "NO DATE"}] Lat ${position.lat} - Lng ${
-      position.lng
-    } [${position.valid ? "✅" : "❌"}]`;
-    printMessage(`${prefix} 📍 🧭 Location received: ${extraMessage}`);
+    const { lat, lng, dateTimeUtc, valid } = position;
+    let extraMessage = `[${dateTimeUtc?.toISOString() ?? "NO DATE"}] Lat ${lat} - Lng ${lng}`;
+    printMessage(`${prefix} 📍 [${valid ? "Valid ✅" : "invalid ❌"}] Location received: ${extraMessage}`);
 
     let oldPacket: boolean = false;
     const oldPacketMessage = "old packet";
