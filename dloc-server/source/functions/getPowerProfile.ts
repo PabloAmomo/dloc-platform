@@ -151,7 +151,9 @@ async function getPowerProfile(
         message = `power profile automatically changed from [${currentPowerProfileType}] to [${newPowerProfileType}]`;
       }
     } else {
-      message = `power profile for device [${newPowerProfileType}]`;
+      message = `power profile for device [${newPowerProfileType}] (Time left to change: ${
+        MOVEMENTS_CONTROL_SECONDS - lastPowerProfileCheckedDiffSec / 1000
+      } seconds)`;
     }
     printMessage(`${messagePrefix} ⚡️ ${message}`);
 
