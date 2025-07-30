@@ -23,7 +23,7 @@ const checkMustSendToTerminalRequestReport = (
     lastPosMs >= forceReportLocInMs &&
     currentTime - imeiData.lastReportRequestTimestamp >= forceReportLocInMs;
 
-  if (needSendToTerminal) CACHE_IMEI.updateOrCreate(imei, { ...imeiData, lastReportRequestTimestamp: currentTime });
+  if (needSendToTerminal) CACHE_IMEI.updateOrCreate(imei, { lastReportRequestTimestamp: currentTime });
 
   if (needSendToTerminal)
     printMessage(
