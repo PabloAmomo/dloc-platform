@@ -3,11 +3,11 @@ import { CACHE_IMEI } from "../infraestucture/caches/cacheIMEI";
 import { CACHE_LBS } from "../infraestucture/caches/cacheLBS";
 import { GoogleGeoPositionRequest } from "../models/GoogleGeoPositionRequest";
 import { GoogleGeoPositionResponse } from "../models/GoogleGeoPositionResponse";
-import { WifiAccessPoint } from "../models/WifiAccessPoint";
 import { ENABLE_LBS } from "../server";
 import googleGeoPositionFetch from "./googleGeoPositionFetch";
 import { printMessage } from "./printMessage";
 import convertRSSIToPercent from "./convertRSSIToPercent";
+import countMatchingMacAddresses from "./countMatchingMacAddresses";
 
 const GOOGLE_LBS_MAX_TIME_DIFF_MINUTES = 1;
 const EXTEND_CACHE_LBS_EXPIRATION_WHEN_MORE_AT_LEAST_WIFI_MATCH = 3;
@@ -57,9 +57,6 @@ async function getGoogleGeoPosition(
     const cacheValue = CACHE_LBS.get(cacheKey);
 
     if (cacheValue) {
-      // Extend expiration of the cache entry (Not used, because need to refresh LBS position every hour))
-      // CACHE_LBS.extendExpiration(cacheKey);
-
       /** Check if wifi access points match */
       let wifiApCoincidense = 0;
       if ("wifiAccessPoints" in lbsQuery && cacheValue && "wifiAccessPoints" in cacheValue.request)
@@ -104,6 +101,7 @@ async function getGoogleGeoPosition(
 
   CACHE_IMEI.updateOrCreate(imei, {
     lastLBSRequestTimestamp: Date.now(),
+    lastLBSKey: cacheKey,
   });
 
   const returnValue = await googleGeoPositionFetch(apiKey, lbsQuery);
@@ -122,14 +120,3 @@ async function getGoogleGeoPosition(
 }
 
 export default getGoogleGeoPosition;
-
-function countMatchingMacAddresses(arr1: WifiAccessPoint[], arr2: WifiAccessPoint[]): number {
-  const macSet1 = new Set(arr1.map((device) => device.macAddress.toLowerCase()));
-
-  let count = 0;
-  for (const device of arr2) {
-    if (macSet1.has(device.macAddress.toLowerCase())) count++;
-  }
-
-  return count;
-}

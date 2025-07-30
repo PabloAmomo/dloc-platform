@@ -1,5 +1,7 @@
+import convertRSSIToPercent from "../../../../functions/convertRSSIToPercent";
 import getDateTimeValues from "../../../../functions/getDateTimeValues";
 import { printMessage } from "../../../../functions/printMessage";
+import protoToppisPersistLbsResponse from "../../../../functions/protoToppisPersistLbsResponse";
 import { GoogleGeoPositionRequest } from "../../../../models/GoogleGeoPositionRequest";
 import { GpsAccuracy } from "../../../../models/GpsAccuracy";
 import { PositionPacket } from "../../../../models/PositionPacket";
@@ -7,9 +9,8 @@ import getLbsPosition from "../../functions/getLbsPosition";
 import { ProtoTopinProcessPacket } from "../models/ProtoTopinProcessPacket";
 import protoTopinCreateGoogleGeoPositionRequest from "./protoTopinCreateGoogleGeoPositionRequest";
 import protoTopinCreateResponse0x18 from "./protoTopinCreateResponse0x18";
-import protoTopinPersistPosition from "./protoTopinPersistPosition";
-import convertRSSIToPercent from "../../../../functions/convertRSSIToPercent";
 import protoTopinGetBCDDateTimeUTC from "./protoTopinGetBCDDateTimeUTC";
+import protoTopinPersistPosition from "./protoTopinPersistPosition";
 
 const protoTopinProcessPacket0x18: ProtoTopinProcessPacket = async ({
   imei,
@@ -52,23 +53,18 @@ const protoTopinProcessPacket0x18: ProtoTopinProcessPacket = async ({
       if ("error" in lbsGetResponse && lbsGetResponse.error) throw new Error(lbsGetResponse.error);
 
       /** Process LBS data */
-      if ("location" in lbsGetResponse) {
-        const location: PositionPacket = {
-          imei,
-          remoteAddress,
-          dateTimeUtc,
-          valid: true,
-          lat: lbsGetResponse.location.lat,
-          lng: lbsGetResponse.location.lng,
-          speed: 0,
-          directionAngle: 0,
-          gsmSignal,
-          batteryLevel: -1,
-          accuracy: GpsAccuracy.lbs,
-          activity: "{}",
-        };
-        protoTopinPersistPosition(response.imei, remoteAddress, location, persistence, topinPacket, response, prefix);
-      }
+      protoToppisPersistLbsResponse({
+        imei,
+        remoteAddress,
+        lbsGetResponse,
+        persistence,
+        topinPacket,
+        dateTimeUtc: new Date(),
+        prefix,
+        response,
+        gsmSignal: -1,
+        batteryLevel: -1,
+      });
     } catch (error) {
       printMessage(
         `${prefix} ❌ Error processing LBS position: ${error instanceof Error ? error.message : String(error)}`

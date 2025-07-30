@@ -1,29 +1,55 @@
+import { GoogleGeoPositionResponse } from "./../../../../models/GoogleGeoPositionResponse";
 import { printMessage } from "../../../../functions/printMessage";
+import { CACHE_IMEI } from "../../../../infraestucture/caches/cacheIMEI";
+import { CACHE_LBS } from "../../../../infraestucture/caches/cacheLBS";
 import { ProtoTopinProcessPacket } from "../models/ProtoTopinProcessPacket";
+import protoToppisPersistLbsResponse from "../../../../functions/protoToppisPersistLbsResponse";
+
+const infoMessages: { [key: number]: string } = {
+  0x00: `🤷‍♂️ unknown`,
+  0x01: `⌛️ Time is incorrect`,
+  0x02: `🗼 Less than 2 LBS`,
+  0x03: `📶 Less than 3 Wifi`,
+  0x04: `🗼 LBS more than 3 times`,
+  0x05: `📡 Same LBS and Wifi data 🗼🧭`,
+  0x06: `🚫 Prohibits LBS uploading, without Wifi`,
+  0x07: `📍 GPS spacing is less than 50 meters`,
+};
 
 const protoTopinProcessPacket0x80: ProtoTopinProcessPacket = async ({
+  imei,
   remoteAddress,
   response,
   topinPacket,
   persistence,
   prefix,
 }) => {
-  printMessage(`${prefix} ✅ Manual position received from device (no response expected)`);
+  printMessage(`${prefix} ✅ Manual position received. Check reason...`);
 
-  if (!topinPacket.informationContent || topinPacket.informationContent.length > 0) {
-    let message = `🤷‍♂️ unknown`;
-    if (topinPacket.informationContent[0] === 0x01) message = `⌛️ Time is incorrect`;
-    else if (topinPacket.informationContent[0] === 0x02) message = `🗼 Less than 2 LBS`;
-    else if (topinPacket.informationContent[0] === 0x03) message = `📶 Less than 3 Wifi`;
-    else if (topinPacket.informationContent[0] === 0x04) message = `🗼 LBS more than 3 times`;
-    else if (topinPacket.informationContent[0] === 0x05) message = `📡 Same LBS and Wifi data 🗼🧭`;
-    else if (topinPacket.informationContent[0] === 0x06) message = `🚫 Prohibits LBS uploading, without Wifi`;
-    else if (topinPacket.informationContent[0] === 0x07) message = `📍 GPS spacing is less than 50 meters`;
-    printMessage(`${prefix} 🙋 Manual Position: ${message}`);
+  const code = topinPacket?.informationContent[0] ?? 0x00;
+  const message = infoMessages[code];
+  printMessage(`${prefix} 🙋 Manual Position: ${message}`);
+
+  if (code === 0x05 || code === 0x07) {
+    const lastLbsKey = CACHE_IMEI.get(imei)?.lastLBSKey;
+    if (lastLbsKey) {
+      printMessage(`${prefix} 📡 Reprocessing last LBS with key: ${lastLbsKey}`);
+      const lbsGetResponse = CACHE_LBS.get(lastLbsKey)?.response as GoogleGeoPositionResponse;
+      protoToppisPersistLbsResponse({
+        imei,
+        remoteAddress,
+        lbsGetResponse,
+        persistence,
+        topinPacket,
+        dateTimeUtc: new Date(),
+        prefix,
+        response,
+        gsmSignal: -1,
+        batteryLevel: -1,
+      });
+    }
   }
 
-  // TODO: [FEATURE] topinPacket.informationContent[0] === 0x05 re-process last LBS and Wifi data
-  
   return {
     updateLastActivity: true,
     imei: response.imei,
