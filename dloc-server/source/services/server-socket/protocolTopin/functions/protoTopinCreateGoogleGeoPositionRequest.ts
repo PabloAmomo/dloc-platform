@@ -16,17 +16,17 @@ const protoTopinCreateGoogleGeoPositionRequest = (
   if (informationContent.length >= 6 + packetLength * 7) {
     const wifiApsData = informationContent.slice(0, 6 + packetLength * 7);
     wifiAccessPoints.push(...protoTopinExtractWifiAps(prefix, packetLength, wifiApsData));
-    printMessage(`${prefix} 📡 wifi access points founds ${wifiAccessPoints.length}`);
   }
 
   if (informationContent.length >= 6 + wifiAccessPoints.length * 7) {
     const lbsData = informationContent.slice(6 + wifiAccessPoints.length * 7);
     cellTowers.push(...protoTopinExtractWifiCellTowers(prefix, lbsData));
-    printMessage(`${prefix} 🗼 cell towers founds ${cellTowers.length}`);
   }
 
+  printMessage(`${prefix} 🗼 [LBS] wifi access points ${wifiAccessPoints.length}, cell towers ${cellTowers.length}`);
+
   if (cellTowers.length === 0) {
-    printMessage(`${prefix} ❌ no cell towers found`);
+    printMessage(`${prefix} ❌ [LBS]  no cell towers. Cannot create Google Geo Position Request.`);
     return null;
   }
 

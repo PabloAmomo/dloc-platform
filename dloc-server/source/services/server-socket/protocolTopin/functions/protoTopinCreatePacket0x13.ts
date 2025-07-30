@@ -1,5 +1,6 @@
 import { PowerProfileType } from "../../../../enums/PowerProfileType";
 import { printMessage } from "../../../../functions/printMessage";
+import protoTopinCreatePacket0x97 from "./protoTopinCreatePacket0x97";
 import protoTopinCreateResponse0x13 from "./protoTopinCreateResponse0x13";
 import protoTopinGetPowerProfileConfig from "./protoTopinGetPowerProfileConfig";
 
@@ -8,10 +9,14 @@ const protoTopinCreatePacket0x13 = (prefix: string, powerProfileType: PowerProfi
   let heartBeatIntervalMin = Math.floor(heartBeatSec / 60);
   if (heartBeatIntervalMin === 0) heartBeatIntervalMin = 1;
 
-  printMessage(`${prefix} ❤️  Setting hearbeat interval to ${heartBeatIntervalMin} minutes.`);
-  printMessage(`${prefix} 🆙 Setting upload interval to ${uploadSec} seconds.`);
+  printMessage(`${prefix} ❤️  Send setting hearbeat interval to ${heartBeatIntervalMin} minutes.`);
+  printMessage(`${prefix} 🆙 Send setting upload interval to ${uploadSec} seconds.`);
 
-  return protoTopinCreateResponse0x13(heartBeatIntervalMin, uploadSec);
+  const packets = protoTopinCreateResponse0x13(heartBeatIntervalMin, uploadSec);
+  
+  packets.push(protoTopinCreatePacket0x97(uploadSec));
+
+  return packets;
 };
 
 export default protoTopinCreatePacket0x13;

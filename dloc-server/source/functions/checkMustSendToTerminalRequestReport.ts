@@ -10,7 +10,7 @@ const checkMustSendToTerminalRequestReport = (
   imeiData: CacheImei,
   forceReportLocInSec: number
 ): boolean => {
-  const forceReportLocInMs = forceReportLocInSec * 1000; // Convert seconds to milliseconds
+  const forceReportLocInMs = forceReportLocInSec * 1000;
 
   const lastPosPacket: CachePosition | undefined = CACHE_POSITION.get(imei);
 
@@ -23,9 +23,7 @@ const checkMustSendToTerminalRequestReport = (
     lastPosMs >= forceReportLocInMs &&
     currentTime - imeiData.lastReportRequestTimestamp >= forceReportLocInMs;
 
-  if (needSendToTerminal) {
-    CACHE_IMEI.updateOrCreate(imei, { ...imeiData, lastReportRequestTimestamp: currentTime });
-  }
+  if (needSendToTerminal) CACHE_IMEI.updateOrCreate(imei, { ...imeiData, lastReportRequestTimestamp: currentTime });
 
   if (needSendToTerminal)
     printMessage(

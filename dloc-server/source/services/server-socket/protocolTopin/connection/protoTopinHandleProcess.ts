@@ -1,6 +1,8 @@
 import checkMustSendToTerminalRequestReport from "../../../../functions/checkMustSendToTerminalRequestReport";
 import { printMessage } from "../../../../functions/printMessage";
+import { CACHE_IMEI } from "../../../../infraestucture/caches/cacheIMEI";
 import protoTopinCheckMustSendToTerminal from "../functions/protoTopinCheckMustSendToTerminal";
+import protoTopinCreatePacket0x33 from "../functions/protoTopinCreatePacket0x33";
 import protoTopinCreatePacket0x80 from "../functions/protoTopinCreatePacket0x80";
 import protoTopinGetPowerProfileConfig from "../functions/protoTopinGetPowerProfileConfig";
 import ProtoTopinHandleProcess from "../models/ProtoTopinHandleProcess";
@@ -18,37 +20,44 @@ const protoTopinHandleProcess: ProtoTopinHandleProcess = ({
   sendData,
 }: ProtoTopinProcessProps): void => {
   const additionals: Buffer[] = [];
+  let hasReportPosition: boolean = false;
 
-  if (isNewConnection || powerProfileChanged || needProfileRefresh) {
-    const responseSend: Buffer[] = protoTopinCheckMustSendToTerminal(
-      imei,
-      prefix,
-      powerProfileChanged,
-      needProfileRefresh,
-      imeiData.powerProfile,
-      newPowerProfileType,
-      isNewConnection
+  /* Enable LBS positioning */
+  if (isNewConnection) additionals.push(protoTopinCreatePacket0x33(false));
+
+  /** Create configuration packet */
+  if (powerProfileChanged || needProfileRefresh) {
+    additionals.push(
+      ...protoTopinCheckMustSendToTerminal(
+        imei,
+        prefix,
+        powerProfileChanged,
+        needProfileRefresh,
+        imeiData.powerProfile,
+        newPowerProfileType
+      )
     );
 
-    if (responseSend.length > 0) additionals.push(...responseSend);
+    /** Add request position packet */
+    printMessage(`${prefix} 🚀 send packet to request report position. (🔋 By power profile)`);
+    additionals.push(protoTopinCreatePacket0x80());
+    imeiData.lastReportRequestTimestamp = Date.now();
+    CACHE_IMEI.updateOrCreate(imei, imeiData);
+    hasReportPosition = true;
   }
-
-  const { forceReportLocInSec } = protoTopinGetPowerProfileConfig(newPowerProfileType);
 
   /** Check if must send to terminal request report */
-  if (checkMustSendToTerminalRequestReport(prefix, imei, imeiData, forceReportLocInSec)) {
-    printMessage(`${prefix} 🚀 send packet to request report position. (WIFI - GPS - LBS)`);
-    additionals.push(protoTopinCreatePacket0x80());
-  }
-
-  /** Send */
-  const toSend: Buffer[] = [];
-  for (const result of results) {
-    for (const response of result.response) {
-      toSend.push(response as Buffer);
+  if (!hasReportPosition) {
+    const { forceReportLocInSec } = protoTopinGetPowerProfileConfig(newPowerProfileType);
+    if (checkMustSendToTerminalRequestReport(prefix, imei, imeiData, forceReportLocInSec)) {
+      printMessage(`${prefix} 🚀 send packet to request report position. (⏰ By time out request)`);
+      additionals.push(protoTopinCreatePacket0x80());
     }
   }
-  if (additionals.length > 0) toSend.push(...additionals);
+
+  /** Join al to send */
+  const toSend: Buffer[] = results.flatMap(result => result.response as Buffer[]);
+  toSend.push(...additionals);
 
   sendData(toSend);
 };

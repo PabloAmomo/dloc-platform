@@ -14,22 +14,24 @@ const protoTopinProcessPacket0x13: ProtoTopinProcessPacket = async ({
   persistence,
   prefix,
 }) => {
-  printMessage(`${prefix} 🎛️  status package received. Sending interval time.`);
+  printMessage(`${prefix} 🎛️  status package received.`);
 
   const battery = topinPacket.informationContent[0];
   const softwareVersion = topinPacket.informationContent[1];
   const timezone = topinPacket.informationContent[2];
   const signalStrength = topinPacket.informationContent[4];
 
+  printMessage(`${prefix} 📦 [INFO] Software version: ${softwareVersion}`);
+  printMessage(`${prefix} 🌎 [INFO] Current time zone: ${timezone}`);
+  printMessage(`${prefix} 🔋 [INFO] Battery level: ${battery}%`);
+  printMessage(`${prefix} 📡 [INFO] Signal strength: ${signalStrength}`);
+
   /** Get the las information about the IMEI */
   const imeiData: CacheImei = CACHE_IMEI.get(imei) ?? CacheImeiEmptyItem;
 
   (response.response as Buffer[]).push(...protoTopinCreatePacket0x13(prefix, imeiData.powerProfile));
   
-  printMessage(`${prefix} 📦 Software version: ${softwareVersion}`);
-  printMessage(`${prefix} 🌎 Current time zone ${timezone}`);
-  printMessage(`${prefix} 🔋 Battery level: ${battery}%`);
-  printMessage(`${prefix} 📡 Signal strength: ${signalStrength}`);
+
 
   await positionUpdateBatteryAndLastActivity(response.imei, remoteAddress, persistence, battery);
 

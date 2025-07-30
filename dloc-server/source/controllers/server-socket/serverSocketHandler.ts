@@ -13,12 +13,12 @@ import serverSocketSendData from "./functions/serverSocketSendData";
 
 const serverSocketHandler: ServerSocketHandler = (props: ServerSocketHandlerProps) => {
   const {
-    protocol,
     conn,
     persistence,
     handleConnection,
-    handleProcess,
+    protocol,
     handlePacket,
+    handleProcess,
     handleClose,
     handleEnd,
     handleError,
@@ -47,27 +47,27 @@ const serverSocketHandler: ServerSocketHandler = (props: ServerSocketHandlerProp
     let dataShow: string;
     let dataToUse;
 
-    if (protocol === "PROTO1903") dataShow = dataString;
-    else if (protocol === "JT808") dataShow = convertAnyToHexString(data);
-    else if (protocol === "TOPIN") dataShow = convertAnyToHexString(data);
-    else {
+    if (!["PROTO1903", "JT808", "TOPIN"].includes(protocol)) {
       printMessage(`[${tempImei}] (${remoteAddress}) ❌ Unsupported protocol: ${protocol}.`);
       disconnect();
       return;
     }
 
-    dataToUse = decoder(data);
-
-    counter++;
-    if (counter > 32000) counter = 1;
-
     try {
+      dataShow = protocol === "PROTO1903" ? dataString : convertAnyToHexString(data);
+
+      dataToUse = decoder(data);
+
+      counter++;
+      if (counter > 32000) counter = 1;
+
       /** Check if health packet */
       if (processPacketHealth(dataString, remoteAddress, tempImei, sendData, disconnect)) return;
 
       /** New socket connection */
       if (isNewConnection) printMessage(`[${tempImei}] (${remoteAddress}) 🧑‍💻 is new connection.`);
 
+      // HandleConnection -> HandlePacket
       handleConnection({
         imei,
         remoteAddress,
@@ -88,8 +88,6 @@ const serverSocketHandler: ServerSocketHandler = (props: ServerSocketHandlerProp
           }
           imei = results[0].imei;
           const prefix = `[${imei}] (${remoteAddress})`;
-
-          printMessage(`${prefix} 🌟 Current serial counter [${counter}].`);
 
           /** Get the las information about the IMEI */
           const imeiData: CacheImei = CACHE_IMEI.get(imei) ?? CacheImeiEmptyItem;

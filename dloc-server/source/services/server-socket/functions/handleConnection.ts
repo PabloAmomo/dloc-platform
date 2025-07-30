@@ -17,11 +17,7 @@ const handleConnection = async ({
   const results: HandlePacketResult[] = [];
 
   if (data.length === 0) {
-    printMessage(
-      `[${getNormalizedIMEI(
-        imei
-      )}] (${remoteAddress}) ❌ error decoding packet.`
-    );
+    printMessage(`[${getNormalizedIMEI(imei)}] (${remoteAddress}) ❌ error decoding packet.`);
     return results;
   }
 
@@ -53,9 +49,9 @@ const handleConnection = async ({
       });
     } catch (err: Error | any) {
       printMessage(
-        `[${getNormalizedIMEI(imei)}] (${remoteAddress}) ❌ error handling packet (1) (${
+        `[${getNormalizedIMEI(imei)}] (${remoteAddress}) ❌ error handling packet (#${i}) (${
           err?.message ?? "unknown error"
-        }) packet [${isBuffer ? convertAnyToHexString(data[i]) : ((data[i] as string)?.split(",")?.[0] ?? data[i])}]`
+        }) packet [${isBuffer ? convertAnyToHexString(data[i]) : (data[i] as string)?.split(",")?.[0] ?? data[i]}]`
       );
     }
   }
