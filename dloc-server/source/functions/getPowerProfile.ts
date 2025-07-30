@@ -33,7 +33,6 @@ async function getPowerProfile(
     balanced: getPowerProfileConfig(PowerProfileType.AUTOMATIC_BALANCED).movementMeters,
     minimal: getPowerProfileConfig(PowerProfileType.AUTOMATIC_MINIMAL).movementMeters,
   };
-
   let newPowerProfileType = PowerProfileType.AUTOMATIC_FULL;
   let powerProfileChanged = false;
   let needProfileRefresh = false;
@@ -55,21 +54,15 @@ async function getPowerProfile(
     if (powerProfile?.results[0]?.powerProfile)
       newPowerProfileType = powerProfile.results[0].powerProfile.toLowerCase() as PowerProfileType;
 
-    /* Check if the power profile must be changed by timeout (REFRESH_POWER_PROFILE_SECONDS) */
-    const lastPowerProfileCheckedDiffSec = (Date.now() - lastPowerProfileChecked) / 1000;
-    const lastPowerProfileCheckedDiff = lastPowerProfileCheckedDiffSec >= REFRESH_POWER_PROFILE_SECONDS;
-
     /* Nothing to do, the power profile is not set to automatic */
     if (!powerProfileTypeAutomatic(newPowerProfileType)) {
+      printMessage(`${messagePrefix} ⚡️ power profile is not automatic, using [${newPowerProfileType}]`);
       lastPowerProfileChecked = Date.now();
-      printMessage(
-        `${messagePrefix} ⚡️ power profile is not automatic, using [${newPowerProfileType}] without changes`
-      );
       return {
         newPowerProfileType,
-        powerProfileChanged: false,
+        powerProfileChanged,
         lastPowerProfileChecked,
-        needProfileRefresh: false,
+        needProfileRefresh,
       };
     }
 
@@ -79,7 +72,6 @@ async function getPowerProfile(
       currentPowerProfileType !== newPowerProfileType &&
       newPowerProfileType === PowerProfileType.AUTOMATIC_FULL
     ) {
-      lastPowerProfileChecked = Date.now();
       powerProfileChanged = true;
 
       printMessage(
@@ -89,9 +81,11 @@ async function getPowerProfile(
       );
     }
 
-    if (!powerProfileChanged && lastPowerProfileCheckedDiff) {
-      lastPowerProfileChecked = Date.now();
+    /* Check if the power profile must be changed by timeout (REFRESH_POWER_PROFILE_SECONDS) */
+    const lastPowerProfileCheckedDiffSec = (Date.now() - lastPowerProfileChecked) / 1000;
+    const lastPowerProfileCheckedDiff = lastPowerProfileCheckedDiffSec >= REFRESH_POWER_PROFILE_SECONDS;
 
+    if (!powerProfileChanged && lastPowerProfileCheckedDiff) {
       /** Get the movement in last seconds */
       const metersMoveInLastSeconds = await getMovementInLastSeconds(
         imei,
@@ -139,28 +133,28 @@ async function getPowerProfile(
     }
 
     /* Save the new power profile (If was changed) */
-    let message = "";
-    if (powerProfileChanged) {
-      const changed = await updatePowerProfile(imei, newPowerProfileType, persistence, messagePrefix);
-      if (!changed) newPowerProfileType = currentPowerProfileType;
-      else {
-        message = `power profile automatically changed from [${currentPowerProfileType}] to [${newPowerProfileType}]`;
-      }
-    } else {
-      message = `power profile for device [${newPowerProfileType}] is not changed`;
+    if (!powerProfileChanged)
+      printMessage(`${messagePrefix} ⚡️ power profile for device [${newPowerProfileType}] is not changed`);
+    else {
+      if (!(await updatePowerProfile(imei, newPowerProfileType, persistence, messagePrefix)))
+        newPowerProfileType = currentPowerProfileType;
+      else
+        printMessage(
+          `${messagePrefix} ⚡️ power profile changed from [${currentPowerProfileType}] to [${newPowerProfileType}]`
+        );
     }
-    printMessage(`${messagePrefix} ⚡️ ${message}`);
 
     /* Check if the power profile should be refreshed */
     needProfileRefresh = !powerProfileChanged && lastPowerProfileCheckedDiff;
-    if (needProfileRefresh) {
-      lastPowerProfileChecked = Date.now();
+    if (needProfileRefresh)
       printMessage(
         `${messagePrefix} 🔄 power profile refresh needed, last check was [${lastPowerProfileCheckedDiffSec} sec] ago`
       );
-    }
 
-    /** Show message only when can make a profile change */
+    /** Update last power profile checked time */
+    if (powerProfileChanged || needProfileRefresh) lastPowerProfileChecked = Date.now();
+
+    /** Show message only when the profile can be changed */
     if (!powerProfileChanged && !needProfileRefresh && !powerProfileTypeIsMinimal(newPowerProfileType))
       printMessage(
         `${messagePrefix} ⚡️ next power profile change in ${(
