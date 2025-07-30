@@ -27,7 +27,7 @@ const startPersistence = (persistence: Persistence) => {
 
   /** Banner */
   printMessage(`💾 Persistence: [${persistence.getPersistenceName()}]`);
-  printMessage(`🎛️ Persistence Config: [${persistence.getPersistenceConfig()}]`);
+  printMessage(`🎛️  Persistence Config: [${persistence.getPersistenceConfig()}]`);
   persistence.health().then((result) => {
     if (result.error) {
       printMessage(`⛔️ Persistence not ready: ${result.error?.message || result.error}`);
