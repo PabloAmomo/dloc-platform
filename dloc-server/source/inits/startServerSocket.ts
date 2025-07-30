@@ -5,7 +5,7 @@ var serverSocket: net.Server | undefined;
 
 /** Start Socket server */
 const startServerSocket = (handler: (conn: net.Socket) => void, port: number) => {
-  if (!port || port === 0) return printMessage('socket server DISABLED...');
+  if (!port || port === 0) return printMessage('⛔️ socket server DISABLED...');
 
   /** Close server */
   if (serverSocket) {
@@ -19,7 +19,7 @@ const startServerSocket = (handler: (conn: net.Socket) => void, port: number) =>
   /** Handle server events */
   serverSocket.on('connection', handler);
   serverSocket.on('error', (err) => {
-    printMessage(`error on server [${err.message}] - restarting...`);
+    printMessage(`❌ error on server [${err.message}] - restarting...`);
     try {
       serverSocket && serverSocket.close();
     } finally {
@@ -30,9 +30,9 @@ const startServerSocket = (handler: (conn: net.Socket) => void, port: number) =>
 
   /** Start Server */
   try {
-    serverSocket.listen(port, () => printMessage('socket ready...'));
+    serverSocket.listen(port, () => printMessage('✅ socket ready...'));
   } catch (error:any) {
-    printMessage(`error on socket server [${error?.message}] - restarting...`);
+    printMessage(`❌ error on socket server [${error?.message}] - restarting...`);
     try {
       serverSocket.close();
     } finally {

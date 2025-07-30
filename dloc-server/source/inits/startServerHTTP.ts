@@ -11,7 +11,7 @@ router.use(cors({ origin: '*' }));
 
 /** Start server */
 const startServerHTTP = (routes: (router: Express) => void, port: number) => {
-  if (!port || port === 0) return printMessage('HTTP server DISABLED...');
+  if (!port || port === 0) return printMessage('⛔️ HTTP server DISABLED...');
 
   if (serverHttp) {
     serverHttp.close();
@@ -23,9 +23,9 @@ const startServerHTTP = (routes: (router: Express) => void, port: number) => {
   /** Start server */
   try {
     routes(router);
-    serverHttp.listen(port, () => printMessage(`http ready... (Health check: http://host:${port}/health)`));
+    serverHttp.listen(port, () => printMessage(`✅ http ready... (Health check: http://host:${port}/health)`));
   } catch (error: any) {
-    printMessage(`error on http server [${error?.message}] - restarting...`);
+    printMessage(`❌ error on http server [${error?.message}] - restarting...`);
     try {
       serverHttp.close();
     } finally {
