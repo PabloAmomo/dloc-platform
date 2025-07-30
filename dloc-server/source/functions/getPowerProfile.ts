@@ -1,15 +1,12 @@
-import config from "../config/config";
+import config from '../config/config';
 import {
-  PowerProfileType,
-  powerProfileTypeAutomatic,
-  powerProfileTypeIsFull,
-  powerProfileTypeIsMinimal,
-} from "../enums/PowerProfileType";
-import GetPowerProfileConfig from "../models/GetProwerProfileConfig";
-import { Persistence } from "../models/Persistence";
-import getMovementInLastSeconds from "./getMovementInLastSeconds";
-import { printMessage } from "./printMessage";
-import updatePowerProfile from "./updatePowerProfile";
+    PowerProfileType, powerProfileTypeAutomatic, powerProfileTypeIsFull, powerProfileTypeIsMinimal
+} from '../enums/PowerProfileType';
+import GetPowerProfileConfig from '../models/GetProwerProfileConfig';
+import { Persistence } from '../models/Persistence';
+import getMovementInLastSeconds from './getMovementInLastSeconds';
+import { printMessage } from './printMessage';
+import updatePowerProfile from './updatePowerProfile';
 
 const { MOVEMENT_MESURE, MOVEMENTS_CONTROL_SECONDS, REFRESH_POWER_PROFILE_SECONDS } = config;
 
