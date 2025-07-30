@@ -167,13 +167,13 @@ async function getPowerProfile(
       );
     }
 
-    if (!powerProfileChanged && !needProfileRefresh) {
+    if (!powerProfileChanged && !needProfileRefresh)
       printMessage(
-        `${messagePrefix} ⚡️ next power profile change in ${
+        `${messagePrefix} ⚡️ next power profile change in ${(
           REFRESH_POWER_PROFILE_SECONDS - lastPowerProfileCheckedDiffSec
-        } seconds`
+        ).toFixed(0)} seconds`
       );
-    }
+
     //
   } catch (error: any) {
     const errorMsg = error?.message ?? error;
