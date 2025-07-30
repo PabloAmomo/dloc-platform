@@ -3,14 +3,11 @@ import getDateTimeValues from "../../../../functions/getDateTimeValues";
 import { printMessage } from "../../../../functions/printMessage";
 import protoToppisPersistLbsResponse from "../../../../functions/protoToppisPersistLbsResponse";
 import { GoogleGeoPositionRequest } from "../../../../models/GoogleGeoPositionRequest";
-import { GpsAccuracy } from "../../../../models/GpsAccuracy";
-import { PositionPacket } from "../../../../models/PositionPacket";
 import getLbsPosition from "../../functions/getLbsPosition";
 import { ProtoTopinProcessPacket } from "../models/ProtoTopinProcessPacket";
 import protoTopinCreateGoogleGeoPositionRequest from "./protoTopinCreateGoogleGeoPositionRequest";
 import protoTopinCreateResponse0x18 from "./protoTopinCreateResponse0x18";
 import protoTopinGetBCDDateTimeUTC from "./protoTopinGetBCDDateTimeUTC";
-import protoTopinPersistPosition from "./protoTopinPersistPosition";
 
 const protoTopinProcessPacket0x18: ProtoTopinProcessPacket = async ({
   imei,
