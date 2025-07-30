@@ -23,8 +23,8 @@ const protoTopinProcessPacket0x13: ProtoTopinProcessPacket = async ({
 
   printMessage(`${prefix} 📦 [INFO] Software version:  ${softwareVersion}`);
   printMessage(`${prefix} 🌎 [INFO] Current time zone: ${timezone}`);
-  printMessage(`${prefix} 🔋 [INFO] Battery level:     ${battery}%`);
-  printMessage(`${prefix} 📡 [INFO] Signal strength:   ${signalStrength}%`);
+  printMessage(`${prefix} 🔋 [INFO] Battery level:     ${battery}% 🔋`);
+  printMessage(`${prefix} 📡 [INFO] Signal strength:   ${signalStrength}% 📡`);
 
   /** Get the las information about the IMEI */
   const imeiData: CacheImei = CACHE_IMEI.get(imei) ?? CacheImeiEmptyItem;

@@ -27,7 +27,7 @@ const jt808ProcessPacket0x0210: Jt808ProcessPacket = async ({
 
   const batteryLevel: number = body.readUInt8(0);
   const dateTime = jt808GetBatteryLevelPacketDateTime(body);
-  printMessage(`[${imei}] (${remoteAddress}) 🔋 Battery level: ${batteryLevel}% at ${dateTime}`);
+  printMessage(`[${imei}] (${remoteAddress}) 🔋 Battery level: ${batteryLevel}% at ${dateTime} 🔋`);
 
   await positionUpdateBatteryAndLastActivity(imei, remoteAddress, persistence, batteryLevel);
 
