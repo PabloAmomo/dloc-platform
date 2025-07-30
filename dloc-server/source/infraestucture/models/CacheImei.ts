@@ -1,9 +1,9 @@
 import { PowerProfileType } from "../../enums/PowerProfileType";
 
 export type CacheImei = {
-  lastLBSRequestTimestamp: number;
   powerProfile: PowerProfileType;
   lastPowerProfileChecked: number;
+  lastLBSRequestTimestamp: number;
   lastLBSKey: string;
   lastReportRequestTimestamp: number;
 };
