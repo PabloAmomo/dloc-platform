@@ -28,9 +28,12 @@ import convertRSSIToPercent from "./functions/convertRSSIToPercent";
 import toCustomTwoBytes from "./functions/toCustomTwoBytes";
 import protoTopinCreateResponse0x57 from "./services/server-socket/protocolTopin/functions/protoTopinCreateResponse0x57";
 import { WifiAccessPoint } from "./models/WifiAccessPoint";
+import { PowerProfileType, powerProfileTypeAutomatic } from "./enums/PowerProfileType";
 
 // 78 78 01 99 0D 0A
 // 78 78 01 14 0D 0A
+
+console.log(powerProfileTypeAutomatic(PowerProfileType.FULL));
 
 // console.log(Buffer.from(createHexFromNumberWithNBytes(10, 2), "hex"));
 
