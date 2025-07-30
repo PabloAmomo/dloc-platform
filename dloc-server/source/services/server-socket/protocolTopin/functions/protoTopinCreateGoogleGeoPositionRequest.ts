@@ -23,10 +23,10 @@ const protoTopinCreateGoogleGeoPositionRequest = (
     cellTowers.push(...protoTopinExtractWifiCellTowers(prefix, lbsData));
   }
 
-  printMessage(`${prefix} 🗼 [LBS] wifi access points ${wifiAccessPoints.length}, cell towers ${cellTowers.length}`);
+  printMessage(`${prefix} 🗼 [LBS] ℹ️  wifi access points ${wifiAccessPoints.length}, cell towers ${cellTowers.length}`);
 
   if (cellTowers.length === 0) {
-    printMessage(`${prefix} ❌ [LBS]  no cell towers. Cannot create Google Geo Position Request.`);
+    printMessage(`${prefix} ❌ [LBS]  🗼 no cell towers. Cannot create Google Geo Position Request.`);
     return null;
   }
 
