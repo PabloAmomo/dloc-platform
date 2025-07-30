@@ -1,6 +1,7 @@
 import { PowerProfileType } from "../../../../enums/PowerProfileType";
 import { printMessage } from "../../../../functions/printMessage";
-import protoTopinCreateConfig from "./protoTopinCreateConfig";
+import protoTopinCreatePacket0x13 from "./protoTopinCreatePacket0x13";
+import protoTopinCreatePacket0x61 from "./protoTopinCreatePacket0x61";
 import protoTopinGetPowerProfileConfig from "./protoTopinGetPowerProfileConfig";
 
 const protoTopinCheckMustSendToTerminal = (
@@ -23,7 +24,11 @@ const protoTopinCheckMustSendToTerminal = (
     `${prefix} 📡 set HeartBeat [${heartBeatSec} sec], leds [${ledState}], Upload Interval [${uploadSec} sec], forceUpdateLoc [${forceReportLocInSec} sec]`
   );
 
-  return protoTopinCreateConfig(prefix, newPowerProfile);
+  let response: Buffer[] = [];
+  response.push(...protoTopinCreatePacket0x13(prefix, newPowerProfile));
+  response.push(protoTopinCreatePacket0x61(ledState));
+
+  return response;
 };
 
 export default protoTopinCheckMustSendToTerminal;
