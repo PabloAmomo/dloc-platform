@@ -6,6 +6,7 @@ import getMovementInLastSeconds from "./getMovementInLastSeconds";
 import { printMessage } from "./printMessage";
 import updatePowerProfile from "./updatePowerProfile";
 
+// TODO: Refactor this function to use a more structured approach, possibly with a class or a more modular design.
 async function getPowerProfile(
   imei: string,
   persistence: Persistence,
@@ -59,7 +60,6 @@ async function getPowerProfile(
 
     /* Nothing to do, the power profile is not set to automatic */
     if (!isAutomatic) {
-      /* Update las check */
       lastPowerProfileChecked = Date.now();
 
       printMessage(
@@ -72,17 +72,6 @@ async function getPowerProfile(
         needProfileRefresh: false,
       };
     }
-
-    console.log("ANTES");
-    console.log(` is new connection: ${isNewConnection}`);
-    console.log(` Last power checked diff: ${lastPowerProfileCheckedDiffSec} seconds ${MOVEMENTS_CONTROL_SECONDS}`);
-    console.log(` new power profile type: ${newPowerProfileType}`);
-    console.log(` power profile changed: ${powerProfileChanged}`);
-    console.log(` current power profile type: ${currentPowerProfileType}`);
-    console.log(` last power profile checked: ${new Date(lastPowerProfileChecked).toISOString()}`);
-    console.log(` is automatic: ${isAutomatic}`);
-    console.log(` need profile refresh: ${needProfileRefresh}`);
-    console.log("");
 
     /* Power upgrade to full requested by user (FULL profile in database, minimal or balanced in local cache) */
     if (
@@ -103,18 +92,6 @@ async function getPowerProfile(
         } power profile changed by user from [${currentPowerProfileType}] to [${newPowerProfileType}]`
       );
     }
-
-    console.log("DESPUES");
-    console.log(` Last power checked diff: ${lastPowerProfileCheckedDiffSec} seconds ${MOVEMENTS_CONTROL_SECONDS}`);
-    console.log(` new power profile type: ${newPowerProfileType}`);
-    console.log(` power profile changed: ${powerProfileChanged}`);
-    console.log(` current power profile type: ${currentPowerProfileType}`);
-    console.log(` last power profile checked: ${new Date(lastPowerProfileChecked).toISOString()}`);
-    console.log(` is automatic: ${isAutomatic}`);
-    console.log(` need profile refresh: ${needProfileRefresh}`);
-    console.log("");
-
-    return { newPowerProfileType, powerProfileChanged, lastPowerProfileChecked, needProfileRefresh };
 
     if (!powerProfileChanged && lastPowerProfileCheckedDiff) {
       lastPowerProfileChecked = Date.now();
@@ -179,7 +156,7 @@ async function getPowerProfile(
     printMessage(`${messagePrefix} ⚡️ ${message}`);
 
     /* Remember that the power profile should be refreshed */
-    needProfileRefresh = !powerProfileChanged && lastPowerProfileCheckedDiffSec >= MOVEMENTS_CONTROL_SECONDS;
+    needProfileRefresh = !powerProfileChanged && lastPowerProfileCheckedDiff;
     if (needProfileRefresh) {
       lastPowerProfileChecked = Date.now();
 
