@@ -1,6 +1,6 @@
 import { PowerProfileType } from '../../../../enums/PowerProfileType';
 import { printMessage } from '../../../../functions/printMessage';
-import proto1903PowerProfileConfig from './proto1903GetPowerProfileConfig';
+import proto1903PowerProfileConfig from '../config/proto1903GetPowerProfileConfig';
 import proto1903CreateConfig from './proto1903CreateConfig';
 
 const proto1903CheckMustSendToTerminal = (

@@ -5,7 +5,7 @@ import proto1903HandleError from "./connection/proto1903HandleError";
 import proto1903HandlePacket from "./connection/proto1903HandlePacket";
 import proto1903HandleProcess from "./connection/proto1903HandleProcess";
 import proto1903Decoder from "./functions/proto1903Decoder";
-import proto1903GetPowerProfileConfig from "./functions/proto1903GetPowerProfileConfig";
+import proto1903GetPowerProfileConfig from "./config/proto1903GetPowerProfileConfig";
 
 const proto1903Injection = (): ServerSocketHandlerPropsInjection => {
   return {

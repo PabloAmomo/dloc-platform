@@ -3,7 +3,7 @@ import Proto1903ProcessProps from "../models/Proto1903ProcessProps";
 import proto1903CheckMustSendToTerminal from "../functions/proto1903CheckMustSendToTerminal";
 import checkMustSendToTerminalRequestReport from "../../../../functions/checkMustSendToTerminalRequestReport";
 import Proto1903HandleProcess from "../models/Proto1903HandleProcess";
-import proto1903GetPowerProfileConfig from "../functions/proto1903GetPowerProfileConfig";
+import proto1903GetPowerProfileConfig from "../config/proto1903GetPowerProfileConfig";
 
 const proto1903HandleProcess: Proto1903HandleProcess = ({
   results,

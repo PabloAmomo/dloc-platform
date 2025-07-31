@@ -1,6 +1,6 @@
 import { PowerProfileType } from '../../../../enums/PowerProfileType';
 import padNumberLeft from '../../../../functions/padNumberLeft';
-import proto1903PowerProfileConfig from './proto1903GetPowerProfileConfig';
+import proto1903PowerProfileConfig from '../config/proto1903GetPowerProfileConfig';
 import { uniqueId } from '../../../../functions/uniqueId';
 
 function proto1903CreateConfig(
