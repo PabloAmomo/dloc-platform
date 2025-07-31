@@ -5,7 +5,7 @@ import jt808HandleError from "./connection/jt808HandleError";
 import jt808HandlePacket from "./connection/jt808HandlePacket";
 import jt808HandleProcess from "./connection/jt808HandleProcess";
 import jt808Decoder from "./functions/jt808Decoder";
-import jt808GetPowerProfileConfig from "./functions/jt808GetPowerProfileConfig";
+import jt808GetPowerProfileConfig from "./config/jt808GetPowerProfileConfig";
 
 const jt808Injection = (): ServerSocketHandlerPropsInjection => {
   return {

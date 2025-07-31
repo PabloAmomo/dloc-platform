@@ -5,7 +5,7 @@ import Jt808ReportConfiguration from "../enums/Jt808reportConfiguration";
 import jt808CreateIntervalReportPacket from "./jt808CreateIntervalReportPacket";
 import jt808CreateTemporaryLocationTrackingPacket from "./jt808CreateTemporaryLocationTrackingPacket";
 import jt808CreateWakeupPacket from "./jt808CreateWakeupPacket";
-import jt808PowerProfileConfig from "./jt808GetPowerProfileConfig";
+import jt808PowerProfileConfig from "../config/jt808GetPowerProfileConfig";
 
 const jt808CreatePowerProfilePacket = (
   terminalId: string,

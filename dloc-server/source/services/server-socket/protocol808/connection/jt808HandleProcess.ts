@@ -7,7 +7,7 @@ import jt808CheckMustSendToTerminal from "../functions/jt808CheckMustSendToTermi
 import jt808CreateQueryLocationMessage from "../functions/jt808CreateQueryLocationMessage";
 import jt808CreateTemporaryLocationTrackingPacket from "../functions/jt808CreateTemporaryLocationTrackingPacket";
 import jt808FrameEncode from "../functions/jt808FrameEncode";
-import jt808GetPowerProfileConfig from "../functions/jt808GetPowerProfileConfig";
+import jt808GetPowerProfileConfig from "../config/jt808GetPowerProfileConfig";
 import Jt808HandleProcess from "../models/Jt808HandleProcess";
 import Jt808ProcessProps from "../models/Jt808ProcessProps";
 

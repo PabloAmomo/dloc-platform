@@ -1,4 +1,4 @@
-import { PowerProfileType } from "../../../../enums/PowerProfileType";
+import { PowerProfileType, powerProfileTypeIsBalanced, powerProfileTypeIsFull, powerProfileTypeIsMinimal } from "../../../../enums/PowerProfileType";
 import { PowerProfileConfig } from "../../../../models/PowerProfileConfig";
 import { printMessage } from "../../../../functions/printMessage";
 import GetPowerProfileConfig from "../../../../models/GetProwerProfileConfig";
@@ -6,7 +6,7 @@ import GetPowerProfileConfig from "../../../../models/GetProwerProfileConfig";
 const jt808GetPowerProfileConfig: GetPowerProfileConfig = (
   profileType: PowerProfileType = PowerProfileType.FULL
 ): PowerProfileConfig => {
-  if (profileType === PowerProfileType.MINIMAL || profileType === PowerProfileType.AUTOMATIC_MINIMAL)
+  if (powerProfileTypeIsMinimal(profileType))
     return {
       heartBeatSec: 150,
       uploadSec: 120,
@@ -15,7 +15,7 @@ const jt808GetPowerProfileConfig: GetPowerProfileConfig = (
       movementMeters: 50,
     };
 
-  if (profileType === PowerProfileType.BALANCED || profileType === PowerProfileType.AUTOMATIC_BALANCED)
+  else if (powerProfileTypeIsBalanced(profileType))
     return {
       heartBeatSec: 90,
       uploadSec: 60,
@@ -24,11 +24,10 @@ const jt808GetPowerProfileConfig: GetPowerProfileConfig = (
       movementMeters: 50,
     };
 
-  // Full power profile configuration
-  if (profileType !== PowerProfileType.FULL && profileType !== PowerProfileType.AUTOMATIC_FULL)
-    printMessage(`❌ power profile (Proto JT808) [${profileType}] not found, defaulting to full power profile`);
+  else if (!powerProfileTypeIsFull(profileType))
+    printMessage(`❌ power profile (ProtoTopin) [${profileType}] not found, defaulting to full power profile`);
 
-  // Full power profile configuration
+  /** Full power profile configuration */
   return {
     heartBeatSec: 60,
     uploadSec: 20,

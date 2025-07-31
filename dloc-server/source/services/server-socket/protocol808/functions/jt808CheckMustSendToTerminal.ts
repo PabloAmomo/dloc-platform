@@ -6,7 +6,7 @@ import Jt808ReportConfiguration from "../enums/Jt808reportConfiguration";
 import jt808CreateCheckParameterSettingPacket from "./jt808CreateCheckParameterSettingPacket";
 import jt808CreateParameterSettingPacket from "./jt808CreateParameterSettingPacket";
 import jt808CreatePowerProfilePacket from "./jt808CreatePowerProfilePacket";
-import jt808PowerProfileConfig from "./jt808GetPowerProfileConfig";
+import jt808PowerProfileConfig from "../config/jt808GetPowerProfileConfig";
 
 const jt808CheckMustSendToTerminal = (
   terminalId: string,
