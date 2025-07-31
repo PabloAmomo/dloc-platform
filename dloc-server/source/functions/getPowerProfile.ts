@@ -2,7 +2,6 @@ import config from "../config/config";
 import {
   PowerProfileType,
   powerProfileTypeAutomatic,
-  powerProfileTypeIsBalanced,
   powerProfileTypeIsFull,
   powerProfileTypeIsMinimal,
 } from "../enums/PowerProfileType";
@@ -24,18 +23,13 @@ const getPowerProfile: GetPowerProfile = async (
   currentPowerProfileType,
   getPowerProfileConfig
 ) => {
-  const movementsMts = {
-    full: getPowerProfileConfig(PowerProfileType.AUTOMATIC_FULL).movementMeters,
-    balanced: getPowerProfileConfig(PowerProfileType.AUTOMATIC_BALANCED).movementMeters,
-    minimal: getPowerProfileConfig(PowerProfileType.AUTOMATIC_MINIMAL).movementMeters,
-  };
   let newPowerProfileType = PowerProfileType.AUTOMATIC_FULL;
   let powerProfileChanged = false;
   let needProfileRefresh = false;
 
-  if (lastPowerProfileChecked === 0) lastPowerProfileChecked = Date.now();
-
   try {
+    if (lastPowerProfileChecked === 0) lastPowerProfileChecked = Date.now();
+
     /** If new connection, update database to Full Power Profile */
     if (isNewConnection) {
       await updatePowerProfile(imei, newPowerProfileType, persistence, messagePrefix);
@@ -66,7 +60,7 @@ const getPowerProfile: GetPowerProfile = async (
     if (
       !isNewConnection &&
       currentPowerProfileType !== newPowerProfileType &&
-      newPowerProfileType === PowerProfileType.AUTOMATIC_FULL
+      powerProfileTypeIsFull(newPowerProfileType)
     ) {
       powerProfileChanged = true;
 
@@ -100,8 +94,8 @@ const getPowerProfile: GetPowerProfile = async (
       newPowerProfileType = checkPowerProfileChange(
         newPowerProfileType,
         metersMoveInLastSeconds,
-        movementsMts.balanced,
-        movementsMts.minimal,
+        getPowerProfileConfig(PowerProfileType.AUTOMATIC_BALANCED).movementMeters,
+        getPowerProfileConfig(PowerProfileType.AUTOMATIC_MINIMAL).movementMeters,
         messagePrefix
       );
       powerProfileChanged = newPowerProfileType !== previousProfile;
@@ -136,8 +130,6 @@ const getPowerProfile: GetPowerProfile = async (
           REFRESH_POWER_PROFILE_SECONDS - lastPowerProfileCheckedDiffSec
         ).toFixed(0)} seconds`
       );
-
-    //
   } catch (error: any) {
     const errorMsg = error?.message ?? error;
     printMessage(`${messagePrefix} ❌ error getting power profile [${errorMsg}]`);
