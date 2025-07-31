@@ -4,7 +4,7 @@ import { CACHE_IMEI } from "../../../../infraestucture/caches/cacheIMEI";
 import protoTopinCheckMustSendToTerminal from "../functions/protoTopinCheckMustSendToTerminal";
 import protoTopinCreatePacket0x33 from "../functions/protoTopinCreatePacket0x33";
 import protoTopinCreatePacket0x80 from "../functions/protoTopinCreatePacket0x80";
-import protoTopinGetPowerProfileConfig from "../functions/protoTopinGetPowerProfileConfig";
+import protoTopinGetPowerProfileConfig from "../config/protoTopinGetPowerProfileConfig";
 import ProtoTopinHandleProcess from "../models/ProtoTopinHandleProcess";
 import ProtoTopinProcessProps from "../models/ProtoTopinProcessProps";
 

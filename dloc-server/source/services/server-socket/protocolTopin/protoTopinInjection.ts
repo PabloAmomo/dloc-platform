@@ -5,7 +5,7 @@ import protoTopinHandleError from "./connection/protoTopinHandleError";
 import protoTopinHandlePacket from "./connection/protoTopinHandlePacket";
 import protoTopinHandleProcess from "./connection/protoTopinHandleProcess";
 import protoTopinDecoder from "./functions/protoTopinDecoder";
-import protoTopinGetPowerProfileConfig from "./functions/protoTopinGetPowerProfileConfig";
+import protoTopinGetPowerProfileConfig from "./config/protoTopinGetPowerProfileConfig";
 
 const protoTopinInjection = (): ServerSocketHandlerPropsInjection => {
   return {

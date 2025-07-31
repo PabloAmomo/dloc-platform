@@ -2,7 +2,7 @@ import { PowerProfileType } from "../../../../enums/PowerProfileType";
 import { printMessage } from "../../../../functions/printMessage";
 import protoTopinCreatePacket0x13 from "./protoTopinCreatePacket0x13";
 import protoTopinCreatePacket0x61 from "./protoTopinCreatePacket0x61";
-import protoTopinGetPowerProfileConfig from "./protoTopinGetPowerProfileConfig";
+import protoTopinGetPowerProfileConfig from "../config/protoTopinGetPowerProfileConfig";
 
 const protoTopinCheckMustSendToTerminal = (
   imei: string,

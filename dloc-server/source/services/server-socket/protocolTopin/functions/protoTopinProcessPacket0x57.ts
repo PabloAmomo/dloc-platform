@@ -3,7 +3,7 @@ import { CACHE_IMEI } from "../../../../infraestucture/caches/cacheIMEI";
 import { CacheImei, CacheImeiEmptyItem } from "../../../../infraestucture/models/CacheImei";
 import { ProtoTopinProcessPacket } from "../models/ProtoTopinProcessPacket";
 import protoTopinCreateResponse0x57 from "./protoTopinCreateResponse0x57";
-import protoTopinGetPowerProfileConfig from "./protoTopinGetPowerProfileConfig";
+import protoTopinGetPowerProfileConfig from "../config/protoTopinGetPowerProfileConfig";
 
 const protoTopinProcessPacket0x57: ProtoTopinProcessPacket = async ({
   imei,

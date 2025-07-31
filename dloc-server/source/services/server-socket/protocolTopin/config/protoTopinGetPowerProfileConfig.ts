@@ -1,12 +1,14 @@
-import { PowerProfileType } from "../../../../enums/PowerProfileType";
-import { PowerProfileConfig } from "../../../../models/PowerProfileConfig";
-import { printMessage } from "../../../../functions/printMessage";
-import GetPowerProfileConfig from "../../../../models/GetProwerProfileConfig";
+import {
+    PowerProfileType, powerProfileTypeIsBalanced, powerProfileTypeIsFull, powerProfileTypeIsMinimal
+} from '../../../../enums/PowerProfileType';
+import { printMessage } from '../../../../functions/printMessage';
+import GetPowerProfileConfig from '../../../../models/GetProwerProfileConfig';
+import { PowerProfileConfig } from '../../../../models/PowerProfileConfig';
 
 const protoTopinGetPowerProfileConfig: GetPowerProfileConfig = (
   profileType: PowerProfileType = PowerProfileType.FULL
 ): PowerProfileConfig => {
-  if (profileType === PowerProfileType.MINIMAL || profileType === PowerProfileType.AUTOMATIC_MINIMAL)
+  if (powerProfileTypeIsMinimal(profileType))
     return {
       heartBeatSec: 120,
       uploadSec: 90,
@@ -15,7 +17,7 @@ const protoTopinGetPowerProfileConfig: GetPowerProfileConfig = (
       movementMeters: 25,
     };
 
-  if (profileType === PowerProfileType.BALANCED || profileType === PowerProfileType.AUTOMATIC_BALANCED)
+  else if (powerProfileTypeIsBalanced(profileType))
     return {
       heartBeatSec: 120,
       uploadSec: 60,
@@ -24,11 +26,11 @@ const protoTopinGetPowerProfileConfig: GetPowerProfileConfig = (
       movementMeters: 50,
     };
 
-  // Full power profile configuration
-  if (profileType !== PowerProfileType.FULL && profileType !== PowerProfileType.AUTOMATIC_FULL)
+
+  else if (!powerProfileTypeIsFull(profileType))
     printMessage(`❌ power profile (ProtoTopin) [${profileType}] not found, defaulting to full power profile`);
 
-  // Full power profile configuration
+  /** Full power profile configuration */  
   return {
     heartBeatSec: 120,
     uploadSec: 20,

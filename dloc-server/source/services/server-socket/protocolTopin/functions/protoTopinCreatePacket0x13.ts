@@ -3,7 +3,7 @@ import { printMessage } from "../../../../functions/printMessage";
 import protoTopinConfig from "../config/protoTopinConfig";
 import protoTopinCreatePacket0x97 from "./protoTopinCreatePacket0x97";
 import protoTopinCreateResponse0x13 from "./protoTopinCreateResponse0x13";
-import protoTopinGetPowerProfileConfig from "./protoTopinGetPowerProfileConfig";
+import protoTopinGetPowerProfileConfig from "../config/protoTopinGetPowerProfileConfig";
 
 const protoTopinCreatePacket0x13 = (prefix: string, powerProfileType: PowerProfileType): Buffer[] => {
   const { heartBeatSec, uploadSec } = protoTopinGetPowerProfileConfig(powerProfileType);
