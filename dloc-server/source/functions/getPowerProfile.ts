@@ -1,30 +1,29 @@
-import config from '../config/config';
+import config from "../config/config";
 import {
-    PowerProfileType, powerProfileTypeAutomatic, powerProfileTypeIsFull, powerProfileTypeIsMinimal
-} from '../enums/PowerProfileType';
-import GetPowerProfileConfig from '../models/GetProwerProfileConfig';
-import { Persistence } from '../models/Persistence';
-import getMovementInLastSeconds from './getMovementInLastSeconds';
-import { printMessage } from './printMessage';
-import updatePowerProfile from './updatePowerProfile';
+  PowerProfileType,
+  powerProfileTypeAutomatic,
+  powerProfileTypeIsBalanced,
+  powerProfileTypeIsFull,
+  powerProfileTypeIsMinimal,
+} from "../enums/PowerProfileType";
+import { GetPowerProfile } from "../models/GetPowerProfile";
+import checkPowerProfileChange from "./checkPowerProfileChange";
+import getMovementInLastSeconds from "./getMovementInLastSeconds";
+import { printMessage } from "./printMessage";
+import updatePowerProfile from "./updatePowerProfile";
 
 const { MOVEMENT_MESURE, MOVEMENTS_CONTROL_SECONDS, REFRESH_POWER_PROFILE_SECONDS } = config;
 
 // TODO: Refactor this function to use a more structured approach, possibly with a class or a more modular design.
-async function getPowerProfile(
-  imei: string,
-  persistence: Persistence,
-  lastPowerProfileChecked: number,
-  messagePrefix: string,
-  isNewConnection: boolean,
-  currentPowerProfileType: PowerProfileType,
-  getPowerProfileConfig: GetPowerProfileConfig
-): Promise<{
-  newPowerProfileType: PowerProfileType;
-  powerProfileChanged: boolean;
-  lastPowerProfileChecked: number;
-  needProfileRefresh: boolean;
-}> {
+const getPowerProfile: GetPowerProfile = async (
+  imei,
+  persistence,
+  lastPowerProfileChecked,
+  messagePrefix,
+  isNewConnection,
+  currentPowerProfileType,
+  getPowerProfileConfig
+) => {
   const movementsMts = {
     full: getPowerProfileConfig(PowerProfileType.AUTOMATIC_FULL).movementMeters,
     balanced: getPowerProfileConfig(PowerProfileType.AUTOMATIC_BALANCED).movementMeters,
@@ -96,37 +95,16 @@ async function getPowerProfile(
         `${messagePrefix} 🚶‍♂️ movement (${MOVEMENT_MESURE}) in last ${MOVEMENTS_CONTROL_SECONDS} seconds [${metersMoveInLastSeconds} meters]`
       );
 
-      /** Change to balanced power profile */
-      let movementAlarm = false;
-      if (newPowerProfileType === PowerProfileType.AUTOMATIC_FULL && metersMoveInLastSeconds < movementsMts.balanced) {
-        newPowerProfileType = PowerProfileType.AUTOMATIC_BALANCED;
-        powerProfileChanged = true;
-      } else if (
-        /** Change to minimal power profile */
-        newPowerProfileType === PowerProfileType.AUTOMATIC_BALANCED &&
-        metersMoveInLastSeconds < movementsMts.minimal
-      ) {
-        newPowerProfileType = PowerProfileType.AUTOMATIC_MINIMAL;
-        powerProfileChanged = true;
-      } else if (
-        /** Change to balanced power profile */
-        newPowerProfileType === PowerProfileType.AUTOMATIC_MINIMAL &&
-        metersMoveInLastSeconds > movementsMts.minimal
-      ) {
-        movementAlarm = true;
-        newPowerProfileType = PowerProfileType.AUTOMATIC_BALANCED;
-        powerProfileChanged = true;
-      } else if (
-        /** Change to full power profile */
-        newPowerProfileType === PowerProfileType.AUTOMATIC_BALANCED &&
-        metersMoveInLastSeconds > movementsMts.balanced
-      ) {
-        movementAlarm = true;
-        newPowerProfileType = PowerProfileType.AUTOMATIC_FULL;
-        powerProfileChanged = true;
-      }
-
-      if (movementAlarm) printMessage(`${messagePrefix} 🚶‍♂️ [MOVE] 🏃 Change power profile for movement`);
+      /** Check if the power profile must be changed by time or movement */
+      const previousProfile = newPowerProfileType;
+      newPowerProfileType = checkPowerProfileChange(
+        newPowerProfileType,
+        metersMoveInLastSeconds,
+        movementsMts.balanced,
+        movementsMts.minimal,
+        messagePrefix
+      );
+      powerProfileChanged = newPowerProfileType !== previousProfile;
     }
 
     /* Save the new power profile (If was changed) */
@@ -171,6 +149,6 @@ async function getPowerProfile(
     lastPowerProfileChecked,
     needProfileRefresh,
   };
-}
+};
 
 export default getPowerProfile;
