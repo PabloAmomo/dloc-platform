@@ -121,12 +121,12 @@ const serverSocketHandler: ServerSocketHandler = (props: ServerSocketHandlerProp
             newPowerProfileType,
             sendData,
           });
-          isNewConnection = false;
-
-          //
         })
         .catch((err: Error) => {
           throw err;
+        })
+        .finally(() => {
+          isNewConnection = false;
         });
     } catch (err: Error | any) {
       printMessage(
