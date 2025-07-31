@@ -23,5 +23,9 @@ const powerProfileTypeIsMinimal = (powerProfileType: PowerProfileType) =>
     powerProfileType
   );
 
+  const powerProfileTypeIsBalanced = (powerProfileType: PowerProfileType) =>
+  [PowerProfileType.BALANCED, PowerProfileType.AUTOMATIC_BALANCED].includes(
+    powerProfileType
+  );
 
-export { powerProfileTypeAutomatic, powerProfileTypeIsFull, powerProfileTypeIsMinimal };
+export { powerProfileTypeAutomatic, powerProfileTypeIsFull, powerProfileTypeIsMinimal, powerProfileTypeIsBalanced };
