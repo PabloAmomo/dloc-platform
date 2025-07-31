@@ -38,7 +38,7 @@ const serverSocketHandler: ServerSocketHandler = (props: ServerSocketHandlerProp
 
   /** Create generic functions for socket connection */
   const disconnect = () => serverSocketDisconnect(imei, remoteAddress, conn);
-  const sendData = (data: Buffer[] | String[]) => serverSocketSendData(imei, remoteAddress, conn, data);
+  const sendData = (data: Buffer[] | string[]) => serverSocketSendData(imei, remoteAddress, conn, data);
 
   /** Handle data */
   conn.on("data", (data: Buffer) => {

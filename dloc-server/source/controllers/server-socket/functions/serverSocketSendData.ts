@@ -3,7 +3,7 @@ import { getNormalizedIMEI } from "../../../functions/getNormalizedIMEI";
 import { printMessage } from "../../../functions/printMessage";
 import config from "../../../config/config";
 
-const serverSocketSendData = (imei: string, remoteAddress: string, conn: net.Socket, data: Buffer[] | String[]) => {
+const serverSocketSendData = (imei: string, remoteAddress: string, conn: net.Socket, data: Buffer[] | string[]) => {
   if (!conn || conn.destroyed) {
     printMessage(`[${getNormalizedIMEI(imei)}] (${remoteAddress}) ❌ Connection is already closed.`);
     return;
@@ -17,7 +17,7 @@ const serverSocketSendData = (imei: string, remoteAddress: string, conn: net.Soc
     if (data.length === 0) continue; // Skip if no data to send
 
     if (typeof dataItem === "string") {
-      conn.write(dataItem.toString(), (err?: Error) => {
+      conn.write(dataItem, (err?: Error) => {
         if (err) showError(err);
       });
     } else if (dataItem instanceof Buffer) {
