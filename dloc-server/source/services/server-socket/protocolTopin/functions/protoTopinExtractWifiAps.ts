@@ -13,7 +13,7 @@ const protoTopinExtractWifiAps = (
   const responseData: WifiAccessPoint[] = [];
   try {
     if (data.length < 6) {
-      printMessage(`${prefix} ❌ Invalid Wifi packet length ${data.length}`);
+      printMessage(`${prefix} 🗼 [LBS] ❌ Invalid Wifi packet length ${data.length}`);
       return responseData;
     }
 
@@ -30,17 +30,17 @@ const protoTopinExtractWifiAps = (
     const minutesAfterNow = timeDifference / 1000 / 60;
     if (timeDifference > MAX_TIME_DIFFERENCE_MS) {
       printMessage(
-        `${prefix} ❌ Location packet date/time is ${minutesAfterNow} minutes in the future of the current time.`
+        `${prefix} 🗼 [LBS] ❌ Location packet date/time is ${minutesAfterNow} minutes in the future of the current time.`
       );
       return responseData;
     }
 
     if (data.length < 6 + length * 7) {
-      printMessage(`${prefix} ❌ Invalid Wifi packet length ${data.length} for expected length ${6 + length * 7}`);
+      printMessage(`${prefix} 🗼 [LBS] ❌ Invalid Wifi packet length ${data.length} for expected length ${6 + length * 7}`);
       return responseData;
     }
     if (length === 0) {
-      printMessage(`${prefix} ❌ No Wifi Access Points found in packet.`);
+      printMessage(`${prefix} 🗼 [LBS] ❌ No Wifi Access Points found in packet.`);
       return responseData;
     }
 
@@ -59,7 +59,7 @@ const protoTopinExtractWifiAps = (
     }
 
   } catch (err: Error | any) {
-    printMessage(`${prefix} ❌ error extracting Wifi Aps from wifi packet [${err.message}]`);
+    printMessage(`${prefix} 🗼 [LBS] ❌ error extracting Wifi Aps from wifi packet [${err.message}]`);
   }
   return responseData;
 };
