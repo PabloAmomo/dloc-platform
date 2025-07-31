@@ -47,11 +47,9 @@ const serverSocketHandler: ServerSocketHandler = (props: ServerSocketHandlerProp
     let dataShow: string;
     let dataToUse;
 
-    if (!["PROTO1903", "JT808", "TOPIN"].includes(protocol)) {
-      printMessage(`[${tempImei}] (${remoteAddress}) ❌ Unsupported protocol: ${protocol}.`);
-      disconnect();
-      return;
-    }
+    /** Check if health packet */
+    if (processPacketHealth(dataString, remoteAddress, tempImei, sendData, disconnect)) return;
+
     dataShow = protocol === "PROTO1903" ? dataString : convertAnyToHexString(data);
 
     try {
@@ -59,9 +57,6 @@ const serverSocketHandler: ServerSocketHandler = (props: ServerSocketHandlerProp
 
       counter++;
       if (counter > 32000) counter = 1;
-
-      /** Check if health packet */
-      if (processPacketHealth(dataString, remoteAddress, tempImei, sendData, disconnect)) return;
 
       /** New socket connection */
       if (isNewConnection) printMessage(`[${tempImei}] (${remoteAddress}) 🧑‍💻 is new connection.`);

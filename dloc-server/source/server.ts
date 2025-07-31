@@ -23,7 +23,7 @@ dotenv.config();
 /** PORTS */
 const PORT_SOCKET: any = process.env.PORT_SOCKET ?? "0";
 const PORT_HTTP: any = process.env.PORT_HTTP ?? "0";
-const SOCKET_PROTOCOL: any = process.env.SOCKET_PROTOCOL ?? "1903";
+const SOCKET_PROTOCOL:  "PROTO1903" | "JT808" | "TOPIN" = (process.env.SOCKET_PROTOCOL ?? "1903") as "PROTO1903" | "JT808" | "TOPIN";
 
 export const ENABLE_LBS: boolean = process.env.ENABLE_LBS === "true" ? true : false;
 
@@ -59,9 +59,9 @@ startPersistence(new mySqlPersistence());
 /** Start Socket server */
 let injections: ServerSocketHandlerPropsInjection | null = null;
 
-if (SOCKET_PROTOCOL == "1903") injections = proto1903Injection();
-else if (SOCKET_PROTOCOL == "808") injections = jt808Injection();
-else if (SOCKET_PROTOCOL == "TOPIN") injections = protoTopinInjection();
+if (SOCKET_PROTOCOL === "PROTO1903") injections = proto1903Injection();
+else if (SOCKET_PROTOCOL === "JT808") injections = jt808Injection();
+else if (SOCKET_PROTOCOL === "TOPIN") injections = protoTopinInjection();
 
 if (!injections) {
   printMessage(`❌ Error: No injections defined for the selected protocol. ${SOCKET_PROTOCOL}`);
