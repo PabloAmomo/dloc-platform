@@ -25,6 +25,12 @@ const protoTopinHandleProcess: ProtoTopinHandleProcess = ({
   /* Enable LBS positioning */
   if (isNewConnection) additionals.push(protoTopinCreatePacket0x33(false));
 
+  /* Request location to new connections */
+  if (isNewConnection) {
+    printMessage(`${prefix} 🚀 send packet to request report position. (🆕 by new connection)`);
+    additionals.push(protoTopinCreatePacket0x80());
+  }
+
   /** Create configuration packet */
   if (powerProfileChanged || needProfileRefresh) {
     additionals.push(
@@ -56,7 +62,7 @@ const protoTopinHandleProcess: ProtoTopinHandleProcess = ({
   }
 
   /** Join al to send */
-  const toSend: Buffer[] = results.flatMap(result => result.response as Buffer[]);
+  const toSend: Buffer[] = results.flatMap((result) => result.response as Buffer[]);
   toSend.push(...additionals);
 
   sendData(toSend);
