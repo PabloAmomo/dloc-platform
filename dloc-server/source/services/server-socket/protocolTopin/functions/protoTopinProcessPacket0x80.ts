@@ -33,8 +33,8 @@ const protoTopinProcessPacket0x80: ProtoTopinProcessPacket = async ({
   /** Use las LBS if is valid and the message is "same lbs and wifi data" or "GPS spacing is less than 50 meters" */
   if (code === 0x05 || code === 0x07) {
     const lastLbsKey = CACHE_IMEI.get(imei)?.lastLBSKey;
-    if (lastLbsKey) {
-      
+    if (!lastLbsKey) printMessage(`${prefix} ❌ No last LBS key found. Cannot reprocess request 0x07.`);
+    else {
       printMessage(`${prefix} 🗼 [LBS] ✅ Reprocessing last LBS with key: ${lastLbsKey}`);
       const lbsGetResponse = CACHE_LBS.get(lastLbsKey)?.response as GoogleGeoPositionResponse;
 
