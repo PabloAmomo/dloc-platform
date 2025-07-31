@@ -17,11 +17,11 @@ const serverSocketSendData = (imei: string, remoteAddress: string, conn: net.Soc
     if (data.length === 0) continue; // Skip if no data to send
 
     if (typeof dataItem === "string") {
-      conn.write(dataItem, (err?: Error) => {
+      conn.write(dataItem, (err?: Error | null | undefined) => {
         if (err) showError(err);
       });
     } else if (dataItem instanceof Buffer) {
-      conn.write(dataItem, (err?: Error) => {
+      conn.write(dataItem, (err?: Error | null | undefined) => {
         if (err) showError(err);
         else if (config.SHOW_PACKETS_SENT)
           printMessage(`[${getNormalizedIMEI(imei)}] (${remoteAddress}) 📡 Sent data: ${dataItem.toString("hex")}`);
