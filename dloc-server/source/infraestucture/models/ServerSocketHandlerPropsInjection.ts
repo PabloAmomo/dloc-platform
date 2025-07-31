@@ -1,3 +1,4 @@
+import { Protocols } from '../../enums/Protocols';
 import GetPowerProfileConfig from '../../models/GetProwerProfileConfig';
 import HandleClose from '../../services/server-socket/models/HandleClose';
 import HandleEnd from '../../services/server-socket/models/HandleEnd';
@@ -10,7 +11,7 @@ import ProtoTopinHandlePacket from '../../services/server-socket/protocolTopin/m
 import ProtoTopinHandleProcess from '../../services/server-socket/protocolTopin/models/ProtoTopinHandleProcess';
 
 export default interface  ServerSocketHandlerPropsInjection {
-  protocol: "PROTO1903" | "JT808" | "TOPIN";
+  protocol: Protocols;
   handleProcess: Proto1903HandleProcess | Jt808HandleProcess | ProtoTopinHandleProcess;
   handlePacket: Proto1903HandlePacket | Jt808HandlePacket | ProtoTopinHandlePacket;
   handleClose: HandleClose;

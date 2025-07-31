@@ -16,6 +16,7 @@ import jt808Injection from "./services/server-socket/protocol808/jt808Injection"
 import ServerSocketHandlerPropsInjection from "./infraestucture/models/ServerSocketHandlerPropsInjection";
 import proto1903Injection from "./services/server-socket/protocol1903/proto1903Injection";
 import protoTopinInjection from "./services/server-socket/protocolTopin/protoTopinInjection";
+import { Protocols } from "./enums/Protocols";
 
 /** Load environment variables */
 dotenv.config();
@@ -23,7 +24,7 @@ dotenv.config();
 /** PORTS */
 const PORT_SOCKET: any = process.env.PORT_SOCKET ?? "0";
 const PORT_HTTP: any = process.env.PORT_HTTP ?? "0";
-const SOCKET_PROTOCOL:  "PROTO1903" | "JT808" | "TOPIN" = (process.env.SOCKET_PROTOCOL ?? "1903") as "PROTO1903" | "JT808" | "TOPIN";
+const SOCKET_PROTOCOL: Protocols = (process.env.SOCKET_PROTOCOL ?? "1903") as Protocols;
 
 export const ENABLE_LBS: boolean = process.env.ENABLE_LBS === "true" ? true : false;
 
