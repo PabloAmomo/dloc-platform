@@ -1,15 +1,16 @@
-import convertRSSIToPercent from '../../../../functions/convertRSSIToPercent';
-import getDateTimeValues from '../../../../functions/getDateTimeValues';
-import { printMessage } from '../../../../functions/printMessage';
-import protoToppisPersistLbsResponse from '../../../../functions/protoToppisPersistLbsResponse';
-import { GoogleGeoPositionRequest } from '../../../../models/GoogleGeoPositionRequest';
-import getLbsPosition from '../../functions/getLbsPosition';
-import { ProtoTopinProcessPacket } from '../models/ProtoTopinProcessPacket';
-import protoTopinCreateGoogleGeoPositionRequest from './protoTopinCreateGoogleGeoPositionRequest';
-import protoTopinCreateResponse0x19 from './protoTopinCreateResponse0x19';
-import protoTopinGetBCDDateTimeUTC from './protoTopinGetBCDDateTimeUTC';
+import convertRSSIToPercent from "../../../../functions/convertRSSIToPercent";
+import getDateTimeValues from "../../../../functions/getDateTimeValues";
+import { printMessage } from "../../../../functions/printMessage";
+import protoToppisPersistLbsResponse from "../../../../functions/protoToppisPersistLbsResponse";
+import { GoogleGeoPositionRequest } from "../../../../models/GoogleGeoPositionRequest";
+import getLbsPosition from "../../functions/getLbsPosition";
+import { ProtoTopinProcessPacket } from "../models/ProtoTopinProcessPacket";
+import protoTopinCreateGoogleGeoPositionRequest from "./protoTopinCreateGoogleGeoPositionRequest";
+import protoTopinCreateResponse0x18 from "./protoTopinCreateResponse0x18";
+import protoTopinCreateResponse0x19 from "./protoTopinCreateResponse0x19";
+import protoTopinGetBCDDateTimeUTC from "./protoTopinGetBCDDateTimeUTC";
 
-const protoTopinProcessPacket0x19: ProtoTopinProcessPacket = async ({
+const protoTopinProcessPacket0xLBS: ProtoTopinProcessPacket = async ({
   imei,
   remoteAddress,
   response,
@@ -17,12 +18,19 @@ const protoTopinProcessPacket0x19: ProtoTopinProcessPacket = async ({
   persistence,
   prefix,
 }) => {
-  printMessage(`${prefix} 📡 wifi data packet received (0x19) (Process and Get LBS Location)`);
+  printMessage(`${prefix} 📡 wifi data packet received (${topinPacket.protocolNumber}) (Process and Get LBS Location)`);
 
   const { year, month, day, hours, minutes, seconds } = getDateTimeValues(new Date(), true);
-  (response.response as Buffer[]).push(
-    protoTopinCreateResponse0x19(Buffer.from([year, month, day, hours, minutes, seconds]))
-  );
+
+  if (topinPacket.protocolNumber === 0x18)
+    (response.response as Buffer[]).push(
+      protoTopinCreateResponse0x18(Buffer.from([year, month, day, hours, minutes, seconds]))
+    );
+  else if (topinPacket.protocolNumber === 0x19)
+    (response.response as Buffer[]).push(
+      protoTopinCreateResponse0x19(Buffer.from([year, month, day, hours, minutes, seconds]))
+    );
+  else throw new Error(`Unsupported protocol number: ${topinPacket.protocolNumber}`);
 
   if (topinPacket.informationContent.length < 6)
     throw new Error(`data length to short (${topinPacket.informationContent.length}), cannot extract date.`);
@@ -30,8 +38,7 @@ const protoTopinProcessPacket0x19: ProtoTopinProcessPacket = async ({
   const bufferDate = topinPacket.informationContent.slice(0, 6);
   const dateTimeUtc = protoTopinGetBCDDateTimeUTC(bufferDate);
 
-  // TODO: [VERIFY] Cehck if the LBS data time is correct and valid to process
-  printMessage(`${prefix} 📅 Date and time from device: ${dateTimeUtc.toISOString()}`);
+  printMessage(`${prefix} 🗼 [LBS] 📅 Date and time from device: ${dateTimeUtc.toISOString()}`);
 
   const googleGeoPositionRequest: GoogleGeoPositionRequest | null = protoTopinCreateGoogleGeoPositionRequest(
     prefix,
@@ -79,4 +86,4 @@ const protoTopinProcessPacket0x19: ProtoTopinProcessPacket = async ({
   };
 };
 
-export default protoTopinProcessPacket0x19;
+export default protoTopinProcessPacket0xLBS;

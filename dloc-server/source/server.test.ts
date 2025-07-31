@@ -21,7 +21,6 @@ import net from "net";
 import protoTopinCreatePositionPacket from "./services/server-socket/protocolTopin/functions/protoTopinCreatePositionPacket";
 import { GpsAccuracy } from "./models/GpsAccuracy";
 import protoTopinExtractWifiAps from "./services/server-socket/protocolTopin/functions/protoTopinExtractWifiAps";
-import protoTopinProcessPacket0x18 from "./services/server-socket/protocolTopin/functions/protoTopinProcessPacket0x18";
 import { fakePersistence } from "./models/Persistence";
 import convertPercentToRSSI from "./functions/convertPercentToRSSI";
 import convertRSSIToPercent from "./functions/convertRSSIToPercent";
