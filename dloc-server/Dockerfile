@@ -41,7 +41,9 @@ RUN if [ "$SERVER_TYPE" = "socket" ]; then \
       cp ./.docker.env ./.env ; \
     fi
 
-RUN del-cli --force ./build && tsc
+RUN npm run build 
+#RUN del-cli --force ./build && tsc
+#del-cli --force ./build && tsc && node --test
 
 EXPOSE 9010 
 EXPOSE 9011
