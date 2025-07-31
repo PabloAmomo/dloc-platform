@@ -13,7 +13,6 @@ import updatePowerProfile from "./updatePowerProfile";
 
 const { MOVEMENT_MESURE, MOVEMENTS_CONTROL_SECONDS, REFRESH_POWER_PROFILE_SECONDS } = config;
 
-// TODO: Refactor this function to use a more structured approach, possibly with a class or a more modular design.
 const getPowerProfile: GetPowerProfile = async (
   imei,
   persistence,
