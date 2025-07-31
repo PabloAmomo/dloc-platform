@@ -30,9 +30,9 @@ COPY ./.docker.http.env ./.docker.http.env
 RUN if [ "$SERVER_TYPE" = "socket" ]; then \
       cp ./.docker.socket.env ./.env ; \
     elif [ "$SERVER_TYPE" = "socket-proto1903" ]; then \
-      cp ./.docker.socket.protocol1903.env ./.env ; \
+      cp ./.docker.socket.protocolproto1903.env ./.env ; \
     elif [ "$SERVER_TYPE" = "socket-jt808" ]; then \
-      cp ./.docker.socket.protocol808.env ./.env ; \
+      cp ./.docker.socket.protocoljt808.env ./.env ; \
     elif [ "$SERVER_TYPE" = "socket-topin" ]; then \
       cp ./.docker.socket.protocoltopin.env ./.env ; \
     elif [ "$SERVER_TYPE" = "http" ]; then \
