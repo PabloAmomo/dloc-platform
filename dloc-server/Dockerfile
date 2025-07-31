@@ -11,7 +11,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN apt-get update \
  && apt-get install wget unzip zip -y
 
-RUN npm install -g npm@9.8.1
+RUN npm install -g npm@10.8.2
 RUN npm install -g typescript
 RUN npm install -g del-cli
 RUN npm install
