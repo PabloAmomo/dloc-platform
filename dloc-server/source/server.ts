@@ -12,9 +12,9 @@ import { startServerHTTP } from "./inits/startServerHTTP";
 import { startServerSocket } from "./inits/startServerSocket";
 import { getPersistence } from "./persistence/persistence";
 import handleConnection from "./services/server-socket/functions/handleConnection";
-import jt808Injection from "./services/server-socket/protocol808/jt808Injection";
+import jt808Injection from "./services/server-socket/protocolJt808/jt808Injection";
 import ServerSocketHandlerPropsInjection from "./infraestucture/models/ServerSocketHandlerPropsInjection";
-import proto1903Injection from "./services/server-socket/protocol1903/proto1903Injection";
+import proto1903Injection from "./services/server-socket/protocolProto1903/proto1903Injection";
 import protoTopinInjection from "./services/server-socket/protocolTopin/protoTopinInjection";
 import { Protocols } from "./enums/Protocols";
 
