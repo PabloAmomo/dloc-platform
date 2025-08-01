@@ -7,13 +7,13 @@ import protoTopinGetPowerProfileConfig from "../config/protoTopinGetPowerProfile
 
 const protoTopinCreatePacket0x13 = (prefix: string, powerProfileType: PowerProfileType): Buffer[] => {
   const { heartBeatSec: statusPackageSec, uploadSec } = protoTopinGetPowerProfileConfig(powerProfileType);
-  let statusPackageIntervalMin = Math.floor(statusPackageSec / 60);
-  if (statusPackageIntervalMin === 0) statusPackageIntervalMin = 1;
+  let statusPackageIntervalSec = Math.floor(statusPackageSec / 60);
+  if (statusPackageIntervalSec === 0) statusPackageIntervalSec = 1;
 
-  printMessage(`${prefix} ❤️  Send setting status package interval to ${statusPackageIntervalMin} minutes.`);
+  printMessage(`${prefix} ❤️  Send setting status package interval to ${statusPackageIntervalSec} minutes.`);
   printMessage(`${prefix} 🆙 Send setting upload interval to ${uploadSec} seconds.`);
 
-  const packets = protoTopinCreateResponse0x13(statusPackageIntervalMin, uploadSec);
+  const packets = protoTopinCreateResponse0x13(statusPackageIntervalSec, uploadSec);
 
   if (protoTopinConfig.USE_PACKET_0x97) {
     printMessage(`${prefix} 🙋🏻 Send setting upload interval to ${uploadSec} seconds. (With 0x97)`);
