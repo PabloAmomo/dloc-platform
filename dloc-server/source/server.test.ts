@@ -286,6 +286,12 @@ client.connect(PORT, HOST, () => {
 //console.log(`locations: ${JSON.stringify(locations, null, 2)}`);
 
 /*
+dloc-server-socket-protocoljt808        | 01/08/2025 14:39:12: [000056213417654] (31.221.183.75:3348) ✅ 🧑🏽‍💻 Terminal general response (202 [00CA] -> result: ✅ success (33027))
+dloc-server-socket-protocoljt808        | 01/08/2025 14:39:12: [000056213417654] (31.221.183.75:3348) ⚠️  no response to send for packet [7E 00 01 00 05 05 62 13 41 76 54 00 0D 0...]
+dloc-server-socket-protocoljt808        | 01/08/2025 14:39:12: [000056213417654] (31.221.183.75:3348) ⚡️ power profile for device [automatic_full] is not changed
+dloc-server-socket-protocoljt808        | 01/08/2025 14:39:12: [000056213417654] (31.221.183.75:3348) ⚡️ next power profile change in 299 seconds
+dloc-server-socket-protocoljt808        | 01/08/2025 14:39:12: [000056213417654] (31.221.183.75:3348) 🔋 Battery level ✅ 91% (Updated on device)
+
 const newFrame = jt808CreateFrameData({
   msgType: 0x8201,
   terminalId: Buffer.from(response.header.terminalId, "hex"),
