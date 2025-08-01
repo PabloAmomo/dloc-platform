@@ -13,7 +13,7 @@ const cleanPersistence = () => {
   
   printMessage(`🧹 Persistence clean started...`);
   persistence.clean().then((result: PersistenceResult) => {
-    if (!result.error) printMessage(`✅ Persistence cleaned...`);
+    if (!result.error) printMessage(`🧹 Persistence cleaned... ✅`);
   });
 };
 
