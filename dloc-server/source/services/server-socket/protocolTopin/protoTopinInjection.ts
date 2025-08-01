@@ -1,20 +1,20 @@
 import ServerSocketHandlerPropsInjection from "../../../infraestucture/models/ServerSocketHandlerPropsInjection";
-import protoTopinHandleClose from "./connection/protoTopinHandleClose";
-import protoTopinHandleEnd from "./connection/protoTopinHandleEnd";
-import protoTopinHandleError from "./connection/protoTopinHandleError";
 import protoTopinHandlePacket from "./connection/protoTopinHandlePacket";
 import protoTopinHandleProcess from "./connection/protoTopinHandleProcess";
 import protoTopinDecoder from "./functions/protoTopinDecoder";
 import protoTopinGetPowerProfileConfig from "./config/protoTopinGetPowerProfileConfig";
+import protocolHandleClose from "../../../functions/protocolHandleClose";
+import protocolHandleError from "../../../functions/protocolHandleError";
+import protocolHandleEnd from "../../../functions/protocolHandleEnd";
 
 const protoTopinInjection = (): ServerSocketHandlerPropsInjection => {
   return {
     protocol: "TOPIN",
     handleProcess: protoTopinHandleProcess,
     handlePacket: protoTopinHandlePacket,
-    handleClose: protoTopinHandleClose,
-    handleEnd: protoTopinHandleEnd,
-    handleError: protoTopinHandleError,
+    handleClose: protocolHandleClose,
+    handleEnd: protocolHandleEnd,
+    handleError: protocolHandleError,
     decoder: protoTopinDecoder as (data: Buffer) => Buffer[],
     getPowerProfileConfig: protoTopinGetPowerProfileConfig,
   };
