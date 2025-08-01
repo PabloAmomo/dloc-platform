@@ -1,28 +1,26 @@
-import config from "../../../../config/config";
-import convertAnyToHexString from "../../../../functions/convertAnyToHexString";
-import { getNormalizedIMEI } from "../../../../functions/getNormalizedIMEI";
-import positionUpdateLastActivityAndAddHistory from "../../../../functions/positionUpdateLastActivityAndAddHistory";
-import { printMessage } from "../../../../functions/printMessage";
-import discardData from "../../functions/discardData";
-import HandlePacketResult from "../../models/HandlePacketResult";
-import protoTopinGetFrameData from "../functions/protoTopinGetFrameData";
-import protoTopinProcessPacket0x01 from "../functions/protoTopinProcessPacket0x01";
-import protoTopinProcessPacket0x08 from "../functions/protoTopinProcessPacket0x08";
-import protoTopinProcessPacket0x10 from "../functions/protoTopinProcessPacket0x10";
-import protoTopinProcessPacket0x11 from "../functions/protoTopinProcessPacket0x11";
-import protoTopinProcessPacket0x13 from "../functions/protoTopinProcessPacket0x13";
-import protoTopinProcessPacket0x14 from "../functions/protoTopinProcessPacket0x14";
-import protoTopinProcessPacket0x30 from "../functions/protoTopinProcessPacket0x30";
-import protoTopinProcessPacket0x57 from "../functions/protoTopinProcessPacket0x57";
-import protoTopinProcessPacket0x80 from "../functions/protoTopinProcessPacket0x80";
-import protoTopinProcessPacket0x99 from "../functions/protoTopinProcessPacket0x99";
-import protoTopinProcessPacket0xB3 from "../functions/protoTopinProcessPacket0xB3";
-import protoTopinProcessPacket0xLBS from "../functions/protoTopinProcessPacket0xLBS";
-import ProtoTopinHandlePacket from "../models/ProtoTopinHandlePacket";
-import ProtoTopinHandlePacketProps from "../models/ProtoTopinHandlePacketProps";
-import ProtoTopinProcessPacketProps from "../models/ProtoTopinProcessPacketProps";
-
-const noImei: string = "no imei received";
+import config from '../../../../config/config';
+import convertAnyToHexString from '../../../../functions/convertAnyToHexString';
+import { getNormalizedIMEI } from '../../../../functions/getNormalizedIMEI';
+import positionUpdateLastActivityAndAddHistory from '../../../../functions/positionUpdateLastActivityAndAddHistory';
+import { printMessage } from '../../../../functions/printMessage';
+import discardData from '../../functions/discardData';
+import HandlePacketResult from '../../models/HandlePacketResult';
+import protoTopinGetFrameData from '../functions/protoTopinGetFrameData';
+import protoTopinProcessPacket0x01 from '../functions/protoTopinProcessPacket0x01';
+import protoTopinProcessPacket0x08 from '../functions/protoTopinProcessPacket0x08';
+import protoTopinProcessPacket0x10 from '../functions/protoTopinProcessPacket0x10';
+import protoTopinProcessPacket0x11 from '../functions/protoTopinProcessPacket0x11';
+import protoTopinProcessPacket0x13 from '../functions/protoTopinProcessPacket0x13';
+import protoTopinProcessPacket0x14 from '../functions/protoTopinProcessPacket0x14';
+import protoTopinProcessPacket0x30 from '../functions/protoTopinProcessPacket0x30';
+import protoTopinProcessPacket0x57 from '../functions/protoTopinProcessPacket0x57';
+import protoTopinProcessPacket0x80 from '../functions/protoTopinProcessPacket0x80';
+import protoTopinProcessPacket0x99 from '../functions/protoTopinProcessPacket0x99';
+import protoTopinProcessPacket0xB3 from '../functions/protoTopinProcessPacket0xB3';
+import protoTopinProcessPacket0xLBS from '../functions/protoTopinProcessPacket0xLBS';
+import ProtoTopinHandlePacket from '../models/ProtoTopinHandlePacket';
+import ProtoTopinHandlePacketProps from '../models/ProtoTopinHandlePacketProps';
+import ProtoTopinProcessPacketProps from '../models/ProtoTopinProcessPacketProps';
 
 const protoTopinHandlePacket: ProtoTopinHandlePacket = async (
   props: ProtoTopinHandlePacketProps
@@ -86,13 +84,10 @@ const protoTopinHandlePacket: ProtoTopinHandlePacket = async (
   // ---------------------------------------
   else if (topinPacket.protocolNumber === 0x14) respProcess = await protoTopinProcessPacket0x14(functionData);
   // ---------------------------------------
-  // Positioning LBS 0x18
+  // Positioning LBS 0x18 / 0x19
   // ---------------------------------------
-  else if (topinPacket.protocolNumber === 0x18) respProcess = await   protoTopinProcessPacket0xLBS(functionData);
-  // ---------------------------------------
-  // Positioning LBS 0x19
-  // ---------------------------------------
-  else if (topinPacket.protocolNumber === 0x19) respProcess = await protoTopinProcessPacket0xLBS(functionData);
+  else if (topinPacket.protocolNumber === 0x18 || topinPacket.protocolNumber === 0x19)
+    respProcess = await protoTopinProcessPacket0xLBS(functionData);
   // ---------------------------------------
   // update time 0x30
   // ---------------------------------------
