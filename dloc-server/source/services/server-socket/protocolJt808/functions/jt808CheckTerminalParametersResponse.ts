@@ -10,23 +10,12 @@ const jt808CheckTerminalParametersResponse = async (
   persistence: Persistence,
   jt808Packet: Jt808Packet
 ): Promise<void> => {
-  const parametersSettings = jt808ParseParamentersSettings(
-    imei,
-    remoteAddress,
-    jt808Packet.body
-  );
+  const parametersSettings = jt808ParseParamentersSettings(imei, remoteAddress, jt808Packet.body);
 
-  if (parametersSettings.paramatersSettings.batteryLevel) {
-    await positionUpdateBatteryAndLastActivity(
-      imei,
-      remoteAddress,
-      persistence,
-      parametersSettings.paramatersSettings.batteryLevel.value as number
-    );
-    printMessage(
-      `[${imei}] (${remoteAddress}) 🔋 Battery level ✅ ${parametersSettings.paramatersSettings.batteryLevel.value}% (Updated on device)`
-    );
-  }
+  const battery = parseInt((parametersSettings.paramatersSettings.batteryLevel?.value as string) ?? "-1");
+  await positionUpdateBatteryAndLastActivity(imei, remoteAddress, persistence, battery);
+  if (battery === -1) printMessage(`[${imei}] (${remoteAddress}) 🔋 Battery level ❌ Not available`);
+  else printMessage(`[${imei}] (${remoteAddress}) 🔋 Battery level ✅ ${battery}% (Updated on device)`);
 };
 
 export default jt808CheckTerminalParametersResponse;
