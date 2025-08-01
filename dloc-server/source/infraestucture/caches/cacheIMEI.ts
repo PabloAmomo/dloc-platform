@@ -18,9 +18,12 @@ function clearItemInCacheIMEI(imei: string) {
   if (imei === "") return;
 
   CACHE_IMEI.updateOrCreate(imei, {
-      powerProfile: PowerProfileType.AUTOMATIC_FULL,
-      lastPowerProfileChecked: 0
-    });
+    powerProfile: PowerProfileType.AUTOMATIC_FULL,
+    lastPowerProfileChecked: 0,
+    lastLBSRequestTimestamp: 0,
+    lastLBSKey: "",
+    lastReportRequestTimestamp: 0,
+  });
 }
 
 export { initCacheIMEI, clearItemInCacheIMEI };
