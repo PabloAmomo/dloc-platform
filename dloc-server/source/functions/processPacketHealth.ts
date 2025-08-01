@@ -1,5 +1,6 @@
 import net from "node:net";
 import { printMessage } from "./printMessage";
+import isLocalIp from "./isLocalIp";
 
 const HTTP_200 = `${[
   "HTTP/1.1 200 OK",
@@ -19,7 +20,7 @@ const processPacketHealth = (
 
   if (data.toUpperCase().indexOf("HEAD /HEALTH") === -1) return false;
 
-  if (!remoteAddress.includes("127.0.0.1"))
+  if (!isLocalIp(remoteAddress)) 
     printMessage(`[${imei}] (${remoteAddress}) 🩺 health packet received.`);
   sendData([HTTP_200]);
   disconnect();
