@@ -32,8 +32,8 @@
     "month": "month",
     "months": "months",
     "now": "now",
-    "postfix": "",
-    "prefix": "Before",
+    "postfix": "ago",
+    "prefix": "Seen",
     "year": "year",
     "years": "years"
   },
