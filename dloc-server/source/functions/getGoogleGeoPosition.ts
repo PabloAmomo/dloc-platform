@@ -67,7 +67,7 @@ async function getGoogleGeoPosition(
         printMessage(
           `[${imei}] (${remoteAddress}) 🗼 [LBS] ✅ Cache hit ${cacheKey} [Wifi Match: ${wifiApCoincidense}] ${JSON.stringify(
             cacheValue.response.location
-          )} - acc: ${cacheValue.response.accuracy}`
+          )}`
         );
         // Extend expiration if wifi access points match
         if (wifiApCoincidense > EXTEND_CACHE_LBS_EXPIRATION_WHEN_MORE_AT_LEAST_WIFI_MATCH)
@@ -77,7 +77,7 @@ async function getGoogleGeoPosition(
         printMessage(
           `[${imei}] (${remoteAddress}) 🗼 [LBS] ❤️  Cache hit ${cacheKey} ${JSON.stringify(
             cacheValue.response.location
-          )} - acc: ${cacheValue.response.accuracy} (aps don't match)`
+          )} (aps don't match)`
         );
     }
   }
