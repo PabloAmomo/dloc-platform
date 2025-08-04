@@ -33,8 +33,8 @@ export const configApp: ConfigApp = {
   getPositionsStartegy: 'websocket', // Define the strategy to get the positions (interval or websocket)
   maxLengths: { imei: 15, name: 20 }, // Define the default length for form inputs
   retrievePositions: 5000, // Define the time in milliseconds to retrieve the positions
-  secondsOutOffPosition: 120, // Define the time in seconds to consider a device out of position
-  secondsOutOffVisibility: 120, // Define the time in seconds to consider a device unavailable
+  secondsOutOffPosition: 180, // Define the time in seconds to consider a device out of position
+  secondsOutOffVisibility: 180, // Define the time in seconds to consider a device unavailable
   secondsOutOffVisibilityBattery: 600, // Define the time in seconds to consider a device unavailable for the las battery data available
   startPathSelectablesTypes: [IconType.pet, IconType.car, IconType.mobile, IconType.pin, IconType.image], // Define what icons types are selectables for starts path icon
 
