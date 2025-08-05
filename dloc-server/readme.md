@@ -8,7 +8,7 @@ npm run dev
 
 # Configure GF-22
 SMS: SL DP82.223.64.197#24670#
-response: Set Ok!IP:82.223.64.197 24670∫
+response: Set Ok!IP:82.223.64.197 24670
 
 SMS: SL FT
 response: Reset to factory Set OK!
