@@ -20,7 +20,7 @@ const protoHttpHandlePacket = async (persistence: Persistence, positionPacket: P
   const activity = positionPacket.activity ? JSON.parse(positionPacket.activity) : {};
 
   printMessage(
-    `${prefix} 🎛️ activity received ${JSON.stringify(activity)}`)
+    `${prefix} 🎛️  activity received ${JSON.stringify(activity)}`)
   
   /** Get the las information about the IMEI */
   const imeiData: CacheImei = CACHE_IMEI.get(imei) ?? CacheImeiEmptyItem;
@@ -59,8 +59,7 @@ const protoHttpHandlePacket = async (persistence: Persistence, positionPacket: P
   }
 
   /** Get power profile configuration */
-  const powerProfileConfig: PowerProfileConfig = protoHttpGetPowerProfileConfig(newPowerProfileType);
-  const { uploadSec, heartBeatSec, ledState } = powerProfileConfig;
+  const { uploadSec, heartBeatSec, ledState } = protoHttpGetPowerProfileConfig(newPowerProfileType);
   printMessage(
     `${prefix} 📡 set heartbeat ${heartBeatSec} sec, leds [${ledState}], report Interval [${uploadSec} sec]`
   );
