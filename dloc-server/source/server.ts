@@ -58,28 +58,30 @@ initCachePosition();
 startPersistence(new mySqlPersistence());
 
 /** Start Socket server */
-let injections: ServerSocketHandlerPropsInjection | null = null;
+if (PORT_SOCKET) {
+  let injections: ServerSocketHandlerPropsInjection | null = null;
 
-if (SOCKET_PROTOCOL === "PROTO1903") injections = proto1903Injection();
-else if (SOCKET_PROTOCOL === "JT808") injections = jt808Injection();
-else if (SOCKET_PROTOCOL === "TOPIN") injections = protoTopinInjection();
+  if (SOCKET_PROTOCOL === "PROTO1903") injections = proto1903Injection();
+  else if (SOCKET_PROTOCOL === "JT808") injections = jt808Injection();
+  else if (SOCKET_PROTOCOL === "TOPIN") injections = protoTopinInjection();
 
-if (!injections) {
-  printMessage(`❌ Error: No injections defined for the selected protocol. ${SOCKET_PROTOCOL}`);
-  process.exit(1);
+  if (!injections) {
+    printMessage(`❌ Error: No injections defined for the selected protocol. ${SOCKET_PROTOCOL}`);
+    process.exit(1);
+  }
+
+  printMessage(`✅ Using protocol ${SOCKET_PROTOCOL}.`);
+  startServerSocket(
+    (conn) =>
+      serverSocketHandler({
+        conn,
+        persistence: getPersistence(),
+        handleConnection,
+        ...(injections as ServerSocketHandlerPropsInjection),
+      }),
+    PORT_SOCKET
+  );
 }
 
-printMessage(`✅ Using protocol ${SOCKET_PROTOCOL}.`);
-startServerSocket(
-  (conn) =>
-    serverSocketHandler({
-      conn,
-      persistence: getPersistence(),
-      handleConnection,
-      ...injections as ServerSocketHandlerPropsInjection,
-    }),
-  PORT_SOCKET
-);
-
 /** Start HTTP server (Health Check) */
-startServerHTTP(routes, PORT_HTTP);
+if (PORT_HTTP) startServerHTTP(routes, PORT_HTTP);
