@@ -56,7 +56,7 @@ const protoHttpHandlePacket = async (persistence: Persistence, positionPacket: P
     const { uploadSec, heartBeatSec, ledState } = powerProfileConfig;
     otherData = { heartBeatSec, uploadSec, ledState, powerProfile: newPowerProfileType  };
     printMessage(
-      `${prefix} 📡 set status package [${heartBeatSec} sec], leds [${ledState}], Upload Interval [${uploadSec} sec]`
+      `${prefix} 📡 set heartbeat ${heartBeatSec} sec, leds [${ledState}], report Interval [${uploadSec} sec]`
     );
   }
 
