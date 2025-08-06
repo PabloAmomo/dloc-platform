@@ -1,4 +1,4 @@
-import { PowerProfileType } from './../../enums/PowerProfileType';
+import { PowerProfileType } from "./../../enums/PowerProfileType";
 import getPowerProfile from "../../functions/getPowerProfile";
 import positionAddPositionAndUpdateDevice from "../../functions/positionAddPositionAndUpdateDevice";
 import positionUpdateBatteryAndLastActivity from "../../functions/positionUpdateBatteryAndLastActivity";
@@ -14,16 +14,12 @@ import protoHttpGetPowerProfileConfig from "./config/protoHttpGetPowerProfileCon
 
 const protoHttpHandlePacket = async (persistence: Persistence, positionPacket: PositionPacket) => {
   const { imei, remoteAddress } = positionPacket;
-  var message: string = "ok";
-  var noHasPosition: boolean = positionPacket.lat === -999 || positionPacket.lng === -999;
+  const hasPosition: boolean = positionPacket.lat !== -999 && positionPacket.lng !== -999;
   const prefix = `[${imei}] (${remoteAddress})`;
-  let otherData = { heartBeatSec: 120, uploadSec: 60, ledState: false, powerProfile: PowerProfileType.AUTOMATIC_FULL };
+  let message: string = "ok";
 
-  if (noHasPosition) {
-    message = await positionUpdateBatteryAndLastActivity(imei, remoteAddress, persistence, positionPacket.batteryLevel);
-
-    return { code: message === "ok" ? 200 : 500, result: { message } };
-  }
+  /** Get activity */
+  const activity = positionPacket.activity ? JSON.parse(positionPacket.activity) : {};
 
   /** Get the las information about the IMEI */
   const imeiData: CacheImei = CACHE_IMEI.get(imei) ?? CacheImeiEmptyItem;
@@ -35,7 +31,7 @@ const protoHttpHandlePacket = async (persistence: Persistence, positionPacket: P
       persistence,
       imeiData.lastPowerProfileChecked,
       prefix,
-      false,
+      activity?.isNewConnection,
       imeiData.powerProfile,
       protoHttpGetPowerProfileConfig
     );
@@ -47,33 +43,38 @@ const protoHttpHandlePacket = async (persistence: Persistence, positionPacket: P
   });
 
   /** Add position packet to cache */
-  printMessage(`${prefix} ✅ updating cache [${JSON.stringify(positionPacket)}]`);
-  CACHE_POSITION.set(imei, { ...positionPacket, dateTimeUtc: new Date() });
-
-  /** If the power profile changed or need refresh, we will update the device */
-  if (powerProfileChanged || needProfileRefresh) {
-    const powerProfileConfig: PowerProfileConfig = protoHttpGetPowerProfileConfig(newPowerProfileType);
-    const { uploadSec, heartBeatSec, ledState } = powerProfileConfig;
-    otherData = { heartBeatSec, uploadSec, ledState, powerProfile: newPowerProfileType  };
-    printMessage(
-      `${prefix} 📡 set heartbeat ${heartBeatSec} sec, leds [${ledState}], report Interval [${uploadSec} sec]`
-    );
+  if (hasPosition) {
+    printMessage(`${prefix} ✅ updating cache [${JSON.stringify(positionPacket)}]`);
+    CACHE_POSITION.set(imei, { ...positionPacket, dateTimeUtc: new Date() });
   }
 
   /** Update position */
-  message = await positionAddPositionAndUpdateDevice(imei, remoteAddress, positionPacket, persistence);
+  if (!hasPosition)
+    message = await positionUpdateBatteryAndLastActivity(imei, remoteAddress, persistence, positionPacket.batteryLevel);
+  else {
+    message = await positionAddPositionAndUpdateDevice(imei, remoteAddress, positionPacket, persistence);
+    if (message === "ok")
+      message = await positionUpdateLastActivityAndAddHistory(
+        imei,
+        remoteAddress,
+        JSON.stringify(positionPacket),
+        persistence,
+        true
+      );
+  }
 
-  if (message === "ok")
-    message = await positionUpdateLastActivityAndAddHistory(
-      imei,
-      remoteAddress,
-      JSON.stringify(positionPacket),
-      persistence,
-      true
-    );
+  /** Get power profile configuration */
+  const powerProfileConfig: PowerProfileConfig = protoHttpGetPowerProfileConfig(newPowerProfileType);
+  const { uploadSec, heartBeatSec, ledState } = powerProfileConfig;
+  printMessage(
+    `${prefix} 📡 set heartbeat ${heartBeatSec} sec, leds [${ledState}], report Interval [${uploadSec} sec]`
+  );
 
   /** */
-  return { code: message === "ok" ? 200 : 500, result: { message, ...otherData } };
+  return {
+    code: message === "ok" ? 200 : 500,
+    result: { message, heartBeatSec, uploadSec, ledState, powerProfile: newPowerProfileType },
+  };
 };
 
 export { protoHttpHandlePacket };
