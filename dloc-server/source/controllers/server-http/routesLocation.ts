@@ -1,7 +1,7 @@
 import { getPersistence } from '../../persistence/persistence';
-import { location } from '../../services/server-http/location';
 import { PositionPacket } from '../../models/PositionPacket';
 import express from 'express';
+import { protoHttpHandlePacket } from '../../services/server-http/protoHttpHandlePacket';
 
 const routesLocation = express.Router();
 
@@ -41,7 +41,7 @@ const handlePacket = (req: express.Request, res: express.Response, next: express
 
   const positionPacket: PositionPacket = { imei, remoteAddress, dateTimeUtc, valid, lat, lng, gsmSignal, speed, directionAngle, batteryLevel, accuracy, activity };
 
-  location(getPersistence(), positionPacket).then((response) => res.status(response.code).json(response.result));
+  protoHttpHandlePacket(getPersistence(), positionPacket).then((response) => res.status(response.code).json(response.result));
 };
 
 routesLocation.post('/location', handlePacket);
