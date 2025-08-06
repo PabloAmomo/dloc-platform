@@ -5,7 +5,7 @@ import { printMessage } from '../../../functions/printMessage';
 import GetPowerProfileConfig from '../../../models/GetProwerProfileConfig';
 import { PowerProfileConfig } from '../../../models/PowerProfileConfig';
 
-const httpGetPowerProfileConfig: GetPowerProfileConfig = (
+const protoHttpGetPowerProfileConfig: GetPowerProfileConfig = (
   profileType: PowerProfileType = PowerProfileType.FULL
 ): PowerProfileConfig => {
   if (powerProfileTypeIsMinimal(profileType))
@@ -37,4 +37,4 @@ const httpGetPowerProfileConfig: GetPowerProfileConfig = (
   };
 };
 
-export default httpGetPowerProfileConfig;
+export default protoHttpGetPowerProfileConfig;

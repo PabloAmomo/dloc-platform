@@ -9,7 +9,7 @@ import { CacheImei, CacheImeiEmptyItem } from "../../infraestucture/models/Cache
 import { Persistence } from "../../models/Persistence";
 import { PositionPacket } from "../../models/PositionPacket";
 import { PowerProfileConfig } from "../../models/PowerProfileConfig";
-import httpGetPowerProfileConfig from "./config/httpGetPowerProfileConfig";
+import protoHttpGetPowerProfileConfig from "./config/protoHttpGetPowerProfileConfig";
 
 const protoHttpHandlePacket = async (persistence: Persistence, positionPacket: PositionPacket) => {
   const { imei, remoteAddress } = positionPacket;
@@ -36,7 +36,7 @@ const protoHttpHandlePacket = async (persistence: Persistence, positionPacket: P
       prefix,
       false,
       imeiData.powerProfile,
-      httpGetPowerProfileConfig
+      protoHttpGetPowerProfileConfig
     );
 
   /** update the information in the cache */
@@ -51,7 +51,7 @@ const protoHttpHandlePacket = async (persistence: Persistence, positionPacket: P
 
   /** If the power profile changed or need refresh, we will update the device */
   if (powerProfileChanged || needProfileRefresh) {
-    const powerProfileConfig: PowerProfileConfig = httpGetPowerProfileConfig(newPowerProfileType);
+    const powerProfileConfig: PowerProfileConfig = protoHttpGetPowerProfileConfig(newPowerProfileType);
     const { uploadSec, heartBeatSec, ledState } = powerProfileConfig;
     otherData = { heartBeatSec, uploadSec, ledState  };
     printMessage(
