@@ -19,6 +19,9 @@ const protoHttpHandlePacket = async (persistence: Persistence, positionPacket: P
   /** Get activity */
   const activity = positionPacket.activity ? JSON.parse(positionPacket.activity) : {};
 
+  printMessage(
+    `${prefix} 🎛️ activity received ${JSON.stringify(activity)}`)
+  
   /** Get the las information about the IMEI */
   const imeiData: CacheImei = CACHE_IMEI.get(imei) ?? CacheImeiEmptyItem;
 
