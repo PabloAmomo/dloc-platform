@@ -58,7 +58,7 @@ initCachePosition();
 startPersistence(new mySqlPersistence());
 
 /** Start Socket server */
-if (PORT_SOCKET) {
+if (PORT_SOCKET && PORT_SOCKET !== "0") {
   let injections: ServerSocketHandlerPropsInjection | null = null;
 
   if (SOCKET_PROTOCOL === "PROTO1903") injections = proto1903Injection();
@@ -84,4 +84,4 @@ if (PORT_SOCKET) {
 }
 
 /** Start HTTP server (Health Check) */
-if (PORT_HTTP) startServerHTTP(routes, PORT_HTTP);
+if (PORT_HTTP && PORT_HTTP !== "0") startServerHTTP(routes, PORT_HTTP);
