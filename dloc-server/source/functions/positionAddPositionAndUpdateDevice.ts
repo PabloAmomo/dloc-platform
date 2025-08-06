@@ -16,10 +16,11 @@ async function positionAddPositionAndUpdateDevice(
   var message: string = "ok";
 
   const lastPacketTime = CACHE_POSITION.get(imei)?.dateTimeUtc?.getTime() ?? 0;
-  if (lastPacketTime !== 0)
-    printMessage(
-      `[${imei}] (${remoteAddress}) ⏰ last position received 🌟 ${((Date.now() - lastPacketTime) / 1000).toFixed(0)} sec ago 🌟`
-    );
+  if (lastPacketTime !== 0) {
+    const seconds = ((Date.now() - lastPacketTime) / 1000).toFixed(0);
+    const textToShow = seconds === "0" ? "just now" : `${seconds} sec ago`;
+    printMessage(`[${imei}] (${remoteAddress}) ⏰ last position received 🌟 ${textToShow} 🌟`);
+  }
 
   /** Add position packet to cache */
   printMessage(`[${imei}] (${remoteAddress}) ✅ updating cache [${JSON.stringify(positionPacket)}]`);
