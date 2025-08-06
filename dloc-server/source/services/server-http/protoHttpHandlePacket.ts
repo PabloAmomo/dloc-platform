@@ -4,7 +4,6 @@ import positionUpdateBatteryAndLastActivity from '../../functions/positionUpdate
 import positionUpdateLastActivityAndAddHistory from '../../functions/positionUpdateLastActivityAndAddHistory';
 import { printMessage } from '../../functions/printMessage';
 import { CACHE_IMEI } from '../../infraestucture/caches/cacheIMEI';
-import { CACHE_POSITION } from '../../infraestucture/caches/cachePosition';
 import { CacheImei, CacheImeiEmptyItem } from '../../infraestucture/models/CacheImei';
 import { Persistence } from '../../models/Persistence';
 import { PositionPacket } from '../../models/PositionPacket';
@@ -40,12 +39,6 @@ const protoHttpHandlePacket = async (persistence: Persistence, positionPacket: P
     powerProfile: newPowerProfileType,
     lastPowerProfileChecked,
   });
-
-  /** Add position packet to cache */
-  if (hasPosition) {
-    printMessage(`${prefix} ✅ updating cache [${JSON.stringify(positionPacket)}]`);
-    CACHE_POSITION.set(imei, { ...positionPacket, dateTimeUtc: new Date() });
-  }
 
   /** Update position */
   if (!hasPosition)
