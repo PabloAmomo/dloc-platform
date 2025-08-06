@@ -20,9 +20,13 @@ response: Current server:1:82.223.64.197
 SMS: SERVER#82.223.64.197#24671#
 response: Current server:82.223.64.197:24671
 
+SMS: APN#apn-id#user#password# (2G & 4G v2)
+or
+SMS: APN,apn-id,user,password# (4G v1)
+
 ## Others SMS commands (ZX908)
 1 - Reset to default password: “pwrst”
-2 - Restore factory settings: “1122”
+2 - Restore factory settings: “1122” (4G V1 FACTORY#) (4G V2 1122#)
 3 - Inquire IMEI: “imei#”
 4 - Modify IMEI: “imei#+no.ofimei" ( for example: IMEI#200000000000001 )
 5 - LED light on/off: “led#on/led#off”
