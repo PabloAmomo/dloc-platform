@@ -1,3 +1,4 @@
+import { PowerProfileType } from './../../enums/PowerProfileType';
 import getPowerProfile from "../../functions/getPowerProfile";
 import positionAddPositionAndUpdateDevice from "../../functions/positionAddPositionAndUpdateDevice";
 import positionUpdateBatteryAndLastActivity from "../../functions/positionUpdateBatteryAndLastActivity";
@@ -16,7 +17,7 @@ const protoHttpHandlePacket = async (persistence: Persistence, positionPacket: P
   var message: string = "ok";
   var noHasPosition: boolean = positionPacket.lat === -999 || positionPacket.lng === -999;
   const prefix = `[${imei}] (${remoteAddress})`;
-  let otherData = { heartBeatSec: 120, uploadSec: 60, ledState: false };
+  let otherData = { heartBeatSec: 120, uploadSec: 60, ledState: false, powerProfile: PowerProfileType.AUTOMATIC_FULL };
 
   if (noHasPosition) {
     message = await positionUpdateBatteryAndLastActivity(imei, remoteAddress, persistence, positionPacket.batteryLevel);
@@ -53,7 +54,7 @@ const protoHttpHandlePacket = async (persistence: Persistence, positionPacket: P
   if (powerProfileChanged || needProfileRefresh) {
     const powerProfileConfig: PowerProfileConfig = protoHttpGetPowerProfileConfig(newPowerProfileType);
     const { uploadSec, heartBeatSec, ledState } = powerProfileConfig;
-    otherData = { heartBeatSec, uploadSec, ledState  };
+    otherData = { heartBeatSec, uploadSec, ledState, powerProfile: newPowerProfileType  };
     printMessage(
       `${prefix} 📡 set status package [${heartBeatSec} sec], leds [${ledState}], Upload Interval [${uploadSec} sec]`
     );
