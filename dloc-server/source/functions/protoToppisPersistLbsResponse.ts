@@ -29,7 +29,7 @@ const protoToppisPersistLbsResponse = async ({
   gsmSignal: number;
   batteryLevel: number;
 }): Promise<void> => {
-  if ("location" in lbsGetResponse) {
+  if (lbsGetResponse && "location" in lbsGetResponse) {
     const location: PositionPacket = {
       imei,
       remoteAddress,

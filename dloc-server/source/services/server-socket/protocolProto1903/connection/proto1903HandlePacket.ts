@@ -97,7 +97,7 @@ const proto1903HandlePacket: Proto1903HandlePacket = async (
       if ("error" in lbsGetResponse && lbsGetResponse.error) return lbsGetResponse;
 
       /** Process LBS data */
-      if ("location" in lbsGetResponse) {
+      if (lbsGetResponse && "location" in lbsGetResponse) {
         positionPacket.lat = lbsGetResponse.location.lat;
         positionPacket.lng = lbsGetResponse.location.lng;
         positionPacket.valid = true;
@@ -144,7 +144,7 @@ const proto1903HandlePacket: Proto1903HandlePacket = async (
     if ("error" in lbsGetResponse && lbsGetResponse.error) return lbsGetResponse;
 
     /** Process LBS data */
-    if ("location" in lbsGetResponse) {
+    if (lbsGetResponse && "location" in lbsGetResponse) {
       const { lat, lng } = lbsGetResponse.location;
       (response.response as string[]).push(`TRVBP14,${lat.toFixed(5)},${lng.toFixed(5)}#`);
     } else {
