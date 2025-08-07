@@ -29,10 +29,18 @@ const getPowerProfile: GetPowerProfile = async (
   try {
     if (lastPowerProfileChecked === 0) lastPowerProfileChecked = Date.now();
 
-    /** If new connection, update database to Full Power Profile */
+    /** If new connection, update database to Full Power Profile and return FULL_POWER PROFILE */
     if (isNewConnection) {
       await updatePowerProfile(imei, newPowerProfileType, persistence, messagePrefix);
       printMessage(`${messagePrefix} 🆕 new connection, setting power profile to [${newPowerProfileType}]`);
+      lastPowerProfileChecked = Date.now();
+      powerProfileChanged = true;
+      return {
+        newPowerProfileType,
+        powerProfileChanged,
+        lastPowerProfileChecked,
+        needProfileRefresh,
+      };
     }
 
     /* Get the power profile from the database */

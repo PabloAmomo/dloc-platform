@@ -1,14 +1,14 @@
-import getPowerProfile from '../../functions/getPowerProfile';
-import positionAddPositionAndUpdateDevice from '../../functions/positionAddPositionAndUpdateDevice';
-import positionUpdateBatteryAndLastActivity from '../../functions/positionUpdateBatteryAndLastActivity';
-import positionUpdateLastActivityAndAddHistory from '../../functions/positionUpdateLastActivityAndAddHistory';
-import { printMessage } from '../../functions/printMessage';
-import { CACHE_IMEI } from '../../infraestucture/caches/cacheIMEI';
-import { CacheImei, CacheImeiEmptyItem } from '../../infraestucture/models/CacheImei';
-import { Persistence } from '../../models/Persistence';
-import { PositionPacket } from '../../models/PositionPacket';
-import { PowerProfileConfig } from '../../models/PowerProfileConfig';
-import protoHttpGetPowerProfileConfig from './config/protoHttpGetPowerProfileConfig';
+import getPowerProfile from "../../functions/getPowerProfile";
+import positionAddPositionAndUpdateDevice from "../../functions/positionAddPositionAndUpdateDevice";
+import positionUpdateBatteryAndLastActivity from "../../functions/positionUpdateBatteryAndLastActivity";
+import positionUpdateLastActivityAndAddHistory from "../../functions/positionUpdateLastActivityAndAddHistory";
+import { printMessage } from "../../functions/printMessage";
+import { CACHE_IMEI } from "../../infraestucture/caches/cacheIMEI";
+import { CacheImei, CacheImeiEmptyItem } from "../../infraestucture/models/CacheImei";
+import { Persistence } from "../../models/Persistence";
+import { PositionPacket } from "../../models/PositionPacket";
+import { PowerProfileConfig } from "../../models/PowerProfileConfig";
+import protoHttpGetPowerProfileConfig from "./config/protoHttpGetPowerProfileConfig";
 
 const protoHttpHandlePacket = async (persistence: Persistence, positionPacket: PositionPacket) => {
   const { imei, remoteAddress } = positionPacket;
@@ -18,10 +18,12 @@ const protoHttpHandlePacket = async (persistence: Persistence, positionPacket: P
 
   /** Get activity */
   const activity = positionPacket.activity ? JSON.parse(positionPacket.activity) : {};
+  const isNewConnection = activity?.isNewConnection ?? false;
 
-  printMessage(
-    `${prefix} 🎛️  activity received ${JSON.stringify(activity)}`)
-  
+  /** Log the activity */
+  if (isNewConnection)
+    printMessage(`${prefix} 🆕 new connection detected, updating power profile and device information`);
+
   /** Get the las information about the IMEI */
   const imeiData: CacheImei = CACHE_IMEI.get(imei) ?? CacheImeiEmptyItem;
 
@@ -32,7 +34,7 @@ const protoHttpHandlePacket = async (persistence: Persistence, positionPacket: P
       persistence,
       imeiData.lastPowerProfileChecked,
       prefix,
-      activity?.isNewConnection,
+      isNewConnection,
       imeiData.powerProfile,
       protoHttpGetPowerProfileConfig
     );
