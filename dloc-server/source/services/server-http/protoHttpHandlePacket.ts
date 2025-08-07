@@ -12,7 +12,7 @@ import protoHttpGetPowerProfileConfig from './config/protoHttpGetPowerProfileCon
 const protoHttpHandlePacket = async (persistence: Persistence, positionPacket: PositionPacket) => {
   const { imei, remoteAddress } = positionPacket;
   const hasPosition: boolean = positionPacket.lat !== -999 && positionPacket.lng !== -999;
-  const prefix = `[${imei}] (${remoteAddress})`;
+  const prefix = `[${imei}]`;
   let message: string = "ok";
 
   /** Get activity */
