@@ -1,8 +1,8 @@
 
 import { Express } from 'express';
 import { configDotenv } from 'dotenv';
-import routesHealth from './routesHealth';
-import routesLocation from './routesLocation';
+import routesHealth from './routes/routesHealth';
+import routesLocation from './routes/routesLocation';
 configDotenv();
 
 const ROOT_PATH = process.env.ROOT_PATH ?? '';

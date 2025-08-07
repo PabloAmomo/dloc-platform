@@ -1,7 +1,7 @@
-import { getPersistence } from '../../persistence/persistence';
-import { PositionPacket } from '../../models/PositionPacket';
+import { getPersistence } from '../../../persistence/persistence';
+import { PositionPacket } from '../../../models/PositionPacket';
 import express from 'express';
-import { protoHttpHandlePacket } from '../../services/server-http/protoHttpHandlePacket';
+import { protoHttpHandlePacket } from '../../../services/server-http/protoHttpHandlePacket';
 
 const routesLocation = express.Router();
 
