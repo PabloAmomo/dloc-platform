@@ -1,9 +1,12 @@
 import {
-    PowerProfileType, powerProfileTypeIsBalanced, powerProfileTypeIsFull, powerProfileTypeIsMinimal
-} from '../../../enums/PowerProfileType';
-import { printMessage } from '../../../functions/printMessage';
-import GetPowerProfileConfig from '../../../models/GetProwerProfileConfig';
-import { PowerProfileConfig } from '../../../models/PowerProfileConfig';
+  PowerProfileType,
+  powerProfileTypeIsBalanced,
+  powerProfileTypeIsFull,
+  powerProfileTypeIsMinimal,
+} from "../../../enums/PowerProfileType";
+import { printMessage } from "../../../functions/printMessage";
+import GetPowerProfileConfig from "../../../models/GetProwerProfileConfig";
+import { PowerProfileConfig } from "../../../models/PowerProfileConfig";
 
 const protoHttpGetPowerProfileConfig: GetPowerProfileConfig = (
   profileType: PowerProfileType = PowerProfileType.FULL
@@ -25,7 +28,7 @@ const protoHttpGetPowerProfileConfig: GetPowerProfileConfig = (
       movementMeters: 50,
     };
   else if (!powerProfileTypeIsFull(profileType))
-    printMessage(`❌ power profile (ProtoTopin) [${profileType}] not found, defaulting to full power profile`);
+    printMessage(`❌ power profile [${profileType}] not found, defaulting to full power profile`);
 
   /** Full power profile configuration */
   return {

@@ -9,10 +9,12 @@ import { Persistence } from "../../models/Persistence";
 import { PositionPacket } from "../../models/PositionPacket";
 import protoHttpGetPowerProfileConfig from "./config/protoHttpGetPowerProfileConfig";
 
+const REMOTE_ADDRESS = "N/A";
+
 const protoHttpHandlePacket = async (persistence: Persistence, positionPacket: PositionPacket) => {
   const { imei } = positionPacket;
   const hasPosition: boolean = positionPacket.lat !== -999 && positionPacket.lng !== -999;
-  const prefix = `[${imei}] (N/A)`;
+  const prefix = `[${imei}] (${REMOTE_ADDRESS})`;
   let message: string = "ok";
 
   /** Get activity */
@@ -46,9 +48,9 @@ const protoHttpHandlePacket = async (persistence: Persistence, positionPacket: P
 
   /** Update position */
   if (!hasPosition)
-    message = await positionUpdateBatteryAndLastActivity(imei, "N/A", persistence, positionPacket.batteryLevel);
+    message = await positionUpdateBatteryAndLastActivity(imei, REMOTE_ADDRESS, persistence, positionPacket.batteryLevel);
   else {
-    message = await positionAddPositionAndUpdateDevice(imei, "N/A", positionPacket, persistence);
+    message = await positionAddPositionAndUpdateDevice(imei, REMOTE_ADDRESS, positionPacket, persistence);
     if (message === "ok")
       message = await positionUpdateLastActivityAndAddHistory(
         imei,
