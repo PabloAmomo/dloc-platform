@@ -1,14 +1,13 @@
-import getPowerProfile from "../../functions/getPowerProfile";
-import positionAddPositionAndUpdateDevice from "../../functions/positionAddPositionAndUpdateDevice";
-import positionUpdateBatteryAndLastActivity from "../../functions/positionUpdateBatteryAndLastActivity";
-import positionUpdateLastActivityAndAddHistory from "../../functions/positionUpdateLastActivityAndAddHistory";
-import { printMessage } from "../../functions/printMessage";
-import { CACHE_IMEI } from "../../infraestucture/caches/cacheIMEI";
-import { CacheImei, CacheImeiEmptyItem } from "../../infraestucture/models/CacheImei";
-import { Persistence } from "../../models/Persistence";
-import { PositionPacket } from "../../models/PositionPacket";
-import { PowerProfileConfig } from "../../models/PowerProfileConfig";
-import protoHttpGetPowerProfileConfig from "./config/protoHttpGetPowerProfileConfig";
+import getPowerProfile from '../../functions/getPowerProfile';
+import positionAddPositionAndUpdateDevice from '../../functions/positionAddPositionAndUpdateDevice';
+import positionUpdateBatteryAndLastActivity from '../../functions/positionUpdateBatteryAndLastActivity';
+import positionUpdateLastActivityAndAddHistory from '../../functions/positionUpdateLastActivityAndAddHistory';
+import { printMessage } from '../../functions/printMessage';
+import { CACHE_IMEI } from '../../infraestucture/caches/cacheIMEI';
+import { CacheImei, CacheImeiEmptyItem } from '../../infraestucture/models/CacheImei';
+import { Persistence } from '../../models/Persistence';
+import { PositionPacket } from '../../models/PositionPacket';
+import protoHttpGetPowerProfileConfig from './config/protoHttpGetPowerProfileConfig';
 
 const protoHttpHandlePacket = async (persistence: Persistence, positionPacket: PositionPacket) => {
   const { imei, remoteAddress } = positionPacket;
