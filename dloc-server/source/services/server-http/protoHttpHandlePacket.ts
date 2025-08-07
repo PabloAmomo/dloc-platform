@@ -1,18 +1,18 @@
-import getPowerProfile from '../../functions/getPowerProfile';
-import positionAddPositionAndUpdateDevice from '../../functions/positionAddPositionAndUpdateDevice';
-import positionUpdateBatteryAndLastActivity from '../../functions/positionUpdateBatteryAndLastActivity';
-import positionUpdateLastActivityAndAddHistory from '../../functions/positionUpdateLastActivityAndAddHistory';
-import { printMessage } from '../../functions/printMessage';
-import { CACHE_IMEI } from '../../infraestucture/caches/cacheIMEI';
-import { CacheImei, CacheImeiEmptyItem } from '../../infraestucture/models/CacheImei';
-import { Persistence } from '../../models/Persistence';
-import { PositionPacket } from '../../models/PositionPacket';
-import protoHttpGetPowerProfileConfig from './config/protoHttpGetPowerProfileConfig';
+import getPowerProfile from "../../functions/getPowerProfile";
+import positionAddPositionAndUpdateDevice from "../../functions/positionAddPositionAndUpdateDevice";
+import positionUpdateBatteryAndLastActivity from "../../functions/positionUpdateBatteryAndLastActivity";
+import positionUpdateLastActivityAndAddHistory from "../../functions/positionUpdateLastActivityAndAddHistory";
+import { printMessage } from "../../functions/printMessage";
+import { CACHE_IMEI } from "../../infraestucture/caches/cacheIMEI";
+import { CacheImei, CacheImeiEmptyItem } from "../../infraestucture/models/CacheImei";
+import { Persistence } from "../../models/Persistence";
+import { PositionPacket } from "../../models/PositionPacket";
+import protoHttpGetPowerProfileConfig from "./config/protoHttpGetPowerProfileConfig";
 
 const protoHttpHandlePacket = async (persistence: Persistence, positionPacket: PositionPacket) => {
-  const { imei, remoteAddress } = positionPacket;
+  const { imei } = positionPacket;
   const hasPosition: boolean = positionPacket.lat !== -999 && positionPacket.lng !== -999;
-  const prefix = `[${imei}]`;
+  const prefix = `[${imei}] (N/A)`;
   let message: string = "ok";
 
   /** Get activity */
@@ -46,13 +46,13 @@ const protoHttpHandlePacket = async (persistence: Persistence, positionPacket: P
 
   /** Update position */
   if (!hasPosition)
-    message = await positionUpdateBatteryAndLastActivity(imei, remoteAddress, persistence, positionPacket.batteryLevel);
+    message = await positionUpdateBatteryAndLastActivity(imei, "N/A", persistence, positionPacket.batteryLevel);
   else {
-    message = await positionAddPositionAndUpdateDevice(imei, remoteAddress, positionPacket, persistence);
+    message = await positionAddPositionAndUpdateDevice(imei, "N/A", positionPacket, persistence);
     if (message === "ok")
       message = await positionUpdateLastActivityAndAddHistory(
         imei,
-        remoteAddress,
+        "N/A",
         JSON.stringify(positionPacket),
         persistence,
         true
