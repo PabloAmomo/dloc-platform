@@ -17,6 +17,7 @@ export interface Persistence {
   addPowerProfile: AddPowerProfile;
   getPowerProfile: GetPowerProfile;
   getLastPositions: GetLastPositions;
+  getLastPosition: GetLastPosition;
   clean: clean;
   health: health;
 }
@@ -60,6 +61,9 @@ export interface UpdatePowerProfile {
 export interface GetLastPositions {
   (imei: string, timeInSec: number):  Promise<PersistenceResult>;
 }
+export interface GetLastPosition {
+  (imei: string):  Promise<PersistenceResult>;
+}
 export interface clean {
   ():  Promise<PersistenceResult>;
 }
@@ -86,6 +90,7 @@ const fakePersistence: Persistence = {
   addPowerProfile: async () => (fakePersistenceResult),
   getPowerProfile: async () => (fakePersistenceResult),
   getLastPositions: async () => (fakePersistenceResult),
+  getLastPosition: async () => (fakePersistenceResult),
   clean: async () => (fakePersistenceResult),
   health: async () => (fakePersistenceResult),
 };

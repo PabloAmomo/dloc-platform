@@ -47,6 +47,9 @@ class mySqlPersistence implements Persistence {
   getLastPositions(imei: string, timeInSec: number):  Promise<PersistenceResult> {
     return wrapper.handleGetLastPositions(imei, timeInSec);
   }
+  getLastPosition(imei: string):  Promise<PersistenceResult> {
+    return wrapper.handleGetLastPosition(imei);
+  }
   clean():  Promise<PersistenceResult> {
     return wrapper.handleClean();
   } 
