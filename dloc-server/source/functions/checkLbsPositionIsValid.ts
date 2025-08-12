@@ -60,7 +60,7 @@ const checkLbsPositionIsValid = async (
 
   if (speedInKmH > config.MAX_SPEED_KMH_ON_LBS_MOVEMENET) {
     printMessage(
-      `${prefix} ❌ Invalid LBS position change. ⏱️ Speed ${speedInKmH} km/h exceeds maximum allowed speed of ${config.MAX_SPEED_KMH_ON_LBS_MOVEMENET} km/h`
+      `${prefix} ❌ Invalid LBS position change. ⏱️  Speed ${speedInKmH} km/h exceeds maximum allowed speed of ${config.MAX_SPEED_KMH_ON_LBS_MOVEMENET} km/h`
     );
     return false; // Position is too far from the last known position
   }
