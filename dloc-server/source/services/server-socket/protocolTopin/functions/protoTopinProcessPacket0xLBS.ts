@@ -1,7 +1,7 @@
 import convertRSSIToPercent from "../../../../functions/convertRSSIToPercent";
 import getDateTimeValues from "../../../../functions/getDateTimeValues";
 import { printMessage } from "../../../../functions/printMessage";
-import protoToppisPersistLbsResponse from "../../../../functions/protoToppisPersistLbsResponse";
+import protoTopisPersistLbsResponse from "./protoTopisPersistLbsResponse";
 import { GoogleGeoPositionRequest } from "../../../../models/GoogleGeoPositionRequest";
 import getLbsPosition from "../../functions/getLbsPosition";
 import { ProtoTopinProcessPacket } from "../models/ProtoTopinProcessPacket";
@@ -60,7 +60,7 @@ const protoTopinProcessPacket0xLBS: ProtoTopinProcessPacket = async ({
       if ("error" in lbsGetResponse && lbsGetResponse.error) throw new Error(lbsGetResponse.error);
 
       /** Process LBS data */
-      protoToppisPersistLbsResponse({
+      protoTopisPersistLbsResponse({
         imei,
         remoteAddress,
         lbsGetResponse,

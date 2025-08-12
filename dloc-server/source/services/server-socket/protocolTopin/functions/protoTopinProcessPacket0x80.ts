@@ -3,7 +3,7 @@ import { printMessage } from "../../../../functions/printMessage";
 import { CACHE_IMEI } from "../../../../infraestucture/caches/cacheIMEI";
 import { CACHE_LBS } from "../../../../infraestucture/caches/cacheLBS";
 import { ProtoTopinProcessPacket } from "../models/ProtoTopinProcessPacket";
-import protoToppisPersistLbsResponse from "../../../../functions/protoToppisPersistLbsResponse";
+import protoTopisPersistLbsResponse from "./protoTopisPersistLbsResponse";
 
 const infoMessages: { [key: number]: string } = {
   0x00: `🤷‍♂️ unknown or not reason defined`,
@@ -40,7 +40,7 @@ const protoTopinProcessPacket0x80: ProtoTopinProcessPacket = async ({
 
       const dateTimeUtc = new Date(Date.now() - 2000); // Use 2 seconds ago to avoid issues with the database position time
 
-      protoToppisPersistLbsResponse({
+      protoTopisPersistLbsResponse({
         imei,
         remoteAddress,
         lbsGetResponse,

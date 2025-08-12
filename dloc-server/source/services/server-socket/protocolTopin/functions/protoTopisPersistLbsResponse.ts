@@ -1,12 +1,12 @@
-import { GoogleGeoPositionResponse } from "../models/GoogleGeoPositionResponse";
-import { GpsAccuracy } from "../models/GpsAccuracy";
-import { Persistence } from "../models/Persistence";
-import { PositionPacket } from "../models/PositionPacket";
-import HandlePacketResult from "../services/server-socket/models/HandlePacketResult";
-import protoTopinPersistPosition from "../services/server-socket/protocolTopin/functions/protoTopinPersistPosition";
-import { ProtoTopinPacket } from "../services/server-socket/protocolTopin/models/ProtoTopinPacket";
+import { GoogleGeoPositionResponse } from "../../../../models/GoogleGeoPositionResponse";
+import { GpsAccuracy } from "../../../../models/GpsAccuracy";
+import { Persistence } from "../../../../models/Persistence";
+import { PositionPacket } from "../../../../models/PositionPacket";
+import HandlePacketResult from "../../models/HandlePacketResult";
+import protoTopinPersistPosition from "./protoTopinPersistPosition";
+import { ProtoTopinPacket } from "../models/ProtoTopinPacket";
 
-const protoToppisPersistLbsResponse = async ({
+const protoTopisPersistLbsResponse = async ({
   imei,
   remoteAddress,
   lbsGetResponse,
@@ -29,6 +29,8 @@ const protoToppisPersistLbsResponse = async ({
   gsmSignal: number;
   batteryLevel: number;
 }): Promise<void> => {
+  // TODO: Get the current position and time, and check if lbs response is valid
+  
   if (lbsGetResponse && "location" in lbsGetResponse) {
     const location: PositionPacket = {
       imei,
@@ -48,4 +50,4 @@ const protoToppisPersistLbsResponse = async ({
   }
 };
 
-export default protoToppisPersistLbsResponse;
+export default protoTopisPersistLbsResponse;
