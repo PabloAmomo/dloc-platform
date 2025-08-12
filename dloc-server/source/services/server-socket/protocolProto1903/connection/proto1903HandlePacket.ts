@@ -105,6 +105,7 @@ const proto1903HandlePacket: Proto1903HandlePacket = async (
           imei,
           lbsGetResponse.location.lat,
           lbsGetResponse.location.lng,
+          persistence,
           prefix
         );
         positionPacket.accuracy = GpsAccuracy.lbs;
@@ -152,7 +153,15 @@ const proto1903HandlePacket: Proto1903HandlePacket = async (
 
     /** Process LBS data */
     if (lbsGetResponse && "location" in lbsGetResponse) {
-      if (await checkLbsPositionIsValid(imei, lbsGetResponse.location.lat, lbsGetResponse.location.lng, prefix)) {
+      if (
+        await checkLbsPositionIsValid(
+          imei,
+          lbsGetResponse.location.lat,
+          lbsGetResponse.location.lng,
+          persistence,
+          prefix
+        )
+      ) {
         const { lat, lng } = lbsGetResponse.location;
         (response.response as string[]).push(`TRVBP14,${lat.toFixed(5)},${lng.toFixed(5)}#`);
       }

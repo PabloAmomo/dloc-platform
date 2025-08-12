@@ -46,7 +46,7 @@ const protoTopisPersistLbsResponse = async ({
       activity: "{}",
     };
 
-    if (await checkLbsPositionIsValid(imei, lbsGetResponse.location.lat, lbsGetResponse.location.lng, prefix))
+    if (await checkLbsPositionIsValid(imei, lbsGetResponse.location.lat, lbsGetResponse.location.lng, persistence, prefix))
       protoTopinPersistPosition(imei, remoteAddress, location, persistence, topinPacket, response, prefix);
   }
 };

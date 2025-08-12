@@ -7,7 +7,7 @@ const connectionConfig: ConnectionConfig = mySqlConnectionConfig;
 
 const handleGetLastPosition = async (imei: string): Promise<PersistenceResult> => {
   const params = [imei];
-  const sql = `SELECT lat, lng, lastVisibilityUTC FROM device WHERE imei = ?;`;
+  const sql = `SELECT lat, lng, lastVisibilityUTC, locationAccuracy FROM device WHERE imei = ?;`;
   const response: PersistenceResult = await mySqlQueryAsync(connectionConfig, sql, params);
   return response;
 };
