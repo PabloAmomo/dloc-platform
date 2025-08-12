@@ -1,3 +1,4 @@
+import config from "../../config/config";
 import getPowerProfile from "../../functions/getPowerProfile";
 import positionAddPositionAndUpdateDevice from "../../functions/positionAddPositionAndUpdateDevice";
 import positionUpdateBatteryAndLastActivity from "../../functions/positionUpdateBatteryAndLastActivity";
@@ -13,7 +14,7 @@ const REMOTE_ADDRESS = "N/A";
 
 const protoHttpHandlePacket = async (persistence: Persistence, positionPacket: PositionPacket) => {
   const { imei } = positionPacket;
-  const hasPosition: boolean = positionPacket.lat !== -999 && positionPacket.lng !== -999;
+  const hasPosition: boolean = positionPacket.lat !== config.INVALID_POSITION_LAT_LNG && positionPacket.lng !== config.INVALID_POSITION_LAT_LNG;
   const prefix = `[${imei}] (${REMOTE_ADDRESS})`;
   let message: string = "ok";
 

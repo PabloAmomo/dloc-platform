@@ -2,13 +2,14 @@ import { getPersistence } from '../../../persistence/persistence';
 import { PositionPacket } from '../../../models/PositionPacket';
 import express from 'express';
 import { protoHttpHandlePacket } from '../../../services/server-http/protoHttpHandlePacket';
+import config from '../../../config/config';
 
 const routesLocation = express.Router();
 
 const handlePacket = (req: express.Request, res: express.Response, next: express.NextFunction) => {
   const imei: string = req.query?.id?.toString() ?? req.query?.imei?.toString() ?? '';
-  let lat: number = parseFloat(req.query?.lat?.toString() ?? '-999') ?? NaN;
-  let lng: number = parseFloat(req.query?.lon?.toString() ?? req.query?.lng?.toString() ?? '-999') ?? NaN;
+  let lat: number = parseFloat(req.query?.lat?.toString() ?? config.INVALID_POSITION_LAT_LNG.toString()) ?? NaN;
+  let lng: number = parseFloat(req.query?.lon?.toString() ?? req.query?.lng?.toString() ?? config.INVALID_POSITION_LAT_LNG.toString()) ?? NaN;
   const timestamp: string = req.query?.timestamp?.toString() ?? '';
   const speedValue: string = req.query?.speed?.toString() ?? '0';
   const bearing: string = req.query?.bearing?.toString() ?? '';
@@ -30,8 +31,8 @@ const handlePacket = (req: express.Request, res: express.Response, next: express
   if (!isNaN(lat) && !isNaN(lng)) {
     if (lat < -90 || lat > 90 || lng < -180 || lng > 180) error = 'invalid latitude or longitude';
   } else {
-    lat = -999;
-    lng = -999;
+    lat = config.INVALID_POSITION_LAT_LNG;
+    lng = config.INVALID_POSITION_LAT_LNG;
   }
 
   /** Return error */
