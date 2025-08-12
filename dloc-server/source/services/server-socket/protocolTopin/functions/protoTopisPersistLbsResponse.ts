@@ -5,6 +5,7 @@ import { PositionPacket } from "../../../../models/PositionPacket";
 import HandlePacketResult from "../../models/HandlePacketResult";
 import protoTopinPersistPosition from "./protoTopinPersistPosition";
 import { ProtoTopinPacket } from "../models/ProtoTopinPacket";
+import checkLbsPositionIsValid from "../../../../functions/checkLbsPositionIsValid";
 
 const protoTopisPersistLbsResponse = async ({
   imei,
@@ -29,8 +30,6 @@ const protoTopisPersistLbsResponse = async ({
   gsmSignal: number;
   batteryLevel: number;
 }): Promise<void> => {
-  // TODO: Get the current position and time, and check if lbs response is valid
-  
   if (lbsGetResponse && "location" in lbsGetResponse) {
     const location: PositionPacket = {
       imei,
@@ -46,7 +45,9 @@ const protoTopisPersistLbsResponse = async ({
       accuracy: GpsAccuracy.lbs,
       activity: "{}",
     };
-    protoTopinPersistPosition(imei, remoteAddress, location, persistence, topinPacket, response, prefix);
+
+    if (await checkLbsPositionIsValid(imei, lbsGetResponse.location.lat, lbsGetResponse.location.lng, prefix))
+      protoTopinPersistPosition(imei, remoteAddress, location, persistence, topinPacket, response, prefix);
   }
 };
 

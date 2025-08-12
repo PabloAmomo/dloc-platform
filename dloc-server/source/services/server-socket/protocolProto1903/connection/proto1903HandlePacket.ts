@@ -1,3 +1,4 @@
+import checkLbsPositionIsValid from "../../../../functions/checkLbsPositionIsValid";
 import { getNormalizedIMEI, NO_IMEI_STRING } from "../../../../functions/getNormalizedIMEI";
 import { getUtcDateTime } from "../../../../functions/getUtcDateTime";
 import getValuesFromStringByRegexs from "../../../../functions/getValuesFromStringByRegex";
@@ -52,11 +53,11 @@ const proto1903HandlePacket: Proto1903HandlePacket = async (
   // ---------------------------------------
   else if (data.startsWith("TRVYP14") || data.startsWith("TRVYP15")) {
     const packetType = data.startsWith("TRVYP14") ? "TRVYP14" : "TRVYP15";
+    const prefix = `[${imeiTemp}] (${remoteAddress})`;
 
     /** Process GPS data */
     let { values, regexIndex } = getValuesFromStringByRegexs(data, PROTO1903_REGEX_PACKETS);
-    if (regexIndex != -1)
-      printMessage(`[${imeiTemp}] (${remoteAddress}) ℹ️  process data (REGEX ${regexIndex}) [${data.split(",")[0]}]`);
+    if (regexIndex != -1) printMessage(`${prefix} ℹ️  process data (REGEX ${regexIndex}) [${data.split(",")[0]}]`);
 
     /** imei not received */
     if (response.imei == "")
@@ -88,7 +89,7 @@ const proto1903HandlePacket: Proto1903HandlePacket = async (
 
     if (!positionPacket.valid) {
       /** Invalid position, try to get position from LBS */
-      printMessage(`[${imeiTemp}] (${remoteAddress}) ⚠️  invalid position (NOT 'A') [${data.split(",")[0]}]`);
+      printMessage(`${prefix} ⚠️  invalid position (NOT 'A') [${data.split(",")[0]}]`);
 
       /** LBS query */
       const request = proto1903CreateGoogleGeoPositionRequest(data, packetType);
@@ -98,9 +99,15 @@ const proto1903HandlePacket: Proto1903HandlePacket = async (
 
       /** Process LBS data */
       if (lbsGetResponse && "location" in lbsGetResponse) {
+        // TODO: Get the current position and time, and check if lbs response is valid
         positionPacket.lat = lbsGetResponse.location.lat;
         positionPacket.lng = lbsGetResponse.location.lng;
-        positionPacket.valid = true;
+        positionPacket.valid = await checkLbsPositionIsValid(
+          imei,
+          lbsGetResponse.location.lat,
+          lbsGetResponse.location.lng,
+          prefix
+        );
         positionPacket.accuracy = GpsAccuracy.lbs;
       }
     }
@@ -132,21 +139,24 @@ const proto1903HandlePacket: Proto1903HandlePacket = async (
   // ---------------------------------------------
   else if (data.startsWith("TRVAP14")) {
     const packetType = "TRVAP14";
+    const prefix = `[${imeiTemp}] (${remoteAddress})`;
 
     if (response.imei == "")
       return await discardData(noImei, true, persistence, imeiTemp, remoteAddress, data, response);
 
     /** LBS query */
     const request = proto1903CreateGoogleGeoPositionRequest(data, packetType);
-    printMessage(`[${imeiTemp}] (${remoteAddress}) 🙋 creating lbs request for packet ${packetType}`);
+    printMessage(`${prefix} 🙋 creating lbs request for packet ${packetType}`);
 
     const lbsGetResponse = await getLbsPosition(request, persistence, imeiTemp, remoteAddress, response);
     if ("error" in lbsGetResponse && lbsGetResponse.error) return lbsGetResponse;
 
     /** Process LBS data */
     if (lbsGetResponse && "location" in lbsGetResponse) {
-      const { lat, lng } = lbsGetResponse.location;
-      (response.response as string[]).push(`TRVBP14,${lat.toFixed(5)},${lng.toFixed(5)}#`);
+      if (await checkLbsPositionIsValid(imei, lbsGetResponse.location.lat, lbsGetResponse.location.lng, prefix)) {
+        const { lat, lng } = lbsGetResponse.location;
+        (response.response as string[]).push(`TRVBP14,${lat.toFixed(5)},${lng.toFixed(5)}#`);
+      }
     } else {
       (response.response as string[]).push(`TRVBP${data.substring(5, 7)}#`);
     }
