@@ -99,7 +99,6 @@ const proto1903HandlePacket: Proto1903HandlePacket = async (
 
       /** Process LBS data */
       if (lbsGetResponse && "location" in lbsGetResponse) {
-        // TODO: Get the current position and time, and check if lbs response is valid
         positionPacket.lat = lbsGetResponse.location.lat;
         positionPacket.lng = lbsGetResponse.location.lng;
         positionPacket.valid = await checkLbsPositionIsValid(
