@@ -52,6 +52,7 @@ CREATE TABLE `device` (
   `locationAccuracy` int(11) NOT NULL DEFAULT 0,
   `activity` text NOT NULL DEFAULT '{}',
   `powerProfile` varchar(32) NOT NULL DEFAULT 'automatic_full',
+  `protocol` varchar(20) NOT NULL DEFAULT 'unknown',
   PRIMARY KEY (`imei`),
   KEY `device_idx01` (`userId`) USING BTREE,
   KEY `device_idx02` (`imei`,`userId`) USING BTREE,
