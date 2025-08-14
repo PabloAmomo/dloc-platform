@@ -193,7 +193,8 @@ const MapMarkerPopup = (props: MapMarkerPopupProps) => {
       <Box {...style.BatteryIconContainerProps}>
         <BatteryIcon
           {...style.BatteryIconProps}
-          level={outOffVisibilityBattery ? -1 : device?.batteryLevel ?? -1}
+          outOffVisibility={outOffVisibilityBattery}
+          level={device?.batteryLevel ?? -1}
         />
       </Box>
 
