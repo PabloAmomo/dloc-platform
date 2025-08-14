@@ -34,6 +34,8 @@ import { PowerProfileType, powerProfileTypeAutomatic } from "./enums/PowerProfil
 
 console.log(powerProfileTypeAutomatic(PowerProfileType.FULL));
 
+// TODO: Add protocol name when create new device
+
 // console.log(Buffer.from(createHexFromNumberWithNBytes(10, 2), "hex"));
 
 /*
