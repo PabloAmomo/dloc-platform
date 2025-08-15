@@ -1,4 +1,5 @@
 import config from '../../../../config/config';
+import { Protocols } from '../../../../enums/Protocols';
 import convertAnyToHexString from '../../../../functions/convertAnyToHexString';
 import { getNormalizedIMEI } from '../../../../functions/getNormalizedIMEI';
 import positionUpdateLastActivityAndAddHistory from '../../../../functions/positionUpdateLastActivityAndAddHistory';
@@ -21,6 +22,8 @@ import protoTopinProcessPacket0xLBS from '../functions/protoTopinProcessPacket0x
 import ProtoTopinHandlePacket from '../models/ProtoTopinHandlePacket';
 import ProtoTopinHandlePacketProps from '../models/ProtoTopinHandlePacketProps';
 import ProtoTopinProcessPacketProps from '../models/ProtoTopinProcessPacketProps';
+
+const PROTOCOL: Protocols = "TOPIN";
 
 const protoTopinHandlePacket: ProtoTopinHandlePacket = async (
   props: ProtoTopinHandlePacketProps
@@ -114,7 +117,7 @@ const protoTopinHandlePacket: ProtoTopinHandlePacket = async (
   else {
     printMessage(`[${imeiToPrint}] (${remoteAddress}) 🤷‍♂️ command unknown in data 🙋`);
     printMessage(`[${imeiToPrint}] (${remoteAddress}) 🤷‍♂️ unknown 👉 👉 👉 👉 👉 👉 [${dataString}]`);
-    return await discardData("commad unknown", false, persistence, imeiToPrint, remoteAddress, dataString, response);
+    return await discardData("commad unknown", false, persistence, imeiToPrint, PROTOCOL, remoteAddress, dataString, response);
   }
 
   updateLastActivity = respProcess.updateLastActivity;

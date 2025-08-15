@@ -43,6 +43,7 @@ const jt808PersistLocation = async (
       true,
       persistence,
       imei,
+      "JT808",
       remoteAddress,
       data.toString("hex"),
       response

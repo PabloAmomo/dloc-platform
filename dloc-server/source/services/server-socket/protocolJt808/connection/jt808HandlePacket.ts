@@ -1,3 +1,4 @@
+import { Protocols } from "../../../../enums/Protocols";
 import convertAnyToHexString from "../../../../functions/convertAnyToHexString";
 import { getNormalizedIMEI } from "../../../../functions/getNormalizedIMEI";
 import positionUpdateLastActivityAndAddHistory from "../../../../functions/positionUpdateLastActivityAndAddHistory";
@@ -15,6 +16,8 @@ import jt808ProcessPacket0x0xxxLocations from "../functions/jt808ProcessPacket0x
 import Jt808HandlePacket from "../models/Jt808HandlePacket";
 import Jt808HandlePacketProps from "../models/Jt808HandlePacketProps";
 import Jt808ProcessPacketProps from "../models/Jt808ProcessPacketProps";
+
+const PROTOCOL: Protocols = "JT808";
 
 const jt808HandlePacket: Jt808HandlePacket = async (props: Jt808HandlePacketProps): Promise<HandlePacketResult> => {
   const { imei, remoteAddress, data, persistence, counter, disconnect } = props;
@@ -128,7 +131,7 @@ const jt808HandlePacket: Jt808HandlePacket = async (props: Jt808HandlePacketProp
   else {
     printMessage(`[${imeiToPrint}] (${remoteAddress}) 🤷‍♂️ command unknown in data ⚠️  [${dataString}]  ⚠️`);
 
-    return await discardData("commad unknown", false, persistence, imeiToPrint, remoteAddress, dataString, response);
+    return await discardData("commad unknown", false, persistence, imeiToPrint, PROTOCOL, remoteAddress, dataString, response);
   }
 
   /** Update last activity and add history */

@@ -1,3 +1,4 @@
+import { Protocols } from "../../../../enums/Protocols";
 import checkLbsPositionIsValid from "../../../../functions/checkLbsPositionIsValid";
 import { getNormalizedIMEI, NO_IMEI_STRING } from "../../../../functions/getNormalizedIMEI";
 import { getUtcDateTime } from "../../../../functions/getUtcDateTime";
@@ -18,6 +19,7 @@ import Proto1903HandlePacket from "../models/Proto1903HandlePacket";
 import Proto1903HandlePacketProps from "../models/Proto1903HandlePacketProps";
 
 const noImei: string = "no imei received";
+const PROTOCOL: Protocols = "PROTO1903";
 
 const proto1903HandlePacket: Proto1903HandlePacket = async (
   props: Proto1903HandlePacketProps
@@ -61,7 +63,7 @@ const proto1903HandlePacket: Proto1903HandlePacket = async (
 
     /** imei not received */
     if (response.imei == "")
-      return await discardData(noImei, true, persistence, imeiTemp, remoteAddress, data, response);
+      return await discardData(noImei, true, persistence, imeiTemp, PROTOCOL, remoteAddress, data, response);
 
     /** Create position packet and persist */
     const positionPacket: PositionPacket | undefined = proto1903CreatePositionPacket(
@@ -79,6 +81,7 @@ const proto1903HandlePacket: Proto1903HandlePacket = async (
         false,
         persistence,
         imeiTemp,
+        PROTOCOL,
         remoteAddress,
         data,
         response
@@ -94,7 +97,7 @@ const proto1903HandlePacket: Proto1903HandlePacket = async (
       /** LBS query */
       const request = proto1903CreateGoogleGeoPositionRequest(data, packetType);
       printMessage(`[${imeiTemp}] (${remoteAddress}) 🙋 creating lbs request for packet ${packetType}`);
-      const lbsGetResponse = await getLbsPosition(request, persistence, imeiTemp, remoteAddress, response);
+      const lbsGetResponse = await getLbsPosition(request, persistence, imeiTemp, PROTOCOL, remoteAddress, response);
       if ("error" in lbsGetResponse && lbsGetResponse.error) return lbsGetResponse;
 
       /** Process LBS data */
@@ -119,7 +122,7 @@ const proto1903HandlePacket: Proto1903HandlePacket = async (
 
       await positionAddPositionAndUpdateDevice(
         imeiTemp,
-        "PROTO1903",
+        PROTOCOL,
         remoteAddress,
         positionPacket,
         persistence,
@@ -129,7 +132,8 @@ const proto1903HandlePacket: Proto1903HandlePacket = async (
         }
       );
 
-      if (oldPacket) await discardData(oldPacketMessage, true, persistence, imeiTemp, remoteAddress, data, response);
+      if (oldPacket)
+        await discardData(oldPacketMessage, true, persistence, imeiTemp, PROTOCOL, remoteAddress, data, response);
     }
 
     (response.response as string[]).push(`TRVZP${data.substring(5, 7)}#`);
@@ -143,13 +147,13 @@ const proto1903HandlePacket: Proto1903HandlePacket = async (
     const prefix = `[${imeiTemp}] (${remoteAddress})`;
 
     if (response.imei == "")
-      return await discardData(noImei, true, persistence, imeiTemp, remoteAddress, data, response);
+      return await discardData(noImei, true, persistence, imeiTemp, PROTOCOL, remoteAddress, data, response);
 
     /** LBS query */
     const request = proto1903CreateGoogleGeoPositionRequest(data, packetType);
     printMessage(`${prefix} 🙋 creating lbs request for packet ${packetType}`);
 
-    const lbsGetResponse = await getLbsPosition(request, persistence, imeiTemp, remoteAddress, response);
+    const lbsGetResponse = await getLbsPosition(request, persistence, imeiTemp, PROTOCOL, remoteAddress, response);
     if ("error" in lbsGetResponse && lbsGetResponse.error) return lbsGetResponse;
 
     /** Process LBS data */
@@ -178,14 +182,14 @@ const proto1903HandlePacket: Proto1903HandlePacket = async (
   // ---------------------------------------------
   else if (data.startsWith("TRVYP02") || data.startsWith("TRVYP1") || data.startsWith("TRVYP16")) {
     if (response.imei == "")
-      return await discardData(noImei, true, persistence, imeiTemp, remoteAddress, data, response);
+      return await discardData(noImei, true, persistence, imeiTemp, PROTOCOL, remoteAddress, data, response);
 
     /** Process Battery level on packet heartbeat */
     if (data.startsWith("TRVYP16")) {
       if (data.length < 18) updateLastActivity = true;
       else {
         const batteryLevel: number = parseInt(data.substring(14, 17) ?? "-1");
-        await positionUpdateBatteryAndLastActivity(imeiTemp, "PROTO1903", remoteAddress, persistence, batteryLevel);
+        await positionUpdateBatteryAndLastActivity(imeiTemp, PROTOCOL, remoteAddress, persistence, batteryLevel);
       }
     }
 
@@ -197,7 +201,7 @@ const proto1903HandlePacket: Proto1903HandlePacket = async (
   // ---------------------------------------------
   else if (data.startsWith("TRVAP89")) {
     if (response.imei == "")
-      return await discardData(noImei, true, persistence, imeiTemp, remoteAddress, data, response);
+      return await discardData(noImei, true, persistence, imeiTemp, PROTOCOL, remoteAddress, data, response);
 
     (response.response as string[]).push(`TRVBP${data.substring(5, 7)}#`);
   }
@@ -245,11 +249,27 @@ const proto1903HandlePacket: Proto1903HandlePacket = async (
         data.length > 20 ? data.substring(0, 20) + "..." : data
       }]`
     );
-    return await discardData("commad unknown", false, persistence, imeiTemp, remoteAddress, data, response);
+    return await discardData(
+      "commad unknown",
+      false,
+      persistence,
+      imeiTemp,
+      PROTOCOL,
+      remoteAddress,
+      data,
+      response
+    );
   }
 
   /** Update last activity and add history */
-  await positionUpdateLastActivityAndAddHistory(imeiTemp, "PROTO1903", remoteAddress, data, persistence, updateLastActivity);
+  await positionUpdateLastActivityAndAddHistory(
+    imeiTemp,
+    PROTOCOL,
+    remoteAddress,
+    data,
+    persistence,
+    updateLastActivity
+  );
 
   /** */
   if (response.response.length === 0) {

@@ -55,7 +55,7 @@ const protoTopinProcessPacket0xLBS: ProtoTopinProcessPacket = async ({
         }
       }
 
-      const lbsGetResponse = await getLbsPosition(googleGeoPositionRequest, persistence, imei, remoteAddress, response);
+      const lbsGetResponse = await getLbsPosition(googleGeoPositionRequest, persistence, imei, "TOPIN", remoteAddress, response);
 
       if ("error" in lbsGetResponse && lbsGetResponse.error) throw new Error(lbsGetResponse.error);
 

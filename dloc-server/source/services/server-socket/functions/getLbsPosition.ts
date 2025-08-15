@@ -1,3 +1,4 @@
+import { Protocols } from "../../../enums/Protocols";
 import getGoogleGeoPosition from "../../../functions/getGoogleGeoPosition";
 import { printMessage } from "../../../functions/printMessage";
 import { GoogleGeoPositionRequest } from "../../../models/GoogleGeoPositionRequest";
@@ -11,6 +12,7 @@ async function getLbsPosition(
   googleGeoPositionRequest: GoogleGeoPositionRequest,
   persistence: Persistence,
   imeiTemp: string,
+  protocol: Protocols,
   remoteAddress: string,
   response: HandlePacketResult
 ): Promise<HandlePacketResult | GoogleGeoPositionResponse | {}> {
@@ -29,6 +31,7 @@ async function getLbsPosition(
       true,
       persistence,
       imeiTemp,
+      protocol,
       remoteAddress,
       JSON.stringify(googleGeoPositionRequest),
       response

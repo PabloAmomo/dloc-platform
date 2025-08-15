@@ -51,6 +51,7 @@ const protoTopinPersistPosition = async (
         true,
         persistence,
         imei,
+        "TOPIN",
         remoteAddress,
         topinPacket.informationContent.toString("hex"),
         response
