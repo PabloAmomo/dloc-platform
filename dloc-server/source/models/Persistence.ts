@@ -42,7 +42,7 @@ export interface AddDevice {
   (imei: string, protocol: Protocols): Promise<PersistenceResult>;
 }
 export interface AddSignalStrength {
-  (imei: string, signalStrength: number): Promise<PersistenceResult>;
+  (imei: string, protocol: Protocols, signalStrength: number): Promise<PersistenceResult>;
 }
 export interface AddPowerProfile {
   (imei: string, profile: PowerProfileType): Promise<PersistenceResult>;
