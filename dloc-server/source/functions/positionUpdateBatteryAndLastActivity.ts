@@ -1,9 +1,11 @@
+import { Protocols } from "../enums/Protocols";
 import { PersistenceResult } from "../infraestucture/models/PersistenceResult";
 import { Persistence } from "../models/Persistence";
 import { printMessage } from "./printMessage";
 
 async function positionUpdateBatteryAndLastActivity(
   imei: string,
+  protocol: Protocols,
   remoteAddress: string,
   persistence: Persistence,
   batteryLevel: number
@@ -28,7 +30,7 @@ async function positionUpdateBatteryAndLastActivity(
 
   /** Update last activity */
   await persistence
-    .updateLastActivity(imei)
+    .updateLastActivity(imei, protocol)
     .then((result: PersistenceResult) => {
       if (result.error) {
         message = result.error.message;

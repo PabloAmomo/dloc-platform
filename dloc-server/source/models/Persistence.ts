@@ -57,7 +57,7 @@ export interface UpdateDevice {
   (positionPacket: PositionPacket, protocol: Protocols): Promise<PersistenceResult>;
 }
 export interface UpdateLastActivity {
-  (imei: string): Promise<PersistenceResult>;
+  (imei: string, protocol: Protocols): Promise<PersistenceResult>;
 }
 export interface UpdatePowerProfile {
   (imei: string, powerProfile: PowerProfileType): Promise<PersistenceResult>;

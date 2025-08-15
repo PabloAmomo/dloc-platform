@@ -1,9 +1,11 @@
+import { Protocols } from "../enums/Protocols";
 import { PersistenceResult } from "../infraestucture/models/PersistenceResult";
 import { Persistence } from "../models/Persistence";
 import { printMessage } from "./printMessage";
 
 async function positionUpdateLastActivityAndAddHistory(
   imei: string,
+  protocol: Protocols,
   remoteAddress: string,
   packetRawData: string,
   persistence: Persistence,
@@ -16,7 +18,7 @@ async function positionUpdateLastActivityAndAddHistory(
   /** Update last activity */
   if (updateLastActivity) {
     await persistence
-      .updateLastActivity(imei)
+      .updateLastActivity(imei, protocol)
       .then((result: PersistenceResult) => {
         if (result.error) {
           message = result.error.message;

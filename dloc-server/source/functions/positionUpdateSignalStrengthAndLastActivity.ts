@@ -1,9 +1,11 @@
+import { Protocols } from "../enums/Protocols";
 import { PersistenceResult } from "../infraestucture/models/PersistenceResult";
 import { Persistence } from "../models/Persistence";
 import { printMessage } from "./printMessage";
 
 async function positionUpdateSignalStrengthAndLastActivity(
   imei: string,
+  protocol: Protocols,
   remoteAddress: string,
   persistence: Persistence,
   signalStrength: number
@@ -25,7 +27,7 @@ async function positionUpdateSignalStrengthAndLastActivity(
   }
 
   /** Update last activity */
-  await persistence.updateLastActivity(imei).then((result: PersistenceResult) => {
+  await persistence.updateLastActivity(imei, protocol).then((result: PersistenceResult) => {
     if (result.error) {
       message = result.error.message;
       printMessage(
