@@ -36,7 +36,7 @@ export interface AddPosition {
   (positionPacket: PositionPacket): Promise<PersistenceResult>;
 }
 export interface AddBatteryLevel {
-  (imei: string, batteryLevel: number): Promise<PersistenceResult>;
+  (imei: string, protocol: Protocols, batteryLevel: number): Promise<PersistenceResult>;
 }
 export interface AddDevice {
   (imei: string, protocol: Protocols): Promise<PersistenceResult>;

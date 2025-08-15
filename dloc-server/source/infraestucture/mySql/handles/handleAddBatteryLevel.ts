@@ -3,23 +3,32 @@ import { mySqlClonedImeiUpdate } from "../functions/mySqlClonedImeiUpdate";
 import { mySqlConnectionConfig } from "../functions/mySqlConnectionConfig";
 import { PersistenceResult } from "../../models/PersistenceResult";
 import mySqlQueryAsync from "../functions/mySqlQueryAsync";
+import { Protocols } from "../../../enums/Protocols";
 
 const connectionConfig: ConnectionConfig = mySqlConnectionConfig;
 
-const handleAddBatteryLevel = async (imei: string, batteryLevel: number): Promise<PersistenceResult> => {
+const handleAddBatteryLevel = async (
+  imei: string,
+  protocol: Protocols,
+  batteryLevel: number
+): Promise<PersistenceResult> => {
   const updateBattery = batteryLevel !== -1;
-  const params = updateBattery ? [imei, batteryLevel, batteryLevel] : [imei];
+  const params = updateBattery
+    ? [imei, protocol.toLowerCase(), batteryLevel, protocol.toLowerCase(), batteryLevel]
+    : [imei, protocol.toLowerCase(), protocol.toLowerCase()];
 
   const sql = updateBattery
     ? `
-      INSERT INTO device (imei, batteryLevel, lastVisibilityUTC) VALUES (?, ?, UTC_TIMESTAMP())
+      INSERT INTO device (imei, protocol, batteryLevel, lastVisibilityUTC) VALUES (?, ?, ?, UTC_TIMESTAMP())
       ON DUPLICATE KEY UPDATE 
+        protocol = ?,
         batteryLevel = ?, 
         lastVisibilityUTC = UTC_TIMESTAMP();
     `
     : `
-      INSERT INTO device (imei, lastVisibilityUTC) VALUES (?, UTC_TIMESTAMP())
+      INSERT INTO device (imei, protocol, lastVisibilityUTC) VALUES (?, ?, UTC_TIMESTAMP())
       ON DUPLICATE KEY UPDATE 
+        protocol = ?,
         lastVisibilityUTC = UTC_TIMESTAMP();
     `;
 

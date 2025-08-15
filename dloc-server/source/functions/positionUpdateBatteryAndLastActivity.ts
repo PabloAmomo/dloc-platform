@@ -14,7 +14,7 @@ async function positionUpdateBatteryAndLastActivity(
 
   if (batteryLevel >= 0) {
     await persistence
-      .addBatteryLevel(imei, batteryLevel)
+      .addBatteryLevel(imei, protocol, batteryLevel)
       .then((result: PersistenceResult) => {
         if (result.error) {
           message = result.error.message;
