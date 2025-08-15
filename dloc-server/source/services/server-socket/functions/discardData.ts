@@ -1,3 +1,4 @@
+import { Protocols } from '../../../enums/Protocols';
 import { handlePacketOnError } from '../../../functions/handlePacketOnError';
 import { printMessage } from '../../../functions/printMessage';
 import { PersistenceResult } from '../../../infraestucture/models/PersistenceResult';
@@ -9,6 +10,7 @@ async function discardData(
   reportError: boolean,
   persistence: Persistence,
   imeiTemp: string,
+  protocol: Protocols,
   remoteAddress: string,
   data: string,
   response: HandlePacketResult
@@ -25,7 +27,7 @@ async function discardData(
 
   /** Persist discarted packet */
   await persistence
-    .addDiscarted(response.imei, remoteAddress, message, data)
+    .addDiscarted(response.imei, protocol, remoteAddress, message, data)
     .then((result: PersistenceResult) => {
       result.error &&
         handlePacketOnError({
