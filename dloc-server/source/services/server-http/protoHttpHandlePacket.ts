@@ -1,5 +1,6 @@
 import config from "../../config/config";
 import getPowerProfile from "../../functions/getPowerProfile";
+import parseJSONString from "../../functions/parseJsonString";
 import positionAddPositionAndUpdateDevice from "../../functions/positionAddPositionAndUpdateDevice";
 import positionUpdateBatteryAndLastActivity from "../../functions/positionUpdateBatteryAndLastActivity";
 import positionUpdateLastActivityAndAddHistory from "../../functions/positionUpdateLastActivityAndAddHistory";
@@ -14,12 +15,13 @@ const REMOTE_ADDRESS = "N/A";
 
 const protoHttpHandlePacket = async (persistence: Persistence, positionPacket: PositionPacket) => {
   const { imei } = positionPacket;
-  const hasPosition: boolean = positionPacket.lat !== config.INVALID_POSITION_LAT_LNG && positionPacket.lng !== config.INVALID_POSITION_LAT_LNG;
+  const hasPosition: boolean =
+    positionPacket.lat !== config.INVALID_POSITION_LAT_LNG && positionPacket.lng !== config.INVALID_POSITION_LAT_LNG;
   const prefix = `[${imei}] (${REMOTE_ADDRESS})`;
   let message: string = "ok";
 
   /** Get activity */
-  const activity = positionPacket.activity ? JSON.parse(positionPacket.activity) : {};
+  const activity: any = positionPacket.activity ? parseJSONString(positionPacket.activity) : {};
   const isNewConnection = activity?.isNewConnection ?? false;
 
   /** Log the activity */
@@ -49,7 +51,13 @@ const protoHttpHandlePacket = async (persistence: Persistence, positionPacket: P
 
   /** Update position */
   if (!hasPosition)
-    message = await positionUpdateBatteryAndLastActivity(imei, "HTTP", REMOTE_ADDRESS, persistence, positionPacket.batteryLevel);
+    message = await positionUpdateBatteryAndLastActivity(
+      imei,
+      "HTTP",
+      REMOTE_ADDRESS,
+      persistence,
+      positionPacket.batteryLevel
+    );
   else {
     message = await positionAddPositionAndUpdateDevice(imei, "HTTP", REMOTE_ADDRESS, positionPacket, persistence);
     if (message === "ok")
