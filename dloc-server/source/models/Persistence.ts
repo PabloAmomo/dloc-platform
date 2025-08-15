@@ -51,7 +51,7 @@ export interface GetPowerProfile {
   (imei: string): Promise<PersistenceResult>;
 }
 export interface AddHistory {
-  (imei: string, remoteAddress: string, data: string, response: string): Promise<PersistenceResult>;
+  (imei: string, protocol: Protocols, remoteAddress: string, data: string, response: string): Promise<PersistenceResult>;
 }
 export interface UpdateDevice {
   (positionPacket: PositionPacket, protocol: Protocols): Promise<PersistenceResult>;
