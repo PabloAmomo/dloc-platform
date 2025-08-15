@@ -1,1 +1,1 @@
-export type Protocols = "PROTO1903" | "JT808" | "TOPIN";
+export type Protocols = "PROTO1903" | "JT808" | "TOPIN" | "UNKNOWN";

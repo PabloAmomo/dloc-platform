@@ -4,6 +4,7 @@ import { PersistenceResult } from '../models/PersistenceResult';
 import { PositionPacket } from '../../models/PositionPacket';
 import * as wrapper from './handles/handleWrapper';
 import { PowerProfileType } from '../../enums/PowerProfileType';
+import { Protocols } from '../../enums/Protocols';
 
 class mySqlPersistence implements Persistence {
   getPersistenceName(): string {  
@@ -19,6 +20,9 @@ class mySqlPersistence implements Persistence {
   }
   addPosition(positionPacket: PositionPacket):  Promise<PersistenceResult> {
     return wrapper.handleAddPosition(positionPacket);
+  }
+  addDevice(imei: string, protocol: Protocols):  Promise<PersistenceResult> {
+    return wrapper.handleAddDevice(imei, protocol);
   }
   addBatteryLevel(imei: string, batteryLevel: number):  Promise<PersistenceResult> {
     return wrapper.handleAddBatteryLevel(imei, batteryLevel);
