@@ -45,7 +45,7 @@ export interface AddSignalStrength {
   (imei: string, protocol: Protocols, signalStrength: number): Promise<PersistenceResult>;
 }
 export interface AddPowerProfile {
-  (imei: string, profile: PowerProfileType): Promise<PersistenceResult>;
+  (imei: string, protocol: Protocols, profile: PowerProfileType): Promise<PersistenceResult>;
 }
 export interface GetPowerProfile {
   (imei: string): Promise<PersistenceResult>;
