@@ -35,7 +35,7 @@ async function positionUpdateLastActivityAndAddHistory(
 
   /** Add history */
   await persistence
-    .addHistory(imei, remoteAddress, packetRawData, "")
+    .addHistory(imei, protocol, remoteAddress, packetRawData, "")
     .then((result: PersistenceResult) => {
       if (result.error) {
         message = result.error.message;

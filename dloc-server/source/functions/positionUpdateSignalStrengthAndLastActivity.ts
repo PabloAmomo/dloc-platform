@@ -13,7 +13,7 @@ async function positionUpdateSignalStrengthAndLastActivity(
   let message: string = "ok";
 
   if (signalStrength >= 0) {
-    await persistence.addSignalStrength(imei, signalStrength).then((result: PersistenceResult) => {
+    await persistence.addSignalStrength(imei, protocol, signalStrength).then((result: PersistenceResult) => {
       if (result.error) {
         message = result.error.message;
         printMessage(

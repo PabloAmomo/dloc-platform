@@ -1,6 +1,5 @@
 import { Protocols } from "../enums/Protocols";
 import { CACHE_POSITION } from "../infraestucture/caches/cachePosition";
-import { CachePosition } from "../infraestucture/models/CachePosition";
 import { PersistenceResult } from "../infraestucture/models/PersistenceResult";
 import { Persistence } from "../models/Persistence";
 import { PositionPacket } from "../models/PositionPacket";
@@ -29,7 +28,7 @@ async function positionAddPositionAndUpdateDevice(
   CACHE_POSITION.set(imei, { ...positionPacket, dateTimeUtc: new Date() });
 
   /** Add position */
-  await persistence.addPosition(positionPacket).then((result: PersistenceResult) => {
+  await persistence.addPosition(positionPacket, protocol).then((result: PersistenceResult) => {
     if (result.error) {
       message = result.error.message;
       printMessage(
