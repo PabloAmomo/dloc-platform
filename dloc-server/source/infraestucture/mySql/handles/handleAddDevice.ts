@@ -8,7 +8,7 @@ import { Protocols } from "../../../enums/Protocols";
 const connectionConfig: ConnectionConfig = mySqlConnectionConfig;
 
 const handleAddDevice = async (imei: string, protocol: Protocols): Promise<PersistenceResult> => {
-  const params = [imei, protocol.toLocaleLowerCase()];
+  const params = [imei, protocol.toLowerCase()];
 
   const sql = `INSERT INTO device (imei, protocol, lastVisibilityUTC) VALUES (?, ?, UTC_TIMESTAMP())`;
 
