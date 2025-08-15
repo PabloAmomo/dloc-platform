@@ -8,12 +8,11 @@ import { PersistenceResult } from "../../models/PersistenceResult";
 import { PositionPacket } from "../../../models/PositionPacket";
 import { printMessage } from "../../../functions/printMessage";
 import mySqlQueryAsync from "../functions/mySqlQueryAsync";
+import { Protocols } from "../../../enums/Protocols";
 
 const connectionConfig: ConnectionConfig = mySqlConnectionConfig;
 
-const handleUpdateDevice = async (
-  positionPacket: PositionPacket
-): Promise<PersistenceResult> => {
+const handleUpdateDevice = async (positionPacket: PositionPacket, protocol: Protocols): Promise<PersistenceResult> => {
   /** Validate data */
   const { errorMsg, message } = getErrorFromPositionPacket(positionPacket);
   if (errorMsg !== "" || positionPacket.dateTimeUtc == null) {
@@ -37,13 +36,11 @@ const handleUpdateDevice = async (
     mySqlFormatDateTime(positionPacket.dateTimeUtc),
     positionPacket.accuracy,
     positionPacket.activity,
+    protocol.toLowerCase(),
   ];
 
-  const hasGsmSignal =
-    positionPacket.gsmSignal !== undefined && positionPacket.gsmSignal >= 0;
-  const hasBattery =
-    positionPacket.batteryLevel !== undefined &&
-    positionPacket.batteryLevel >= 0;
+  const hasGsmSignal = positionPacket.gsmSignal !== undefined && positionPacket.gsmSignal >= 0;
+  const hasBattery = positionPacket.batteryLevel !== undefined && positionPacket.batteryLevel >= 0;
 
   if (hasGsmSignal) data.push(positionPacket.gsmSignal);
   if (hasBattery) data.push(positionPacket.batteryLevel);
@@ -56,18 +53,17 @@ const handleUpdateDevice = async (
     ...data,
   ];
 
-  const sql = `INSERT INTO device (imei, lastPositionUTC, lat, lng, speed, directionAngle, lastVisibilityUTC, locationAccuracy, activity ${hasGsmSignal ? ",gsmSignal" : ""} ${hasBattery ? ",batteryLevel" : ""})
+  const sql = `INSERT INTO device (imei, lastPositionUTC, lat, lng, speed, directionAngle, lastVisibilityUTC, locationAccuracy, activity, protocol ${
+    hasGsmSignal ? ",gsmSignal" : ""
+  } ${hasBattery ? ",batteryLevel" : ""})
                 VALUES(?, ?, ?, ?, ?, ?, ?, ?, ? ${hasGsmSignal ? ",?" : ""} ${hasBattery ? ",?" : ""})
                 ON DUPLICATE KEY 
-                  UPDATE  lastPositionUTC = ?, lat = ?, lng = ?, speed = ?, directionAngle = ?, lastVisibilityUTC = ?, locationAccuracy = ?, activity = ? ${hasGsmSignal ? ",gsmSignal = ?" : ""} ${hasBattery ? ",batteryLevel = ?" : ""};`;
-  const response: PersistenceResult = await mySqlQueryAsync(
-    connectionConfig,
-    sql,
-    params
-  );
+                  UPDATE  lastPositionUTC = ?, lat = ?, lng = ?, speed = ?, directionAngle = ?, lastVisibilityUTC = ?, locationAccuracy = ?, activity = ?, protocol = ? ${
+                    hasGsmSignal ? ",gsmSignal = ?" : ""
+                  } ${hasBattery ? ",batteryLevel = ?" : ""};`;
+  const response: PersistenceResult = await mySqlQueryAsync(connectionConfig, sql, params);
 
-  if (!response?.error)
-    await mySqlClonedImeiUpdate(connectionConfig, positionPacket.imei);
+  if (!response?.error) await mySqlClonedImeiUpdate(connectionConfig, positionPacket.imei);
   return response;
 };
 

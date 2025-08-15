@@ -39,8 +39,8 @@ class mySqlPersistence implements Persistence {
   addHistory(imei: string, remoteAddress: string, data: string, response: string):  Promise<PersistenceResult> {
     return wrapper.handleAddHistory(imei, remoteAddress, data, response);
   }
-  updateDevice(positionPacket: PositionPacket):  Promise<PersistenceResult> {
-    return wrapper.handleUpdateDevice(positionPacket);
+  updateDevice(positionPacket: PositionPacket, protocol: Protocols):  Promise<PersistenceResult> {
+    return wrapper.handleUpdateDevice(positionPacket, protocol);
   }
   updateLastActivity(imei: string):  Promise<PersistenceResult> {
     return wrapper.handleUpdateLastActivity(imei);
