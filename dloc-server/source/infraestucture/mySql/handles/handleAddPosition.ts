@@ -6,11 +6,13 @@ import { PersistenceResult } from "../../models/PersistenceResult";
 import { PositionPacket } from "../../../models/PositionPacket";
 import { printMessage } from "../../../functions/printMessage";
 import mySqlQueryAsync from "../functions/mySqlQueryAsync";
+import { Protocols } from "../../../enums/Protocols";
 
 const connectionConfig: ConnectionConfig = mySqlConnectionConfig;
 
 const handleAddPosition = async (
-  positionPacket: PositionPacket
+  positionPacket: PositionPacket,
+  protocol: Protocols
 ): Promise<PersistenceResult> => {
   /** validate data */
   const { errorMsg, message } = getErrorFromPositionPacket(positionPacket);
@@ -28,6 +30,7 @@ const handleAddPosition = async (
   /** Add position */
   const params = [
     positionPacket.imei,
+    protocol.toLowerCase(),
     positionPacket.remoteAddress,
     mySqlFormatDateTime(positionPacket.dateTimeUtc),
     positionPacket.lat,
@@ -41,9 +44,9 @@ const handleAddPosition = async (
   if (hasBattery) params.push(positionPacket.batteryLevel);
 
   const sql = `INSERT INTO \`position\` 
-    (imei, remoteAddress, dateTimeUTC, lat, lng, speed, directionAngle, locationAccuracy, activity ${hasGsmSignal ? ",gsmSignal" : ""} ${hasBattery ? ",batteryLevel" : ""}) 
+    (imei, protocol, remoteAddress, dateTimeUTC, lat, lng, speed, directionAngle, locationAccuracy, activity ${hasGsmSignal ? ",gsmSignal" : ""} ${hasBattery ? ",batteryLevel" : ""}) 
     VALUES 
-    (?, ?, ?, ?, ?, ?, ?, ?, ? ${hasGsmSignal ? ",?" : ""} ${hasBattery ? ",?" : ""});`;
+    (?, ?, ?, ?, ?, ?, ?, ?, ?, ? ${hasGsmSignal ? ",?" : ""} ${hasBattery ? ",?" : ""});`;
   return mySqlQueryAsync(connectionConfig, sql, params);
 };
 

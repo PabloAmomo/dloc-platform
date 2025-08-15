@@ -15,11 +15,11 @@ class mySqlPersistence implements Persistence {
     return `host: ${host}, user: ${user}, database: ${database}, port: ${port}, password: ${password?.substring(0,3)}*********`;
   }
 
-  addDiscarted(imei: string, remoteAddress: string, message: string, data: string): Promise<PersistenceResult> {
-    return wrapper.handleAddDiscarted(imei, remoteAddress, message, data);
+  addDiscarted(imei: string, protocol: Protocols, remoteAddress: string, message: string, data: string): Promise<PersistenceResult> {
+    return wrapper.handleAddDiscarted(imei, protocol, remoteAddress, message, data);
   }
-  addPosition(positionPacket: PositionPacket):  Promise<PersistenceResult> {
-    return wrapper.handleAddPosition(positionPacket);
+  addPosition(positionPacket: PositionPacket, protocol: Protocols):  Promise<PersistenceResult> {
+    return wrapper.handleAddPosition(positionPacket, protocol);
   }
   addDevice(imei: string, protocol: Protocols):  Promise<PersistenceResult> {
     return wrapper.handleAddDevice(imei, protocol);

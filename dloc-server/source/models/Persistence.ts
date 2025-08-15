@@ -1,4 +1,3 @@
-import e from "express";
 import { PowerProfileType } from "../enums/PowerProfileType";
 import { PersistenceResult } from "../infraestucture/models/PersistenceResult";
 import { PositionPacket } from "./PositionPacket";
@@ -30,10 +29,10 @@ export interface GetPersistenceConfig {
   (): string;
 }
 export interface AddDiscarted {
-  (imei: string, remoteAddress: string, reason: string, data: string): Promise<PersistenceResult>;
+  (imei: string, protocol: Protocols, remoteAddress: string, reason: string, data: string): Promise<PersistenceResult>;
 }
 export interface AddPosition {
-  (positionPacket: PositionPacket): Promise<PersistenceResult>;
+  (positionPacket: PositionPacket, protocol: Protocols): Promise<PersistenceResult>;
 }
 export interface AddBatteryLevel {
   (imei: string, protocol: Protocols, batteryLevel: number): Promise<PersistenceResult>;
