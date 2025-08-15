@@ -49,12 +49,13 @@ const protoHttpHandlePacket = async (persistence: Persistence, positionPacket: P
 
   /** Update position */
   if (!hasPosition)
-    message = await positionUpdateBatteryAndLastActivity(imei, REMOTE_ADDRESS, persistence, positionPacket.batteryLevel);
+    message = await positionUpdateBatteryAndLastActivity(imei, "HTTP", REMOTE_ADDRESS, persistence, positionPacket.batteryLevel);
   else {
     message = await positionAddPositionAndUpdateDevice(imei, "HTTP", REMOTE_ADDRESS, positionPacket, persistence);
     if (message === "ok")
       message = await positionUpdateLastActivityAndAddHistory(
         imei,
+        "HTTP",
         "N/A",
         JSON.stringify(positionPacket),
         persistence,

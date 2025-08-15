@@ -185,7 +185,7 @@ const proto1903HandlePacket: Proto1903HandlePacket = async (
       if (data.length < 18) updateLastActivity = true;
       else {
         const batteryLevel: number = parseInt(data.substring(14, 17) ?? "-1");
-        await positionUpdateBatteryAndLastActivity(imeiTemp, remoteAddress, persistence, batteryLevel);
+        await positionUpdateBatteryAndLastActivity(imeiTemp, "PROTO1903", remoteAddress, persistence, batteryLevel);
       }
     }
 
@@ -249,7 +249,7 @@ const proto1903HandlePacket: Proto1903HandlePacket = async (
   }
 
   /** Update last activity and add history */
-  await positionUpdateLastActivityAndAddHistory(imeiTemp, remoteAddress, data, persistence, updateLastActivity);
+  await positionUpdateLastActivityAndAddHistory(imeiTemp, "PROTO1903", remoteAddress, data, persistence, updateLastActivity);
 
   /** */
   if (response.response.length === 0) {

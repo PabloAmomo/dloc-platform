@@ -134,6 +134,7 @@ const jt808HandlePacket: Jt808HandlePacket = async (props: Jt808HandlePacketProp
   /** Update last activity and add history */
   await positionUpdateLastActivityAndAddHistory(
     imeiToPrint,
+    "JT808",
     remoteAddress,
     dataString,
     persistence,

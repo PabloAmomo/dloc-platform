@@ -13,7 +13,7 @@ const jt808CheckTerminalParametersResponse = async (
   const parametersSettings = jt808ParseParamentersSettings(imei, remoteAddress, jt808Packet.body);
 
   const battery = parseInt((parametersSettings.paramatersSettings.batteryLevel?.value as string) ?? "-1");
-  await positionUpdateBatteryAndLastActivity(imei, remoteAddress, persistence, battery);
+  await positionUpdateBatteryAndLastActivity(imei, "JT808", remoteAddress, persistence, battery);
   if (battery === -1) printMessage(`[${imei}] (${remoteAddress}) 🔋 Battery level ❌ Not available`);
   else printMessage(`[${imei}] (${remoteAddress}) 🔋 Battery level ✅ ${battery}% (Updated on device)`);
 };

@@ -33,9 +33,9 @@ const protoTopinProcessPacket0x13: ProtoTopinProcessPacket = async ({
   
 
 
-  await positionUpdateBatteryAndLastActivity(response.imei, remoteAddress, persistence, battery);
+  await positionUpdateBatteryAndLastActivity(response.imei, "TOPIN", remoteAddress, persistence, battery);
 
-  await positionUpdateSignalStrengthAndLastActivity(response.imei, remoteAddress, persistence, signalStrength);
+  await positionUpdateSignalStrengthAndLastActivity(response.imei, "TOPIN", remoteAddress, persistence, signalStrength);
 
   return {
     updateLastActivity: true,

@@ -124,6 +124,7 @@ const protoTopinHandlePacket: ProtoTopinHandlePacket = async (
   /** Update last activity and add history */
   await positionUpdateLastActivityAndAddHistory(
     imeiToPrint,
+    "TOPIN",
     remoteAddress,
     dataString,
     persistence,
