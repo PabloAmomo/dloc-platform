@@ -28,6 +28,7 @@ const protoTopinPersistPosition = async (
     const oldPacketMessage = "old packet";
     await positionAddPositionAndUpdateDevice(
       imei,
+      "TOPIN",
       remoteAddress,
       position,
       persistence,

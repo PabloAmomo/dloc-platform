@@ -27,6 +27,7 @@ const jt808PersistLocation = async (
   const oldPacketMessage = "old packet";
   await positionAddPositionAndUpdateDevice(
     imei,
+    "JT808",
     remoteAddress,
     positionPacket,
     persistence,

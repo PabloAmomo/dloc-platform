@@ -119,6 +119,7 @@ const proto1903HandlePacket: Proto1903HandlePacket = async (
 
       await positionAddPositionAndUpdateDevice(
         imeiTemp,
+        "PROTO1903",
         remoteAddress,
         positionPacket,
         persistence,

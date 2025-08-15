@@ -1,3 +1,4 @@
+import { Protocols } from "../enums/Protocols";
 import { CACHE_POSITION } from "../infraestucture/caches/cachePosition";
 import { CachePosition } from "../infraestucture/models/CachePosition";
 import { PersistenceResult } from "../infraestucture/models/PersistenceResult";
@@ -7,6 +8,7 @@ import { printMessage } from "./printMessage";
 
 async function positionAddPositionAndUpdateDevice(
   imei: string,
+  protocol: Protocols,
   remoteAddress: string,
   positionPacket: PositionPacket,
   persistence: Persistence,
@@ -42,7 +44,7 @@ async function positionAddPositionAndUpdateDevice(
   if (message !== "ok") return message;
 
   /** Update device */
-  await persistence.updateDevice(positionPacket).then((result: PersistenceResult) => {
+  await persistence.updateDevice(positionPacket, protocol).then((result: PersistenceResult) => {
     printMessage(`[${imei}] (${remoteAddress}) ✅ updating device [${JSON.stringify(positionPacket)}]`);
     if (result.error) {
       message = result.error.message;
