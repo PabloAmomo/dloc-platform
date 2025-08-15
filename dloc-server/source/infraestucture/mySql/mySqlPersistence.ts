@@ -27,8 +27,8 @@ class mySqlPersistence implements Persistence {
   addBatteryLevel(imei: string, protocol: Protocols, batteryLevel: number):  Promise<PersistenceResult> {
     return wrapper.handleAddBatteryLevel(imei, protocol, batteryLevel);
   }
-  addSignalStrength(imei: string, signalStrength: number):  Promise<PersistenceResult> {
-    return wrapper.handleAddSignalStrength(imei, signalStrength);
+  addSignalStrength(imei: string, protocol: Protocols, signalStrength: number):  Promise<PersistenceResult> {
+    return wrapper.handleAddSignalStrength(imei, protocol, signalStrength);
   }
   getPowerProfile(imei: string):  Promise<PersistenceResult> {
     return wrapper.handleGetPowerProfile(imei);
