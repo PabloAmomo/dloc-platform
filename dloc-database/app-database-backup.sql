@@ -75,6 +75,7 @@ CREATE TABLE `discarted` (
   `imei` varchar(15) DEFAULT NULL,
   `remoteAddress` varchar(50) DEFAULT NULL,
   `creationDate` timestamp NOT NULL DEFAULT current_timestamp(),
+  `protocol` varchar(20) NOT NULL DEFAULT 'unknown',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=13524 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -93,6 +94,7 @@ CREATE TABLE `history` (
   `remoteAddress` varchar(50) DEFAULT NULL,
   `creationDate` timestamp NOT NULL DEFAULT current_timestamp(),
   `response` text DEFAULT NULL,
+  `protocol` varchar(20) NOT NULL DEFAULT 'unknown',
   PRIMARY KEY (`id`),
   KEY `history_IDX02` (`imei`) USING BTREE,
   KEY `history_IDX03` (`creationDate`) USING BTREE
@@ -120,6 +122,7 @@ CREATE TABLE `position` (
   `creationDate` timestamp NOT NULL DEFAULT current_timestamp(),
   `locationAccuracy` int(11) NOT NULL DEFAULT 0,
   `activity` text NOT NULL DEFAULT '{}',
+  `protocol` varchar(20) NOT NULL DEFAULT 'unknown',
   PRIMARY KEY (`id`),
   UNIQUE KEY `position_IDX04` (`imei`,`dateTimeUTC`,`id`) USING BTREE,
   UNIQUE KEY `position_IDX05` (`imei`,`dateTimeUTC`,`id`) USING BTREE,
