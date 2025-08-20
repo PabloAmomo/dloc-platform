@@ -2,12 +2,17 @@ import { printMessage } from '../functions/printMessage';
 import cors from 'cors';
 import express, { Express } from 'express';
 import http from 'http';
+import rateLimit from "express-rate-limit";
 
 var serverHttp: http.Server | undefined;
 
 /** Express */
 const router: Express = express();
 router.use(cors({ origin: '*' }));
+
+router.use(express.json({ limit: '1mb' }));
+const limiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 100 });
+router.use(limiter);
 
 /** Start server */
 const startServerHTTP = (routes: (router: Express) => void, port: number) => {
