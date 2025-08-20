@@ -1,15 +1,21 @@
-import { printMessage } from './functions/printMessage';
-import { ResponseCode } from './enums/ResponseCode';
-import cors from 'cors';
-import express, { Express } from 'express';
-import http from 'http';
-import routes from './controllers/routes';
+import { printMessage } from "./functions/printMessage";
+import { ResponseCode } from "./enums/ResponseCode";
+import cors from "cors";
+import express, { Express } from "express";
+import http from "http";
+import routes from "./controllers/routes";
+import rateLimit from "express-rate-limit";
 
 var router: Express = express();
 
 const startServerHTTP = (port: number): http.Server<typeof http.IncomingMessage, typeof http.ServerResponse> => {
   /** Enable CORS */
-  router.use(cors({ origin: '*' }));
+  router.use(cors({ origin: "*" }));
+
+  /** Secure  */
+  router.use(express.json({ limit: "1mb" }));
+  const limiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 100 });
+  router.use(limiter);
 
   /** Parse the request and Takes care of JSON data */
   router.use(express.urlencoded({ extended: false }));
@@ -20,7 +26,7 @@ const startServerHTTP = (port: number): http.Server<typeof http.IncomingMessage,
 
   /** Error handling */
   router.use((req, res) => {
-    const error = new Error('not found');
+    const error = new Error("not found");
     return res.status(ResponseCode.NOT_FOUND).json({ message: error.message });
   });
 
