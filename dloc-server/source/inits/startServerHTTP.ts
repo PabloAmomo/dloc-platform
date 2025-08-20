@@ -11,7 +11,7 @@ const router: Express = express();
 router.use(cors({ origin: '*' }));
 
 router.use(express.json({ limit: '1mb' }));
-const limiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 100 });
+const limiter = rateLimit({ windowMs: 60 * 1000, max: 60 });
 router.use(limiter);
 
 /** Start server */
