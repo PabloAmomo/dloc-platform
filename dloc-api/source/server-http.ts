@@ -14,7 +14,7 @@ const startServerHTTP = (port: number): http.Server<typeof http.IncomingMessage,
 
   /** Secure  */
   router.use(express.json({ limit: "1mb" }));
-  const limiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 100 });
+  const limiter = rateLimit({ windowMs: 60 * 1000, max: 60 });
   router.use(limiter);
 
   /** Parse the request and Takes care of JSON data */
